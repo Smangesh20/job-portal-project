@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import sgMail from '@sendgrid/mail';
 
-// Initialize SendGrid
+// Initialize SendGrid only when needed
+let sgMail: any = null;
 if (process.env.SENDGRID_API_KEY) {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  try {
+    sgMail = require('@sendgrid/mail');
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  } catch (error) {
+    console.warn('SendGrid not available:', error);
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -36,11 +41,11 @@ export async function POST(request: NextRequest) {
     console.log(`🔑 Generated reset token: ${resetToken}`);
     console.log(`🔗 Reset URL: ${resetUrl}`);
 
-    // Check if SendGrid is configured
-    if (process.env.SENDGRID_API_KEY && process.env.FROM_EMAIL) {
-      try {
-        // Send real email using SendGrid
-        const msg = {
+            // Check if SendGrid is configured and available
+            if (sgMail && process.env.SENDGRID_API_KEY && process.env.FROM_EMAIL) {
+              try {
+                // Send real email using SendGrid
+                const msg = {
           to: email,
           from: process.env.FROM_EMAIL,
           subject: 'Reset Your Password - Ask Ya Cham',
