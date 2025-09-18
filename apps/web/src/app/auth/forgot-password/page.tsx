@@ -19,23 +19,30 @@ export default function ForgotPasswordPage() {
     setMessage('')
 
     try {
+      console.log('About to call forgot password API with email:', email)
       const response = await enhancedAPIClient.post('/auth/forgot-password', {
         email: email
       })
       
       console.log('Forgot password response:', response)
+      console.log('Response type:', typeof response)
+      console.log('Response keys:', Object.keys(response || {}))
       
       // Handle both mock API and real API response formats
       const responseData = (response as any).data || response
+      console.log('Response data:', responseData)
+      console.log('Response data success:', responseData?.success)
       
-      if (responseData.success) {
+      if (responseData && responseData.success) {
         setShowEmailSent(true)
         setMessage(responseData.message || 'If an account with that email exists, we have sent a password reset link.')
       } else {
-        setError(responseData.error?.message || 'Failed to send reset email')
+        setError(responseData?.error?.message || 'Failed to send reset email')
       }
     } catch (error: any) {
       console.error('Forgot password error:', error)
+      console.error('Error type:', typeof error)
+      console.error('Error keys:', Object.keys(error || {}))
       if (error.response?.data?.error?.message) {
         setError(error.response.data.error.message)
       } else if (error.message) {
