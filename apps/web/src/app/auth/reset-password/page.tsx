@@ -27,8 +27,14 @@ export default function ResetPasswordPage() {
         const currentUrl = window.location.href;
         const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
         console.log('🔍 Redirecting to:', newUrl);
-        window.location.replace(newUrl);
+        // Use a small delay to prevent rapid redirects
+        setTimeout(() => {
+          window.location.replace(newUrl);
+        }, 150);
         return;
+      } else {
+        console.log('🔍 Page already redirected, clearing flag');
+        sessionStorage.removeItem('reset_password_redirected');
       }
     }
 

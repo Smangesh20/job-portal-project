@@ -47,15 +47,17 @@ class LocalAuthService {
     
     // Check for context mismatch and redirect BEFORE loading from storage
     if (typeof window !== 'undefined') {
-      this.checkAndRedirectIfNeeded();
+      // Only redirect if we haven't already redirected in this session
+      const hasRedirected = sessionStorage.getItem('reset_password_redirected');
+      if (!hasRedirected) {
+        this.checkAndRedirectIfNeeded();
+      } else {
+        console.log('🔍 Already redirected in this session, skipping redirect check');
+        sessionStorage.removeItem('reset_password_redirected');
+      }
     }
     
     this.loadFromStorage();
-    
-    // Clear any redirect flags when the service initializes successfully
-    if (typeof window !== 'undefined') {
-      sessionStorage.removeItem('reset_password_redirected');
-    }
   }
 
   private checkAndRedirectIfNeeded() {
@@ -70,8 +72,14 @@ class LocalAuthService {
         const currentUrl = window.location.href;
         const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
         console.log('🔍 Redirecting to:', newUrl);
-        window.location.replace(newUrl); // Use replace instead of href to prevent back button issues
+        // Use a small delay to prevent rapid redirects
+        setTimeout(() => {
+          window.location.replace(newUrl);
+        }, 100);
         return;
+      } else {
+        console.log('🔍 Already redirected, clearing flag');
+        sessionStorage.removeItem('reset_password_redirected');
       }
     }
   }
