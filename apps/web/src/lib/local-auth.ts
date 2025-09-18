@@ -929,20 +929,30 @@ class LocalAuthService {
           
           // First, try to find the real user from askyacham keys
           const askyachamUsers = localStorage.getItem('askyacham_users');
+          console.log('🔍 askyachamUsers from localStorage:', askyachamUsers);
           if (askyachamUsers) {
             try {
               const users = JSON.parse(askyachamUsers);
+              console.log('🔍 Parsed users array:', users);
+              console.log('🔍 Users array length:', users.length);
               if (users.length > 0) {
                 const realUser = users[0]; // Use the first real user
+                console.log('🔍 Selected realUser:', realUser);
+                console.log('🔍 realUser.id:', realUser.id);
+                console.log('🔍 realUser.email:', realUser.email);
                 realUserId = realUser.id;
                 realEmail = realUser.email;
                 console.log('🔍 Found real user from askyacham_users:', { id: realUserId, email: realEmail });
                 console.log('🔍 realUserId after assignment:', realUserId);
                 console.log('🔍 realEmail after assignment:', realEmail);
+              } else {
+                console.log('🔍 Users array is empty');
               }
             } catch (e) {
               console.log('🔍 Error parsing askyacham_users:', e);
             }
+          } else {
+            console.log('🔍 No askyacham_users found in localStorage');
           }
           
           // If not found, check other localStorage keys
