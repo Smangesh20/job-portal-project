@@ -694,9 +694,13 @@ class LocalAuthService {
           const currentOrigin = window.location.origin;
           const expectedOrigin = 'https://askyacham.com';
           
-          if (currentOrigin !== expectedOrigin) {
+          // Check if we've already redirected to prevent infinite loops
+          const hasRedirected = sessionStorage.getItem('reset_password_redirected');
+          
+          if (currentOrigin !== expectedOrigin && !hasRedirected) {
             console.log('🔍 Context mismatch detected! Current:', currentOrigin, 'Expected:', expectedOrigin);
             console.log('🔍 Redirecting to correct context...');
+            sessionStorage.setItem('reset_password_redirected', 'true');
             window.location.href = `https://askyacham.com/auth/reset-password?token=${token}`;
             return {
               success: false,
@@ -705,6 +709,9 @@ class LocalAuthService {
                 message: 'Redirecting to correct context...'
               }
             };
+          } else if (hasRedirected) {
+            console.log('🔍 Already redirected, clearing redirect flag and continuing...');
+            sessionStorage.removeItem('reset_password_redirected');
           }
         }
       }
@@ -712,19 +719,36 @@ class LocalAuthService {
       const resetTokenData = this.resetTokens.get(token);
       console.log('🔍 Found reset token data:', resetTokenData);
       
-      if (!resetTokenData) {
+      let finalResetTokenData = resetTokenData;
+      
+      if (!finalResetTokenData) {
         console.log('❌ Token not found in resetTokens map');
-        return {
-          success: false,
-          error: {
-            code: 'INVALID_TOKEN',
-            message: 'Invalid reset token'
+        
+        // If we're on the correct domain but still no tokens, try to find the token in localStorage directly
+        const allResetTokens = localStorage.getItem('askyacham_reset_tokens');
+        if (allResetTokens) {
+          const tokens = JSON.parse(allResetTokens);
+          const foundToken = tokens.find((t: any) => t.token === token);
+          if (foundToken) {
+            console.log('🔍 Found token in localStorage, adding to map:', foundToken);
+            this.resetTokens.set(token, foundToken);
+            finalResetTokenData = foundToken;
           }
-        };
+        }
+        
+        if (!finalResetTokenData) {
+          return {
+            success: false,
+            error: {
+              code: 'INVALID_TOKEN',
+              message: 'Invalid reset token'
+            }
+          };
+        }
       }
 
       const now = new Date();
-      const expiresAt = new Date(resetTokenData.expiresAt);
+      const expiresAt = new Date(finalResetTokenData.expiresAt);
       console.log('🔍 Token expiry check:', { now: now.toISOString(), expiresAt: expiresAt.toISOString(), isExpired: now > expiresAt });
       
       if (now > expiresAt) {
@@ -740,8 +764,8 @@ class LocalAuthService {
         };
       }
 
-      console.log('🔍 Token used check:', { used: resetTokenData.used });
-      if (resetTokenData.used) {
+      console.log('🔍 Token used check:', { used: finalResetTokenData.used });
+      if (finalResetTokenData.used) {
         console.log('❌ Token has already been used');
         return {
           success: false,
