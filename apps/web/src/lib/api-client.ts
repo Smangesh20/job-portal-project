@@ -209,6 +209,26 @@ class EnhancedAPIClient {
         
         const result = await response.json();
         return { data: result } as T;
+      } else if (endpoint === '/auth/reset-password') {
+        // Use serverless function for reset password
+        const response = await fetch('/api/reset-password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            token: options.data?.token,
+            newPassword: options.data?.newPassword,
+            confirmPassword: options.data?.confirmPassword
+          }),
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to reset password');
+        }
+        
+        const result = await response.json();
+        return { data: result } as T;
       } else {
         // Use external API for other endpoints
         const response = await apiClient.request({
@@ -253,6 +273,9 @@ class EnhancedAPIClient {
       case '/auth/forgot-password':
         // This case is now handled in makeRequest method
         throw new Error('Forgot password should be handled by makeRequest method');
+      case '/auth/reset-password':
+        // This case is now handled in makeRequest method
+        throw new Error('Reset password should be handled by makeRequest method');
       case '/auth/me':
         const user = await mockAPI.getCurrentUser();
         return { data: { user } } as T;
