@@ -18,6 +18,20 @@ export default function ResetPasswordPage() {
   const [error, setError] = useState('')
 
   useEffect(() => {
+    // Check for context mismatch and redirect early
+    if (typeof window !== 'undefined' && window.location.origin === 'https://www.askyacham.com') {
+      const hasRedirected = sessionStorage.getItem('reset_password_redirected');
+      if (!hasRedirected) {
+        console.log('🔍 Page-level redirect: www.askyacham.com -> askyacham.com');
+        sessionStorage.setItem('reset_password_redirected', 'true');
+        const currentUrl = window.location.href;
+        const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
+        console.log('🔍 Redirecting to:', newUrl);
+        window.location.replace(newUrl);
+        return;
+      }
+    }
+
     const validateToken = async () => {
       if (!token) {
         setError('No reset token provided')

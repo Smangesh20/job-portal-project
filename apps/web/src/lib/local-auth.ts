@@ -44,11 +44,35 @@ class LocalAuthService {
 
   constructor() {
     console.log('🔍 LocalAuthService constructor called');
+    
+    // Check for context mismatch and redirect BEFORE loading from storage
+    if (typeof window !== 'undefined') {
+      this.checkAndRedirectIfNeeded();
+    }
+    
     this.loadFromStorage();
     
     // Clear any redirect flags when the service initializes successfully
     if (typeof window !== 'undefined') {
       sessionStorage.removeItem('reset_password_redirected');
+    }
+  }
+
+  private checkAndRedirectIfNeeded() {
+    // Only redirect if we're on the reset password page and in wrong context
+    if (window.location.pathname.includes('/auth/reset-password') && 
+        window.location.origin === 'https://www.askyacham.com') {
+      
+      const hasRedirected = sessionStorage.getItem('reset_password_redirected');
+      if (!hasRedirected) {
+        console.log('🔍 Early redirect: www.askyacham.com -> askyacham.com');
+        sessionStorage.setItem('reset_password_redirected', 'true');
+        const currentUrl = window.location.href;
+        const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
+        console.log('🔍 Redirecting to:', newUrl);
+        window.location.replace(newUrl); // Use replace instead of href to prevent back button issues
+        return;
+      }
     }
   }
 
