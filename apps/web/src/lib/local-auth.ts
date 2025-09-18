@@ -924,6 +924,8 @@ class LocalAuthService {
           // Try to find a real user from localStorage first
           let realUserId = 'temp_user';
           let realEmail = 'temp@example.com';
+          console.log('🔍 Initial realUserId:', realUserId);
+          console.log('🔍 Initial realEmail:', realEmail);
           
           // First, try to find the real user from askyacham keys
           const askyachamUsers = localStorage.getItem('askyacham_users');
@@ -935,6 +937,8 @@ class LocalAuthService {
                 realUserId = realUser.id;
                 realEmail = realUser.email;
                 console.log('🔍 Found real user from askyacham_users:', { id: realUserId, email: realEmail });
+                console.log('🔍 realUserId after assignment:', realUserId);
+                console.log('🔍 realEmail after assignment:', realEmail);
               }
             } catch (e) {
               console.log('🔍 Error parsing askyacham_users:', e);
@@ -965,6 +969,7 @@ class LocalAuthService {
           }
           
           // Create a temporary token that's valid for 15 minutes
+          console.log('🔍 About to create tempToken with realUserId:', realUserId, 'realEmail:', realEmail);
           const tempToken = {
             token: token,
             userId: realUserId,
