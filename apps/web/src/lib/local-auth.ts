@@ -681,13 +681,17 @@ class LocalAuthService {
       }
 
       // Update password
+      console.log('🔍 Updating password for user:', user.id);
+      const oldPasswordHash = user.passwordHash;
       user.passwordHash = this.hashPassword(newPassword);
       user.updatedAt = new Date().toISOString();
       this.users.set(user.id, user);
+      console.log('🔍 Password updated in users map. Old hash:', oldPasswordHash, 'New hash:', user.passwordHash);
 
       // Mark token as used
       resetTokenData.used = true;
       this.resetTokens.set(token, resetTokenData);
+      console.log('🔍 Token marked as used');
 
       // Invalidate all user sessions
       for (const [sessionToken, session] of this.sessions.entries()) {
@@ -695,14 +699,49 @@ class LocalAuthService {
           this.sessions.delete(sessionToken);
         }
       }
+      console.log('🔍 User sessions invalidated');
 
+      console.log('🔍 Saving to storage...');
       this.saveToStorage();
+      console.log('🔍 Save completed');
+      
+      // Verify the password was saved
+      const savedUser = this.users.get(user.id);
+      if (savedUser && savedUser.passwordHash === user.passwordHash) {
+        console.log('✅ Password successfully saved and verified');
+      } else {
+        console.log('❌ Password save verification failed');
+      }
+      
+      // Also check localStorage directly
+      const storedUsers = localStorage.getItem('askyacham_users');
+      if (storedUsers) {
+        const users = JSON.parse(storedUsers);
+        const foundUser = users.find((u: any) => u.id === user.id);
+        if (foundUser && foundUser.passwordHash === user.passwordHash) {
+          console.log('✅ Password verified in localStorage');
+        } else {
+          console.log('❌ Password not found in localStorage');
+        }
+      } else {
+        console.log('❌ No users found in localStorage');
+      }
 
       // Send confirmation email
       const { emailService } = await import('./email-service');
       await emailService.sendPasswordChangeConfirmationEmail(user.email, `${user.firstName} ${user.lastName}`);
 
       console.log('Password reset successfully:', user.id, user.email);
+      
+      // Test the new password by trying to verify it
+      const testVerification = this.verifyPassword(newPassword, user.passwordHash);
+      console.log('🔍 Testing new password verification:', testVerification);
+      
+      if (testVerification) {
+        console.log('✅ New password verification successful');
+      } else {
+        console.log('❌ New password verification failed');
+      }
 
       return {
         success: true,
