@@ -613,7 +613,7 @@ export default function RegisterPage() {
             {/* Debug Info - remove in production */}
             <div className="mb-4 p-2 bg-yellow-100 border border-yellow-300 rounded">
               <p className="text-sm text-yellow-800">
-                Debug: showSuccessModal = {showSuccessModal ? 'true' : 'false'}
+                Debug: showSuccessModal = {showSuccessModal ? 'true' : 'false'} - Build: {new Date().toISOString()}
               </p>
             </div>
 
