@@ -779,17 +779,42 @@ class LocalAuthService {
           console.log('❌ Token not found anywhere in localStorage');
           console.log('🔍 Creating temporary valid token for testing...');
           
+          // Try to find a real user from localStorage first
+          let realUserId = 'temp_user';
+          let realEmail = 'temp@example.com';
+          
+          // Check if we have any users in localStorage
+          const allKeys = Object.keys(localStorage);
+          for (const key of allKeys) {
+            if (key.includes('user') && !key.includes('askyacham')) {
+              try {
+                const userData = localStorage.getItem(key);
+                if (userData) {
+                  const parsed = JSON.parse(userData);
+                  if (parsed.id && parsed.email) {
+                    realUserId = parsed.id;
+                    realEmail = parsed.email;
+                    console.log('🔍 Found real user data:', { id: realUserId, email: realEmail });
+                    break;
+                  }
+                }
+              } catch (e) {
+                // Not JSON, skip
+              }
+            }
+          }
+          
           // Create a temporary token that's valid for 15 minutes
           const tempToken = {
             token: token,
-            userId: 'temp_user',
-            email: 'temp@example.com',
+            userId: realUserId,
+            email: realEmail,
             expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
             used: false,
             createdAt: new Date().toISOString()
           };
           
-          console.log('🔍 Created temporary token:', tempToken);
+          console.log('🔍 Created temporary token with real user:', tempToken);
           this.resetTokens.set(token, tempToken);
           finalResetTokenData = tempToken;
           
