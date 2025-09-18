@@ -66,13 +66,15 @@ export default function ResetPasswordPage() {
       console.log('🔒 New password:', password);
       console.log('🔒 Confirm password:', confirmPassword);
       
+      console.log('📡 Making API call to /auth/reset-password...');
       const response = await enhancedAPIClient.post('/auth/reset-password', {
         token: token!,
         newPassword: password,
         confirmPassword: confirmPassword
       })
       
-      console.log('📨 Reset password response:', response);
+      console.log('📨 Reset password response received:', response);
+      console.log('📨 Response data:', (response as any).data);
       
       if ((response as any).data?.success) {
         console.log('✅ Password reset successful in frontend');
