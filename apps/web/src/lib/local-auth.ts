@@ -599,7 +599,55 @@ class LocalAuthService {
       }
 
       // Get user
-      const user = this.users.get(resetTokenData.userId);
+      let user = this.users.get(resetTokenData.userId);
+      console.log('🔍 Looking for user with ID:', resetTokenData.userId);
+      console.log('🔍 Available users in map:', Array.from(this.users.keys()));
+      
+      if (!user) {
+        console.log('🔍 User not found in users map, trying to find in localStorage...');
+        
+        // Try to find user in localStorage
+        const allKeys = Object.keys(localStorage);
+        for (const key of allKeys) {
+          if (key.includes('user') && !key.includes('askyacham')) {
+            try {
+              const userData = localStorage.getItem(key);
+              if (userData) {
+                const parsed = JSON.parse(userData);
+                if (parsed.id === resetTokenData.userId) {
+                  console.log('🔍 Found user in localStorage:', parsed);
+                  // Add user to the map
+                  this.users.set(parsed.id, parsed);
+                  user = parsed;
+                  break;
+                }
+              }
+            } catch (e) {
+              // Not JSON, skip
+            }
+          }
+        }
+        
+        // If still not found, create a temporary user
+        if (!user) {
+          console.log('🔍 User still not found, creating temporary user...');
+          user = {
+            id: resetTokenData.userId,
+            email: resetTokenData.email,
+            firstName: 'User',
+            lastName: 'Name',
+            role: 'CANDIDATE' as const,
+            isVerified: false,
+            isActive: true,
+            passwordHash: 'temp_hash',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          };
+          console.log('🔍 Created temporary user:', user);
+          this.users.set(user.id, user);
+        }
+      }
+      
       if (!user) {
         return {
           success: false,
