@@ -79,7 +79,7 @@ export const useAuthStore = create<AuthStore>()(
           const response = await enhancedAPIClient.post('/auth/login', {
             email,
             password
-          })
+          }) as any
 
           if (!response.success) {
             throw new Error(response.error?.message || 'Login failed')
@@ -114,7 +114,7 @@ export const useAuthStore = create<AuthStore>()(
           set({ isLoading: true, error: null, errorDetails: null })
 
           // Use enhanced API client for consistent authentication
-          const response = await enhancedAPIClient.post('/auth/register', data)
+          const response = await enhancedAPIClient.post('/auth/register', data) as any
 
           if (!response.success) {
             throw new Error(response.error?.message || 'Registration failed')
@@ -198,7 +198,7 @@ export const useAuthStore = create<AuthStore>()(
           // Use local authentication service for token refresh
           const response = await enhancedAPIClient.post('/auth/refresh', {
             refreshToken: refreshTokenValue
-          })
+          }) as any
 
           if (!response.success) {
             throw new Error(response.error?.message || 'Token refresh failed')
@@ -243,7 +243,7 @@ export const useAuthStore = create<AuthStore>()(
 
           // Use local authentication service to verify token and get user info
           try {
-            const response = await enhancedAPIClient.get('/auth/me')
+            const response = await enhancedAPIClient.get('/auth/me') as any
             
             if (response.success && response.data) {
               set({
@@ -287,7 +287,7 @@ export const useAuthStore = create<AuthStore>()(
         try {
           set({ isLoading: true, error: null, errorDetails: null })
 
-          const response = await enhancedAPIClient.post('/auth/forgot-password', { email })
+          const response = await enhancedAPIClient.post('/auth/forgot-password', { email }) as any
 
           if (!response.success) {
             throw new Error(response.error?.message || 'Failed to send reset email')
@@ -313,7 +313,7 @@ export const useAuthStore = create<AuthStore>()(
             token,
             newPassword,
             confirmPassword: newPassword
-          })
+          }) as any
 
           if (!response.success) {
             throw new Error(response.error?.message || 'Failed to reset password')
