@@ -870,23 +870,41 @@ class LocalAuthService {
           let realUserId = 'temp_user';
           let realEmail = 'temp@example.com';
           
-          // Check if we have any users in localStorage
-          const allKeys = Object.keys(localStorage);
-          for (const key of allKeys) {
-            if (key.includes('user') && !key.includes('askyacham')) {
-              try {
-                const userData = localStorage.getItem(key);
-                if (userData) {
-                  const parsed = JSON.parse(userData);
-                  if (parsed.id && parsed.email) {
-                    realUserId = parsed.id;
-                    realEmail = parsed.email;
-                    console.log('🔍 Found real user data:', { id: realUserId, email: realEmail });
-                    break;
+          // First, try to find the real user from askyacham keys
+          const askyachamUsers = localStorage.getItem('askyacham_users');
+          if (askyachamUsers) {
+            try {
+              const users = JSON.parse(askyachamUsers);
+              if (users.length > 0) {
+                const realUser = users[0]; // Use the first real user
+                realUserId = realUser.id;
+                realEmail = realUser.email;
+                console.log('🔍 Found real user from askyacham_users:', { id: realUserId, email: realEmail });
+              }
+            } catch (e) {
+              console.log('🔍 Error parsing askyacham_users:', e);
+            }
+          }
+          
+          // If not found, check other localStorage keys
+          if (realUserId === 'temp_user') {
+            const allKeys = Object.keys(localStorage);
+            for (const key of allKeys) {
+              if (key.includes('user') && !key.includes('askyacham')) {
+                try {
+                  const userData = localStorage.getItem(key);
+                  if (userData) {
+                    const parsed = JSON.parse(userData);
+                    if (parsed.id && parsed.email) {
+                      realUserId = parsed.id;
+                      realEmail = parsed.email;
+                      console.log('🔍 Found real user data from other key:', { id: realUserId, email: realEmail });
+                      break;
+                    }
                   }
+                } catch (e) {
+                  // Not JSON, skip
                 }
-              } catch (e) {
-                // Not JSON, skip
               }
             }
           }
