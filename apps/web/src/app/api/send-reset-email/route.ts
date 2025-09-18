@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate a secure reset token
+    // Generate a secure reset token that matches mock API format
     const resetToken = `reset_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
     // Get the correct base URL for reset links
@@ -32,6 +32,9 @@ export async function POST(request: NextRequest) {
     };
     
     const resetUrl = `${getBaseUrl()}/auth/reset-password?token=${resetToken}`;
+
+    console.log(`🔑 Generated reset token: ${resetToken}`);
+    console.log(`🔗 Reset URL: ${resetUrl}`);
 
     // Check if SendGrid is configured
     if (process.env.SENDGRID_API_KEY && process.env.FROM_EMAIL) {

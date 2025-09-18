@@ -170,6 +170,49 @@ class MockAPI {
     }
   }
 
+  async resetPassword(token: string, newPassword: string): Promise<{ success: boolean; message: string; error?: string }> {
+    await this.delay(800)
+    
+    // Validate token format (basic check for our mock tokens)
+    if (!token || !token.startsWith('reset_')) {
+      return {
+        success: false,
+        error: 'Invalid or expired reset token',
+        message: 'The reset token is invalid or has expired. Please request a new password reset.'
+      }
+    }
+
+    // Validate password strength
+    if (newPassword.length < 8) {
+      return {
+        success: false,
+        error: 'Password too short',
+        message: 'Password must be at least 8 characters long.'
+      }
+    }
+
+    // For mock purposes, we'll update the first user's password
+    // In a real app, you'd find the user by token and update their password
+    if (this.users.length > 0) {
+      const user = this.users[0]
+      user.updatedAt = new Date().toISOString()
+      
+      console.log(`🔄 Mock: Password reset successful for user: ${user.email}`)
+      console.log(`✅ Mock: User password updated (simulated)`)
+      
+      return {
+        success: true,
+        message: 'Password reset successfully! You can now login with your new password.'
+      }
+    }
+
+    return {
+      success: false,
+      error: 'User not found',
+      message: 'Unable to reset password. Please try again.'
+    }
+  }
+
   async getCurrentUser(): Promise<MockUser | null> {
     await this.delay(300)
     

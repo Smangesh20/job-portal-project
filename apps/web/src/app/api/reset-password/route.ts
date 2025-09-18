@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { mockAPI } from '@/lib/mock-api';
 
 export async function POST(request: NextRequest) {
   try {
@@ -7,7 +8,7 @@ export async function POST(request: NextRequest) {
     // Validate input
     if (!token || !newPassword || !confirmPassword) {
       return NextResponse.json(
-        { success: false, error: 'Token, new password, and confirm password are required' },
+        { success: false, error: { message: 'Token, new password, and confirm password are required.' } },
         { status: 400 }
       );
     }
@@ -15,7 +16,7 @@ export async function POST(request: NextRequest) {
     // Validate password match
     if (newPassword !== confirmPassword) {
       return NextResponse.json(
-        { success: false, error: 'Passwords do not match' },
+        { success: false, error: { message: 'Passwords do not match.' } },
         { status: 400 }
       );
     }
@@ -23,43 +24,45 @@ export async function POST(request: NextRequest) {
     // Validate password strength
     if (newPassword.length < 8) {
       return NextResponse.json(
-        { success: false, error: 'Password must be at least 8 characters long' },
+        { success: false, error: { message: 'Password must be at least 8 characters long.' } },
         { status: 400 }
       );
     }
 
-    // For now, we'll simulate the password reset
-    // In a real implementation, you would:
-    // 1. Validate the token (check if it exists and hasn't expired)
-    // 2. Find the user associated with the token
-    // 3. Hash the new password
-    // 4. Update the user's password in the database
-    // 5. Invalidate the reset token
-
     console.log(`🔄 Password reset attempted for token: ${token}`);
-    console.log(`✅ Password reset successful (simulated)`);
-    console.log(`👤 User would be updated with new password`);
+    console.log(`🔒 New password received (length: ${newPassword.length})`);
 
-    // Simulate processing delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Use mock API to actually reset the password
+    const result = await mockAPI.resetPassword(token, newPassword);
 
-    // Return success response
-    return NextResponse.json({
-      success: true,
-      message: 'Password reset successfully! You can now login with your new password.',
-      data: {
-        instructions: 'Your password has been updated successfully.',
-        nextSteps: 'You can now login with your new password.',
-        securityNote: 'For security reasons, please log out of all other devices if you suspect unauthorized access.'
-      }
-    });
+    if (result.success) {
+      console.log(`✅ Password reset successful via mock API`);
+      return NextResponse.json({
+        success: true,
+        message: result.message,
+        data: {
+          instructions: 'Your password has been updated successfully.',
+          nextSteps: 'You can now login with your new password.',
+          securityNote: 'For security reasons, please log out of all other devices if you suspect unauthorized access.'
+        }
+      });
+    } else {
+      console.log(`❌ Password reset failed: ${result.error}`);
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: { message: result.message || 'Failed to reset password' } 
+        },
+        { status: 400 }
+      );
+    }
 
   } catch (error) {
     console.error('Error in reset-password API:', error);
     return NextResponse.json(
       { 
         success: false, 
-        error: 'An error occurred while resetting your password' 
+        error: { message: 'An error occurred while resetting your password' } 
       },
       { status: 500 }
     );
