@@ -47,14 +47,7 @@ class LocalAuthService {
     
     // Check for context mismatch and redirect BEFORE loading from storage
     if (typeof window !== 'undefined') {
-      // Only redirect if we haven't already redirected in this session
-      const hasRedirected = sessionStorage.getItem('reset_password_redirected');
-      if (!hasRedirected) {
-        this.checkAndRedirectIfNeeded();
-      } else {
-        console.log('🔍 Already redirected in this session, skipping redirect check');
-        sessionStorage.removeItem('reset_password_redirected');
-      }
+      this.checkAndRedirectIfNeeded();
     }
     
     this.loadFromStorage();
@@ -65,22 +58,14 @@ class LocalAuthService {
     if (window.location.pathname.includes('/auth/reset-password') && 
         window.location.origin === 'https://www.askyacham.com') {
       
-      const hasRedirected = sessionStorage.getItem('reset_password_redirected');
-      if (!hasRedirected) {
-        console.log('🔍 Early redirect: www.askyacham.com -> askyacham.com');
-        sessionStorage.setItem('reset_password_redirected', 'true');
-        const currentUrl = window.location.href;
-        const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
-        console.log('🔍 Redirecting to:', newUrl);
-        // Use a small delay to prevent rapid redirects
-        setTimeout(() => {
-          window.location.replace(newUrl);
-        }, 100);
-        return;
-      } else {
-        console.log('🔍 Already redirected, clearing flag');
-        sessionStorage.removeItem('reset_password_redirected');
-      }
+      console.log('🔍 Context mismatch detected: www.askyacham.com -> askyacham.com');
+      const currentUrl = window.location.href;
+      const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
+      console.log('🔍 Redirecting to:', newUrl);
+      
+      // Use immediate redirect without sessionStorage to prevent conflicts
+      window.location.replace(newUrl);
+      return;
     }
   }
 
