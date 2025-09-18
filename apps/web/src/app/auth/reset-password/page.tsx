@@ -65,7 +65,7 @@ export default function ResetPasswordPage() {
         token: token!,
         newPassword: password,
         confirmPassword: confirmPassword
-      }) as any
+      })
       
       if (response.data.success) {
         setMessage('Password reset successfully! You can now login with your new password.')

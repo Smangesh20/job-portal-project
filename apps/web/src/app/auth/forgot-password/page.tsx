@@ -21,7 +21,7 @@ export default function ForgotPasswordPage() {
     try {
       const response = await enhancedAPIClient.post('/auth/forgot-password', {
         email: email
-      }) as any
+      })
       
       if (response.data.success) {
         setShowEmailSent(true)
