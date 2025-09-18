@@ -11,8 +11,8 @@ if (typeof window !== 'undefined' && window.location.origin === 'https://www.ask
   const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
   console.log('🔍 Redirecting to:', newUrl);
   window.location.replace(newUrl);
-  // Prevent any further execution
-  throw new Error('Redirecting to correct domain');
+  // Return a loading component to prevent further execution
+  return <div>Redirecting...</div>;
 }
 
 export default function ResetPasswordPage() {
@@ -23,8 +23,8 @@ export default function ResetPasswordPage() {
     const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
     console.log('🔍 Redirecting to:', newUrl);
     window.location.replace(newUrl);
-    // Return early to prevent any rendering
-    return null;
+    // Return loading component to prevent any rendering
+    return <div>Redirecting...</div>;
   }
 
   const router = useRouter()
