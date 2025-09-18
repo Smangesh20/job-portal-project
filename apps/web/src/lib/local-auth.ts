@@ -593,13 +593,13 @@ class LocalAuthService {
         // Final check
         const finalResetTokenData = this.resetTokens.get(token);
         if (!finalResetTokenData) {
-          return {
-            success: false,
-            error: {
-              code: 'INVALID_TOKEN',
-              message: 'Invalid or expired reset token'
-            }
-          };
+        return {
+          success: false,
+          error: {
+            code: 'INVALID_TOKEN',
+            message: 'Invalid or expired reset token'
+          }
+        };
         }
       }
 
@@ -632,7 +632,7 @@ class LocalAuthService {
       console.log('🔍 Final resetTokenData for password reset:', finalResetTokenData);
       console.log('🔍 Final resetTokenData userId:', finalResetTokenData?.userId);
       console.log('🔍 Final resetTokenData email:', finalResetTokenData?.email);
-      
+
       // Get user
       let user = this.users.get(finalResetTokenData.userId);
       console.log('🔍 Looking for user with ID:', finalResetTokenData.userId);
@@ -844,9 +844,9 @@ class LocalAuthService {
             console.log('🔍 Redirecting to correct context...');
             sessionStorage.setItem('reset_password_redirected', 'true');
             window.location.href = `https://askyacham.com/auth/reset-password?token=${token}`;
-            return {
-              success: false,
-              error: {
+        return {
+          success: false,
+          error: {
                 code: 'CONTEXT_MISMATCH',
                 message: 'Redirecting to correct context...'
               }
@@ -1050,6 +1050,7 @@ class LocalAuthService {
               window.location.href = newUrl;
               return;
             }
+          }
           }
           
           // If not found, check other localStorage keys
