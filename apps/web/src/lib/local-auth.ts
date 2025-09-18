@@ -930,6 +930,9 @@ class LocalAuthService {
           // First, try to find the real user from askyacham keys
           const askyachamUsers = localStorage.getItem('askyacham_users');
           console.log('🔍 askyachamUsers from localStorage:', askyachamUsers);
+          
+          // Check if the current context has real user data or temp user data
+          let hasRealUser = false;
           if (askyachamUsers) {
             try {
               const users = JSON.parse(askyachamUsers);
@@ -940,11 +943,18 @@ class LocalAuthService {
                 console.log('🔍 Selected realUser:', realUser);
                 console.log('🔍 realUser.id:', realUser.id);
                 console.log('🔍 realUser.email:', realUser.email);
-                realUserId = realUser.id;
-                realEmail = realUser.email;
-                console.log('🔍 Found real user from askyacham_users:', { id: realUserId, email: realEmail });
-                console.log('🔍 realUserId after assignment:', realUserId);
-                console.log('🔍 realEmail after assignment:', realEmail);
+                
+                // Check if this is a real user or temp user
+                if (realUser.id !== 'temp_user' && realUser.email !== 'temp@example.com') {
+                  hasRealUser = true;
+                  realUserId = realUser.id;
+                  realEmail = realUser.email;
+                  console.log('🔍 Found real user from askyacham_users:', { id: realUserId, email: realEmail });
+                  console.log('🔍 realUserId after assignment:', realUserId);
+                  console.log('🔍 realEmail after assignment:', realEmail);
+                } else {
+                  console.log('🔍 Current context has temp_user data, need to find real user');
+                }
               } else {
                 console.log('🔍 Users array is empty');
               }
@@ -953,6 +963,35 @@ class LocalAuthService {
             }
           } else {
             console.log('🔍 No askyacham_users found in localStorage');
+          }
+          
+          // If we don't have a real user in current context, try to find it from other sources
+          if (!hasRealUser) {
+            console.log('🔍 No real user found in current context, trying to find from other sources...');
+            
+            // Try to find real user from other localStorage keys that might contain real user data
+            const allKeys = Object.keys(localStorage);
+            for (const key of allKeys) {
+              if (key.includes('user') && !key.includes('askyacham') && !key.includes('temp')) {
+                try {
+                  const userData = localStorage.getItem(key);
+                  if (userData) {
+                    const parsed = JSON.parse(userData);
+                    if (parsed.id && parsed.email && parsed.id !== 'temp_user' && parsed.email !== 'temp@example.com') {
+                      console.log('🔍 Found real user from other key:', key, parsed);
+                      realUserId = parsed.id;
+                      realEmail = parsed.email;
+                      hasRealUser = true;
+                      console.log('🔍 realUserId after assignment:', realUserId);
+                      console.log('🔍 realEmail after assignment:', realEmail);
+                      break;
+                    }
+                  }
+                } catch (e) {
+                  // Not JSON, skip
+                }
+              }
+            }
           }
           
           // If not found, check other localStorage keys
