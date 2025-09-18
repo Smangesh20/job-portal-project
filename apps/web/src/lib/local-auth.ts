@@ -57,6 +57,17 @@ class LocalAuthService {
       console.log('🔍 Window origin:', window.location.origin);
       console.log('🔍 All localStorage keys:', Object.keys(localStorage));
       console.log('🔍 All localStorage values:', Object.keys(localStorage).map(key => ({ key, value: localStorage.getItem(key) })));
+      
+      // Check if our keys exist but with different names
+      const allKeys = Object.keys(localStorage);
+      const ourKeys = allKeys.filter(key => key.includes('askyacham'));
+      console.log('🔍 Keys containing "askyacham":', ourKeys);
+      
+      // Check for any keys that might be our data
+      const possibleKeys = allKeys.filter(key => 
+        key.includes('user') || key.includes('session') || key.includes('token') || key.includes('reset')
+      );
+      console.log('🔍 Possible related keys:', possibleKeys);
 
       // Load users
       const storedUsers = localStorage.getItem('askyacham_users');
@@ -101,8 +112,14 @@ class LocalAuthService {
     try {
       if (typeof window === 'undefined') return;
 
+      console.log('🔍 saveToStorage called');
+      console.log('🔍 Current users count:', this.users.size);
+      console.log('🔍 Current sessions count:', this.sessions.size);
+      console.log('🔍 Current reset tokens count:', this.resetTokens.size);
+
       // Save users
       const users = Array.from(this.users.values());
+      console.log('🔍 Saving users to localStorage:', users);
       localStorage.setItem('askyacham_users', JSON.stringify(users));
 
       // Save sessions
@@ -110,12 +127,21 @@ class LocalAuthService {
         id,
         ...session
       }));
+      console.log('🔍 Saving sessions to localStorage:', sessions);
       localStorage.setItem('askyacham_sessions', JSON.stringify(sessions));
 
       // Save reset tokens
       const resetTokens = Array.from(this.resetTokens.values());
       console.log('🔍 Saving reset tokens to localStorage:', resetTokens);
       localStorage.setItem('askyacham_reset_tokens', JSON.stringify(resetTokens));
+
+      // Verify the save worked
+      const savedUsers = localStorage.getItem('askyacham_users');
+      const savedSessions = localStorage.getItem('askyacham_sessions');
+      const savedResetTokens = localStorage.getItem('askyacham_reset_tokens');
+      console.log('🔍 Verification - saved users:', savedUsers ? 'SUCCESS' : 'FAILED');
+      console.log('🔍 Verification - saved sessions:', savedSessions ? 'SUCCESS' : 'FAILED');
+      console.log('🔍 Verification - saved reset tokens:', savedResetTokens ? 'SUCCESS' : 'FAILED');
 
       console.log(`Saved ${users.length} users, ${sessions.length} sessions, and ${resetTokens.length} reset tokens to localStorage`);
     } catch (error) {
