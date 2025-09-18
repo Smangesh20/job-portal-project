@@ -192,7 +192,7 @@ export default apiService;
 class EnhancedAPIClient {
   private async makeRequest<T>(endpoint: string, options: any = {}): Promise<T> {
     try {
-      // Handle serverless functions (same-origin) vs external API
+      // Handle serverless functions and mock API for auth endpoints
       if (endpoint === '/auth/forgot-password') {
         // Use serverless function for forgot password
         const response = await fetch('/api/send-reset-email', {
@@ -229,6 +229,14 @@ class EnhancedAPIClient {
         
         const result = await response.json();
         return { data: result } as T;
+      } else if (endpoint === '/auth/login') {
+        // Use mock API for login to ensure password validation works
+        console.log('🔐 Using mock API for login to validate passwords');
+        return await this.useMockAPI<T>(endpoint, options);
+      } else if (endpoint === '/auth/register') {
+        // Use mock API for register to ensure consistency
+        console.log('📝 Using mock API for registration');
+        return await this.useMockAPI<T>(endpoint, options);
       } else {
         // Use external API for other endpoints
         const response = await apiClient.request({
