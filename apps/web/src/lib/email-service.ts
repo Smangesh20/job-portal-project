@@ -19,6 +19,10 @@ class EmailService {
 
   constructor() {
     this.baseUrl = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
+    // Force correct domain for production
+    if (this.baseUrl.includes('askyacham.com')) {
+      this.baseUrl = 'https://askyacham.com';
+    }
   }
 
   // Generate password reset email template

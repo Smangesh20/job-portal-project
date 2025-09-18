@@ -687,6 +687,26 @@ class LocalAuthService {
         console.log('🔍 No tokens in memory, reloading from localStorage...');
         this.loadFromStorage();
         console.log('🔍 After reload, available reset tokens:', Array.from(this.resetTokens.keys()));
+        
+        // If still no tokens, check if we're in wrong context
+        if (this.resetTokens.size === 0) {
+          console.log('🔍 Still no tokens after reload, checking context...');
+          const currentOrigin = window.location.origin;
+          const expectedOrigin = 'https://askyacham.com';
+          
+          if (currentOrigin !== expectedOrigin) {
+            console.log('🔍 Context mismatch detected! Current:', currentOrigin, 'Expected:', expectedOrigin);
+            console.log('🔍 Redirecting to correct context...');
+            window.location.href = `https://askyacham.com/auth/reset-password?token=${token}`;
+            return {
+              success: false,
+              error: {
+                code: 'CONTEXT_MISMATCH',
+                message: 'Redirecting to correct context...'
+              }
+            };
+          }
+        }
       }
       
       const resetTokenData = this.resetTokens.get(token);
