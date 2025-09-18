@@ -404,6 +404,48 @@ export default function RegisterPage() {
         modalStateRef.current = true
         console.log('Success modal state set to true, ref updated to:', modalStateRef.current)
         
+        // Force modal to show using direct DOM manipulation as backup
+        setTimeout(() => {
+          const modalElement = document.querySelector('[data-success-modal]')
+          if (modalElement) {
+            console.log('Found modal element, forcing display')
+            modalElement.style.display = 'flex'
+            modalElement.style.zIndex = '99999'
+          } else {
+            console.log('Modal element not found in DOM - creating manually')
+            // Create modal manually if React didn't render it
+            const modalHTML = `
+              <div class="fixed inset-0 z-[99999] flex items-center justify-center" style="background-color: rgba(0,0,0,0.8);" data-success-modal>
+                <div class="absolute top-4 left-4 bg-red-500 text-white p-2 rounded z-[100000]">
+                  MANUAL MODAL - showSuccessModal: true
+                </div>
+                <div class="absolute inset-0 bg-black/60 backdrop-blur-md" onclick="this.parentElement.remove()"></div>
+                <div class="relative w-full max-w-md mx-4 bg-white rounded-2xl shadow-2xl border border-gray-100">
+                  <div class="p-8 text-center">
+                    <div class="flex justify-center mb-6">
+                      <div class="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-r from-green-500 to-emerald-500 shadow-lg">
+                        <svg class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Account Created Successfully!</h3>
+                    <p class="text-gray-600 mb-8 leading-relaxed">
+                      Congratulations! Your Ask Ya Cham account has been created successfully. 
+                      Welcome to the future of job matching with quantum AI technology. 
+                      You will now be redirected to the home page.
+                    </p>
+                    <button onclick="window.location.href='/'" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+                      Go to Home
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `
+            document.body.insertAdjacentHTML('beforeend', modalHTML)
+          }
+        }, 100)
+        
         // Also show toast as backup
         toast.success('Account created successfully! Welcome to Ask Ya Cham!')
         
@@ -474,7 +516,7 @@ export default function RegisterPage() {
       
       {/* Success Modal - Simple React approach */}
       {showSuccessModal && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}>
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.8)' }} data-success-modal>
           {/* Debug info */}
           <div className="absolute top-4 left-4 bg-red-500 text-white p-2 rounded z-[10000]">
             MODAL IS RENDERED - showSuccessModal: {showSuccessModal ? 'true' : 'false'}
