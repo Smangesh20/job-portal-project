@@ -131,8 +131,13 @@ class MockAPI {
   async login(email: string, password: string): Promise<MockAuthResponse | MockErrorResponse> {
     await this.delay(800) // Simulate network delay
 
+    console.log(`🔍 Mock API login called with email: ${email}`);
+    console.log(`🔍 Mock API login called with password: ${password}`);
+    console.log(`🔍 Mock API: Available users:`, this.users.map(u => ({ email: u.email, password: u.password })));
+
     const user = this.users.find(u => u.email.toLowerCase() === email.toLowerCase())
     if (!user) {
+      console.log(`❌ Mock API: User not found for email: ${email}`);
       return {
         success: false,
         error: 'User not found',
@@ -140,6 +145,8 @@ class MockAPI {
         code: 'USER_NOT_FOUND'
       }
     }
+
+    console.log(`🔍 Mock API: Found user: ${user.email} with password: ${user.password}`);
 
     // Validate password
     if (!user.password || user.password !== password) {
@@ -189,8 +196,12 @@ class MockAPI {
   async resetPassword(token: string, newPassword: string): Promise<{ success: boolean; message: string; error?: string }> {
     await this.delay(800)
     
+    console.log(`🔍 Mock API resetPassword called with token: ${token}`);
+    console.log(`🔍 Mock API resetPassword called with newPassword: ${newPassword}`);
+    
     // Validate token format (basic check for our mock tokens)
     if (!token || !token.startsWith('reset_')) {
+      console.log(`❌ Mock API: Invalid token format - ${token}`);
       return {
         success: false,
         error: 'Invalid or expired reset token',
@@ -209,6 +220,9 @@ class MockAPI {
 
     // For mock purposes, we'll update the user with email pullareddypullareddy20@gmail.com
     // In a real app, you'd find the user by token and update their password
+    console.log(`🔍 Mock API: Looking for user with email: pullareddypullareddy20@gmail.com`);
+    console.log(`🔍 Mock API: Available users:`, this.users.map(u => u.email));
+    
     const user = this.users.find(u => u.email === 'pullareddypullareddy20@gmail.com')
     if (user) {
       const oldPassword = user.password
@@ -224,6 +238,8 @@ class MockAPI {
         success: true,
         message: 'Password reset successfully! You can now login with your new password.'
       }
+    } else {
+      console.log(`❌ Mock API: User not found with email: pullareddypullareddy20@gmail.com`);
     }
 
     return {
