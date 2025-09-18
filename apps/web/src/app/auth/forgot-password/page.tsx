@@ -23,16 +23,23 @@ export default function ForgotPasswordPage() {
         email: email
       })
       
-      if ((response as any).data.success) {
+      console.log('Forgot password response:', response)
+      
+      // Handle both mock API and real API response formats
+      const responseData = (response as any).data || response
+      
+      if (responseData.success) {
         setShowEmailSent(true)
-        setMessage((response as any).data.message || 'If an account with that email exists, we have sent a password reset link.')
+        setMessage(responseData.message || 'If an account with that email exists, we have sent a password reset link.')
       } else {
-        setError((response as any).data.error?.message || 'Failed to send reset email')
+        setError(responseData.error?.message || 'Failed to send reset email')
       }
     } catch (error: any) {
       console.error('Forgot password error:', error)
       if (error.response?.data?.error?.message) {
         setError(error.response.data.error.message)
+      } else if (error.message) {
+        setError(error.message)
       } else {
         setError('An error occurred while sending the reset email')
       }
