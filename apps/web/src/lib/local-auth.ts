@@ -941,8 +941,25 @@ class LocalAuthService {
           
           console.log('🔍 Created temporary token with real user:', tempToken);
           this.resetTokens.set(token, tempToken);
-          finalResetTokenData = tempToken;
           
+          // Also ensure the real user is in the users map for resetPassword
+          if (realUserId !== 'temp_user') {
+            const askyachamUsers = localStorage.getItem('askyacham_users');
+            if (askyachamUsers) {
+              try {
+                const users = JSON.parse(askyachamUsers);
+                const realUser = users.find(u => u.id === realUserId) || users[0];
+                if (realUser) {
+                  this.users.set(realUser.id, realUser);
+                  console.log('🔍 Loaded real user into users map for resetPassword:', { id: realUser.id, email: realUser.email });
+                }
+              } catch (e) {
+                console.log('🔍 Error loading real user for resetPassword:', e);
+              }
+            }
+          }
+          
+          finalResetTokenData = tempToken;
           console.log('🔍 Using temporary token for validation');
         }
       }
