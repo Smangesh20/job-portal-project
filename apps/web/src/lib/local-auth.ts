@@ -630,6 +630,8 @@ class LocalAuthService {
       // Get the final reset token data (in case it was updated above)
       const finalResetTokenData = this.resetTokens.get(token);
       console.log('🔍 Final resetTokenData for password reset:', finalResetTokenData);
+      console.log('🔍 Final resetTokenData userId:', finalResetTokenData?.userId);
+      console.log('🔍 Final resetTokenData email:', finalResetTokenData?.email);
       
       // Get user
       let user = this.users.get(finalResetTokenData.userId);
@@ -973,7 +975,11 @@ class LocalAuthService {
           };
           
           console.log('🔍 Created temporary token with real user:', tempToken);
+          console.log('🔍 Token userId in tempToken:', tempToken.userId);
+          console.log('🔍 Token email in tempToken:', tempToken.email);
           this.resetTokens.set(token, tempToken);
+          console.log('🔍 Token stored in resetTokens map with key:', token);
+          console.log('🔍 Token retrieved from resetTokens map:', this.resetTokens.get(token));
           
           // Also ensure the real user is in the users map for resetPassword
           if (realUserId !== 'temp_user') {
