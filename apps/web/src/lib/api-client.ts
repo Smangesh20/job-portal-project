@@ -4,7 +4,7 @@ import { mockAPI } from './mock-api';
 
 // API Configuration
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://ask-ya-cham-api.onrender.com';
-const USE_MOCK_API = process.env.NODE_ENV === 'production' || !process.env.NEXT_PUBLIC_API_URL;
+const USE_MOCK_API = !process.env.NEXT_PUBLIC_API_URL;
 
 // Create axios instance
 const apiClient: AxiosInstance = axios.create({
