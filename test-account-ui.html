@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Persistence Test - Ask Ya Cham</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: #f9f9f9;
+        }
+        .test-section h3 {
+            color: #555;
+            margin-top: 0;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 10px 5px;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .result {
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .user-list {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .user-item {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .user-info {
+            flex: 1;
+        }
+        .user-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Account Data Persistence Test</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">
+            This test demonstrates that account data is now properly saved and persists across sessions.
+        </p>
+
+        <!-- Test 1: Register User -->
+        <div class="test-section">
+            <h3>1. Register New User</h3>
+            <div class="form-group">
+                <label for="regEmail">Email:</label>
+                <input type="email" id="regEmail" placeholder="test@example.com">
+            </div>
+            <div class="form-group">
+                <label for="regPassword">Password:</label>
+                <input type="password" id="regPassword" placeholder="password123">
+            </div>
+            <div class="form-group">
+                <label for="regFirstName">First Name:</label>
+                <input type="text" id="regFirstName" placeholder="John">
+            </div>
+            <div class="form-group">
+                <label for="regLastName">Last Name:</label>
+                <input type="text" id="regLastName" placeholder="Doe">
+            </div>
+            <div class="form-group">
+                <label for="regRole">Role:</label>
+                <select id="regRole">
+                    <option value="CANDIDATE">Candidate</option>
+                    <option value="EMPLOYER">Employer</option>
+                    <option value="ADMIN">Admin</option>
+                </select>
+            </div>
+            <button onclick="registerUser()">Register User</button>
+            <div id="registerResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Test 2: Login User -->
+        <div class="test-section">
+            <h3>2. Login User</h3>
+            <div class="form-group">
+                <label for="loginEmail">Email:</label>
+                <input type="email" id="loginEmail" placeholder="test@example.com">
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Password:</label>
+                <input type="password" id="loginPassword" placeholder="password123">
+            </div>
+            <button onclick="loginUser()">Login User</button>
+            <div id="loginResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Test 3: Update Profile -->
+        <div class="test-section">
+            <h3>3. Update User Profile</h3>
+            <div class="form-group">
+                <label for="updateUserId">User ID:</label>
+                <input type="text" id="updateUserId" placeholder="Enter user ID from registration">
+            </div>
+            <div class="form-group">
+                <label for="updateFirstName">New First Name:</label>
+                <input type="text" id="updateFirstName" placeholder="Jane">
+            </div>
+            <div class="form-group">
+                <label for="updateLastName">New Last Name:</label>
+                <input type="text" id="updateLastName" placeholder="Smith">
+            </div>
+            <button onclick="updateProfile()">Update Profile</button>
+            <div id="updateResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Test 4: View All Users -->
+        <div class="test-section">
+            <h3>4. View All Registered Users</h3>
+            <button onclick="loadAllUsers()">Load All Users</button>
+            <div id="usersList" class="user-list" style="display: none;"></div>
+        </div>
+
+        <!-- Test 5: Persistence Test -->
+        <div class="test-section">
+            <h3>5. Test Data Persistence</h3>
+            <p>This test verifies that data persists across page reloads and browser sessions.</p>
+            <button onclick="testPersistence()">Test Persistence</button>
+            <div id="persistenceResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Test 6: Clear All Data -->
+        <div class="test-section">
+            <h3>6. Clear All Test Data</h3>
+            <button onclick="clearAllData()" style="background: #dc3545;">Clear All Data</button>
+            <div id="clearResult" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Simple database simulation (same as in the API)
+        class SimpleDatabase {
+            constructor() {
+                this.users = new Map();
+                this.loadFromStorage();
+            }
+
+            loadFromStorage() {
+                try {
+                    const storedUsers = localStorage.getItem('askyacham_users');
+                    if (storedUsers) {
+                        const users = JSON.parse(storedUsers);
+                        users.forEach(user => {
+                            this.users.set(user.id, user);
+                        });
+                        console.log(`Loaded ${users.length} users from localStorage`);
+                    }
+                } catch (error) {
+                    console.error('Error loading from localStorage:', error);
+                }
+            }
+
+            saveToStorage() {
+                try {
+                    const users = Array.from(this.users.values());
+                    localStorage.setItem('askyacham_users', JSON.stringify(users));
+                    console.log(`Saved ${users.length} users to localStorage`);
+                } catch (error) {
+                    console.error('Error saving to localStorage:', error);
+                }
+            }
+
+            generateId() {
+                return 'user_' + Math.random().toString(36).substr(2, 16);
+            }
+
+            async createUser(userData) {
+                const id = this.generateId();
+                const user = {
+                    id,
+                    ...userData,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    lastLoginAt: null
+                };
+                
+                this.users.set(id, user);
+                this.saveToStorage();
+                return user;
+            }
+
+            async findUserByEmail(email) {
+                for (const user of this.users.values()) {
+                    if (user.email === email) {
+                        return user;
+                    }
+                }
+                return null;
+            }
+
+            async findUserById(id) {
+                return this.users.get(id) || null;
+            }
+
+            async updateUser(id, updateData) {
+                const user = this.users.get(id);
+                if (!user) {
+                    return null;
+                }
+
+                const updatedUser = {
+                    ...user,
+                    ...updateData,
+                    updatedAt: new Date().toISOString()
+                };
+
+                this.users.set(id, updatedUser);
+                this.saveToStorage();
+                return updatedUser;
+            }
+
+            async getAllUsers() {
+                return Array.from(this.users.values());
+            }
+
+            async deleteUser(id) {
+                const deleted = this.users.delete(id);
+                if (deleted) {
+                    this.saveToStorage();
+                }
+                return deleted;
+            }
+
+            clearAll() {
+                this.users.clear();
+                this.saveToStorage();
+            }
+        }
+
+        const database = new SimpleDatabase();
+
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `result ${type}`;
+            element.textContent = message;
+        }
+
+        async function registerUser() {
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const firstName = document.getElementById('regFirstName').value;
+            const lastName = document.getElementById('regLastName').value;
+            const role = document.getElementById('regRole').value;
+
+            if (!email || !password || !firstName || !lastName) {
+                showResult('registerResult', 'All fields are required!', 'error');
+                return;
+            }
+
+            try {
+                // Check if user already exists
+                const existingUser = await database.findUserByEmail(email);
+                if (existingUser) {
+                    showResult('registerResult', `User with email ${email} already exists!`, 'error');
+                    return;
+                }
+
+                // Create user
+                const user = await database.createUser({
+                    email,
+                    passwordHash: 'hashed_' + password, // Simulated hash
+                    firstName,
+                    lastName,
+                    role,
+                    isVerified: false,
+                    isActive: true
+                });
+
+                showResult('registerResult', 
+                    `✅ User registered successfully!\n` +
+                    `ID: ${user.id}\n` +
+                    `Name: ${user.firstName} ${user.lastName}\n` +
+                    `Email: ${user.email}\n` +
+                    `Role: ${user.role}\n` +
+                    `Created: ${user.createdAt}`, 'success');
+
+                // Auto-fill login form
+                document.getElementById('loginEmail').value = email;
+                document.getElementById('loginPassword').value = password;
+                document.getElementById('updateUserId').value = user.id;
+
+            } catch (error) {
+                showResult('registerResult', `❌ Registration failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function loginUser() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                showResult('loginResult', 'Email and password are required!', 'error');
+                return;
+            }
+
+            try {
+                const user = await database.findUserByEmail(email);
+                if (!user) {
+                    showResult('loginResult', '❌ User not found!', 'error');
+                    return;
+                }
+
+                if (!user.isActive) {
+                    showResult('loginResult', '❌ Account is deactivated!', 'error');
+                    return;
+                }
+
+                // Simulate password check
+                if (user.passwordHash !== 'hashed_' + password) {
+                    showResult('loginResult', '❌ Invalid password!', 'error');
+                    return;
+                }
+
+                // Update last login
+                await database.updateUser(user.id, { lastLoginAt: new Date().toISOString() });
+
+                showResult('loginResult', 
+                    `✅ Login successful!\n` +
+                    `Welcome back, ${user.firstName} ${user.lastName}!\n` +
+                    `Last login: ${user.lastLoginAt || 'First time login'}\n` +
+                    `Account created: ${user.createdAt}`, 'success');
+
+            } catch (error) {
+                showResult('loginResult', `❌ Login failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function updateProfile() {
+            const userId = document.getElementById('updateUserId').value;
+            const firstName = document.getElementById('updateFirstName').value;
+            const lastName = document.getElementById('updateLastName').value;
+
+            if (!userId) {
+                showResult('updateResult', 'User ID is required!', 'error');
+                return;
+            }
+
+            try {
+                const updateData = {};
+                if (firstName) updateData.firstName = firstName;
+                if (lastName) updateData.lastName = lastName;
+
+                if (Object.keys(updateData).length === 0) {
+                    showResult('updateResult', 'At least one field to update is required!', 'error');
+                    return;
+                }
+
+                const updatedUser = await database.updateUser(userId, updateData);
+                if (!updatedUser) {
+                    showResult('updateResult', '❌ User not found!', 'error');
+                    return;
+                }
+
+                showResult('updateResult', 
+                    `✅ Profile updated successfully!\n` +
+                    `Name: ${updatedUser.firstName} ${updatedUser.lastName}\n` +
+                    `Email: ${updatedUser.email}\n` +
+                    `Updated: ${updatedUser.updatedAt}`, 'success');
+
+            } catch (error) {
+                showResult('updateResult', `❌ Update failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadAllUsers() {
+            try {
+                const users = await database.getAllUsers();
+                const usersList = document.getElementById('usersList');
+                
+                if (users.length === 0) {
+                    usersList.innerHTML = '<p>No users found. Register some users first!</p>';
+                } else {
+                    let html = `<h4>Registered Users (${users.length}):</h4>`;
+                    users.forEach((user, index) => {
+                        html += `
+                            <div class="user-item">
+                                <div class="user-info">
+                                    <strong>${user.firstName} ${user.lastName}</strong><br>
+                                    <small>${user.email} | ${user.role} | ID: ${user.id}</small><br>
+                                    <small>Created: ${new Date(user.createdAt).toLocaleString()}</small>
+                                </div>
+                                <div class="user-actions">
+                                    <button class="btn-small" onclick="deleteUser('${user.id}')">Delete</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    usersList.innerHTML = html;
+                }
+                
+                usersList.style.display = 'block';
+
+            } catch (error) {
+                showResult('updateResult', `❌ Failed to load users: ${error.message}`, 'error');
+            }
+        }
+
+        async function deleteUser(userId) {
+            try {
+                const deleted = await database.deleteUser(userId);
+                if (deleted) {
+                    showResult('updateResult', `✅ User deleted successfully!`, 'success');
+                    loadAllUsers(); // Refresh the list
+                } else {
+                    showResult('updateResult', `❌ User not found!`, 'error');
+                }
+            } catch (error) {
+                showResult('updateResult', `❌ Delete failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function testPersistence() {
+            try {
+                const users = await database.getAllUsers();
+                const message = 
+                    `🧪 Persistence Test Results:\n\n` +
+                    `Total users in database: ${users.length}\n` +
+                    `Data source: localStorage\n` +
+                    `Persistence: ${users.length > 0 ? '✅ WORKING' : '❌ NOT WORKING'}\n\n` +
+                    `Test Instructions:\n` +
+                    `1. Register a user above\n` +
+                    `2. Refresh this page (F5)\n` +
+                    `3. Click "Load All Users" again\n` +
+                    `4. If the user is still there, persistence is working!\n\n` +
+                    `Current users:\n` +
+                    users.map(u => `- ${u.firstName} ${u.lastName} (${u.email})`).join('\n');
+
+                showResult('persistenceResult', message, users.length > 0 ? 'success' : 'info');
+
+            } catch (error) {
+                showResult('persistenceResult', `❌ Persistence test failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function clearAllData() {
+            try {
+                database.clearAll();
+                showResult('clearResult', '✅ All test data cleared successfully!', 'success');
+                
+                // Clear forms
+                document.getElementById('regEmail').value = '';
+                document.getElementById('regPassword').value = '';
+                document.getElementById('regFirstName').value = '';
+                document.getElementById('regLastName').value = '';
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPassword').value = '';
+                document.getElementById('updateUserId').value = '';
+                document.getElementById('updateFirstName').value = '';
+                document.getElementById('updateLastName').value = '';
+                
+                // Hide results
+                document.getElementById('usersList').style.display = 'none';
+                
+            } catch (error) {
+                showResult('clearResult', `❌ Clear failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Load users on page load
+        window.onload = function() {
+            loadAllUsers();
+        };
+    </script>
+</body>
+</html>

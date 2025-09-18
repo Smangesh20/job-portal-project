@@ -1,0 +1,149 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ask-ya-cham-config
+  namespace: production
+  labels:
+    app: ask-ya-cham
+    environment: production
+data:
+  # Application Configuration
+  NODE_ENV: "production"
+  APP_VERSION: "1.0.0"
+  
+  # API Configuration
+  API_PORT: "3001"
+  API_HOST: "0.0.0.0"
+  API_RATE_LIMIT: "100"
+  API_TIMEOUT: "30000"
+  
+  # Web Configuration
+  WEB_PORT: "3000"
+  WEB_HOST: "0.0.0.0"
+  
+  # AI Service Configuration
+  AI_PORT: "3002"
+  AI_HOST: "0.0.0.0"
+  AI_MODEL_PATH: "/app/models"
+  
+  # Database Configuration
+  DB_HOST: "postgresql-service"
+  DB_PORT: "5432"
+  DB_NAME: "askyacham_production"
+  DB_SSL: "true"
+  DB_POOL_MIN: "2"
+  DB_POOL_MAX: "10"
+  
+  # Redis Configuration
+  REDIS_HOST: "redis-service"
+  REDIS_PORT: "6379"
+  REDIS_DB: "0"
+  REDIS_TIMEOUT: "5000"
+  
+  # Email Configuration
+  SMTP_HOST: "smtp.gmail.com"
+  SMTP_PORT: "587"
+  SMTP_SECURE: "false"
+  
+  # File Upload Configuration
+  MAX_FILE_SIZE: "10485760"
+  ALLOWED_FILE_TYPES: "pdf,doc,docx,txt,jpg,jpeg,png"
+  UPLOAD_PATH: "/app/uploads"
+  
+  # Security Configuration
+  JWT_EXPIRES_IN: "15m"
+  JWT_REFRESH_EXPIRES_IN: "7d"
+  BCRYPT_ROUNDS: "12"
+  
+  # CORS Configuration
+  CORS_ORIGIN: "https://askyacham.com,https://www.askyacham.com"
+  CORS_CREDENTIALS: "true"
+  
+  # Logging Configuration
+  LOG_LEVEL: "info"
+  LOG_FORMAT: "json"
+  
+  # Monitoring Configuration
+  METRICS_ENABLED: "true"
+  HEALTH_CHECK_INTERVAL: "30"
+  
+  # AI Model Configuration
+  AI_MODEL_CACHE_SIZE: "1000"
+  AI_MODEL_TIMEOUT: "30000"
+  
+  # Job Matching Configuration
+  MATCH_THRESHOLD: "0.7"
+  MAX_MATCHES_PER_USER: "50"
+  MATCH_CACHE_TTL: "3600"
+  
+  # Notification Configuration
+  NOTIFICATION_BATCH_SIZE: "100"
+  NOTIFICATION_DELAY: "5000"
+  
+  # Rate Limiting Configuration
+  RATE_LIMIT_WINDOW: "900000"
+  RATE_LIMIT_MAX_REQUESTS: "100"
+  RATE_LIMIT_SKIP_SUCCESS: "false"
+  
+  # WebSocket Configuration
+  WS_HEARTBEAT_INTERVAL: "30000"
+  WS_CONNECTION_TIMEOUT: "60000"
+  
+  # Cache Configuration
+  CACHE_TTL_DEFAULT: "3600"
+  CACHE_TTL_SHORT: "300"
+  CACHE_TTL_LONG: "86400"
+  
+  # File Processing Configuration
+  FILE_PROCESSING_TIMEOUT: "60000"
+  IMAGE_RESIZE_QUALITY: "85"
+  PDF_TEXT_EXTRACTION: "true"
+  
+  # Analytics Configuration
+  ANALYTICS_BATCH_SIZE: "1000"
+  ANALYTICS_FLUSH_INTERVAL: "300000"
+  ANALYTICS_RETENTION_DAYS: "365"
+  
+  # Feature Flags
+  FEATURE_AI_MATCHING: "true"
+  FEATURE_REAL_TIME_CHAT: "true"
+  FEATURE_VIDEO_INTERVIEWS: "false"
+  FEATURE_AI_RESUME_REVIEW: "true"
+  FEATURE_DIVERSITY_ANALYTICS: "true"
+  FEATURE_SALARY_INSIGHTS: "true"
+  
+  # External Service Configuration
+  GOOGLE_OAUTH_ENABLED: "true"
+  LINKEDIN_OAUTH_ENABLED: "true"
+  STRIPE_ENABLED: "false"
+  SENDGRID_ENABLED: "true"
+  
+  # Performance Configuration
+  COMPRESSION_ENABLED: "true"
+  CACHE_CONTROL_MAX_AGE: "31536000"
+  STATIC_ASSETS_CACHE: "true"
+  
+  # Development/Production Flags
+  DEBUG_MODE: "false"
+  MOCK_EXTERNAL_SERVICES: "false"
+  ENABLE_SWAGGER: "false"
+  
+  # Backup Configuration
+  BACKUP_ENABLED: "true"
+  BACKUP_SCHEDULE: "0 2 * * *"
+  BACKUP_RETENTION_DAYS: "30"
+  
+  # Security Headers
+  SECURITY_HEADERS_ENABLED: "true"
+  CSP_ENABLED: "true"
+  HSTS_ENABLED: "true"
+  
+  # Load Balancer Configuration
+  LB_HEALTH_CHECK_PATH: "/health"
+  LB_HEALTH_CHECK_INTERVAL: "30"
+  LB_HEALTH_CHECK_TIMEOUT: "5"
+  
+  # Kubernetes Specific
+  POD_SECURITY_CONTEXT_RUN_AS_NON_ROOT: "true"
+  POD_SECURITY_CONTEXT_RUN_AS_USER: "1000"
+  POD_SECURITY_CONTEXT_FS_GROUP: "1000"

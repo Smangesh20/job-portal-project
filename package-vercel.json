@@ -1,0 +1,25 @@
+{
+  "name": "ask-ya-cham-quantum-platform",
+  "version": "1.0.0",
+  "description": "World's Most Advanced Quantum-Powered Job Matching Platform",
+  "main": "api/index.js",
+  "scripts": {
+    "start": "node api/index.js",
+    "build": "echo 'Build completed'",
+    "dev": "node api/index.js"
+  },
+  "keywords": [
+    "quantum-computing",
+    "ai-powered",
+    "job-matching",
+    "research-engine"
+  ],
+  "author": "Levaku Rahul Reddy",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Authentication</title>
+</head>
+<body>
+    <h1>Debug Authentication State</h1>
+    <button onclick="checkAuth()">Check Auth State</button>
+    <button onclick="clearAuth()">Clear Auth State</button>
+    <div id="output"></div>
+
+    <script>
+        function checkAuth() {
+            const output = document.getElementById('output');
+            const accessToken = localStorage.getItem('accessToken');
+            const refreshToken = localStorage.getItem('refreshToken');
+            const authStorage = localStorage.getItem('auth-storage');
+            
+            output.innerHTML = `
+                <h3>Current Auth State:</h3>
+                <p><strong>accessToken:</strong> ${accessToken || 'null'}</p>
+                <p><strong>refreshToken:</strong> ${refreshToken || 'null'}</p>
+                <p><strong>auth-storage:</strong> ${authStorage || 'null'}</p>
+                <p><strong>All localStorage keys:</strong> ${Object.keys(localStorage).join(', ')}</p>
+            `;
+        }
+
+        function clearAuth() {
+            // Clear all authentication related data
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('auth-storage');
+            sessionStorage.clear();
+            
+            document.getElementById('output').innerHTML = '<p style="color: green;">All authentication data cleared!</p>';
+        }
+
+        // Check on page load
+        checkAuth();
+    </script>
+</body>
+</html>

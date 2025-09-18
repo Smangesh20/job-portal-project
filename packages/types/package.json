@@ -1,0 +1,19 @@
+{
+  "name": "@ask-ya-cham/types",
+  "version": "1.0.0",
+  "description": "Shared TypeScript types for Ask Ya Cham platform",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.2"
+  },
+  "publishConfig": {
+    "access": "restricted"
+  }
+}

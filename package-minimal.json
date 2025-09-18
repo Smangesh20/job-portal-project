@@ -1,0 +1,16 @@
+{
+  "name": "ask-ya-cham-minimal",
+  "version": "1.0.0",
+  "description": "Ultra-lightweight quantum platform for free deployment",
+  "main": "server-minimal.js",
+  "scripts": {
+    "start": "node server-minimal.js",
+    "build": "echo 'No build needed - static files only'"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}

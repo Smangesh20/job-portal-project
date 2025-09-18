@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: production
+  labels:
+    name: production
+    environment: production
+    app: ask-ya-cham
+  annotations:
+    description: "Production namespace for Ask Ya Cham platform"
+    contact: "devops@askyacham.com"
