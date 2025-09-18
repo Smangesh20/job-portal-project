@@ -100,6 +100,8 @@ export default function RootLayout({
                 const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
                 console.log('🔍 Redirecting to:', newUrl);
                 window.location.replace(newUrl);
+                // Prevent any further execution
+                throw new Error('Redirecting to correct domain');
               }
             `,
           }}

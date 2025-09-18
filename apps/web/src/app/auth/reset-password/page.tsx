@@ -11,9 +11,22 @@ if (typeof window !== 'undefined' && window.location.origin === 'https://www.ask
   const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
   console.log('🔍 Redirecting to:', newUrl);
   window.location.replace(newUrl);
+  // Prevent any further execution
+  throw new Error('Redirecting to correct domain');
 }
 
 export default function ResetPasswordPage() {
+  // Additional redirect check at component level
+  if (typeof window !== 'undefined' && window.location.origin === 'https://www.askyacham.com') {
+    console.log('🔍 Component-level redirect: www.askyacham.com -> askyacham.com');
+    const currentUrl = window.location.href;
+    const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
+    console.log('🔍 Redirecting to:', newUrl);
+    window.location.replace(newUrl);
+    // Return early to prevent any rendering
+    return null;
+  }
+
   const router = useRouter()
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
