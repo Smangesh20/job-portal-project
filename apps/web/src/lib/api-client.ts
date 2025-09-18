@@ -192,12 +192,31 @@ export default apiService;
 class EnhancedAPIClient {
   private async makeRequest<T>(endpoint: string, options: any = {}): Promise<T> {
     try {
-      // Always use real API/serverless functions
-      const response = await apiClient.request({
-        url: endpoint,
-        ...options
-      });
-      return response.data;
+      // Handle serverless functions (same-origin) vs external API
+      if (endpoint === '/auth/forgot-password') {
+        // Use serverless function for forgot password
+        const response = await fetch('/api/send-reset-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: options.data?.email }),
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to send reset email');
+        }
+        
+        const result = await response.json();
+        return { data: result } as T;
+      } else {
+        // Use external API for other endpoints
+        const response = await apiClient.request({
+          url: endpoint,
+          ...options
+        });
+        return response.data;
+      }
     } catch (error) {
       // Log error and re-throw
       console.error('API request failed:', error);
@@ -232,21 +251,8 @@ class EnhancedAPIClient {
         return response as T;
       }
       case '/auth/forgot-password':
-        // Use serverless function for real email sending
-        const response = await fetch('/api/send-reset-email', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email: data.email }),
-        });
-        
-        if (!response.ok) {
-          throw new Error('Failed to send reset email');
-        }
-        
-        const result = await response.json();
-        return { data: result } as T;
+        // This case is now handled in makeRequest method
+        throw new Error('Forgot password should be handled by makeRequest method');
       case '/auth/me':
         const user = await mockAPI.getCurrentUser();
         return { data: { user } } as T;
