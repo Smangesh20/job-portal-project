@@ -48,6 +48,14 @@ class MockAPI {
       role: 'user',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
+    },
+    {
+      id: 'user_yej3pvwqgdf',
+      email: 'pullareddypullareddy20@gmail.com',
+      name: 'Pullareddy',
+      role: 'user',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     }
   ]
   private delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
@@ -147,14 +155,18 @@ class MockAPI {
     const user = this.users.find(u => u.email === email)
     if (!user) {
       return {
-        success: false,
-        message: 'No account found with this email address.'
+        success: true, // Always return success for security (don't reveal if email exists)
+        message: 'If an account with that email exists, we have sent a password reset link.'
       }
     }
 
+    // Simulate sending email
+    console.log(`📧 Mock: Password reset email sent to ${email}`)
+    console.log(`🔗 Mock: Reset link would be: https://www.askyacham.com/auth/reset-password?token=mock_token_${Date.now()}`)
+
     return {
       success: true,
-      message: 'Password reset instructions have been sent to your email.'
+      message: 'If an account with that email exists, we have sent a password reset link.'
     }
   }
 

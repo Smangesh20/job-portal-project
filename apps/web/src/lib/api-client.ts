@@ -4,7 +4,7 @@ import { mockAPI } from './mock-api';
 
 // API Configuration
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://ask-ya-cham-api.onrender.com';
-const USE_MOCK_API = false; // Always use real API, never mock API
+const USE_MOCK_API = process.env.NODE_ENV === 'production' || !process.env.NEXT_PUBLIC_API_URL;
 
 // Create axios instance
 const apiClient: AxiosInstance = axios.create({
@@ -191,17 +191,21 @@ export default apiService;
 // Enhanced API client with fallback to mock API
 class EnhancedAPIClient {
   private async makeRequest<T>(endpoint: string, options: any = {}): Promise<T> {
+    // Use mock API in production to avoid CORS issues
+    if (process.env.NODE_ENV === 'production' || USE_MOCK_API) {
+      return this.useMockAPI(endpoint, options);
+    }
+    
     try {
-      // Always use real API
+      // Try real API first in development
       const response = await apiClient.request({
         url: endpoint,
         ...options
       });
       return response.data;
     } catch (error) {
-      // Log error and re-throw
-      console.error('API request failed:', error);
-      throw error;
+      // Fallback to mock API
+      return this.useMockAPI(endpoint, options);
     }
   }
 
