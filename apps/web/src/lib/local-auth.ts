@@ -44,39 +44,7 @@ class LocalAuthService {
 
   constructor() {
     console.log('🔍 LocalAuthService constructor called');
-    
-    // Check for context mismatch and redirect BEFORE loading from storage
-    if (typeof window !== 'undefined') {
-      try {
-        this.checkAndRedirectIfNeeded();
-      } catch (error) {
-        // If redirect is triggered, stop execution
-        if (error.message === 'Redirecting to correct domain') {
-          console.log('🔍 Redirect triggered, stopping execution');
-          return;
-        }
-        throw error;
-      }
-    }
-    
     this.loadFromStorage();
-  }
-
-  private checkAndRedirectIfNeeded() {
-    // Only redirect if we're on the reset password page and in wrong context
-    if (window.location.pathname.includes('/auth/reset-password') && 
-        window.location.origin === 'https://www.askyacham.com') {
-      
-      console.log('🔍 Context mismatch detected: www.askyacham.com -> askyacham.com');
-      const currentUrl = window.location.href;
-      const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
-      console.log('🔍 Redirecting to:', newUrl);
-      
-      // Use immediate redirect and prevent further execution
-      window.location.replace(newUrl);
-      // Throw an error to stop further execution
-      throw new Error('Redirecting to correct domain');
-    }
   }
 
   private loadFromStorage() {
