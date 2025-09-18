@@ -4,26 +4,15 @@ import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { localAuthService } from '@/lib/local-auth'
 
-// Check for redirect at the very top of the component
-if (typeof window !== 'undefined' && window.location.origin === 'https://www.askyacham.com') {
-  console.log('🔍 Page-level redirect: www.askyacham.com -> askyacham.com');
-  const currentUrl = window.location.href;
-  const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
-  console.log('🔍 Redirecting to:', newUrl);
-  window.location.replace(newUrl);
-  // Return a loading component to prevent further execution
-  return <div>Redirecting...</div>;
-}
-
 export default function ResetPasswordPage() {
-  // Additional redirect check at component level
+  // Check for redirect at the very top of the component
   if (typeof window !== 'undefined' && window.location.origin === 'https://www.askyacham.com') {
-    console.log('🔍 Component-level redirect: www.askyacham.com -> askyacham.com');
+    console.log('🔍 Page-level redirect: www.askyacham.com -> askyacham.com');
     const currentUrl = window.location.href;
     const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
     console.log('🔍 Redirecting to:', newUrl);
     window.location.replace(newUrl);
-    // Return loading component to prevent any rendering
+    // Return a loading component to prevent further execution
     return <div>Redirecting...</div>;
   }
 
