@@ -17,7 +17,7 @@ import {
 } from 'lucide-react'
 import { useTheme } from 'next-themes'
 
-export function Header() {
+function Header() {
   const [notifications] = useState(3)
   const { theme, setTheme } = useTheme()
   
@@ -129,3 +129,5 @@ export function Header() {
     </header>
   )
 }
+
+export default Header
