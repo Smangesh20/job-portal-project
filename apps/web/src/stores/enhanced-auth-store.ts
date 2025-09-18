@@ -151,7 +151,7 @@ export const useAuthStore = create<AuthStore>()(
           // Use local authentication service for logout
           const { accessToken } = get()
           if (accessToken) {
-            await enhancedAPIClient.post('/auth/logout')
+            await enhancedAPIClient.post('/auth/logout', {})
           }
 
           // Clear local state
