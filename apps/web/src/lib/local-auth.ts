@@ -562,16 +562,45 @@ class LocalAuthService {
   // Reset password with token
   async resetPassword(token: string, newPassword: string): Promise<AuthResponse> {
     try {
+      console.log('🔍 resetPassword called with token:', token);
+      
       // Validate token
       const resetTokenData = this.resetTokens.get(token);
+      console.log('🔍 resetTokenData from resetTokens map:', resetTokenData);
+      
       if (!resetTokenData) {
-        return {
-          success: false,
-          error: {
-            code: 'INVALID_TOKEN',
-            message: 'Invalid or expired reset token'
+        console.log('🔍 Token not found in resetTokens map, checking localStorage...');
+        
+        // Try to find the token in localStorage directly
+        const storedTokens = localStorage.getItem('askyacham_reset_tokens');
+        if (storedTokens) {
+          try {
+            const tokens = JSON.parse(storedTokens);
+            const foundToken = tokens.find(t => t.token === token);
+            if (foundToken) {
+              console.log('🔍 Found token in localStorage:', foundToken);
+              // Add to resetTokens map
+              this.resetTokens.set(token, foundToken);
+              // Continue with this token
+            } else {
+              console.log('🔍 Token not found in localStorage either');
+            }
+          } catch (e) {
+            console.log('🔍 Error parsing localStorage tokens:', e);
           }
-        };
+        }
+        
+        // Final check
+        const finalResetTokenData = this.resetTokens.get(token);
+        if (!finalResetTokenData) {
+          return {
+            success: false,
+            error: {
+              code: 'INVALID_TOKEN',
+              message: 'Invalid or expired reset token'
+            }
+          };
+        }
       }
 
       // Check if token is expired
@@ -598,9 +627,13 @@ class LocalAuthService {
         };
       }
 
+      // Get the final reset token data (in case it was updated above)
+      const finalResetTokenData = this.resetTokens.get(token);
+      console.log('🔍 Final resetTokenData for password reset:', finalResetTokenData);
+      
       // Get user
-      let user = this.users.get(resetTokenData.userId);
-      console.log('🔍 Looking for user with ID:', resetTokenData.userId);
+      let user = this.users.get(finalResetTokenData.userId);
+      console.log('🔍 Looking for user with ID:', finalResetTokenData.userId);
       console.log('🔍 Available users in map:', Array.from(this.users.keys()));
       
       if (!user) {
@@ -611,7 +644,7 @@ class LocalAuthService {
         if (askyachamUsers) {
           try {
             const users = JSON.parse(askyachamUsers);
-            const realUser = users.find(u => u.id === resetTokenData.userId) || users[0];
+            const realUser = users.find(u => u.id === finalResetTokenData.userId) || users[0];
             if (realUser) {
               console.log('🔍 Found real user from askyacham_users:', { id: realUser.id, email: realUser.email });
               // Add user to the map
@@ -633,7 +666,7 @@ class LocalAuthService {
                 const userData = localStorage.getItem(key);
                 if (userData) {
                   const parsed = JSON.parse(userData);
-                  if (parsed.id === resetTokenData.userId) {
+                  if (parsed.id === finalResetTokenData.userId) {
                     console.log('🔍 Found user in localStorage:', parsed);
                     // Add user to the map
                     this.users.set(parsed.id, parsed);
@@ -652,8 +685,8 @@ class LocalAuthService {
         if (!user) {
           console.log('🔍 User still not found, creating temporary user...');
           user = {
-            id: resetTokenData.userId,
-            email: resetTokenData.email,
+            id: finalResetTokenData.userId,
+            email: finalResetTokenData.email,
             firstName: 'User',
             lastName: 'Name',
             role: 'CANDIDATE' as const,
@@ -709,8 +742,8 @@ class LocalAuthService {
       console.log('🔍 Password updated in users map. Old hash:', oldPasswordHash, 'New hash:', user.passwordHash);
 
       // Mark token as used
-      resetTokenData.used = true;
-      this.resetTokens.set(token, resetTokenData);
+      finalResetTokenData.used = true;
+      this.resetTokens.set(token, finalResetTokenData);
       console.log('🔍 Token marked as used');
 
       // Invalidate all user sessions
@@ -749,7 +782,7 @@ class LocalAuthService {
 
       // Send confirmation email
       const { emailService } = await import('./email-service');
-      await emailService.sendPasswordChangeConfirmationEmail(user.email, `${user.firstName} ${user.lastName}`);
+      await emailService.sendPasswordChangeConfirmationEmail(finalResetTokenData.email, `${user.firstName} ${user.lastName}`);
 
       console.log('Password reset successfully:', user.id, user.email);
       
