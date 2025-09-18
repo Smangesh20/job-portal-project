@@ -975,13 +975,16 @@ class LocalAuthService {
             
             for (const key of allKeys) {
               console.log('🔍 Checking key for real user:', key);
-              if (key.includes('user') && !key.includes('askyacham') && !key.includes('temp')) {
+              // Check all keys that might contain user data, including auth-storage
+              if (key.includes('user') || key === 'auth-storage' || key.includes('auth')) {
                 try {
                   const userData = localStorage.getItem(key);
                   console.log('🔍 User data from key', key, ':', userData);
                   if (userData) {
                     const parsed = JSON.parse(userData);
                     console.log('🔍 Parsed user data:', parsed);
+                    
+                    // Check if this is a real user (not temp_user)
                     if (parsed.id && parsed.email && parsed.id !== 'temp_user' && parsed.email !== 'temp@example.com') {
                       console.log('🔍 Found real user from other key:', key, parsed);
                       realUserId = parsed.id;
@@ -990,15 +993,17 @@ class LocalAuthService {
                       console.log('🔍 realUserId after assignment:', realUserId);
                       console.log('🔍 realEmail after assignment:', realEmail);
                       break;
+                    } else if (parsed.id === 'temp_user') {
+                      console.log('🔍 User data is temp_user:', { id: parsed.id, email: parsed.email });
                     } else {
-                      console.log('🔍 User data is temp_user or invalid:', { id: parsed.id, email: parsed.email });
+                      console.log('🔍 User data is invalid:', { id: parsed.id, email: parsed.email });
                     }
                   }
                 } catch (e) {
                   console.log('🔍 Error parsing user data from key', key, ':', e);
                 }
               } else {
-                console.log('🔍 Skipping key (contains askyacham or temp):', key);
+                console.log('🔍 Skipping key (doesn\'t contain user or auth):', key);
               }
             }
             
