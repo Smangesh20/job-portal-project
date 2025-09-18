@@ -19,7 +19,7 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isClient, setIsClient] = useState(false)
   const pathname = usePathname()
-  const { user, isAuthenticated, isLoading } = useAuthStore()
+  const { user } = useAuthStore()
 
   useEffect(() => {
     setIsClient(true)
@@ -105,7 +105,7 @@ export default function Header() {
             )}
 
             {/* User actions */}
-            {isAuthenticated && user ? (
+            {user && user.id ? (
               <div className="flex items-center gap-3">
                 {/* Notifications */}
                 <Button
@@ -136,7 +136,7 @@ export default function Header() {
                   </div>
                   <div className="hidden sm:block">
                     <div className="text-sm font-medium text-gray-900">
-                      {user.firstName || user.name} {user.lastName || ''}
+                      {user.firstName} {user.lastName}
                     </div>
                     <div className="text-xs text-gray-500">{user.email}</div>
                   </div>
