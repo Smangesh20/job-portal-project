@@ -172,6 +172,7 @@ export default function RegisterPage() {
     console.log('Success modal state changed:', showSuccessModal, 'Ref value:', modalStateRef.current)
     if (showSuccessModal) {
       console.log('✅ SUCCESS MODAL IS TRUE - SHOULD BE VISIBLE!')
+      console.log('🎯 MODAL SHOULD BE RENDERED IN DOM NOW!')
     } else {
       console.log('❌ SUCCESS MODAL IS FALSE - NOT VISIBLE')
       // If state is false but ref is true, something reset the state
@@ -474,6 +475,10 @@ export default function RegisterPage() {
       {/* Success Modal - Simple React approach */}
       {showSuccessModal && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}>
+          {/* Debug info */}
+          <div className="absolute top-4 left-4 bg-red-500 text-white p-2 rounded z-[10000]">
+            MODAL IS RENDERED - showSuccessModal: {showSuccessModal ? 'true' : 'false'}
+          </div>
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/60 backdrop-blur-md"
