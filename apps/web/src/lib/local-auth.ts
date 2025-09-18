@@ -604,26 +604,46 @@ class LocalAuthService {
       console.log('🔍 Available users in map:', Array.from(this.users.keys()));
       
       if (!user) {
-        console.log('🔍 User not found in users map, trying to find in localStorage...');
+        console.log('🔍 User not found in users map, trying to find real user from askyacham_users...');
         
-        // Try to find user in localStorage
-        const allKeys = Object.keys(localStorage);
-        for (const key of allKeys) {
-          if (key.includes('user') && !key.includes('askyacham')) {
-            try {
-              const userData = localStorage.getItem(key);
-              if (userData) {
-                const parsed = JSON.parse(userData);
-                if (parsed.id === resetTokenData.userId) {
-                  console.log('🔍 Found user in localStorage:', parsed);
-                  // Add user to the map
-                  this.users.set(parsed.id, parsed);
-                  user = parsed;
-                  break;
+        // First, try to find the real user from askyacham_users
+        const askyachamUsers = localStorage.getItem('askyacham_users');
+        if (askyachamUsers) {
+          try {
+            const users = JSON.parse(askyachamUsers);
+            const realUser = users.find(u => u.id === resetTokenData.userId) || users[0];
+            if (realUser) {
+              console.log('🔍 Found real user from askyacham_users:', { id: realUser.id, email: realUser.email });
+              // Add user to the map
+              this.users.set(realUser.id, realUser);
+              user = realUser;
+            }
+          } catch (e) {
+            console.log('🔍 Error parsing askyacham_users:', e);
+          }
+        }
+        
+        // If still not found, try to find user in other localStorage keys
+        if (!user) {
+          console.log('🔍 Real user not found, trying other localStorage keys...');
+          const allKeys = Object.keys(localStorage);
+          for (const key of allKeys) {
+            if (key.includes('user') && !key.includes('askyacham')) {
+              try {
+                const userData = localStorage.getItem(key);
+                if (userData) {
+                  const parsed = JSON.parse(userData);
+                  if (parsed.id === resetTokenData.userId) {
+                    console.log('🔍 Found user in localStorage:', parsed);
+                    // Add user to the map
+                    this.users.set(parsed.id, parsed);
+                    user = parsed;
+                    break;
+                  }
                 }
+              } catch (e) {
+                // Not JSON, skip
               }
-            } catch (e) {
-              // Not JSON, skip
             }
           }
         }
