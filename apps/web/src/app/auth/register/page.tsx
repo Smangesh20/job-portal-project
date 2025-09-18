@@ -419,7 +419,18 @@ export default function RegisterPage() {
                 <div class="absolute top-4 left-4 bg-red-500 text-white p-2 rounded z-[100000]">
                   MANUAL MODAL - showSuccessModal: true
                 </div>
-                <div class="absolute inset-0 bg-black/60 backdrop-blur-md" onclick="this.parentElement.remove()"></div>
+                <div class="absolute inset-0 bg-black/60 backdrop-blur-md" onclick="
+                  const modal = this.parentElement;
+                  modal.style.opacity = '0';
+                  modal.style.transition = 'opacity 0.3s ease';
+                  setTimeout(() => {
+                    modal.remove();
+                    // Also reset React state if possible
+                    if (window.setShowSuccessModal) {
+                      window.setShowSuccessModal(false);
+                    }
+                  }, 300);
+                "></div>
                 <div class="relative w-full max-w-md mx-4 bg-white rounded-2xl shadow-2xl border border-gray-100">
                   <div class="p-8 text-center">
                     <div class="flex justify-center mb-6">
@@ -435,7 +446,19 @@ export default function RegisterPage() {
                       Welcome to the future of job matching with quantum AI technology. 
                       You will now be redirected to the home page.
                     </p>
-                    <button onclick="window.location.href='/'" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+                    <button onclick="
+                      const modal = document.querySelector('[data-success-modal]');
+                      if (modal) {
+                        modal.style.opacity = '0';
+                        modal.style.transition = 'opacity 0.3s ease';
+                        setTimeout(() => {
+                          modal.remove();
+                          window.location.href = '/';
+                        }, 300);
+                      } else {
+                        window.location.href = '/';
+                      }
+                    " class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
                       Go to Home
                     </button>
                   </div>
