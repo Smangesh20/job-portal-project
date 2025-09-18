@@ -344,7 +344,7 @@ export const useAuthStore = create<AuthStore>()(
           const response = { success: true, message: 'Token is valid' }
 
           if (!response.success) {
-            throw new Error(response.error?.message || 'Invalid or expired token')
+            throw new Error('Invalid or expired token')
           }
 
           set({ isLoading: false })
