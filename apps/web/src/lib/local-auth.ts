@@ -43,6 +43,7 @@ class LocalAuthService {
   private resetTokens: Map<string, PasswordResetToken> = new Map();
 
   constructor() {
+    console.log('🔍 LocalAuthService constructor called');
     this.loadFromStorage();
   }
 
@@ -50,8 +51,13 @@ class LocalAuthService {
     try {
       if (typeof window === 'undefined') return;
 
+      console.log('🔍 loadFromStorage called');
+      console.log('🔍 localStorage available:', typeof localStorage !== 'undefined');
+      console.log('🔍 All localStorage keys:', Object.keys(localStorage));
+
       // Load users
       const storedUsers = localStorage.getItem('askyacham_users');
+      console.log('🔍 Stored users:', storedUsers);
       if (storedUsers) {
         const users = JSON.parse(storedUsers);
         users.forEach((user: User & { passwordHash: string }) => {
@@ -62,6 +68,7 @@ class LocalAuthService {
 
       // Load sessions
       const storedSessions = localStorage.getItem('askyacham_sessions');
+      console.log('🔍 Stored sessions:', storedSessions);
       if (storedSessions) {
         const sessions = JSON.parse(storedSessions);
         sessions.forEach((session: { id: string; userId: string; expiresAt: string }) => {
@@ -79,6 +86,8 @@ class LocalAuthService {
           this.resetTokens.set(token.token, token);
         });
         console.log('🔍 Loaded reset tokens into map:', Array.from(this.resetTokens.keys()));
+      } else {
+        console.log('❌ No reset tokens found in localStorage');
       }
     } catch (error) {
       console.error('Error loading from localStorage:', error);
@@ -717,7 +726,9 @@ class LocalAuthService {
 }
 
 // Create singleton instance
+console.log('🔍 Creating LocalAuthService singleton instance');
 export const localAuthService = new LocalAuthService();
+console.log('🔍 LocalAuthService singleton created');
 
 // Export types
 export type { User, AuthResponse };
