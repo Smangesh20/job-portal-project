@@ -25,15 +25,22 @@ export default function ResetPasswordPage() {
         return
       }
 
+      console.log('🔍 Validating reset token:', token)
+      
       try {
         const response = await localAuthService.validateResetToken(token)
+        console.log('🔍 Token validation response:', response)
+        
         if (response.success) {
           setIsValidToken(true)
+          console.log('✅ Token is valid')
         } else {
           setError(response.error?.message || 'Invalid or expired token')
+          console.log('❌ Token validation failed:', response.error)
         }
       } catch (error: any) {
         setError('Failed to validate token')
+        console.error('❌ Token validation error:', error)
       } finally {
         setIsValidating(false)
       }
