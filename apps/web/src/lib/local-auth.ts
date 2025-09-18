@@ -53,7 +53,10 @@ class LocalAuthService {
 
       console.log('🔍 loadFromStorage called');
       console.log('🔍 localStorage available:', typeof localStorage !== 'undefined');
+      console.log('🔍 Window location:', window.location.href);
+      console.log('🔍 Window origin:', window.location.origin);
       console.log('🔍 All localStorage keys:', Object.keys(localStorage));
+      console.log('🔍 All localStorage values:', Object.keys(localStorage).map(key => ({ key, value: localStorage.getItem(key) })));
 
       // Load users
       const storedUsers = localStorage.getItem('askyacham_users');
@@ -652,6 +655,13 @@ class LocalAuthService {
     try {
       console.log('🔍 validateResetToken called with token:', token);
       console.log('🔍 Available reset tokens:', Array.from(this.resetTokens.keys()));
+      
+      // If no tokens found, try reloading from localStorage
+      if (this.resetTokens.size === 0) {
+        console.log('🔍 No tokens in memory, reloading from localStorage...');
+        this.loadFromStorage();
+        console.log('🔍 After reload, available reset tokens:', Array.from(this.resetTokens.keys()));
+      }
       
       const resetTokenData = this.resetTokens.get(token);
       console.log('🔍 Found reset token data:', resetTokenData);
