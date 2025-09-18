@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { enhancedAPIClient } from '@/lib/api-client'
+import { localAuthService } from '@/lib/local-auth'
+import { emailService } from '@/lib/email-service'
 
 export default function ForgotPasswordPage() {
   const router = useRouter()
@@ -19,31 +20,25 @@ export default function ForgotPasswordPage() {
     setMessage('')
 
     try {
-      const response = await enhancedAPIClient.post('/auth/forgot-password', {
-        email: email
-      })
+      const response = await localAuthService.forgotPassword(email)
       
-      if ((response as any).data?.success) {
+      if (response.success) {
         setShowEmailSent(true)
-        setMessage((response as any).data?.message || 'If an account with that email exists, we have sent a password reset link.')
+        setMessage('If an account with that email exists, we have sent a password reset link.')
       } else {
-        setError((response as any).data?.error?.message || 'Failed to send reset email')
+        setError(response.error?.message || 'Failed to send reset email')
       }
     } catch (error: any) {
-      console.error('Forgot password error:', error)
-      if (error.response?.data?.error?.message) {
-        setError(error.response.data.error.message)
-      } else {
-        setError('An error occurred while sending the reset email')
-      }
+      setError(error.message || 'An error occurred')
     } finally {
       setIsLoading(false)
     }
   }
 
   const handleViewSentEmails = () => {
-    console.log('Email sent via SendGrid API - check your email inbox')
-    alert('Email sent via SendGrid API - check your email inbox')
+    const emails = emailService.getSentEmails()
+    console.log('Sent emails:', emails)
+    alert(`Check console for sent emails. Found ${emails.length} emails.`)
   }
 
   if (showEmailSent) {

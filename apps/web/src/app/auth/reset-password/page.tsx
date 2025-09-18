@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { enhancedAPIClient } from '@/lib/api-client'
+import { localAuthService } from '@/lib/local-auth'
 
 export default function ResetPasswordPage() {
   const router = useRouter()
@@ -26,12 +26,11 @@ export default function ResetPasswordPage() {
       }
 
       try {
-        // Validate token by attempting to decode it
-        // If it's a valid JWT, we'll proceed with the reset
-        if (token && token.length > 20) {
+        const response = await localAuthService.validateResetToken(token)
+        if (response.success) {
           setIsValidToken(true)
         } else {
-          setError('Invalid or malformed reset token')
+          setError(response.error?.message || 'Invalid or expired token')
         }
       } catch (error: any) {
         setError('Failed to validate token')
@@ -46,62 +45,33 @@ export default function ResetPasswordPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    console.log('🚀 Form submit triggered!');
-    console.log('🔍 Password:', password);
-    console.log('🔍 Confirm Password:', confirmPassword);
-    console.log('🔍 Token:', token);
-    
     if (password !== confirmPassword) {
-      console.log('❌ Passwords do not match');
       setError('Passwords do not match')
       return
     }
 
     if (password.length < 8) {
-      console.log('❌ Password too short');
       setError('Password must be at least 8 characters long')
       return
     }
-    
-    console.log('✅ Form validation passed, proceeding with API call...');
 
     setIsLoading(true)
     setError('')
     setMessage('')
 
     try {
-      console.log('🔄 Reset password form submitted');
-      console.log('🔑 Token:', token);
-      console.log('🔒 New password:', password);
-      console.log('🔒 Confirm password:', confirmPassword);
+      const response = await localAuthService.resetPassword(token!, password)
       
-      console.log('📡 Making API call to /auth/reset-password...');
-      const response = await enhancedAPIClient.post('/auth/reset-password', {
-        token: token!,
-        newPassword: password,
-        confirmPassword: confirmPassword
-      })
-      
-      console.log('📨 Reset password response received:', response);
-      console.log('📨 Response data:', (response as any).data);
-      
-      if ((response as any).data?.success) {
-        console.log('✅ Password reset successful in frontend');
+      if (response.success) {
         setMessage('Password reset successfully! You can now login with your new password.')
         setTimeout(() => {
           router.push('/auth/login')
         }, 2000)
       } else {
-        console.log('❌ Password reset failed in frontend:', (response as any).data?.error?.message);
-        setError((response as any).data?.error?.message || 'Failed to reset password')
+        setError(response.error?.message || 'Failed to reset password')
       }
     } catch (error: any) {
-      console.error('❌ Reset password error:', error)
-      if (error.response?.data?.error?.message) {
-        setError(error.response.data.error.message)
-      } else {
-        setError('An error occurred while resetting your password')
-      }
+      setError(error.message || 'An error occurred')
     } finally {
       setIsLoading(false)
     }

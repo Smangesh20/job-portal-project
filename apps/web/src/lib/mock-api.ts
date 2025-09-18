@@ -9,7 +9,6 @@ export interface MockUser {
   name: string
   role: 'user' | 'employer' | 'admin'
   avatar?: string
-  password?: string // Store password for validation
   createdAt: string
   updatedAt: string
 }
@@ -39,7 +38,6 @@ class MockAPI {
       email: 'test@example.com',
       name: 'Test User',
       role: 'user',
-      password: 'password123', // Default password
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     },
@@ -48,16 +46,6 @@ class MockAPI {
       email: 'demo@askyacham.com',
       name: 'Demo User',
       role: 'user',
-      password: 'demo123', // Default password
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    },
-    {
-      id: 'user_yej3pvwqgdf',
-      email: 'pullareddypullareddy20@gmail.com',
-      name: 'Pullareddy',
-      role: 'user',
-      password: 'pullareddy123', // Default password
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     }
@@ -111,7 +99,6 @@ class MockAPI {
       email: data.email,
       name: `${data.firstName} ${data.lastName}`,
       role: 'user',
-      password: data.password, // Store the password
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     }
@@ -131,13 +118,8 @@ class MockAPI {
   async login(email: string, password: string): Promise<MockAuthResponse | MockErrorResponse> {
     await this.delay(800) // Simulate network delay
 
-    console.log(`🔍 Mock API login called with email: ${email}`);
-    console.log(`🔍 Mock API login called with password: ${password}`);
-    console.log(`🔍 Mock API: Available users:`, this.users.map(u => ({ email: u.email, password: u.password })));
-
     const user = this.users.find(u => u.email.toLowerCase() === email.toLowerCase())
     if (!user) {
-      console.log(`❌ Mock API: User not found for email: ${email}`);
       return {
         success: false,
         error: 'User not found',
@@ -146,21 +128,8 @@ class MockAPI {
       }
     }
 
-    console.log(`🔍 Mock API: Found user: ${user.email} with password: ${user.password}`);
-
-    // Validate password
-    if (!user.password || user.password !== password) {
-      console.log(`❌ Login failed: Invalid password for ${email}`);
-      console.log(`🔍 Expected: ${user.password}, Got: ${password}`);
-      return {
-        success: false,
-        error: 'Invalid password',
-        message: 'The password you entered is incorrect. Please try again.',
-        code: 'INVALID_PASSWORD'
-      }
-    }
-
-    console.log(`✅ Login successful: ${email} with correct password`);
+    // In a real app, you'd verify the password hash
+    // For mock, we'll accept any password
     return {
       success: true,
       data: {
@@ -178,74 +147,14 @@ class MockAPI {
     const user = this.users.find(u => u.email === email)
     if (!user) {
       return {
-        success: true, // Always return success for security (don't reveal if email exists)
-        message: 'If an account with that email exists, we have sent a password reset link.'
+        success: false,
+        message: 'No account found with this email address.'
       }
     }
-
-    // Simulate sending email
-    console.log(`📧 Mock: Password reset email sent to ${email}`)
-    console.log(`🔗 Mock: Reset link would be: https://www.askyacham.com/auth/reset-password?token=mock_token_${Date.now()}`)
 
     return {
       success: true,
-      message: 'If an account with that email exists, we have sent a password reset link.'
-    }
-  }
-
-  async resetPassword(token: string, newPassword: string): Promise<{ success: boolean; message: string; error?: string }> {
-    await this.delay(800)
-    
-    console.log(`🔍 Mock API resetPassword called with token: ${token}`);
-    console.log(`🔍 Mock API resetPassword called with newPassword: ${newPassword}`);
-    
-    // Validate token format (basic check for our mock tokens)
-    if (!token || !token.startsWith('reset_')) {
-      console.log(`❌ Mock API: Invalid token format - ${token}`);
-      return {
-        success: false,
-        error: 'Invalid or expired reset token',
-        message: 'The reset token is invalid or has expired. Please request a new password reset.'
-      }
-    }
-
-    // Validate password strength
-    if (newPassword.length < 8) {
-      return {
-        success: false,
-        error: 'Password too short',
-        message: 'Password must be at least 8 characters long.'
-      }
-    }
-
-    // For mock purposes, we'll update the user with email pullareddypullareddy20@gmail.com
-    // In a real app, you'd find the user by token and update their password
-    console.log(`🔍 Mock API: Looking for user with email: pullareddypullareddy20@gmail.com`);
-    console.log(`🔍 Mock API: Available users:`, this.users.map(u => u.email));
-    
-    const user = this.users.find(u => u.email === 'pullareddypullareddy20@gmail.com')
-    if (user) {
-      const oldPassword = user.password
-      user.password = newPassword // Actually update the password
-      user.updatedAt = new Date().toISOString()
-      
-      console.log(`🔄 Mock: Password reset successful for user: ${user.email}`)
-      console.log(`🔒 Old password: ${oldPassword}`)
-      console.log(`🔑 New password: ${newPassword}`)
-      console.log(`✅ Mock: User password actually updated`)
-      
-      return {
-        success: true,
-        message: 'Password reset successfully! You can now login with your new password.'
-      }
-    } else {
-      console.log(`❌ Mock API: User not found with email: pullareddypullareddy20@gmail.com`);
-    }
-
-    return {
-      success: false,
-      error: 'User not found',
-      message: 'Unable to reset password. Please try again.'
+      message: 'Password reset instructions have been sent to your email.'
     }
   }
 

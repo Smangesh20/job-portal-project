@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware'
 import { AuthUser } from '@/types/auth'
 import { enhancedAPIClient } from '@/lib/api-client'
 import { ProfessionalErrorHandler, ErrorDetails } from '@/lib/error-handler'
-// import { localAuthService, User } from '@/lib/local-auth' // No longer needed
+import { localAuthService, User } from '@/lib/local-auth'
 
 interface AuthState {
   user: AuthUser | null
@@ -75,11 +75,8 @@ export const useAuthStore = create<AuthStore>()(
         try {
           set({ isLoading: true, error: null, errorDetails: null })
 
-          // Use enhanced API client for consistent authentication
-          const response = await enhancedAPIClient.post('/auth/login', {
-            email,
-            password
-          }) as any
+          // Use local authentication service for persistent login
+          const response = await localAuthService.login(email, password)
 
           if (!response.success) {
             throw new Error(response.error?.message || 'Login failed')
@@ -113,8 +110,8 @@ export const useAuthStore = create<AuthStore>()(
         try {
           set({ isLoading: true, error: null, errorDetails: null })
 
-          // Use enhanced API client for consistent authentication
-          const response = await enhancedAPIClient.post('/auth/register', data) as any
+          // Use local authentication service for persistent registration
+          const response = await localAuthService.register(data)
 
           if (!response.success) {
             throw new Error(response.error?.message || 'Registration failed')
@@ -151,7 +148,7 @@ export const useAuthStore = create<AuthStore>()(
           // Use local authentication service for logout
           const { accessToken } = get()
           if (accessToken) {
-            await enhancedAPIClient.post('/auth/logout', {})
+            await localAuthService.logout(accessToken)
           }
 
           // Clear local state
@@ -196,9 +193,7 @@ export const useAuthStore = create<AuthStore>()(
           }
 
           // Use local authentication service for token refresh
-          const response = await enhancedAPIClient.post('/auth/refresh', {
-            refreshToken: refreshTokenValue
-          }) as any
+          const response = await localAuthService.refreshToken(refreshTokenValue)
 
           if (!response.success) {
             throw new Error(response.error?.message || 'Token refresh failed')
@@ -243,7 +238,7 @@ export const useAuthStore = create<AuthStore>()(
 
           // Use local authentication service to verify token and get user info
           try {
-            const response = await enhancedAPIClient.get('/auth/me') as any
+            const response = await localAuthService.getCurrentUser(accessToken)
             
             if (response.success && response.data) {
               set({
@@ -287,7 +282,7 @@ export const useAuthStore = create<AuthStore>()(
         try {
           set({ isLoading: true, error: null, errorDetails: null })
 
-          const response = await enhancedAPIClient.post('/auth/forgot-password', { email }) as any
+          const response = await localAuthService.forgotPassword(email)
 
           if (!response.success) {
             throw new Error(response.error?.message || 'Failed to send reset email')
@@ -309,11 +304,7 @@ export const useAuthStore = create<AuthStore>()(
         try {
           set({ isLoading: true, error: null, errorDetails: null })
 
-          const response = await enhancedAPIClient.post('/auth/reset-password', {
-            token,
-            newPassword,
-            confirmPassword: newPassword
-          }) as any
+          const response = await localAuthService.resetPassword(token, newPassword)
 
           if (!response.success) {
             throw new Error(response.error?.message || 'Failed to reset password')
@@ -335,16 +326,10 @@ export const useAuthStore = create<AuthStore>()(
         try {
           set({ isLoading: true, error: null, errorDetails: null })
 
-          // For now, just validate token format (in a real app, you'd call an API)
-          if (!token || token.length < 10) {
-            throw new Error('Invalid reset token')
-          }
-          
-          // Simulate successful validation
-          const response = { success: true, message: 'Token is valid' }
+          const response = await localAuthService.validateResetToken(token)
 
           if (!response.success) {
-            throw new Error('Invalid or expired token')
+            throw new Error(response.error?.message || 'Invalid or expired token')
           }
 
           set({ isLoading: false })

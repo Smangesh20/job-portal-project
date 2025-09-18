@@ -4,7 +4,7 @@ import { mockAPI } from './mock-api';
 
 // API Configuration
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://ask-ya-cham-api.onrender.com';
-const USE_MOCK_API = false; // Always use real API/serverless functions
+const USE_MOCK_API = process.env.NODE_ENV === 'production' || !process.env.NEXT_PUBLIC_API_URL;
 
 // Create axios instance
 const apiClient: AxiosInstance = axios.create({
@@ -191,76 +191,21 @@ export default apiService;
 // Enhanced API client with fallback to mock API
 class EnhancedAPIClient {
   private async makeRequest<T>(endpoint: string, options: any = {}): Promise<T> {
+    // Always use mock API in production to avoid CORS issues
+    if (process.env.NODE_ENV === 'production' || USE_MOCK_API) {
+      return this.useMockAPI(endpoint, options);
+    }
+    
     try {
-      // Handle serverless functions and mock API for auth endpoints
-      if (endpoint === '/auth/forgot-password') {
-        // Use serverless function for forgot password
-        const response = await fetch('/api/send-reset-email', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email: options.data?.email }),
-        });
-        
-        if (!response.ok) {
-          throw new Error('Failed to send reset email');
-        }
-        
-        const result = await response.json();
-        return { data: result } as T;
-      } else if (endpoint === '/auth/reset-password') {
-        // Use serverless function for reset password
-        const response = await fetch('/api/reset-password', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            token: options.data?.token,
-            newPassword: options.data?.newPassword,
-            confirmPassword: options.data?.confirmPassword
-          }),
-        });
-        
-        if (!response.ok) {
-          throw new Error('Failed to reset password');
-        }
-        
-        const result = await response.json();
-        return { data: result } as T;
-      } else if (endpoint === '/auth/login') {
-        // Use mock API for login to ensure password validation works
-        console.log('🔐 Using mock API for login to validate passwords');
-        return await this.useMockAPI<T>(endpoint, options);
-              } else if (endpoint === '/auth/register') {
-                // Use mock API for register to ensure consistency
-                console.log('📝 Using mock API for registration');
-                return await this.useMockAPI<T>(endpoint, options);
-              } else if (endpoint === '/auth/me') {
-                // Use mock API for get current user to avoid CORS
-                console.log('👤 Using mock API for get current user');
-                return await this.useMockAPI<T>(endpoint, options);
-              } else if (endpoint === '/auth/logout') {
-                // Use mock API for logout to avoid CORS
-                console.log('🚪 Using mock API for logout');
-                return await this.useMockAPI<T>(endpoint, options);
-              } else if (endpoint === '/auth/refresh') {
-                // Use mock API for token refresh to avoid CORS
-                console.log('🔄 Using mock API for token refresh');
-                return await this.useMockAPI<T>(endpoint, options);
-              } else {
-        // Use external API for other endpoints
-        const response = await apiClient.request({
-          url: endpoint,
-          ...options
-        });
-        return response.data;
-      }
+      // Try real API first in development
+      const response = await apiClient.request({
+        url: endpoint,
+        ...options
+      });
+      return response.data;
     } catch (error) {
-      // Log error and re-throw
-      console.error('API request failed:', error);
-      throw error;
+      // Fallback to mock API
+      return this.useMockAPI(endpoint, options);
     }
   }
 
@@ -291,11 +236,7 @@ class EnhancedAPIClient {
         return response as T;
       }
       case '/auth/forgot-password':
-        // This case is now handled in makeRequest method
-        throw new Error('Forgot password should be handled by makeRequest method');
-      case '/auth/reset-password':
-        // This case is now handled in makeRequest method
-        throw new Error('Reset password should be handled by makeRequest method');
+        return await mockAPI.forgotPassword(data.email) as T;
       case '/auth/me':
         const user = await mockAPI.getCurrentUser();
         return { data: { user } } as T;
