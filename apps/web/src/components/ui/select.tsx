@@ -39,7 +39,7 @@ const Select = React.forwardRef<
         <div className="absolute top-full z-50 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg">
           {React.Children.map(children, (child) => {
             if (React.isValidElement(child) && child.type === SelectContent) {
-              return React.cloneElement(child, { onValueChange: handleValueChange, selectedValue })
+              return React.cloneElement(child as any, { onValueChange: handleValueChange, selectedValue })
             }
             return child
           })}
@@ -65,7 +65,7 @@ const SelectContent = React.forwardRef<
     >
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child) && child.type === SelectItem) {
-          return React.cloneElement(child, { onValueChange, selectedValue })
+          return React.cloneElement(child as any, { onValueChange, selectedValue })
         }
         return child
       })}
