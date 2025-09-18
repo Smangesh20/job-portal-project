@@ -61,22 +61,31 @@ export default function ResetPasswordPage() {
     setMessage('')
 
     try {
+      console.log('🔄 Reset password form submitted');
+      console.log('🔑 Token:', token);
+      console.log('🔒 New password:', password);
+      console.log('🔒 Confirm password:', confirmPassword);
+      
       const response = await enhancedAPIClient.post('/auth/reset-password', {
         token: token!,
         newPassword: password,
         confirmPassword: confirmPassword
       })
       
+      console.log('📨 Reset password response:', response);
+      
       if ((response as any).data?.success) {
+        console.log('✅ Password reset successful in frontend');
         setMessage('Password reset successfully! You can now login with your new password.')
         setTimeout(() => {
           router.push('/auth/login')
         }, 2000)
       } else {
+        console.log('❌ Password reset failed in frontend:', (response as any).data?.error?.message);
         setError((response as any).data?.error?.message || 'Failed to reset password')
       }
     } catch (error: any) {
-      console.error('Reset password error:', error)
+      console.error('❌ Reset password error:', error)
       if (error.response?.data?.error?.message) {
         setError(error.response.data.error.message)
       } else {
