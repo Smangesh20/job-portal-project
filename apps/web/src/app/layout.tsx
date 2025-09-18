@@ -10,7 +10,7 @@ import { ErrorPreventionProvider } from '@/components/providers/error-prevention
 import InfiniteErrorBoundary from '@/components/error-boundaries/infinite-error-boundary'
 import '@/lib/error-prevention-init'
 import { Toaster } from 'react-hot-toast'
-import Header from '@/components/layout/header'
+import Header from '@/components/layouts/header'
 
 const inter = Inter({ subsets: ['latin'] })
 
