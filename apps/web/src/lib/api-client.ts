@@ -236,8 +236,21 @@ class EnhancedAPIClient {
         return response as T;
       }
       case '/auth/forgot-password':
-        const forgotResponse = await mockAPI.forgotPassword(data.email);
-        return { data: forgotResponse } as T;
+        // Use serverless function for real email sending
+        const response = await fetch('/api/send-reset-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: data.email }),
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to send reset email');
+        }
+        
+        const result = await response.json();
+        return { data: result } as T;
       case '/auth/me':
         const user = await mockAPI.getCurrentUser();
         return { data: { user } } as T;
