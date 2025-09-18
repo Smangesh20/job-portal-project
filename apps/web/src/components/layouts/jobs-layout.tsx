@@ -1,7 +1,7 @@
 'use client'
 
 import { ReactNode } from 'react'
-import { Header } from '@/components/layouts/header'
+import Header from '@/components/layouts/header'
 import { Breadcrumb } from '@/components/layouts/breadcrumb'
 
 interface JobsLayoutProps {

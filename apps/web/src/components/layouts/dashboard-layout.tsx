@@ -2,7 +2,7 @@
 
 import { ReactNode } from 'react'
 import { Sidebar } from '@/components/layouts/sidebar'
-import { Header } from '@/components/layouts/header'
+import Header from '@/components/layouts/header'
 import { Breadcrumb } from '@/components/layouts/breadcrumb'
 
 interface DashboardLayoutProps {
