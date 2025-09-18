@@ -47,7 +47,16 @@ class LocalAuthService {
     
     // Check for context mismatch and redirect BEFORE loading from storage
     if (typeof window !== 'undefined') {
-      this.checkAndRedirectIfNeeded();
+      try {
+        this.checkAndRedirectIfNeeded();
+      } catch (error) {
+        // If redirect is triggered, stop execution
+        if (error.message === 'Redirecting to correct domain') {
+          console.log('🔍 Redirect triggered, stopping execution');
+          return;
+        }
+        throw error;
+      }
     }
     
     this.loadFromStorage();
@@ -63,9 +72,10 @@ class LocalAuthService {
       const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
       console.log('🔍 Redirecting to:', newUrl);
       
-      // Use immediate redirect without sessionStorage to prevent conflicts
+      // Use immediate redirect and prevent further execution
       window.location.replace(newUrl);
-      return;
+      // Throw an error to stop further execution
+      throw new Error('Redirecting to correct domain');
     }
   }
 
