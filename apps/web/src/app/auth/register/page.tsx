@@ -341,6 +341,7 @@ export default function RegisterPage() {
     }
     
     let result = null
+    let error = null
     try {
       console.log('Starting registration with data:', { 
         firstName: formData.firstName, 
@@ -368,13 +369,14 @@ export default function RegisterPage() {
         sessionStorage.removeItem('ask_ya_cham_register_form')
       }
       
-    } catch (error: any) {
-      console.error('Registration failed with error:', error)
-      console.error('Error message:', error.message)
-      console.error('Error details:', error)
+    } catch (err: any) {
+      error = err
+      console.error('Registration failed with error:', err)
+      console.error('Error message:', err.message)
+      console.error('Error details:', err)
       
       // Special handling for duplicate email - show professional modal
-      if (error.message && error.message.includes('already exists')) {
+      if (err.message && err.message.includes('already exists')) {
         console.log('Duplicate email detected, showing duplicate modal')
         setDuplicateEmail(formData.email)
         setShowDuplicateModal(true)
@@ -386,15 +388,16 @@ export default function RegisterPage() {
           forceShowDuplicateModal()
         }, 100)
       } else {
-        console.log('Registration error, showing toast:', error.message)
-        toast.error(error.message || 'Registration failed. Please try again.')
+        console.log('Registration error, showing toast:', err.message)
+        toast.error(err.message || 'Registration failed. Please try again.')
       }
     } finally {
       console.log('Registration process completed, setting isSubmitting to false')
       setIsSubmitting(false)
       
       // Show success modal after all state updates are complete
-      if (result) {
+      // Check if registration was successful (no error was thrown)
+      if (!error) {
         console.log('Setting success modal after registration completion')
         setShowSuccessModal(true)
         modalStateRef.current = true
