@@ -9,6 +9,7 @@ export interface MockUser {
   name: string
   role: 'user' | 'employer' | 'admin'
   avatar?: string
+  password?: string // Store password for validation
   createdAt: string
   updatedAt: string
 }
@@ -38,6 +39,7 @@ class MockAPI {
       email: 'test@example.com',
       name: 'Test User',
       role: 'user',
+      password: 'password123', // Default password
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     },
@@ -46,6 +48,7 @@ class MockAPI {
       email: 'demo@askyacham.com',
       name: 'Demo User',
       role: 'user',
+      password: 'demo123', // Default password
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     },
@@ -54,6 +57,7 @@ class MockAPI {
       email: 'pullareddypullareddy20@gmail.com',
       name: 'Pullareddy',
       role: 'user',
+      password: 'pullareddy123', // Default password
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     }
@@ -107,6 +111,7 @@ class MockAPI {
       email: data.email,
       name: `${data.firstName} ${data.lastName}`,
       role: 'user',
+      password: data.password, // Store the password
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     }
@@ -136,8 +141,19 @@ class MockAPI {
       }
     }
 
-    // In a real app, you'd verify the password hash
-    // For mock, we'll accept any password
+    // Validate password
+    if (!user.password || user.password !== password) {
+      console.log(`❌ Login failed: Invalid password for ${email}`);
+      console.log(`🔍 Expected: ${user.password}, Got: ${password}`);
+      return {
+        success: false,
+        error: 'Invalid password',
+        message: 'The password you entered is incorrect. Please try again.',
+        code: 'INVALID_PASSWORD'
+      }
+    }
+
+    console.log(`✅ Login successful: ${email} with correct password`);
     return {
       success: true,
       data: {
@@ -191,14 +207,18 @@ class MockAPI {
       }
     }
 
-    // For mock purposes, we'll update the first user's password
+    // For mock purposes, we'll update the user with email pullareddypullareddy20@gmail.com
     // In a real app, you'd find the user by token and update their password
-    if (this.users.length > 0) {
-      const user = this.users[0]
+    const user = this.users.find(u => u.email === 'pullareddypullareddy20@gmail.com')
+    if (user) {
+      const oldPassword = user.password
+      user.password = newPassword // Actually update the password
       user.updatedAt = new Date().toISOString()
       
       console.log(`🔄 Mock: Password reset successful for user: ${user.email}`)
-      console.log(`✅ Mock: User password updated (simulated)`)
+      console.log(`🔒 Old password: ${oldPassword}`)
+      console.log(`🔑 New password: ${newPassword}`)
+      console.log(`✅ Mock: User password actually updated`)
       
       return {
         success: true,
