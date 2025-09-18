@@ -165,23 +165,10 @@ export default function RegisterPage() {
   const [forceRender, setForceRender] = useState(0)
   const modalRef = useRef<HTMLDivElement>(null)
   const duplicateModalRef = useRef<HTMLDivElement>(null)
-  const modalStateRef = useRef(false) // Track modal state with ref
   
   // Debug state changes
   useEffect(() => {
-    console.log('Success modal state changed:', showSuccessModal, 'Ref value:', modalStateRef.current)
-    if (showSuccessModal) {
-      console.log('✅ SUCCESS MODAL IS TRUE - SHOULD BE VISIBLE!')
-      console.log('🎯 MODAL SHOULD BE RENDERED IN DOM NOW!')
-    } else {
-      console.log('❌ SUCCESS MODAL IS FALSE - NOT VISIBLE')
-      // If state is false but ref is true, something reset the state
-      if (modalStateRef.current) {
-        console.log('🚨 WARNING: State is false but ref is true - something reset the state!')
-        console.log('Stack trace:', new Error().stack)
-      }
-    }
-  }, [showSuccessModal])
+    }, [showSuccessModal])
   
   // Force show modal using direct DOM manipulation
   const forceShowModal = useCallback(() => {
@@ -253,11 +240,10 @@ export default function RegisterPage() {
     }
   }, [])
 
-  // Clear errors when component mounts - only run once
-  // useEffect(() => {
-  //   console.log('clearError useEffect called - should only run once')
-  //   // clearError() // Temporarily disabled to test if this is causing the issue
-  // }, []) // Empty dependency array - only run on mount
+  // Clear errors when component mounts
+  useEffect(() => {
+    clearError()
+  }, [clearError])
 
   // Password strength calculation
   useEffect(() => {
@@ -341,28 +327,36 @@ export default function RegisterPage() {
       return
     }
     
-    let result = null
-    let error = null
     try {
-      console.log('Starting registration with data:', { 
-        firstName: formData.firstName, 
-        lastName: formData.lastName, 
-        email: formData.email 
-      })
-      
-      console.log('About to call register function...')
-      result = await register({
+      await register({
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
         password: formData.password
       })
       
-      console.log('Register function completed successfully:', result)
-      console.log('Registration successful! Showing success modal...')
+      // Show success modal with multiple approaches to ensure it works
+      // Try immediate update
+      setShowSuccessModal(true)
+      setForceRender(prev => prev + 1)
+      forceShowModal()
       
-      // Immediate alert as fallback
-      alert('Account created successfully! Welcome to Ask Ya Cham!')
+      // Try with flushSync
+      flushSync(() => {
+        setShowSuccessModal(true)
+      })
+      
+      // Try with timeout as backup
+      setTimeout(() => {
+        setShowSuccessModal(true)
+        setForceRender(prev => prev + 1)
+        forceShowModal()
+      }, 100)
+      
+      // Additional timeout to ensure DOM is ready
+      setTimeout(() => {
+        forceShowModal()
+      }, 200)
       
       // Clear saved form data on success
       if (typeof window !== 'undefined') {
@@ -370,15 +364,9 @@ export default function RegisterPage() {
         sessionStorage.removeItem('ask_ya_cham_register_form')
       }
       
-    } catch (err: any) {
-      error = err
-      console.error('Registration failed with error:', err)
-      console.error('Error message:', err.message)
-      console.error('Error details:', err)
-      
+    } catch (error: any) {
       // Special handling for duplicate email - show professional modal
-      if (err.message && err.message.includes('already exists')) {
-        console.log('Duplicate email detected, showing duplicate modal')
+      if (error.message && error.message.includes('already exists')) {
         setDuplicateEmail(formData.email)
         setShowDuplicateModal(true)
         forceShowDuplicateModal()
@@ -389,85 +377,10 @@ export default function RegisterPage() {
           forceShowDuplicateModal()
         }, 100)
       } else {
-        console.log('Registration error, showing toast:', err.message)
-        toast.error(err.message || 'Registration failed. Please try again.')
+        toast.error(error.message || 'Registration failed. Please try again.')
       }
     } finally {
-      console.log('Registration process completed, setting isSubmitting to false')
       setIsSubmitting(false)
-      
-      // Show success modal after all state updates are complete
-      // Check if registration was successful (no error was thrown)
-      if (!error) {
-        console.log('Setting success modal after registration completion')
-        setShowSuccessModal(true)
-        modalStateRef.current = true
-        console.log('Success modal state set to true, ref updated to:', modalStateRef.current)
-        
-        // Force modal to show using direct DOM manipulation as backup
-        setTimeout(() => {
-          const modalElement = document.querySelector('[data-success-modal]') as HTMLElement
-          if (modalElement) {
-            console.log('Found modal element, forcing display')
-            modalElement.style.display = 'flex'
-            modalElement.style.zIndex = '99999'
-          } else {
-            console.log('Modal element not found in DOM - creating manually')
-            // Create modal manually if React didn't render it
-            const modalHTML = `
-              <div class="fixed inset-0 z-[99999] flex items-center justify-center" style="background-color: rgba(0,0,0,0.8);" data-success-modal>
-                <div class="absolute top-4 left-4 bg-red-500 text-white p-2 rounded z-[100000]">
-                  MANUAL MODAL - showSuccessModal: true
-                </div>
-                <div class="absolute inset-0 bg-black/60 backdrop-blur-md" onclick="this.parentElement.remove()"></div>
-                <div class="relative w-full max-w-md mx-4 bg-white rounded-2xl shadow-2xl border border-gray-100">
-                  <div class="p-8 text-center">
-                    <div class="flex justify-center mb-6">
-                      <div class="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-r from-green-500 to-emerald-500 shadow-lg">
-                        <svg class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                      </div>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Account Created Successfully!</h3>
-                    <p class="text-gray-600 mb-8 leading-relaxed">
-                      Congratulations! Your Ask Ya Cham account has been created successfully. 
-                      Welcome to the future of job matching with quantum AI technology. 
-                      You will now be redirected to the home page.
-                    </p>
-                    <button onclick="window.location.href='/'" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
-                      Go to Home
-                    </button>
-                  </div>
-                </div>
-              </div>
-            `
-            document.body.insertAdjacentHTML('beforeend', modalHTML)
-          }
-        }, 100)
-        
-        // Also show toast as backup
-        toast.success('Account created successfully! Welcome to Ask Ya Cham!')
-        
-        // Force multiple state updates to ensure modal shows
-        setTimeout(() => {
-          console.log('Immediate timeout - setting modal to true')
-          setShowSuccessModal(true)
-          modalStateRef.current = true
-        }, 0)
-        
-        setTimeout(() => {
-          console.log('Second immediate timeout - setting modal to true')
-          setShowSuccessModal(true)
-          modalStateRef.current = true
-        }, 10)
-        
-        setTimeout(() => {
-          console.log('Third immediate timeout - setting modal to true')
-          setShowSuccessModal(true)
-          modalStateRef.current = true
-        }, 50)
-      }
     }
   }, [formData, register, clearError, isSubmitting])
 
@@ -513,54 +426,6 @@ export default function RegisterPage() {
   return (
     <PublicRoute>
     <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-green-50 to-emerald-100 dark:from-gray-900 dark:via-green-900 dark:to-emerald-900 p-4">
-      
-      {/* Success Modal - Simple React approach */}
-      {showSuccessModal && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.8)' }} data-success-modal>
-          {/* Debug info */}
-          <div className="absolute top-4 left-4 bg-red-500 text-white p-2 rounded z-[10000]">
-            MODAL IS RENDERED - showSuccessModal: {showSuccessModal ? 'true' : 'false'}
-          </div>
-          {/* Backdrop */}
-          <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-md"
-            onClick={handleSuccessClose}
-          />
-          
-          {/* Modal */}
-          <div className="relative w-full max-w-md mx-4 bg-white rounded-2xl shadow-2xl border border-gray-100">
-            {/* Content */}
-            <div className="p-8 text-center">
-              {/* Success Icon */}
-              <div className="flex justify-center mb-6">
-                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-r from-green-500 to-emerald-500 shadow-lg">
-                  <CheckCircleIcon className="h-12 w-12 text-white" />
-                </div>
-              </div>
-
-              {/* Title */}
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                Account Created Successfully!
-              </h3>
-
-              {/* Message */}
-              <p className="text-gray-600 mb-8 leading-relaxed">
-                Congratulations! Your Ask Ya Cham account has been created successfully. 
-                Welcome to the future of job matching with quantum AI technology. 
-                You will now be redirected to the home page.
-              </p>
-
-              {/* Button */}
-              <Button
-                onClick={handleSuccessContinue}
-                className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
-              >
-                Go to Home
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-40" style={{
         backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
@@ -610,13 +475,6 @@ export default function RegisterPage() {
           </CardHeader>
 
           <CardContent className="space-y-6">
-            {/* Debug Info - remove in production */}
-            <div className="mb-4 p-2 bg-yellow-100 border border-yellow-300 rounded">
-              <p className="text-sm text-yellow-800">
-                Debug: showSuccessModal = {showSuccessModal ? 'true' : 'false'} - Build: {new Date().toISOString()}
-              </p>
-            </div>
-
             {/* Professional Error Display */}
             {errorDetails && (
               <motion.div
@@ -901,18 +759,6 @@ export default function RegisterPage() {
                     'Create Account'
                   )}
                 </Button>
-                
-                {/* Debug button - remove in production */}
-                <Button
-                  type="button"
-                  onClick={() => {
-                    console.log('Test button clicked - showing modal')
-                    setShowSuccessModal(true)
-                  }}
-                  className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white"
-                >
-                  Test Success Modal
-                </Button>
               </motion.div>
               
             </form>
@@ -938,6 +784,57 @@ export default function RegisterPage() {
         </Card>
       </motion.div>
 
+      {/* Success Modal - Direct DOM approach */}
+      <div
+        ref={modalRef}
+        data-modal-ref="true"
+        className="success-modal-container fixed inset-0 z-[9999] flex items-center justify-center"
+        style={{ 
+          display: 'none',
+          opacity: 0,
+          visibility: 'hidden'
+        }}
+      >
+        {/* Backdrop */}
+        <div
+          className="absolute inset-0 bg-black/60 backdrop-blur-md"
+          onClick={handleSuccessClose}
+        />
+        
+        {/* Modal */}
+        <div className="relative w-full max-w-md mx-4 bg-white rounded-2xl shadow-2xl border border-gray-100">
+          {/* Content */}
+          <div className="p-8 text-center">
+            {/* Success Icon */}
+            <div className="flex justify-center mb-6">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-r from-green-500 to-emerald-500 shadow-lg">
+                <CheckCircleIcon className="h-12 w-12 text-white" />
+              </div>
+            </div>
+
+            {/* Title */}
+            <h3 className="text-2xl font-bold text-gray-900 mb-3">
+              Account Created Successfully!
+            </h3>
+
+            {/* Message */}
+            <p className="text-gray-600 mb-8 leading-relaxed">
+              Congratulations! Your Ask Ya Cham account has been created successfully. 
+              Welcome to the future of job matching with quantum AI technology. 
+              You will now be redirected to the home page.
+            </p>
+
+            {/* Button */}
+            <Button
+              onClick={handleSuccessContinue}
+              className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+            >
+              Go to Home
+            </Button>
+          </div>
+        </div>
+      </div>
+      
       {/* Duplicate Account Modal - Professional Enterprise Style */}
       <div
         ref={duplicateModalRef}

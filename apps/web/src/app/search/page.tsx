@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { MagnifyingGlassIcon, MapPinIcon, ClockIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline'
 import { useAuthStore } from '@/stores/enhanced-auth-store'
 
@@ -154,34 +154,34 @@ export default function SearchPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Job Type
                   </label>
-                  <select
-                    value={jobType}
-                    onChange={(e) => setJobType(e.target.value)}
-                    className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    <option value="">Select type</option>
-                    <option value="full-time">Full-time</option>
-                    <option value="part-time">Part-time</option>
-                    <option value="contract">Contract</option>
-                    <option value="internship">Internship</option>
-                  </select>
+                  <Select value={jobType} onValueChange={setJobType}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="full-time">Full-time</SelectItem>
+                      <SelectItem value="part-time">Part-time</SelectItem>
+                      <SelectItem value="contract">Contract</SelectItem>
+                      <SelectItem value="internship">Internship</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Salary Range
                   </label>
-                  <select
-                    value={salaryRange}
-                    onChange={(e) => setSalaryRange(e.target.value)}
-                    className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    <option value="">Select range</option>
-                    <option value="0-50k">$0 - $50k</option>
-                    <option value="50k-100k">$50k - $100k</option>
-                    <option value="100k-150k">$100k - $150k</option>
-                    <option value="150k+">$150k+</option>
-                  </select>
+                  <Select value={salaryRange} onValueChange={setSalaryRange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select range" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0-50k">$0 - $50k</SelectItem>
+                      <SelectItem value="50k-100k">$50k - $100k</SelectItem>
+                      <SelectItem value="100k-150k">$100k - $150k</SelectItem>
+                      <SelectItem value="150k+">$150k+</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
               

@@ -3,10 +3,10 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-// import { Label } from '@/components/ui/label'
+import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-// import { Separator } from '@/components/ui/separator'
-// import { Switch } from '@/components/ui/switch'
+import { Separator } from '@/components/ui/separator'
+import { Switch } from '@/components/ui/switch'
 import { useAuthStore } from '@/stores/enhanced-auth-store'
 import { toast } from 'react-hot-toast'
 
@@ -97,7 +97,7 @@ export default function SettingsPage() {
               <form onSubmit={handleSaveProfile} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                    <Label htmlFor="firstName">First Name</Label>
                     <Input
                       id="firstName"
                       name="firstName"
@@ -107,7 +107,7 @@ export default function SettingsPage() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                    <Label htmlFor="lastName">Last Name</Label>
                     <Input
                       id="lastName"
                       name="lastName"
@@ -117,7 +117,7 @@ export default function SettingsPage() {
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
                     name="email"
@@ -145,7 +145,7 @@ export default function SettingsPage() {
             <CardContent>
               <form onSubmit={handleChangePassword} className="space-y-4">
                 <div>
-                  <label htmlFor="currentPassword" className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                  <Label htmlFor="currentPassword">Current Password</Label>
                   <Input
                     id="currentPassword"
                     name="currentPassword"
@@ -157,7 +157,7 @@ export default function SettingsPage() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                    <Label htmlFor="newPassword">New Password</Label>
                     <Input
                       id="newPassword"
                       name="newPassword"
@@ -168,7 +168,7 @@ export default function SettingsPage() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+                    <Label htmlFor="confirmPassword">Confirm New Password</Label>
                     <Input
                       id="confirmPassword"
                       name="confirmPassword"
@@ -197,43 +197,37 @@ export default function SettingsPage() {
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <label htmlFor="email-notifications" className="block text-sm font-medium text-gray-700">Email Notifications</label>
+                  <Label htmlFor="email-notifications">Email Notifications</Label>
                   <p className="text-sm text-gray-500">Receive updates via email</p>
                 </div>
-                <input
-                  type="checkbox"
+                <Switch
                   id="email-notifications"
                   checked={notifications.email}
-                  onChange={(e) => setNotifications(prev => ({ ...prev, email: e.target.checked }))}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  onCheckedChange={(checked) => setNotifications(prev => ({ ...prev, email: checked }))}
                 />
               </div>
-              <hr className="my-4" />
+              <Separator />
               <div className="flex items-center justify-between">
                 <div>
-                  <label htmlFor="push-notifications" className="block text-sm font-medium text-gray-700">Push Notifications</label>
+                  <Label htmlFor="push-notifications">Push Notifications</Label>
                   <p className="text-sm text-gray-500">Receive push notifications in your browser</p>
                 </div>
-                <input
-                  type="checkbox"
+                <Switch
                   id="push-notifications"
                   checked={notifications.push}
-                  onChange={(e) => setNotifications(prev => ({ ...prev, push: e.target.checked }))}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  onCheckedChange={(checked) => setNotifications(prev => ({ ...prev, push: checked }))}
                 />
               </div>
-              <hr className="my-4" />
+              <Separator />
               <div className="flex items-center justify-between">
                 <div>
-                  <label htmlFor="sms-notifications" className="block text-sm font-medium text-gray-700">SMS Notifications</label>
+                  <Label htmlFor="sms-notifications">SMS Notifications</Label>
                   <p className="text-sm text-gray-500">Receive updates via SMS</p>
                 </div>
-                <input
-                  type="checkbox"
+                <Switch
                   id="sms-notifications"
                   checked={notifications.sms}
-                  onChange={(e) => setNotifications(prev => ({ ...prev, sms: e.target.checked }))}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  onCheckedChange={(checked) => setNotifications(prev => ({ ...prev, sms: checked }))}
                 />
               </div>
             </CardContent>

@@ -27,7 +27,6 @@ interface AuthActions {
   refreshToken: () => Promise<void>
   initialize: () => Promise<void>
   clearError: () => void
-  clearAuth: () => void
   forgotPassword: (email: string) => Promise<void>
   resetPassword: (token: string, newPassword: string) => Promise<void>
   validateResetToken: (token: string) => Promise<void>
@@ -72,38 +71,18 @@ export const useAuthStore = create<AuthStore>()(
 
       clearError: () => set({ error: null, errorDetails: null }),
 
-      clearAuth: () => {
-        set({
-          user: null,
-          accessToken: null,
-          refreshTokenValue: null,
-          isAuthenticated: false,
-          isLoading: false,
-          error: null,
-          errorDetails: null
-        })
-        if (typeof window !== 'undefined') {
-          localStorage.removeItem('accessToken')
-          localStorage.removeItem('refreshToken')
-        }
-      },
-
       login: async (email: string, password: string) => {
         try {
           set({ isLoading: true, error: null, errorDetails: null })
 
-          // Use real API for login
-          const response = await enhancedAPIClient.post('/auth/login', { email, password })
+          // Use local authentication service for persistent login
+          const response = await localAuthService.login(email, password)
 
-          console.log('Login response:', response)
-
-          if (!(response as any).success) {
-            throw new Error((response as any).error?.message || (response as any).message || 'Login failed')
+          if (!response.success) {
+            throw new Error(response.error?.message || 'Login failed')
           }
 
-          // Handle both mock API and real API response formats
-          const responseData = (response as any).data || response
-          const { user, accessToken, refreshToken } = responseData
+          const { user, accessToken, refreshToken } = response.data!
 
           set({
             user: user as AuthUser,
@@ -131,18 +110,14 @@ export const useAuthStore = create<AuthStore>()(
         try {
           set({ isLoading: true, error: null, errorDetails: null })
 
-          // Use real API for registration
-          const response = await enhancedAPIClient.post('/auth/register', data)
+          // Use local authentication service for persistent registration
+          const response = await localAuthService.register(data)
 
-          console.log('Registration response:', response)
-
-          if (!(response as any).success) {
-            throw new Error((response as any).error?.message || (response as any).message || 'Registration failed')
+          if (!response.success) {
+            throw new Error(response.error?.message || 'Registration failed')
           }
 
-          // Handle both mock API and real API response formats
-          const responseData = (response as any).data || response
-          const { user, accessToken, refreshToken } = responseData
+          const { user, accessToken, refreshToken } = response.data!
 
           set({
             user: user as AuthUser,
@@ -217,14 +192,14 @@ export const useAuthStore = create<AuthStore>()(
             throw new Error('No refresh token available')
           }
 
-          // Use real API for token refresh
-          const response = await enhancedAPIClient.post('/auth/refresh', { refreshToken: refreshTokenValue })
+          // Use local authentication service for token refresh
+          const response = await localAuthService.refreshToken(refreshTokenValue)
 
-          if (!(response as any).data.success) {
-            throw new Error((response as any).data.error?.message || 'Token refresh failed')
+          if (!response.success) {
+            throw new Error(response.error?.message || 'Token refresh failed')
           }
 
-          const { accessToken: newAccessToken, refreshToken: newRefreshToken } = (response as any).data.data
+          const { accessToken: newAccessToken, refreshToken: newRefreshToken } = response.data!
 
           set({
             accessToken: newAccessToken,
@@ -246,11 +221,7 @@ export const useAuthStore = create<AuthStore>()(
           set({ isLoading: true })
 
           if (typeof window === 'undefined') {
-            set({ 
-              isLoading: false,
-              user: null,
-              isAuthenticated: false
-            })
+            set({ isLoading: false })
             return
           }
 
@@ -258,30 +229,20 @@ export const useAuthStore = create<AuthStore>()(
           const refreshToken = localStorage.getItem('refreshToken')
 
           if (!accessToken || !refreshToken) {
-            set({ 
-              isLoading: false,
-              user: null,
-              isAuthenticated: false
-            })
+            set({ isLoading: false })
             return
           }
 
           // Set tokens
           set({ accessToken, refreshTokenValue: refreshToken })
 
-          // Use real API to verify token and get user info
+          // Use local authentication service to verify token and get user info
           try {
-            const response = await enhancedAPIClient.get('/auth/me')
+            const response = await localAuthService.getCurrentUser(accessToken)
             
-            console.log('Get current user response:', response)
-            
-            // Handle both mock API and real API response formats
-            const responseData = (response as any).data || response
-            const user = responseData.user || responseData.data?.user
-            
-            if (user) {
+            if (response.success && response.data) {
               set({
-                user: user as AuthUser,
+                user: response.data.user as AuthUser,
                 isAuthenticated: true,
                 isLoading: false
               })
@@ -294,8 +255,6 @@ export const useAuthStore = create<AuthStore>()(
                 isAuthenticated: false,
                 isLoading: false
               })
-              localStorage.removeItem('accessToken')
-              localStorage.removeItem('refreshToken')
             }
           } catch (error) {
             // If verification fails, clear auth state
@@ -306,8 +265,6 @@ export const useAuthStore = create<AuthStore>()(
               isAuthenticated: false,
               isLoading: false
             })
-            localStorage.removeItem('accessToken')
-            localStorage.removeItem('refreshToken')
           }
 
         } catch (error: any) {
@@ -318,8 +275,6 @@ export const useAuthStore = create<AuthStore>()(
             isAuthenticated: false,
             isLoading: false
           })
-          localStorage.removeItem('accessToken')
-          localStorage.removeItem('refreshToken')
         }
       },
 

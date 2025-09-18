@@ -19,14 +19,7 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isClient, setIsClient] = useState(false)
   const pathname = usePathname()
-  const { user, isAuthenticated, isLoading, clearAuth } = useAuthStore()
-
-  // Debug logging
-  useEffect(() => {
-    if (isClient) {
-      console.log('Header Auth State:', { user, isAuthenticated, isLoading })
-    }
-  }, [isClient, user, isAuthenticated, isLoading])
+  const { user, isAuthenticated, isLoading } = useAuthStore()
 
   useEffect(() => {
     setIsClient(true)
@@ -147,18 +140,6 @@ export default function Header() {
                     </div>
                     <div className="text-xs text-gray-500">{user.email}</div>
                   </div>
-                  {/* Debug button - remove in production */}
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => {
-                      console.log('Clearing auth state...')
-                      clearAuth()
-                    }}
-                    className="ml-2 text-xs"
-                  >
-                    Clear Auth
-                  </Button>
                 </div>
               </div>
             ) : (
