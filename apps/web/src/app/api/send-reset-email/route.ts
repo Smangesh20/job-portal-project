@@ -19,7 +19,19 @@ export async function POST(request: NextRequest) {
 
     // Generate a secure reset token
     const resetToken = `reset_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.askyacham.com'}/auth/reset-password?token=${resetToken}`;
+    
+    // Get the correct base URL for reset links
+    const getBaseUrl = () => {
+      // Check if we're in production
+      if (process.env.NODE_ENV === 'production') {
+        // Use the main domain for production
+        return 'https://www.askyacham.com';
+      }
+      // For development, use localhost
+      return process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    };
+    
+    const resetUrl = `${getBaseUrl()}/auth/reset-password?token=${resetToken}`;
 
     // Check if SendGrid is configured
     if (process.env.SENDGRID_API_KEY && process.env.FROM_EMAIL) {
@@ -70,6 +82,8 @@ export async function POST(request: NextRequest) {
         await sgMail.send(msg);
         console.log(`✅ Real email sent via SendGrid to: ${email}`);
         console.log(`🔗 Reset URL: ${resetUrl}`);
+        console.log(`🌐 Environment: ${process.env.NODE_ENV}`);
+        console.log(`📧 Email sent from: ${process.env.FROM_EMAIL}`);
 
       } catch (sendGridError) {
         console.error('SendGrid error:', sendGridError);
@@ -81,6 +95,7 @@ export async function POST(request: NextRequest) {
       // No SendGrid configured, use mock
       console.log(`📧 Mock: Password reset email would be sent to: ${email}`);
       console.log(`🔗 Mock Reset URL: ${resetUrl}`);
+      console.log(`🌐 Environment: ${process.env.NODE_ENV}`);
       console.log(`⚠️ SendGrid not configured. Set SENDGRID_API_KEY and FROM_EMAIL environment variables.`);
     }
 
