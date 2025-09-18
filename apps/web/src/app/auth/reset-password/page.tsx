@@ -37,6 +37,7 @@ export default function ResetPasswordPage() {
         } else {
           setError(response.error?.message || 'Invalid or expired token')
           console.log('❌ Token validation failed:', response.error)
+          console.log('❌ Full response:', JSON.stringify(response, null, 2))
         }
       } catch (error: any) {
         setError('Failed to validate token')

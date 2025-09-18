@@ -630,8 +630,14 @@ class LocalAuthService {
   // Validate reset token
   async validateResetToken(token: string): Promise<AuthResponse> {
     try {
+      console.log('🔍 validateResetToken called with token:', token);
+      console.log('🔍 Available reset tokens:', Array.from(this.resetTokens.keys()));
+      
       const resetTokenData = this.resetTokens.get(token);
+      console.log('🔍 Found reset token data:', resetTokenData);
+      
       if (!resetTokenData) {
+        console.log('❌ Token not found in resetTokens map');
         return {
           success: false,
           error: {
@@ -641,7 +647,12 @@ class LocalAuthService {
         };
       }
 
-      if (new Date(resetTokenData.expiresAt) < new Date()) {
+      const now = new Date();
+      const expiresAt = new Date(resetTokenData.expiresAt);
+      console.log('🔍 Token expiry check:', { now: now.toISOString(), expiresAt: expiresAt.toISOString(), isExpired: now > expiresAt });
+      
+      if (now > expiresAt) {
+        console.log('❌ Token has expired');
         this.resetTokens.delete(token);
         this.saveToStorage();
         return {
@@ -653,7 +664,9 @@ class LocalAuthService {
         };
       }
 
+      console.log('🔍 Token used check:', { used: resetTokenData.used });
       if (resetTokenData.used) {
+        console.log('❌ Token has already been used');
         return {
           success: false,
           error: {
