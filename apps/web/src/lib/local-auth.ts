@@ -971,12 +971,17 @@ class LocalAuthService {
             
             // Try to find real user from other localStorage keys that might contain real user data
             const allKeys = Object.keys(localStorage);
+            console.log('🔍 All localStorage keys for real user search:', allKeys);
+            
             for (const key of allKeys) {
+              console.log('🔍 Checking key for real user:', key);
               if (key.includes('user') && !key.includes('askyacham') && !key.includes('temp')) {
                 try {
                   const userData = localStorage.getItem(key);
+                  console.log('🔍 User data from key', key, ':', userData);
                   if (userData) {
                     const parsed = JSON.parse(userData);
+                    console.log('🔍 Parsed user data:', parsed);
                     if (parsed.id && parsed.email && parsed.id !== 'temp_user' && parsed.email !== 'temp@example.com') {
                       console.log('🔍 Found real user from other key:', key, parsed);
                       realUserId = parsed.id;
@@ -985,10 +990,42 @@ class LocalAuthService {
                       console.log('🔍 realUserId after assignment:', realUserId);
                       console.log('🔍 realEmail after assignment:', realEmail);
                       break;
+                    } else {
+                      console.log('🔍 User data is temp_user or invalid:', { id: parsed.id, email: parsed.email });
                     }
                   }
                 } catch (e) {
-                  // Not JSON, skip
+                  console.log('🔍 Error parsing user data from key', key, ':', e);
+                }
+              } else {
+                console.log('🔍 Skipping key (contains askyacham or temp):', key);
+              }
+            }
+            
+            // If still no real user found, try to find from any key that might contain user data
+            if (!hasRealUser) {
+              console.log('🔍 Still no real user found, trying broader search...');
+              for (const key of allKeys) {
+                if (key !== 'askyacham_users' && key !== 'askyacham_sessions' && key !== 'askyacham_reset_tokens') {
+                  try {
+                    const data = localStorage.getItem(key);
+                    if (data && data.includes('user_yej3pvwqgdf')) {
+                      console.log('🔍 Found key with real user ID:', key, data);
+                      // Try to extract user data from this key
+                      const parsed = JSON.parse(data);
+                      if (parsed.id === 'user_yej3pvwqgdf') {
+                        console.log('🔍 Found real user data in key:', key, parsed);
+                        realUserId = parsed.id;
+                        realEmail = parsed.email;
+                        hasRealUser = true;
+                        console.log('🔍 realUserId after assignment:', realUserId);
+                        console.log('🔍 realEmail after assignment:', realEmail);
+                        break;
+                      }
+                    }
+                  } catch (e) {
+                    // Not JSON, skip
+                  }
                 }
               }
             }
