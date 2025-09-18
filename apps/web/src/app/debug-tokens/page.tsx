@@ -1,9 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { localAuthService } from '@/lib/local-auth'
 
 export default function DebugTokensPage() {
+  const searchParams = useSearchParams()
+  const urlToken = searchParams.get('token')
   const [tokens, setTokens] = useState<any[]>([])
   const [users, setUsers] = useState<any[]>([])
   const [sessions, setSessions] = useState<any[]>([])
@@ -12,12 +15,25 @@ export default function DebugTokensPage() {
     // Get data from localStorage
     const loadData = () => {
       try {
-        const storedData = localStorage.getItem('localAuthData')
-        if (storedData) {
-          const data = JSON.parse(storedData)
-          setTokens(data.resetTokens || [])
-          setUsers(data.users || [])
-          setSessions(data.sessions || [])
+        // Load users
+        const storedUsers = localStorage.getItem('askyacham_users')
+        if (storedUsers) {
+          const users = JSON.parse(storedUsers)
+          setUsers(users)
+        }
+
+        // Load sessions
+        const storedSessions = localStorage.getItem('askyacham_sessions')
+        if (storedSessions) {
+          const sessions = JSON.parse(storedSessions)
+          setSessions(sessions)
+        }
+
+        // Load reset tokens
+        const storedResetTokens = localStorage.getItem('askyacham_reset_tokens')
+        if (storedResetTokens) {
+          const resetTokens = JSON.parse(storedResetTokens)
+          setTokens(resetTokens)
         }
       } catch (error) {
         console.error('Error loading data:', error)
@@ -32,6 +48,38 @@ export default function DebugTokensPage() {
     setTokens([])
     setUsers([])
     setSessions([])
+  }
+
+  const refreshData = () => {
+    // Reload data from localStorage
+    const loadData = () => {
+      try {
+        // Load users
+        const storedUsers = localStorage.getItem('askyacham_users')
+        if (storedUsers) {
+          const users = JSON.parse(storedUsers)
+          setUsers(users)
+        }
+
+        // Load sessions
+        const storedSessions = localStorage.getItem('askyacham_sessions')
+        if (storedSessions) {
+          const sessions = JSON.parse(storedSessions)
+          setSessions(sessions)
+        }
+
+        // Load reset tokens
+        const storedResetTokens = localStorage.getItem('askyacham_reset_tokens')
+        if (storedResetTokens) {
+          const resetTokens = JSON.parse(storedResetTokens)
+          setTokens(resetTokens)
+        }
+      } catch (error) {
+        console.error('Error loading data:', error)
+      }
+    }
+
+    loadData()
   }
 
   const testTokenValidation = async (token: string) => {
@@ -49,6 +97,19 @@ export default function DebugTokensPage() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Debug Tokens & Auth Data</h1>
           <p className="mt-2 text-gray-600">Debug page for troubleshooting authentication issues</p>
+          
+          {urlToken && (
+            <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h3 className="text-lg font-semibold text-blue-800 mb-2">Current URL Token</h3>
+              <div className="text-sm text-blue-700">
+                <div><strong>Token from URL:</strong> {urlToken}</div>
+                <div><strong>Token Length:</strong> {urlToken.length} characters</div>
+                <div><strong>Matches Stored Token:</strong> {
+                  tokens.some(token => token.token === urlToken) ? '✅ Yes' : '❌ No'
+                }</div>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -140,7 +201,13 @@ export default function DebugTokensPage() {
           </div>
         </div>
 
-        <div className="mt-8 text-center">
+        <div className="mt-8 text-center space-x-4">
+          <button
+            onClick={refreshData}
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            Refresh Data
+          </button>
           <button
             onClick={clearAllData}
             className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700"
