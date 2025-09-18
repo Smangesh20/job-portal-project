@@ -125,4 +125,22 @@ const SelectTrigger = React.forwardRef<
 })
 SelectTrigger.displayName = "SelectTrigger"
 
-export { Select, SelectContent, SelectItem, SelectTrigger }
+const SelectValue = React.forwardRef<
+  HTMLSpanElement,
+  React.HTMLAttributes<HTMLSpanElement> & {
+    placeholder?: string
+  }
+>(({ className, placeholder, ...props }, ref) => {
+  return (
+    <span
+      ref={ref}
+      className={cn("block truncate", className)}
+      {...props}
+    >
+      {placeholder || "Select..."}
+    </span>
+  )
+})
+SelectValue.displayName = "SelectValue"
+
+export { Select, SelectContent, SelectItem, SelectTrigger, SelectValue }

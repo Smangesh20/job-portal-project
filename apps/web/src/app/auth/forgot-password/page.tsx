@@ -23,11 +23,11 @@ export default function ForgotPasswordPage() {
         email: email
       })
       
-      if (response.data.success) {
+      if ((response as any).data?.success) {
         setShowEmailSent(true)
-        setMessage(response.data.message || 'If an account with that email exists, we have sent a password reset link.')
+        setMessage((response as any).data?.message || 'If an account with that email exists, we have sent a password reset link.')
       } else {
-        setError(response.data.error?.message || 'Failed to send reset email')
+        setError((response as any).data?.error?.message || 'Failed to send reset email')
       }
     } catch (error: any) {
       console.error('Forgot password error:', error)

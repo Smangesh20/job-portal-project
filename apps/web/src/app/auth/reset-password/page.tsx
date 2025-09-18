@@ -67,13 +67,13 @@ export default function ResetPasswordPage() {
         confirmPassword: confirmPassword
       })
       
-      if (response.data.success) {
+      if ((response as any).data?.success) {
         setMessage('Password reset successfully! You can now login with your new password.')
         setTimeout(() => {
           router.push('/auth/login')
         }, 2000)
       } else {
-        setError(response.data.error?.message || 'Failed to reset password')
+        setError((response as any).data?.error?.message || 'Failed to reset password')
       }
     } catch (error: any) {
       console.error('Reset password error:', error)
