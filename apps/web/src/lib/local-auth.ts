@@ -1007,32 +1007,48 @@ class LocalAuthService {
               }
             }
             
-            // If still no real user found, try to find from any key that might contain user data
-            if (!hasRealUser) {
-              console.log('🔍 Still no real user found, trying broader search...');
-              for (const key of allKeys) {
-                if (key !== 'askyacham_users' && key !== 'askyacham_sessions' && key !== 'askyacham_reset_tokens') {
-                  try {
-                    const data = localStorage.getItem(key);
-                    if (data && data.includes('user_yej3pvwqgdf')) {
-                      console.log('🔍 Found key with real user ID:', key, data);
-                      // Try to extract user data from this key
-                      const parsed = JSON.parse(data);
-                      if (parsed.id === 'user_yej3pvwqgdf') {
-                        console.log('🔍 Found real user data in key:', key, parsed);
-                        realUserId = parsed.id;
-                        realEmail = parsed.email;
-                        hasRealUser = true;
-                        console.log('🔍 realUserId after assignment:', realUserId);
-                        console.log('🔍 realEmail after assignment:', realEmail);
-                        break;
-                      }
+          // If still no real user found, try to find from any key that might contain user data
+          if (!hasRealUser) {
+            console.log('🔍 Still no real user found, trying broader search...');
+            for (const key of allKeys) {
+              if (key !== 'askyacham_users' && key !== 'askyacham_sessions' && key !== 'askyacham_reset_tokens') {
+                try {
+                  const data = localStorage.getItem(key);
+                  if (data && data.includes('user_yej3pvwqgdf')) {
+                    console.log('🔍 Found key with real user ID:', key, data);
+                    // Try to extract user data from this key
+                    const parsed = JSON.parse(data);
+                    if (parsed.id === 'user_yej3pvwqgdf') {
+                      console.log('🔍 Found real user data in key:', key, parsed);
+                      realUserId = parsed.id;
+                      realEmail = parsed.email;
+                      hasRealUser = true;
+                      console.log('🔍 realUserId after assignment:', realUserId);
+                      console.log('🔍 realEmail after assignment:', realEmail);
+                      break;
                     }
-                  } catch (e) {
-                    // Not JSON, skip
                   }
+                } catch (e) {
+                  // Not JSON, skip
                 }
               }
+            }
+          }
+          
+          // If still no real user found, this is a context mismatch issue
+          if (!hasRealUser) {
+            console.log('🔍 No real user found in current context - this is a context mismatch issue');
+            console.log('🔍 Current context:', window.location.origin);
+            console.log('🔍 Real user data is likely stored in askyacham.com context, not www.askyacham.com');
+            
+            // Check if we're in the wrong context and need to redirect
+            if (window.location.origin === 'https://www.askyacham.com') {
+              console.log('🔍 Redirecting from www.askyacham.com to askyacham.com to access real user data');
+              const currentUrl = window.location.href;
+              const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
+              console.log('🔍 Redirecting to:', newUrl);
+              window.location.href = newUrl;
+              return;
             }
           }
           
