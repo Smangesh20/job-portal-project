@@ -236,7 +236,8 @@ class EnhancedAPIClient {
         return response as T;
       }
       case '/auth/forgot-password':
-        return await mockAPI.forgotPassword(data.email) as T;
+        const forgotResponse = await mockAPI.forgotPassword(data.email);
+        return { data: forgotResponse } as T;
       case '/auth/me':
         const user = await mockAPI.getCurrentUser();
         return { data: { user } } as T;
