@@ -233,11 +233,23 @@ class EnhancedAPIClient {
         // Use mock API for login to ensure password validation works
         console.log('🔐 Using mock API for login to validate passwords');
         return await this.useMockAPI<T>(endpoint, options);
-      } else if (endpoint === '/auth/register') {
-        // Use mock API for register to ensure consistency
-        console.log('📝 Using mock API for registration');
-        return await this.useMockAPI<T>(endpoint, options);
-      } else {
+              } else if (endpoint === '/auth/register') {
+                // Use mock API for register to ensure consistency
+                console.log('📝 Using mock API for registration');
+                return await this.useMockAPI<T>(endpoint, options);
+              } else if (endpoint === '/auth/me') {
+                // Use mock API for get current user to avoid CORS
+                console.log('👤 Using mock API for get current user');
+                return await this.useMockAPI<T>(endpoint, options);
+              } else if (endpoint === '/auth/logout') {
+                // Use mock API for logout to avoid CORS
+                console.log('🚪 Using mock API for logout');
+                return await this.useMockAPI<T>(endpoint, options);
+              } else if (endpoint === '/auth/refresh') {
+                // Use mock API for token refresh to avoid CORS
+                console.log('🔄 Using mock API for token refresh');
+                return await this.useMockAPI<T>(endpoint, options);
+              } else {
         // Use external API for other endpoints
         const response = await apiClient.request({
           url: endpoint,
