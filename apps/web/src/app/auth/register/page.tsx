@@ -406,7 +406,7 @@ export default function RegisterPage() {
         
         // Force modal to show using direct DOM manipulation as backup
         setTimeout(() => {
-          const modalElement = document.querySelector('[data-success-modal]')
+          const modalElement = document.querySelector('[data-success-modal]') as HTMLElement
           if (modalElement) {
             console.log('Found modal element, forcing display')
             modalElement.style.display = 'flex'
