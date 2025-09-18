@@ -71,11 +71,14 @@ class LocalAuthService {
 
       // Load reset tokens
       const storedResetTokens = localStorage.getItem('askyacham_reset_tokens');
+      console.log('🔍 Loading reset tokens from localStorage:', storedResetTokens);
       if (storedResetTokens) {
         const resetTokens = JSON.parse(storedResetTokens);
+        console.log('🔍 Parsed reset tokens:', resetTokens);
         resetTokens.forEach((token: PasswordResetToken) => {
           this.resetTokens.set(token.token, token);
         });
+        console.log('🔍 Loaded reset tokens into map:', Array.from(this.resetTokens.keys()));
       }
     } catch (error) {
       console.error('Error loading from localStorage:', error);
@@ -99,6 +102,7 @@ class LocalAuthService {
 
       // Save reset tokens
       const resetTokens = Array.from(this.resetTokens.values());
+      console.log('🔍 Saving reset tokens to localStorage:', resetTokens);
       localStorage.setItem('askyacham_reset_tokens', JSON.stringify(resetTokens));
 
       console.log(`Saved ${users.length} users, ${sessions.length} sessions, and ${resetTokens.length} reset tokens to localStorage`);
@@ -471,6 +475,9 @@ class LocalAuthService {
       const resetToken = this.generateToken();
       const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString(); // 15 minutes
 
+      console.log('🔍 Generated reset token:', resetToken);
+      console.log('🔍 Token expires at:', expiresAt);
+
       // Store reset token
       const resetTokenData: PasswordResetToken = {
         token: resetToken,
@@ -481,8 +488,12 @@ class LocalAuthService {
         createdAt: new Date().toISOString()
       };
 
+      console.log('🔍 Reset token data to store:', resetTokenData);
       this.resetTokens.set(resetToken, resetTokenData);
+      console.log('🔍 Reset tokens after setting:', Array.from(this.resetTokens.keys()));
+      
       this.saveToStorage();
+      console.log('🔍 After saveToStorage, reset tokens:', Array.from(this.resetTokens.keys()));
 
       // Send reset email
       const { emailService } = await import('./email-service');
