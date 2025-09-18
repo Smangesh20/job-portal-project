@@ -45,6 +45,11 @@ class LocalAuthService {
   constructor() {
     console.log('🔍 LocalAuthService constructor called');
     this.loadFromStorage();
+    
+    // Clear any redirect flags when the service initializes successfully
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('reset_password_redirected');
+    }
   }
 
   private loadFromStorage() {
@@ -1043,12 +1048,20 @@ class LocalAuthService {
             
             // Check if we're in the wrong context and need to redirect
             if (window.location.origin === 'https://www.askyacham.com') {
-              console.log('🔍 Redirecting from www.askyacham.com to askyacham.com to access real user data');
-              const currentUrl = window.location.href;
-              const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
-              console.log('🔍 Redirecting to:', newUrl);
-              window.location.href = newUrl;
-              return;
+              // Check if we've already redirected to prevent infinite loops
+              const hasRedirected = sessionStorage.getItem('reset_password_redirected');
+              if (!hasRedirected) {
+                console.log('🔍 Redirecting from www.askyacham.com to askyacham.com to access real user data');
+                sessionStorage.setItem('reset_password_redirected', 'true');
+                const currentUrl = window.location.href;
+                const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
+                console.log('🔍 Redirecting to:', newUrl);
+                window.location.href = newUrl;
+                return;
+              } else {
+                console.log('🔍 Already redirected, clearing redirect flag and continuing...');
+                sessionStorage.removeItem('reset_password_redirected');
+              }
             }
           }
           }
