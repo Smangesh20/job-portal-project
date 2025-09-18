@@ -46,15 +46,24 @@ export default function ResetPasswordPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    console.log('🚀 Form submit triggered!');
+    console.log('🔍 Password:', password);
+    console.log('🔍 Confirm Password:', confirmPassword);
+    console.log('🔍 Token:', token);
+    
     if (password !== confirmPassword) {
+      console.log('❌ Passwords do not match');
       setError('Passwords do not match')
       return
     }
 
     if (password.length < 8) {
+      console.log('❌ Password too short');
       setError('Password must be at least 8 characters long')
       return
     }
+    
+    console.log('✅ Form validation passed, proceeding with API call...');
 
     setIsLoading(true)
     setError('')
