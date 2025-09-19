@@ -90,7 +90,7 @@ export class EmailService {
   async sendWelcomeEmail(email: string, firstName: string): Promise<void> {
     try {
       const mailOptions = {
-        from: `"Ask Ya Cham" <${process.env.SMTP_FROM}>`,
+        from: `"Ask Ya Cham" <info@askyacham.com>`,
         to: email,
         subject: 'Welcome to Ask Ya Cham! 🎉',
         html: this.getWelcomeEmailTemplate(firstName),
@@ -113,7 +113,7 @@ export class EmailService {
       const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${token}`;
       
       const mailOptions = {
-        from: `"Ask Ya Cham" <${process.env.SMTP_FROM}>`,
+        from: `"Ask Ya Cham" <info@askyacham.com>`,
         to: email,
         subject: 'Verify your email address',
         html: this.getEmailVerificationTemplate(firstName, verificationUrl),
@@ -136,7 +136,7 @@ export class EmailService {
       const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
       
       const mailOptions = {
-        from: `"Ask Ya Cham" <${process.env.SMTP_FROM}>`,
+        from: `"Ask Ya Cham" <info@askyacham.com>`,
         to: email,
         subject: 'Reset your password',
         html: this.getPasswordResetTemplate(firstName, resetUrl),
@@ -157,7 +157,7 @@ export class EmailService {
   async sendApplicationConfirmationEmail(email: string, firstName: string, jobTitle: string, companyName: string): Promise<void> {
     try {
       const mailOptions = {
-        from: `"Ask Ya Cham" <${process.env.SMTP_FROM}>`,
+        from: `"Ask Ya Cham" <info@askyacham.com>`,
         to: email,
         subject: `Application submitted for ${jobTitle} at ${companyName}`,
         html: this.getApplicationConfirmationTemplate(firstName, jobTitle, companyName),
@@ -178,7 +178,7 @@ export class EmailService {
   async sendInterviewInvitationEmail(email: string, firstName: string, jobTitle: string, companyName: string, interviewDate: string): Promise<void> {
     try {
       const mailOptions = {
-        from: `"Ask Ya Cham" <${process.env.SMTP_FROM}>`,
+        from: `"Ask Ya Cham" <info@askyacham.com>`,
         to: email,
         subject: `Interview invitation for ${jobTitle} at ${companyName}`,
         html: this.getInterviewInvitationTemplate(firstName, jobTitle, companyName, interviewDate),
@@ -199,7 +199,7 @@ export class EmailService {
   async sendJobMatchNotificationEmail(email: string, firstName: string, jobTitle: string, companyName: string, matchScore: number): Promise<void> {
     try {
       const mailOptions = {
-        from: `"Ask Ya Cham" <${process.env.SMTP_FROM}>`,
+        from: `"Ask Ya Cham" <info@askyacham.com>`,
         to: email,
         subject: `🎯 New job match: ${jobTitle} at ${companyName}`,
         html: this.getJobMatchNotificationTemplate(firstName, jobTitle, companyName, matchScore),
@@ -220,7 +220,7 @@ export class EmailService {
   async sendWeeklyJobDigest(email: string, firstName: string, jobs: any[]): Promise<void> {
     try {
       const mailOptions = {
-        from: `"Ask Ya Cham" <${process.env.SMTP_FROM}>`,
+        from: `"Ask Ya Cham" <info@askyacham.com>`,
         to: email,
         subject: `Your weekly job digest - ${jobs.length} new matches`,
         html: this.getWeeklyJobDigestTemplate(firstName, jobs),

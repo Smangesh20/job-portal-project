@@ -51,7 +51,7 @@ export class LocalAuthService {
       if (typeof window === 'undefined') return;
       
       console.log('🚀 GOOGLE ULTIMATE: Loading from storage...');
-      
+
       // Load users
       const storedUsers = localStorage.getItem('askyacham_users');
       if (storedUsers) {
@@ -61,7 +61,7 @@ export class LocalAuthService {
         });
         console.log('🚀 GOOGLE ULTIMATE: Loaded users:', users.length);
       }
-      
+
       // Load reset tokens
       const storedTokens = localStorage.getItem('askyacham_reset_tokens');
       if (storedTokens) {
@@ -86,103 +86,212 @@ export class LocalAuthService {
     return 'hashed_' + btoa(password);
   }
 
-  // GOOGLE ULTIMATE SOLUTION: Password reset
+  // GOOGLE-STYLE: Password reset with enhanced security
   async resetPassword(token: string, newPassword: string): Promise<AuthResponse> {
     try {
-      console.log('🚀 GOOGLE ULTIMATE: resetPassword called with token:', token);
+      console.log('🔐 GOOGLE-STYLE: resetPassword called with token:', token);
       
-      // GOOGLE ULTIMATE: Create a real user account immediately
-      console.log('🚀 GOOGLE ULTIMATE: Creating real user account...');
-      
-      // Create a real user with a proper ID
-      const realUser: User = {
-        id: this.generateId(),
-        email: 'user@askyacham.com',
-        firstName: 'User',
-        lastName: 'Account',
-        role: 'CANDIDATE',
-        isVerified: true,
-        isActive: true,
-        passwordHash: this.hashPassword(newPassword),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      
-      console.log('🚀 GOOGLE ULTIMATE: Created real user:', realUser);
-      
-      // GOOGLE ULTIMATE: Replace ALL data with real user
-      this.users.clear();
-      this.users.set(realUser.id, realUser);
-      console.log('🚀 GOOGLE ULTIMATE: Updated users map');
-      
-      // GOOGLE ULTIMATE: Save to localStorage immediately
-      localStorage.setItem('askyacham_users', JSON.stringify([realUser]));
-      console.log('🚀 GOOGLE ULTIMATE: Saved to localStorage');
-      
-      // GOOGLE ULTIMATE: Update all reset tokens
-      const updatedTokens = [{
-        token: token,
-        userId: realUser.id,
-        email: realUser.email,
-        expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
-        used: true,
-        createdAt: new Date().toISOString()
-      }];
-      localStorage.setItem('askyacham_reset_tokens', JSON.stringify(updatedTokens));
-      console.log('🚀 GOOGLE ULTIMATE: Updated reset tokens');
-      
-      // GOOGLE ULTIMATE: Update sessions
-      localStorage.setItem('askyacham_sessions', JSON.stringify([]));
-      console.log('🚀 GOOGLE ULTIMATE: Updated sessions');
-      
-      // GOOGLE ULTIMATE: Verify everything is saved
-      const savedUsers = localStorage.getItem('askyacham_users');
-      if (savedUsers) {
-        const parsed = JSON.parse(savedUsers);
-        const savedUser = parsed.find((u: any) => u.id === realUser.id);
-        if (savedUser && savedUser.passwordHash === realUser.passwordHash) {
-          console.log('🚀 GOOGLE ULTIMATE: Password save verified successfully!');
-        } else {
-          console.log('❌ GOOGLE ULTIMATE: Password save verification failed');
-        }
+      // GOOGLE-STYLE: Validate password strength
+      const passwordValidation = this.validatePasswordStrength(newPassword);
+      if (!passwordValidation.isValid) {
+        return {
+          success: false,
+          error: {
+            code: 'WEAK_PASSWORD',
+            message: passwordValidation.message
+          }
+        };
       }
       
-      console.log('🚀 GOOGLE ULTIMATE: Password reset completed successfully');
+      // GOOGLE-STYLE: Find and validate token
+      const tokenData = this.resetTokens.get(token);
+      if (!tokenData) {
+        return {
+          success: false,
+          error: {
+            code: 'INVALID_TOKEN',
+            message: 'Invalid or expired reset token'
+          }
+        };
+      }
+      
+      // GOOGLE-STYLE: Check if token is expired
+      if (new Date(tokenData.expiresAt) < new Date()) {
+        this.resetTokens.delete(token);
+        return {
+          success: false,
+          error: {
+            code: 'TOKEN_EXPIRED',
+            message: 'Reset token has expired. Please request a new password reset.'
+          }
+        };
+      }
+      
+      // GOOGLE-STYLE: Check if token is already used
+      if (tokenData.used) {
+        return {
+          success: false,
+          error: {
+            code: 'TOKEN_USED',
+            message: 'This reset token has already been used. Please request a new password reset.'
+          }
+        };
+      }
+      
+      // GOOGLE-STYLE: Find user by email or create new one
+      let user = Array.from(this.users.values()).find(u => u.email.toLowerCase() === tokenData.email.toLowerCase());
+      
+      if (!user) {
+        // GOOGLE-STYLE: Create new user account
+        user = {
+          id: this.generateId(),
+          email: tokenData.email,
+          firstName: 'User',
+          lastName: 'Account',
+          role: 'CANDIDATE',
+          isVerified: true,
+          isActive: true,
+          passwordHash: this.hashPassword(newPassword),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
+        
+        this.users.set(user.id, user);
+        console.log('🔐 GOOGLE-STYLE: Created new user account');
+      } else {
+        // GOOGLE-STYLE: Update existing user password
+        user.passwordHash = this.hashPassword(newPassword);
+        user.updatedAt = new Date().toISOString();
+        this.users.set(user.id, user);
+        console.log('🔐 GOOGLE-STYLE: Updated existing user password');
+      }
+      
+      // GOOGLE-STYLE: Mark token as used
+      tokenData.used = true;
+      tokenData.usedAt = new Date().toISOString();
+      this.resetTokens.set(token, tokenData);
+      
+      // GOOGLE-STYLE: Save to localStorage
+      localStorage.setItem('askyacham_users', JSON.stringify(Array.from(this.users.values())));
+      localStorage.setItem('askyacham_reset_tokens', JSON.stringify(Array.from(this.resetTokens.values())));
+      
+      // GOOGLE-STYLE: Clear all sessions for security
+      this.sessions.clear();
+      localStorage.removeItem('askyacham_sessions');
+      
+      console.log('✅ GOOGLE-STYLE: Password reset completed successfully');
       return {
         success: true,
-        message: 'Password reset successful - Real user account created!'
+        message: 'Your password has been reset successfully. Please log in with your new password.'
       };
       
     } catch (error) {
-      console.error('❌ GOOGLE ULTIMATE ERROR:', error);
+      console.error('❌ GOOGLE-STYLE ERROR in resetPassword:', error);
       return {
         success: false,
         error: {
-          code: 'INTERNAL_ERROR',
-          message: 'An error occurred during password reset'
+          code: 'RESET_FAILED',
+          message: 'An error occurred while resetting your password. Please try again.'
         }
       };
     }
   }
 
-  // GOOGLE ULTIMATE: Token validation
+  // GOOGLE-STYLE: Validate password strength
+  private validatePasswordStrength(password: string): { isValid: boolean; message: string } {
+    if (password.length < 8) {
+      return {
+        isValid: false,
+        message: 'Password must be at least 8 characters long'
+      };
+    }
+    
+    if (password.length > 128) {
+      return {
+        isValid: false,
+        message: 'Password must be less than 128 characters'
+      };
+    }
+    
+    // Check for common weak passwords
+    const commonPasswords = ['password', '123456', '123456789', 'qwerty', 'abc123', 'password123'];
+    if (commonPasswords.includes(password.toLowerCase())) {
+      return {
+        isValid: false,
+        message: 'Please choose a stronger password'
+      };
+    }
+    
+    // Check for at least one letter and one number
+    const hasLetter = /[a-zA-Z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    
+    if (!hasLetter || !hasNumber) {
+      return {
+        isValid: false,
+        message: 'Password must contain at least one letter and one number'
+      };
+    }
+    
+    return {
+      isValid: true,
+      message: 'Password is strong'
+    };
+  }
+
+  // GOOGLE-STYLE: Token validation with proper security checks
   async validateResetToken(token: string): Promise<AuthResponse> {
     try {
-      console.log('🚀 GOOGLE ULTIMATE: validateResetToken called with token:', token);
-      
-      // GOOGLE ULTIMATE: Always return valid for testing
-      console.log('🚀 GOOGLE ULTIMATE: Token is valid (Google Ultimate approach)');
+      console.log('🔐 GOOGLE-STYLE: validateResetToken called with token:', token);
+
+      // GOOGLE-STYLE: Find token in storage
+      const tokenData = this.resetTokens.get(token);
+      if (!tokenData) {
+        return {
+          success: false,
+          error: {
+            code: 'INVALID_TOKEN',
+            message: 'Invalid reset token'
+          }
+        };
+      }
+
+      // GOOGLE-STYLE: Check if token is expired
+      if (new Date(tokenData.expiresAt) < new Date()) {
+        this.resetTokens.delete(token);
+        return {
+          success: false,
+          error: {
+            code: 'TOKEN_EXPIRED',
+            message: 'Reset token has expired'
+          }
+        };
+      }
+
+      // GOOGLE-STYLE: Check if token is already used
+      if (tokenData.used) {
+        return {
+          success: false,
+          error: {
+            code: 'TOKEN_USED',
+            message: 'Reset token has already been used'
+          }
+        };
+      }
+
+      // GOOGLE-STYLE: Return success with user email for display
+      console.log('✅ GOOGLE-STYLE: Token is valid');
       return {
         success: true,
         data: {
-          user: null as any,
+          user: { email: tokenData.email } as any,
           accessToken: '',
           refreshToken: ''
         }
       };
       
     } catch (error) {
-      console.error('❌ GOOGLE ULTIMATE ERROR in validateResetToken:', error);
+      console.error('❌ GOOGLE-STYLE ERROR in validateResetToken:', error);
       return {
         success: false,
         error: {
@@ -193,68 +302,297 @@ export class LocalAuthService {
     }
   }
 
-  // GOOGLE ULTIMATE: Forgot password
+  // GOOGLE-STYLE: Forgot password with enhanced security and UX
   async forgotPassword(email: string): Promise<AuthResponse> {
     try {
-      console.log('🚀 GOOGLE ULTIMATE: forgotPassword called with email:', email);
+      console.log('🔐 GOOGLE-STYLE: forgotPassword called with email:', email);
       
-      // GOOGLE ULTIMATE: Call backend API to send REAL EMAIL via SendGrid
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-      console.log('🚀 GOOGLE ULTIMATE: Calling backend API:', `${apiUrl}/api/auth/forgot-password`);
-      
-      const response = await fetch(`${apiUrl}/api/auth/forgot-password`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email })
-      });
-      
-      const result = await response.json();
-      console.log('🚀 GOOGLE ULTIMATE: Backend API response:', result);
-      
-      if (result.success) {
-        console.log('🚀 GOOGLE ULTIMATE: Email sent successfully via SendGrid!');
-        return {
-          success: true,
-          message: 'Password reset email sent! Please check your inbox and follow the instructions to reset your password.'
-        };
-      } else {
-        console.log('❌ GOOGLE ULTIMATE: Backend API error:', result.error);
+      // GOOGLE-STYLE: Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
         return {
           success: false,
           error: {
-            code: result.error?.code || 'EMAIL_SEND_FAILED',
-            message: result.error?.message || 'Failed to send password reset email'
+            code: 'INVALID_EMAIL',
+            message: 'Please enter a valid email address'
           }
         };
       }
       
-    } catch (error) {
-      console.error('❌ GOOGLE ULTIMATE ERROR in forgotPassword:', error);
+      // GOOGLE-STYLE: Check if user exists (but don't reveal this to prevent email enumeration)
+      const existingUser = Array.from(this.users.values()).find(u => u.email.toLowerCase() === email.toLowerCase());
       
-      // FALLBACK: Generate local token if API fails
-      console.log('🚀 GOOGLE ULTIMATE: API failed, generating local token as fallback');
-      const resetToken = 'token_' + Math.random().toString(36).substr(2, 9);
-      console.log('🚀 GOOGLE ULTIMATE: Generated fallback reset token:', resetToken);
+      // GOOGLE-STYLE: Rate limiting - check for recent requests
+      const recentRequests = this.getRecentResetRequests(email);
+      if (recentRequests.length >= 3) {
+        return {
+          success: false,
+          error: {
+            code: 'RATE_LIMITED',
+            message: 'Too many password reset requests. Please wait 15 minutes before trying again.'
+          }
+        };
+      }
+      
+      // GOOGLE-STYLE: Generate secure token with longer length
+      const resetToken = this.generateSecureToken();
+      console.log('🔐 GOOGLE-STYLE: Generated secure reset token');
       
       const resetTokenData = {
         token: resetToken,
-        userId: 'temp_user',
-        email: email,
-        expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+        userId: existingUser?.id || 'unknown',
+        email: email.toLowerCase(),
+        expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(), // 15 minutes
         used: false,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        ipAddress: 'unknown', // In real app, get from request
+        userAgent: 'unknown'  // In real app, get from request
       };
       
+      // GOOGLE-STYLE: Store token with cleanup of old tokens
       this.resetTokens.set(resetToken, resetTokenData);
-      localStorage.setItem('askyacham_reset_tokens', JSON.stringify([resetTokenData]));
+      this.cleanupExpiredTokens();
+      localStorage.setItem('askyacham_reset_tokens', JSON.stringify(Array.from(this.resetTokens.values())));
       
+      // GOOGLE-STYLE: Always return success (even if user doesn't exist) to prevent enumeration
+      const emailSent = await this.sendPasswordResetEmail(email, resetToken, existingUser?.firstName || 'User');
+      
+      if (emailSent) {
+        console.log('✅ GOOGLE-STYLE: Password reset email sent successfully');
+        return {
+          success: true,
+          message: 'If an account with that email exists, we\'ve sent you a password reset link. Please check your inbox and spam folder.'
+        };
+      } else {
+        // GOOGLE-STYLE: Still return success to prevent enumeration
+        return {
+          success: true,
+          message: 'If an account with that email exists, we\'ve sent you a password reset link. Please check your inbox and spam folder.'
+        };
+      }
+      
+    } catch (error) {
+      console.error('❌ GOOGLE-STYLE ERROR in forgotPassword:', error);
+      // GOOGLE-STYLE: Don't reveal internal errors
       return {
         success: true,
-        message: `API unavailable - using local token: ${resetToken}. In production, this would send a real email.`
+        message: 'If an account with that email exists, we\'ve sent you a password reset link. Please check your inbox and spam folder.'
       };
     }
+  }
+
+  // GOOGLE-STYLE: Generate secure token
+  private generateSecureToken(): string {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < 32; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  }
+
+  // GOOGLE-STYLE: Get recent reset requests for rate limiting
+  private getRecentResetRequests(email: string): any[] {
+    const now = new Date();
+    const fifteenMinutesAgo = new Date(now.getTime() - 15 * 60 * 1000);
+    
+    return Array.from(this.resetTokens.values()).filter(token => 
+      token.email.toLowerCase() === email.toLowerCase() && 
+      new Date(token.createdAt) > fifteenMinutesAgo
+    );
+  }
+
+  // GOOGLE-STYLE: Cleanup expired tokens
+  private cleanupExpiredTokens(): void {
+    const now = new Date();
+    for (const [token, data] of this.resetTokens.entries()) {
+      if (new Date(data.expiresAt) < now) {
+        this.resetTokens.delete(token);
+      }
+    }
+  }
+
+  // GOOGLE-STYLE: Send password reset email with Google-like design
+  private async sendPasswordResetEmail(email: string, token: string, firstName: string): Promise<boolean> {
+    try {
+      const resetUrl = `${window.location.origin}/reset-password?token=${token}`;
+      
+      const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.SENDGRID_API_KEY || 'YOUR_SENDGRID_API_KEY_HERE'}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          personalizations: [{
+            to: [{ email: email }],
+            subject: 'Reset your password - Ask Ya Cham'
+          }],
+          from: { 
+            email: 'noreply@askyacham.com',
+            name: 'Ask Ya Cham'
+          },
+          content: [
+            {
+              type: 'text/html',
+              value: this.generateGoogleStyleEmailTemplate(firstName, resetUrl, token, email)
+            }
+          ]
+        })
+      });
+
+      return response.ok;
+    } catch (error) {
+      console.error('❌ GOOGLE-STYLE: Email send error:', error);
+      return false;
+    }
+  }
+
+  // GOOGLE-STYLE: Generate Google-like email template
+  private generateGoogleStyleEmailTemplate(firstName: string, resetUrl: string, token: string, email: string): string {
+    return `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Reset your password</title>
+        <style>
+          body { 
+            font-family: 'Google Sans', Roboto, Arial, sans-serif; 
+            line-height: 1.6; 
+            color: #202124; 
+            max-width: 600px; 
+            margin: 0 auto; 
+            padding: 0; 
+            background-color: #f8f9fa;
+          }
+          .container { 
+            background: white; 
+            margin: 40px auto; 
+            border-radius: 8px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            overflow: hidden;
+          }
+          .header { 
+            background: #4285f4; 
+            color: white; 
+            padding: 32px 24px; 
+            text-align: center; 
+          }
+          .header h1 { 
+            margin: 0; 
+            font-size: 24px; 
+            font-weight: 400; 
+          }
+          .content { 
+            padding: 32px 24px; 
+          }
+          .greeting { 
+            font-size: 18px; 
+            margin-bottom: 16px; 
+            color: #202124;
+          }
+          .message { 
+            font-size: 14px; 
+            color: #5f6368; 
+            margin-bottom: 24px; 
+            line-height: 1.5;
+          }
+          .button { 
+            display: inline-block; 
+            background: #1a73e8; 
+            color: white; 
+            padding: 12px 24px; 
+            text-decoration: none; 
+            border-radius: 4px; 
+            font-size: 14px; 
+            font-weight: 500; 
+            margin: 16px 0; 
+            transition: background-color 0.2s;
+          }
+          .button:hover { 
+            background: #1557b0; 
+          }
+          .alternative { 
+            margin-top: 24px; 
+            padding: 16px; 
+            background: #f8f9fa; 
+            border-radius: 4px; 
+            border-left: 4px solid #1a73e8;
+          }
+          .alternative p { 
+            margin: 0 0 8px 0; 
+            font-size: 14px; 
+            color: #5f6368; 
+          }
+          .link { 
+            word-break: break-all; 
+            color: #1a73e8; 
+            font-size: 12px; 
+            font-family: monospace;
+          }
+          .security { 
+            margin-top: 24px; 
+            padding: 16px; 
+            background: #fef7e0; 
+            border-radius: 4px; 
+            border-left: 4px solid #f9ab00;
+          }
+          .security p { 
+            margin: 0; 
+            font-size: 13px; 
+            color: #5f6368; 
+          }
+          .footer { 
+            text-align: center; 
+            margin-top: 32px; 
+            padding: 24px; 
+            border-top: 1px solid #dadce0;
+            color: #5f6368; 
+            font-size: 12px; 
+          }
+          .logo { 
+            font-size: 20px; 
+            font-weight: 500; 
+            margin-bottom: 8px;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>Reset your password</h1>
+          </div>
+          <div class="content">
+            <div class="greeting">Hi ${firstName},</div>
+            <div class="message">
+              We received a request to reset the password for your Ask Ya Cham account. 
+              Click the button below to reset your password.
+            </div>
+            
+            <div style="text-align: center;">
+              <a href="${resetUrl}" class="button">Reset password</a>
+            </div>
+            
+            <div class="alternative">
+              <p><strong>Button not working?</strong> Copy and paste this link into your browser:</p>
+              <p class="link">${resetUrl}</p>
+            </div>
+            
+            <div class="security">
+              <p><strong>Security tip:</strong> This link will expire in 15 minutes. If you didn't request this password reset, you can safely ignore this email.</p>
+            </div>
+          </div>
+          <div class="footer">
+            <div class="logo">Ask Ya Cham</div>
+            <p>This email was sent to ${email}</p>
+            <p>© 2024 Ask Ya Cham. All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
   }
 
   // GOOGLE ULTIMATE: Login
@@ -344,28 +682,28 @@ export class LocalAuthService {
         firstName: userData.firstName,
         lastName: userData.lastName,
         role: 'CANDIDATE',
-        isVerified: false,
-        isActive: true,
+            isVerified: false,
+            isActive: true,
         passwordHash: this.hashPassword(userData.password),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          };
       
       // GOOGLE ULTIMATE: Save user
       this.users.set(newUser.id, newUser);
       localStorage.setItem('askyacham_users', JSON.stringify(Array.from(this.users.values())));
       
       console.log('🚀 GOOGLE ULTIMATE: Registration successful');
-      return {
+        return {
         success: true,
         message: 'Registration successful!'
       };
       
     } catch (error) {
       console.error('❌ GOOGLE ULTIMATE ERROR in register:', error);
-      return {
-        success: false,
-        error: {
+        return {
+          success: false,
+          error: {
           code: 'REGISTRATION_FAILED',
           message: 'Registration failed'
         }
@@ -390,9 +728,9 @@ export class LocalAuthService {
       
       if (user) {
         console.log('🚀 GOOGLE ULTIMATE: Found current user:', user.email);
-        return {
-          success: true,
-          data: {
+      return {
+        success: true,
+        data: {
             user: user,
             accessToken: accessToken || 'access_' + Math.random().toString(36).substr(2, 9),
             refreshToken: 'refresh_' + Math.random().toString(36).substr(2, 9)
@@ -400,9 +738,9 @@ export class LocalAuthService {
         };
       } else {
         console.log('🚀 GOOGLE ULTIMATE: No current user found');
-        return {
-          success: false,
-          error: {
+      return {
+        success: false,
+        error: {
             code: 'NO_USER_FOUND',
             message: 'No current user found'
           }
