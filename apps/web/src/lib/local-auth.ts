@@ -353,14 +353,39 @@ export class LocalAuthService {
     }
   }
 
+  // GOOGLE ULTIMATE: Get all users
+  getAllUsers(): User[] {
+    console.log('🚀 GOOGLE ULTIMATE: getAllUsers called');
+    const users = Array.from(this.users.values());
+    console.log('🚀 GOOGLE ULTIMATE: Returning users:', users.length);
+    return users;
+  }
+
+  // GOOGLE ULTIMATE: Get current user
+  getCurrentUser(): User | null {
+    console.log('🚀 GOOGLE ULTIMATE: getCurrentUser called');
+    const users = Array.from(this.users.values());
+    return users.length > 0 ? users[0] : null;
+  }
+
+  // GOOGLE ULTIMATE: Logout
+  logout(): void {
+    console.log('🚀 GOOGLE ULTIMATE: logout called');
+    this.sessions.clear();
+    localStorage.removeItem('askyacham_sessions');
+    console.log('🚀 GOOGLE ULTIMATE: Logout successful');
+  }
+
   // Clear all data (for testing)
   clearAllData(): void {
+    console.log('🚀 GOOGLE ULTIMATE: clearAllData called');
     this.users.clear();
     this.sessions.clear();
     this.resetTokens.clear();
     localStorage.removeItem('askyacham_users');
     localStorage.removeItem('askyacham_sessions');
     localStorage.removeItem('askyacham_reset_tokens');
+    console.log('🚀 GOOGLE ULTIMATE: All data cleared');
   }
 }
 
