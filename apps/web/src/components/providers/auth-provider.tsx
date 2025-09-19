@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AuthUser } from '@/types/auth'
-import { useAuthStore } from '@/stores/enhanced-auth-store'
+import { useAuthStore } from '@/stores/auth-store'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 
 interface AuthContextType {
@@ -36,9 +36,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const initAuth = async () => {
       try {
-        await initialize()
+        // Add timeout to prevent infinite loading
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Initialization timeout')), 5000)
+        )
+        
+        await Promise.race([initialize(), timeoutPromise])
       } catch (error) {
-        } finally {
+        console.error('Auth initialization error:', error)
+      } finally {
         setIsInitialized(true)
       }
     }
