@@ -1233,8 +1233,8 @@ class LocalAuthService {
         };
       }
 
-      // Update password - Google-level robust solution
-      console.log('🔍 Updating password for user:', user.id);
+      // NUCLEAR SOLUTION: Direct password update
+      console.log('🚀 NUCLEAR: Updating password for user:', user.id);
       const oldPasswordHash = user.passwordHash;
       const newPasswordHash = this.hashPassword(newPassword);
       
@@ -1242,7 +1242,25 @@ class LocalAuthService {
       user.passwordHash = newPasswordHash;
       user.updatedAt = new Date().toISOString();
       this.users.set(user.id, user);
-      console.log('🔍 Password updated in users map. Old hash:', oldPasswordHash, 'New hash:', newPasswordHash);
+      console.log('🚀 NUCLEAR: Password updated in users map. Old hash:', oldPasswordHash, 'New hash:', newPasswordHash);
+      
+      // NUCLEAR: Force save to localStorage immediately
+      console.log('🚀 NUCLEAR: Force saving to localStorage...');
+      const usersArray = Array.from(this.users.values());
+      localStorage.setItem('askyacham_users', JSON.stringify(usersArray));
+      console.log('🚀 NUCLEAR: Force saved users to localStorage:', usersArray);
+      
+      // NUCLEAR: Verify the save worked
+      const savedUsers = localStorage.getItem('askyacham_users');
+      if (savedUsers) {
+        const parsed = JSON.parse(savedUsers);
+        const savedUser = parsed.find((u: any) => u.id === user.id);
+        if (savedUser && savedUser.passwordHash === newPasswordHash) {
+          console.log('🚀 NUCLEAR: Password save verified successfully!');
+        } else {
+          console.log('❌ NUCLEAR: Password save verification failed');
+        }
+      }
       
       // CRITICAL: Update ALL user data in localStorage to ensure persistence
       this.updateAllUserDataInStorage(user, newPasswordHash);
