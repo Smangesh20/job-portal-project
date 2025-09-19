@@ -20,13 +20,14 @@ export function RouteGuard({
   const router = useRouter()
 
   useEffect(() => {
-    if (!isLoading) {
-      if (requireAuth && !isAuthenticated) {
-        router.push(redirectTo)
-      } else if (!requireAuth && isAuthenticated) {
-        router.push('/dashboard')
-      }
-    }
+    // Disable automatic redirects to prevent URL disappearing
+    // if (!isLoading) {
+    //   if (requireAuth && !isAuthenticated) {
+    //     router.push(redirectTo)
+    //   } else if (!requireAuth && isAuthenticated) {
+    //     router.push('/dashboard')
+    //   }
+    // }
   }, [isAuthenticated, isLoading, requireAuth, redirectTo, router])
 
   if (isLoading) {

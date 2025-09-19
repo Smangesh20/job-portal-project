@@ -61,7 +61,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     try {
       await logoutStore()
-      router.push('/')
+      // Don't redirect automatically - let the page handle navigation
+      // router.push('/')
     } catch (error) {
       throw error
     }
@@ -77,18 +78,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  // Don't block the page during initialization - let it render normally
-  // Only show loading for actual auth operations
-  if (isLoading && isInitialized) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-white">
-        <div className="text-center">
-          <LoadingSpinner size="lg" />
-          <p className="mt-4 text-gray-600">Loading...</p>
-        </div>
-      </div>
-    )
-  }
+  // Never show loading screens that could block the URL
+  // Always render the children to keep URL visible
 
   const value: AuthContextType = {
     user,
