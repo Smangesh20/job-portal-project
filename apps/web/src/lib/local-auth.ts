@@ -362,10 +362,42 @@ export class LocalAuthService {
   }
 
   // GOOGLE ULTIMATE: Get current user
-  getCurrentUser(accessToken?: string): User | null {
-    console.log('🚀 GOOGLE ULTIMATE: getCurrentUser called with token:', accessToken);
-    const users = Array.from(this.users.values());
-    return users.length > 0 ? users[0] : null;
+  getCurrentUser(accessToken?: string): AuthResponse {
+    try {
+      console.log('🚀 GOOGLE ULTIMATE: getCurrentUser called with token:', accessToken);
+      const users = Array.from(this.users.values());
+      const user = users.length > 0 ? users[0] : null;
+      
+      if (user) {
+        console.log('🚀 GOOGLE ULTIMATE: Found current user:', user.email);
+        return {
+          success: true,
+          data: {
+            user: user,
+            accessToken: accessToken || 'access_' + Math.random().toString(36).substr(2, 9),
+            refreshToken: 'refresh_' + Math.random().toString(36).substr(2, 9)
+          }
+        };
+      } else {
+        console.log('🚀 GOOGLE ULTIMATE: No current user found');
+        return {
+          success: false,
+          error: {
+            code: 'NO_USER_FOUND',
+            message: 'No current user found'
+          }
+        };
+      }
+    } catch (error) {
+      console.error('❌ GOOGLE ULTIMATE ERROR in getCurrentUser:', error);
+      return {
+        success: false,
+        error: {
+          code: 'GET_USER_FAILED',
+          message: 'Failed to get current user'
+        }
+      };
+    }
   }
 
   // GOOGLE ULTIMATE: Refresh token
