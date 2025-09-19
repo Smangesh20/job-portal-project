@@ -95,25 +95,25 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              (function() {
-                if (typeof window !== 'undefined' && window.location.hostname === 'www.askyacham.com') {
-                  console.log('🚀 GOOGLE-LEVEL REDIRECT: www.askyacham.com -> askyacham.com');
-                  const currentUrl = window.location.href;
-                  const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
-                  console.log('🚀 Redirecting to:', newUrl);
-                  
-                  // Google-level aggressive redirect - stop everything immediately
-                  window.stop();
-                  document.documentElement.innerHTML = '';
-                  document.body.innerHTML = '<div style="font-family: Arial; text-align: center; padding: 50px; background: #f5f5f5;"><h1>Redirecting...</h1><p>Please wait while we redirect you to the correct domain.</p></div>';
-                  
-                  // Force immediate redirect
-                  window.location.replace(newUrl);
-                  
-                  // Prevent any further execution
-                  throw new Error('Redirecting to correct domain');
-                }
-              })();
+              // NUCLEAR SOLUTION - Execute before ANY other JavaScript
+              if (typeof window !== 'undefined' && window.location.hostname === 'www.askyacham.com') {
+                console.log('💥 NUCLEAR REDIRECT: www.askyacham.com -> askyacham.com');
+                const currentUrl = window.location.href;
+                const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
+                console.log('💥 Redirecting to:', newUrl);
+                
+                // NUCLEAR OPTION: Complete page replacement
+                document.open();
+                document.write('<!DOCTYPE html><html><head><title>Redirecting...</title><meta http-equiv="refresh" content="0; url=' + newUrl + '"><script>window.location.replace("' + newUrl + '");</script></head><body style="font-family: Arial; text-align: center; padding: 50px; background: #f5f5f5;"><h1>Redirecting...</h1><p>Please wait...</p></body></html>');
+                document.close();
+                
+                // Force redirect
+                window.location.replace(newUrl);
+                
+                // Stop everything
+                window.stop();
+                return false;
+              }
             `,
           }}
         />
