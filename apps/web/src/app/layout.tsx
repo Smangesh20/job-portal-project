@@ -91,20 +91,6 @@ export default function RootLayout({
         <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta httpEquiv="Pragma" content="no-cache" />
         <meta httpEquiv="Expires" content="0" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              if (typeof window !== 'undefined' && window.location.hostname === 'www.askyacham.com') {
-                console.log('🔍 Layout-level redirect: www.askyacham.com -> askyacham.com');
-                const currentUrl = window.location.href;
-                const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
-                console.log('🔍 Redirecting to:', newUrl);
-                // Use replace to avoid adding to history
-                window.location.replace(newUrl);
-              }
-            `,
-          }}
-        />
       </head>
       <body className={inter.className}>
         <InfiniteErrorBoundary>
