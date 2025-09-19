@@ -1,8 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuthStore } from '@/stores/enhanced-auth-store'
-import { sendGridService } from '@/lib/sendgrid-service'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -20,11 +19,32 @@ export default function TestEmailPage() {
   const [testEmail, setTestEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [result, setResult] = useState<{ success: boolean; message?: string; error?: string } | null>(null)
-  const [status, setStatus] = useState(sendGridService.getStatus())
+  const [status, setStatus] = useState({ initialized: false, hasApiKey: false, hasFromEmail: false })
+  const [sendGridService, setSendGridService] = useState<any>(null)
+
+  useEffect(() => {
+    // Dynamically import SendGrid service only on client side
+    const loadSendGridService = async () => {
+      try {
+        const { sendGridService: service } = await import('@/lib/sendgrid-service')
+        setSendGridService(service)
+        setStatus(service.getStatus())
+      } catch (error) {
+        console.error('Failed to load SendGrid service:', error)
+      }
+    }
+
+    loadSendGridService()
+  }, [])
 
   const handleTestEmail = async () => {
     if (!testEmail) {
       setResult({ success: false, error: 'Please enter an email address' })
+      return
+    }
+
+    if (!sendGridService) {
+      setResult({ success: false, error: 'SendGrid service not loaded' })
       return
     }
 
@@ -49,7 +69,9 @@ export default function TestEmailPage() {
   }
 
   const refreshStatus = () => {
-    setStatus(sendGridService.getStatus())
+    if (sendGridService) {
+      setStatus(sendGridService.getStatus())
+    }
   }
 
   if (!isAuthenticated || user?.role !== 'ADMIN') {
