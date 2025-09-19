@@ -483,7 +483,7 @@ class LocalAuthService {
       this.loadFromStorage();
       
       // Check if there are any valid sessions
-      const validSessions = Array.from(this.sessions.values()).filter(session => {
+      const validSessions = Array.from(this.sessions.entries()).filter(([sessionId, session]) => {
         return new Date(session.expiresAt) > new Date();
       });
       
@@ -500,7 +500,7 @@ class LocalAuthService {
       }
       
       // Get the most recent valid session
-      const latestSession = validSessions.sort((a, b) => 
+      const [latestSessionId, latestSession] = validSessions.sort(([, a], [, b]) => 
         new Date(b.expiresAt).getTime() - new Date(a.expiresAt).getTime()
       )[0];
       
@@ -527,7 +527,7 @@ class LocalAuthService {
         data: {
           user,
           accessToken,
-          refreshToken: latestSession.id
+          refreshToken: latestSessionId
         }
       };
     } catch (error: any) {
