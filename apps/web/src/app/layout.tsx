@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/layouts/header'
+import { AuthProvider } from '@/components/providers/auth-provider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -84,10 +85,10 @@ export default function RootLayout({
         <meta httpEquiv="Expires" content="0" />
       </head>
       <body className={inter.className}>
-        <div>
+        <AuthProvider>
           <Header />
           {children}
-        </div>
+        </AuthProvider>
       </body>
     </html>
   )
