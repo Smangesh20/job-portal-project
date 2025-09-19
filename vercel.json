@@ -28,7 +28,7 @@
     }
   },
   "functions": {
-    "apps/web/src/app/api/**/*.ts": {
+    "src/app/api/**/*.ts": {
       "maxDuration": 30
     }
   },
