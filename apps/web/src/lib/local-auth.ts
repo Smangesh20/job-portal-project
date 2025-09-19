@@ -34,7 +34,7 @@ export class LocalAuthService {
   private sessions = new Map<string, any>();
   private resetTokens = new Map<string, any>();
 
-  private constructor() {
+  constructor() {
     console.log('🚀 GOOGLE ULTIMATE: LocalAuthService initialized');
     this.loadFromStorage();
   }
