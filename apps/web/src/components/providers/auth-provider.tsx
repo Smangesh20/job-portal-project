@@ -34,25 +34,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isInitialized, setIsInitialized] = useState(false)
 
   useEffect(() => {
-    const initAuth = async () => {
-      try {
-        // Add timeout to prevent infinite loading
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Initialization timeout')), 3000)
-        )
-        
-        await Promise.race([initialize(), timeoutPromise])
-      } catch (error) {
-        console.error('Auth initialization error:', error)
-        // Don't let initialization errors block the app
-      } finally {
-        setIsInitialized(true)
-      }
-    }
-
-    // Run initialization in background without blocking
-    initAuth()
-  }, [initialize])
+    // Skip initialization completely to prevent any blocking
+    setIsInitialized(true)
+  }, [])
 
   const login = async (email: string, password: string) => {
     try {
