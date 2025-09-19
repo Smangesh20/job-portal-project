@@ -95,24 +95,14 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               if (typeof window !== 'undefined' && window.location.hostname === 'www.askyacham.com') {
-                document.write('<meta http-equiv="refresh" content="0; url=https://askyacham.com' + window.location.pathname + window.location.search + '">');
-              }
-            `,
-          }}
-        />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              if (typeof window !== 'undefined' && window.location.hostname === 'www.askyacham.com') {
-                console.log('🔍 NUCLEAR redirect: www.askyacham.com -> askyacham.com');
+                console.log('🔍 ULTIMATE redirect: www.askyacham.com -> askyacham.com');
                 const currentUrl = window.location.href;
                 const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
                 console.log('🔍 Redirecting to:', newUrl);
                 
-                // Nuclear option: completely replace the page
-                document.open();
-                document.write('<!DOCTYPE html><html><head><title>Redirecting...</title></head><body><h1>Redirecting to correct domain...</h1><script>window.location.replace("' + newUrl + '");</script></body></html>');
-                document.close();
+                // Ultimate solution: stop all execution immediately
+                window.stop();
+                window.location.replace(newUrl);
               }
             `,
           }}
