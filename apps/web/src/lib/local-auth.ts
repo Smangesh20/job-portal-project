@@ -45,10 +45,215 @@ class LocalAuthService {
   constructor() {
     console.log('🔍 LocalAuthService constructor called');
     try {
-      this.loadFromStorage();
+    this.loadFromStorage();
     } catch (error) {
       console.error('❌ Error in LocalAuthService constructor:', error);
       // Don't let constructor errors break the app
+    }
+  }
+
+  // Cross-domain storage synchronization
+  private syncCrossDomainStorage() {
+    try {
+      console.log('🔄 Syncing cross-domain storage...');
+      
+      // Check if we're on www subdomain and need to sync with main domain
+      const isWww = window.location.hostname.startsWith('www.');
+      const mainDomain = isWww ? window.location.hostname.replace('www.', '') : window.location.hostname;
+      
+      console.log('🔍 Current hostname:', window.location.hostname);
+      console.log('🔍 Is www subdomain:', isWww);
+      console.log('🔍 Main domain:', mainDomain);
+      
+      // For now, we'll work with the current domain's localStorage
+      // In a production environment, you'd use postMessage or iframe communication
+      // to sync between domains, but for this demo, we'll ensure data consistency
+      
+      // Check if we have data in the current context
+      const currentUsers = localStorage.getItem('askyacham_users');
+      const currentSessions = localStorage.getItem('askyacham_sessions');
+      const currentResetTokens = localStorage.getItem('askyacham_reset_tokens');
+      
+      if (!currentUsers || !currentSessions || !currentResetTokens) {
+        console.log('🔍 Missing data in current context, attempting to restore...');
+        this.restoreMissingData();
+      }
+      
+    } catch (error) {
+      console.error('❌ Error in cross-domain sync:', error);
+    }
+  }
+
+  // Restore missing data from available sources
+  private restoreMissingData() {
+    try {
+      console.log('🔄 Restoring missing data...');
+      
+      // Look for any user data in localStorage
+      const allKeys = Object.keys(localStorage);
+      let foundUsers = null;
+      let foundSessions = null;
+      let foundResetTokens = null;
+      
+      // Search for user data in any key
+      for (const key of allKeys) {
+        const value = localStorage.getItem(key);
+        if (value) {
+          try {
+            const parsed = JSON.parse(value);
+            
+            // Check if it's user data
+            if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].id && parsed[0].email) {
+              if (!foundUsers && key.includes('user')) {
+                foundUsers = parsed;
+                console.log('🔍 Found users in key:', key);
+              }
+            }
+            
+            // Check if it's session data
+            if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].userId) {
+              if (!foundSessions && key.includes('session')) {
+                foundSessions = parsed;
+                console.log('🔍 Found sessions in key:', key);
+              }
+            }
+            
+            // Check if it's reset token data
+            if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].token) {
+              if (!foundResetTokens && key.includes('reset')) {
+                foundResetTokens = parsed;
+                console.log('🔍 Found reset tokens in key:', key);
+              }
+            }
+          } catch (e) {
+            // Not JSON, skip
+          }
+        }
+      }
+      
+      // Restore the data
+      if (foundUsers) {
+        localStorage.setItem('askyacham_users', JSON.stringify(foundUsers));
+        console.log('✅ Restored users data');
+      }
+      
+      if (foundSessions) {
+        localStorage.setItem('askyacham_sessions', JSON.stringify(foundSessions));
+        console.log('✅ Restored sessions data');
+      }
+      
+      if (foundResetTokens) {
+        localStorage.setItem('askyacham_reset_tokens', JSON.stringify(foundResetTokens));
+        console.log('✅ Restored reset tokens data');
+      }
+      
+    } catch (error) {
+      console.error('❌ Error restoring missing data:', error);
+    }
+  }
+
+  // Update all user data in localStorage for persistence
+  private updateAllUserDataInStorage(user: User & { passwordHash: string }, newPasswordHash: string) {
+    try {
+      console.log('🔄 Updating all user data in localStorage...');
+      
+      // Update the main askyacham_users key
+      const storedUsers = localStorage.getItem('askyacham_users');
+      if (storedUsers) {
+        const users = JSON.parse(storedUsers);
+        const updatedUsers = users.map((u: any) => 
+          u.id === user.id ? { ...u, passwordHash: newPasswordHash, updatedAt: new Date().toISOString() } : u
+        );
+        localStorage.setItem('askyacham_users', JSON.stringify(updatedUsers));
+        console.log('✅ Updated askyacham_users');
+      }
+      
+      // Update any other user data in localStorage
+      const allKeys = Object.keys(localStorage);
+      for (const key of allKeys) {
+        if (key.includes('user') || key.includes('auth')) {
+          try {
+            const data = localStorage.getItem(key);
+            if (data) {
+              const parsed = JSON.parse(data);
+              
+              if (Array.isArray(parsed)) {
+                // Array of users
+                const updated = parsed.map((u: any) => 
+                  u.id === user.id ? { ...u, passwordHash: newPasswordHash, updatedAt: new Date().toISOString() } : u
+                );
+                if (JSON.stringify(updated) !== JSON.stringify(parsed)) {
+                  localStorage.setItem(key, JSON.stringify(updated));
+                  console.log('✅ Updated user data in key:', key);
+                }
+              } else if (parsed.id === user.id) {
+                // Single user object
+                const updated = { ...parsed, passwordHash: newPasswordHash, updatedAt: new Date().toISOString() };
+                localStorage.setItem(key, JSON.stringify(updated));
+                console.log('✅ Updated single user data in key:', key);
+              }
+            }
+          } catch (e) {
+            // Not JSON, skip
+          }
+        }
+      }
+      
+    } catch (error) {
+      console.error('❌ Error updating user data in storage:', error);
+    }
+  }
+
+  // Update real user password when working with temp_user
+  private updateRealUserPassword(email: string, newPasswordHash: string) {
+    try {
+      console.log('🔄 Updating real user password for email:', email);
+      
+      // Look for the real user in all localStorage keys
+      const allKeys = Object.keys(localStorage);
+      for (const key of allKeys) {
+        try {
+          const data = localStorage.getItem(key);
+          if (data) {
+            const parsed = JSON.parse(data);
+            
+            if (Array.isArray(parsed)) {
+              // Array of users - find by email
+              const realUser = parsed.find((u: any) => u.email === email && u.id !== 'temp_user');
+              if (realUser) {
+                console.log('🔍 Found real user by email:', realUser);
+                realUser.passwordHash = newPasswordHash;
+                realUser.updatedAt = new Date().toISOString();
+                
+                // Update the array
+                const updated = parsed.map((u: any) => u.email === email ? realUser : u);
+                localStorage.setItem(key, JSON.stringify(updated));
+                console.log('✅ Updated real user password in key:', key);
+                
+                // Also update our local map
+                this.users.set(realUser.id, realUser);
+                break;
+              }
+            } else if (parsed.email === email && parsed.id !== 'temp_user') {
+              // Single user object
+              console.log('🔍 Found real user by email (single object):', parsed);
+              parsed.passwordHash = newPasswordHash;
+              parsed.updatedAt = new Date().toISOString();
+              localStorage.setItem(key, JSON.stringify(parsed));
+              console.log('✅ Updated real user password in key:', key);
+              
+              // Also update our local map
+              this.users.set(parsed.id, parsed);
+              break;
+            }
+          }
+        } catch (e) {
+          // Not JSON, skip
+        }
+      }
+      
+    } catch (error) {
+      console.error('❌ Error updating real user password:', error);
     }
   }
 
@@ -73,6 +278,9 @@ class LocalAuthService {
         key.includes('user') || key.includes('session') || key.includes('token') || key.includes('reset')
       );
       console.log('🔍 Possible related keys:', possibleKeys);
+
+      // Cross-domain storage synchronization
+      this.syncCrossDomainStorage();
 
       // Load users
       const storedUsers = localStorage.getItem('askyacham_users');
@@ -687,13 +895,13 @@ class LocalAuthService {
             this.resetTokens.set(token, resetTokenData);
             console.log('🔍 Created and stored token:', resetTokenData);
           } else {
-            return {
-              success: false,
-              error: {
-                code: 'INVALID_TOKEN',
-                message: 'Invalid or expired reset token'
-              }
-            };
+        return {
+          success: false,
+          error: {
+            code: 'INVALID_TOKEN',
+            message: 'Invalid or expired reset token'
+          }
+        };
           }
         }
       }
@@ -830,86 +1038,26 @@ class LocalAuthService {
         };
       }
 
-      // Update password
+      // Update password - Google-level robust solution
       console.log('🔍 Updating password for user:', user.id);
       const oldPasswordHash = user.passwordHash;
-      user.passwordHash = this.hashPassword(newPassword);
+      const newPasswordHash = this.hashPassword(newPassword);
+      
+      // Update the user object
+      user.passwordHash = newPasswordHash;
       user.updatedAt = new Date().toISOString();
       this.users.set(user.id, user);
-      console.log('🔍 Password updated in users map. Old hash:', oldPasswordHash, 'New hash:', user.passwordHash);
+      console.log('🔍 Password updated in users map. Old hash:', oldPasswordHash, 'New hash:', newPasswordHash);
       
-      // If this is a temp_user, we need to find and update the real user
+      // CRITICAL: Update ALL user data in localStorage to ensure persistence
+      this.updateAllUserDataInStorage(user, newPasswordHash);
+      
+      // If this is a temp_user, find and update the real user
       if (user.id === 'temp_user') {
-        console.log('🔍 This is temp_user, need to find and update real user...');
-        console.log('🔍 Looking for real user with email:', finalResetTokenData.email);
-        
-        // The real user data is likely in the askyacham.com context
-        // Since we can't access it directly, we'll create a cross-domain update
-        // by storing the password update in a way that can be retrieved later
-        
-        // Store the password update in a special key that can be accessed from both domains
-        const passwordUpdate = {
-          email: finalResetTokenData.email,
-          newPasswordHash: this.hashPassword(newPassword),
-          timestamp: new Date().toISOString(),
-          token: token
-        };
-        
-        // Store in multiple keys to ensure it's accessible
-        localStorage.setItem('password_update_' + token, JSON.stringify(passwordUpdate));
-        localStorage.setItem('cross_domain_password_update', JSON.stringify(passwordUpdate));
-        
-        console.log('🔍 Stored password update for cross-domain access:', passwordUpdate);
-        
-        // Also try to find any real user data in the current context
-        const allKeys = Object.keys(localStorage);
-        for (const key of allKeys) {
-          if (key.includes('user') || key.includes('auth')) {
-            try {
-              const data = localStorage.getItem(key);
-              if (data) {
-                const parsed = JSON.parse(data);
-                if (Array.isArray(parsed)) {
-                  // Look for any user that's not temp_user
-                  const realUser = parsed.find(u => u.id && u.id !== 'temp_user');
-                  if (realUser) {
-                    console.log('🔍 Found potential real user in localStorage:', realUser);
-                    // Update this user's password as well
-                    realUser.passwordHash = this.hashPassword(newPassword);
-                    realUser.updatedAt = new Date().toISOString();
-                    
-                    // Save back to localStorage
-                    const updatedUsers = parsed.map(u => u.id === realUser.id ? realUser : u);
-                    localStorage.setItem(key, JSON.stringify(updatedUsers));
-                    console.log('🔍 Updated potential real user password in localStorage');
-                    
-                    // Also update our local map
-                    this.users.set(realUser.id, realUser);
-                    user = realUser; // Update the user reference
-                    break;
-                  }
-                } else if (parsed.id && parsed.id !== 'temp_user') {
-                  console.log('🔍 Found potential real user in localStorage:', parsed);
-                  // Update this user's password as well
-                  parsed.passwordHash = this.hashPassword(newPassword);
-                  parsed.updatedAt = new Date().toISOString();
-                  
-                  // Save back to localStorage
-                  localStorage.setItem(key, JSON.stringify(parsed));
-                  console.log('🔍 Updated potential real user password in localStorage');
-                  
-                  // Also update our local map
-                  this.users.set(parsed.id, parsed);
-                  user = parsed; // Update the user reference
-                  break;
-                }
-              }
-            } catch (e) {
-              // Not JSON, skip
-            }
-          }
-        }
+        console.log('🔍 This is temp_user, finding and updating real user...');
+        this.updateRealUserPassword(finalResetTokenData.email, newPasswordHash);
       }
+      
 
       // Mark token as used
       finalResetTokenData.used = true;
