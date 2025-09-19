@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { WifiIcon, WifiSlashIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline'
+import { WifiIcon, SignalSlashIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 
 interface ConnectionStatusProps {
   className?: string
@@ -71,7 +71,7 @@ export function ConnectionStatus({ className = '' }: ConnectionStatusProps) {
     if (isOnline) {
       return <WifiIcon className="w-4 h-4" />
     }
-    return <WifiSlashIcon className="w-4 h-4" />
+    return <SignalSlashIcon className="w-4 h-4" />
   }
 
   return (
