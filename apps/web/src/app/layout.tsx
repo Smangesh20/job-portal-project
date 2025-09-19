@@ -4,6 +4,7 @@ import './globals.css'
 import Header from '@/components/layouts/header'
 import { AuthProvider } from '@/components/providers/auth-provider'
 import { ConnectionStatus, ConnectionBanner } from '@/components/ui/connection-status'
+import { GoogleNetworkHandler } from '@/components/providers/google-error-boundary'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -86,12 +87,14 @@ export default function RootLayout({
         <meta httpEquiv="Expires" content="0" />
       </head>
       <body className={inter.className}>
-        <AuthProvider>
-          <ConnectionBanner />
-          <Header />
-          {children}
-          <ConnectionStatus />
-        </AuthProvider>
+        <GoogleNetworkHandler>
+          <AuthProvider>
+            <ConnectionBanner />
+            <Header />
+            {children}
+            <ConnectionStatus />
+          </AuthProvider>
+        </GoogleNetworkHandler>
       </body>
     </html>
   )
