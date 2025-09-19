@@ -95,12 +95,29 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               if (typeof window !== 'undefined' && window.location.hostname === 'www.askyacham.com') {
-                console.log('🔍 IMMEDIATE redirect: www.askyacham.com -> askyacham.com');
+                document.write('<meta http-equiv="refresh" content="0; url=https://askyacham.com' + window.location.pathname + window.location.search + '">');
+              }
+            `,
+          }}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if (typeof window !== 'undefined' && window.location.hostname === 'www.askyacham.com') {
+                console.log('🔍 AGGRESSIVE redirect: www.askyacham.com -> askyacham.com');
                 const currentUrl = window.location.href;
                 const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
                 console.log('🔍 Redirecting to:', newUrl);
-                // Use immediate redirect
-                window.location.href = newUrl;
+                
+                // Clear the entire page content immediately
+                document.documentElement.innerHTML = '';
+                document.body.innerHTML = '<h1>Redirecting...</h1>';
+                
+                // Force immediate redirect
+                window.location.replace(newUrl);
+                
+                // Prevent any further execution
+                return false;
               }
             `,
           }}
