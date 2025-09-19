@@ -742,6 +742,61 @@ class LocalAuthService {
       user.updatedAt = new Date().toISOString();
       this.users.set(user.id, user);
       console.log('🔍 Password updated in users map. Old hash:', oldPasswordHash, 'New hash:', user.passwordHash);
+      
+      // If this is a temp_user, we need to find and update the real user
+      if (user.id === 'temp_user') {
+        console.log('🔍 This is temp_user, need to find and update real user...');
+        
+        // Try to find the real user from the original context
+        // We'll search for any user data that might contain the real user
+        const allKeys = Object.keys(localStorage);
+        for (const key of allKeys) {
+          if (key.includes('user') || key.includes('auth')) {
+            try {
+              const data = localStorage.getItem(key);
+              if (data) {
+                const parsed = JSON.parse(data);
+                if (Array.isArray(parsed)) {
+                  // Look for a user that's not temp_user
+                  const realUser = parsed.find(u => u.id && u.id !== 'temp_user' && u.email === finalResetTokenData.email);
+                  if (realUser) {
+                    console.log('🔍 Found real user in localStorage:', realUser);
+                    // Update the real user's password
+                    realUser.passwordHash = this.hashPassword(newPassword);
+                    realUser.updatedAt = new Date().toISOString();
+                    
+                    // Save back to localStorage
+                    const updatedUsers = parsed.map(u => u.id === realUser.id ? realUser : u);
+                    localStorage.setItem(key, JSON.stringify(updatedUsers));
+                    console.log('🔍 Updated real user password in localStorage');
+                    
+                    // Also update our local map
+                    this.users.set(realUser.id, realUser);
+                    user = realUser; // Update the user reference
+                    break;
+                  }
+                } else if (parsed.id && parsed.id !== 'temp_user' && parsed.email === finalResetTokenData.email) {
+                  console.log('🔍 Found real user in localStorage:', parsed);
+                  // Update the real user's password
+                  parsed.passwordHash = this.hashPassword(newPassword);
+                  parsed.updatedAt = new Date().toISOString();
+                  
+                  // Save back to localStorage
+                  localStorage.setItem(key, JSON.stringify(parsed));
+                  console.log('🔍 Updated real user password in localStorage');
+                  
+                  // Also update our local map
+                  this.users.set(parsed.id, parsed);
+                  user = parsed; // Update the user reference
+                  break;
+                }
+              }
+            } catch (e) {
+              // Not JSON, skip
+            }
+          }
+        }
+      }
 
       // Mark token as used
       finalResetTokenData.used = true;
