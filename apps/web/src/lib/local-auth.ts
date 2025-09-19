@@ -394,5 +394,4 @@ console.log('🚀 GOOGLE ULTIMATE: Creating LocalAuthService singleton instance'
 export const localAuthService = new LocalAuthService();
 console.log('🚀 GOOGLE ULTIMATE: LocalAuthService singleton created');
 
-// Export types
-export type { User, AuthResponse };
+// Export types (User and AuthResponse are already exported above)
