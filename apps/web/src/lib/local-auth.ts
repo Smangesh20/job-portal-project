@@ -104,7 +104,7 @@ export class LocalAuthService {
       }
       
       // GOOGLE-STYLE: Call server-side API for password reset
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? window.location.origin : 'https://ask-ya-cham-api.onrender.com');
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://ask-ya-cham-api.onrender.com';
       const response = await fetch(`${apiUrl}/api/auth/reset-password`, {
         method: 'POST',
         headers: {
@@ -116,7 +116,19 @@ export class LocalAuthService {
         })
       });
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        console.log('❌ GOOGLE-STYLE: Failed to parse response JSON');
+        return {
+          success: false,
+          error: {
+            code: 'API_ERROR',
+            message: 'Server returned invalid response. Please try again.'
+          }
+        };
+      }
       
       if (response.ok) {
         console.log('✅ GOOGLE-STYLE: Password reset completed via server API');
@@ -195,7 +207,7 @@ export class LocalAuthService {
       console.log('🔐 GOOGLE-STYLE: validateResetToken called with token:', token);
 
       // GOOGLE-STYLE: Call server-side API for token validation
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? window.location.origin : 'https://ask-ya-cham-api.onrender.com');
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://ask-ya-cham-api.onrender.com';
       const response = await fetch(`${apiUrl}/api/auth/validate-reset-token`, {
         method: 'POST',
         headers: {
@@ -206,7 +218,19 @@ export class LocalAuthService {
         })
       });
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        console.log('❌ GOOGLE-STYLE: Failed to parse response JSON');
+        return {
+          success: false,
+          error: {
+            code: 'API_ERROR',
+            message: 'Server returned invalid response. Please try again.'
+          }
+        };
+      }
       
       if (response.ok) {
         console.log('✅ GOOGLE-STYLE: Token is valid via server API');
@@ -259,7 +283,7 @@ export class LocalAuthService {
       }
       
       // GOOGLE-STYLE: Call server-side API for forgot password
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? window.location.origin : 'https://ask-ya-cham-api.onrender.com');
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://ask-ya-cham-api.onrender.com';
       const response = await fetch(`${apiUrl}/api/auth/forgot-password`, {
         method: 'POST',
         headers: {
@@ -270,7 +294,19 @@ export class LocalAuthService {
         })
       });
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        console.log('❌ GOOGLE-STYLE: Failed to parse response JSON');
+        return {
+          success: false,
+          error: {
+            code: 'API_ERROR',
+            message: 'Server returned invalid response. Please try again.'
+          }
+        };
+      }
       
       if (response.ok) {
         console.log('✅ GOOGLE-STYLE: Password reset email sent via server API');
@@ -334,7 +370,7 @@ export class LocalAuthService {
   private async sendPasswordResetEmail(email: string, token: string, firstName: string): Promise<boolean> {
     try {
       // Use the server-side API endpoint instead of calling SendGrid directly
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? window.location.origin : 'https://ask-ya-cham-api.onrender.com');
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://ask-ya-cham-api.onrender.com';
       const response = await fetch(`${apiUrl}/api/auth/forgot-password`, {
         method: 'POST',
         headers: {
