@@ -103,9 +103,8 @@ export class LocalAuthService {
         };
       }
       
-      // GOOGLE-STYLE: Call server-side API for password reset
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://ask-ya-cham-api.onrender.com';
-      const response = await fetch(`${apiUrl}/api/auth/reset-password`, {
+      // GOOGLE-STYLE: Call local API route (proxies to backend)
+      const response = await fetch('/api/auth/reset-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -206,9 +205,8 @@ export class LocalAuthService {
     try {
       console.log('🔐 GOOGLE-STYLE: validateResetToken called with token:', token);
 
-      // GOOGLE-STYLE: Call server-side API for token validation
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://ask-ya-cham-api.onrender.com';
-      const response = await fetch(`${apiUrl}/api/auth/validate-reset-token`, {
+      // GOOGLE-STYLE: Call local API route (proxies to backend)
+      const response = await fetch('/api/auth/validate-reset-token', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -282,9 +280,8 @@ export class LocalAuthService {
         };
       }
       
-      // GOOGLE-STYLE: Call server-side API for forgot password
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://ask-ya-cham-api.onrender.com';
-      const response = await fetch(`${apiUrl}/api/auth/forgot-password`, {
+      // GOOGLE-STYLE: Call local API route (proxies to backend)
+      const response = await fetch('/api/auth/forgot-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
