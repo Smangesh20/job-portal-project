@@ -180,6 +180,98 @@ class MockAPI {
       refreshToken: `mock_refresh_${Date.now()}`
     }
   }
+
+  // Job search methods
+  async searchJobs(params: any): Promise<any> {
+    await this.delay(500)
+    return {
+      success: true,
+      data: {
+        results: [
+          {
+            id: 1,
+            title: 'Senior Software Engineer',
+            company: 'Tech Corp',
+            location: 'San Francisco, CA',
+            salary: '$120,000 - $150,000',
+            match: 95,
+            description: 'We are looking for a senior software engineer...',
+            postedAt: new Date().toISOString(),
+            type: 'Full-time'
+          },
+          {
+            id: 2,
+            title: 'Frontend Developer',
+            company: 'StartupXYZ',
+            location: 'Remote',
+            salary: '$80,000 - $100,000',
+            match: 88,
+            description: 'Join our growing team as a frontend developer...',
+            postedAt: new Date().toISOString(),
+            type: 'Full-time'
+          }
+        ],
+        total: 2,
+        query: params.query || '',
+        filters: params.filters || {}
+      }
+    }
+  }
+
+  async getJobDetails(jobId: number): Promise<any> {
+    await this.delay(300)
+    return {
+      success: true,
+      data: {
+        id: jobId,
+        title: 'Senior Software Engineer',
+        company: 'Tech Corp',
+        location: 'San Francisco, CA',
+        salary: '$120,000 - $150,000',
+        match: 95,
+        description: 'We are looking for a senior software engineer...',
+        postedAt: new Date().toISOString(),
+        type: 'Full-time',
+        requirements: ['5+ years experience', 'React/Node.js', 'Team leadership'],
+        benefits: ['Health insurance', '401k', 'Flexible hours'],
+        experience: '5+ years',
+        skills: ['JavaScript', 'React', 'Node.js', 'TypeScript']
+      }
+    }
+  }
+
+  // Generic HTTP methods
+  async get<T>(url: string, config?: any): Promise<T> {
+    await this.delay(200)
+    return {
+      success: true,
+      data: { message: 'Mock GET response' }
+    } as T
+  }
+
+  async post<T>(url: string, data?: any, config?: any): Promise<T> {
+    await this.delay(300)
+    return {
+      success: true,
+      data: { message: 'Mock POST response' }
+    } as T
+  }
+
+  async put<T>(url: string, data?: any, config?: any): Promise<T> {
+    await this.delay(300)
+    return {
+      success: true,
+      data: { message: 'Mock PUT response' }
+    } as T
+  }
+
+  async delete<T>(url: string, config?: any): Promise<T> {
+    await this.delay(200)
+    return {
+      success: true,
+      data: { message: 'Mock DELETE response' }
+    } as T
+  }
 }
 
 export const mockAPI = new MockAPI()
