@@ -1,10 +1,10 @@
 [build]
-  command = "echo 'No build needed'"
-  publish = "public"
+  command = "cd apps/web && npm run build"
+  publish = "apps/web/.next"
 
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/api"
+  to = "/api/:splat"
   status = 200
 
 [[redirects]]

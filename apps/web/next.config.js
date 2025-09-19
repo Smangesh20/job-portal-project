@@ -1,19 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Redirects disabled to prevent infinite loops
+  // Handle www redirects at DNS/CDN level instead
   async redirects() {
-    return [
-      {
-        source: '/:path*',
-        has: [
-          {
-            type: 'host',
-            value: 'www.askyacham.com',
-          },
-        ],
-        destination: 'https://askyacham.com/:path*',
-        permanent: true,
-      },
-    ]
+    return []
   },
   experimental: {
     serverComponentsExternalPackages: [],
