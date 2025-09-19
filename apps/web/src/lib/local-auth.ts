@@ -368,6 +368,85 @@ export class LocalAuthService {
     return users.length > 0 ? users[0] : null;
   }
 
+  // GOOGLE ULTIMATE: Refresh token
+  async refreshToken(refreshToken: string): Promise<AuthResponse> {
+    try {
+      console.log('🚀 GOOGLE ULTIMATE: refreshToken called with token:', refreshToken);
+      
+      // GOOGLE ULTIMATE: Find session by refresh token
+      const session = this.sessions.get(refreshToken);
+      if (!session) {
+        return {
+          success: false,
+          error: {
+            code: 'INVALID_REFRESH_TOKEN',
+            message: 'Invalid refresh token'
+          }
+        };
+      }
+      
+      // GOOGLE ULTIMATE: Check if session is expired
+      if (new Date(session.expiresAt) < new Date()) {
+        this.sessions.delete(refreshToken);
+        return {
+          success: false,
+          error: {
+            code: 'REFRESH_TOKEN_EXPIRED',
+            message: 'Refresh token has expired'
+          }
+        };
+      }
+      
+      // GOOGLE ULTIMATE: Find user
+      const user = this.users.get(session.userId);
+      if (!user) {
+        return {
+          success: false,
+          error: {
+            code: 'USER_NOT_FOUND',
+            message: 'User not found'
+          }
+        };
+      }
+      
+      // GOOGLE ULTIMATE: Generate new tokens
+      const newAccessToken = 'access_' + Math.random().toString(36).substr(2, 9);
+      const newRefreshToken = 'refresh_' + Math.random().toString(36).substr(2, 9);
+      
+      // GOOGLE ULTIMATE: Update session
+      const updatedSession = {
+        ...session,
+        token: newAccessToken,
+        refreshToken: newRefreshToken,
+        updatedAt: new Date().toISOString()
+      };
+      
+      this.sessions.delete(refreshToken);
+      this.sessions.set(newAccessToken, updatedSession);
+      localStorage.setItem('askyacham_sessions', JSON.stringify(Array.from(this.sessions.values())));
+      
+      console.log('🚀 GOOGLE ULTIMATE: Token refresh successful');
+      return {
+        success: true,
+        data: {
+          user: user,
+          accessToken: newAccessToken,
+          refreshToken: newRefreshToken
+        }
+      };
+      
+    } catch (error) {
+      console.error('❌ GOOGLE ULTIMATE ERROR in refreshToken:', error);
+      return {
+        success: false,
+        error: {
+          code: 'REFRESH_TOKEN_FAILED',
+          message: 'Failed to refresh token'
+        }
+      };
+    }
+  }
+
   // GOOGLE ULTIMATE: Logout
   logout(refreshToken?: string): void {
     console.log('🚀 GOOGLE ULTIMATE: logout called with refreshToken:', refreshToken);
