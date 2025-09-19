@@ -96,13 +96,24 @@ export const useAuthStore = create<AuthStore>()(
           get().setTokens(accessToken, refreshToken)
 
         } catch (error: any) {
-          const errorDetails = ProfessionalErrorHandler.formatError(error)
+          // Google-style: Never show connection errors, always show user-friendly messages
+          let userFriendlyMessage = 'Invalid email or password. Please try again.'
+          
+          // Only show specific errors for validation issues, never for network problems
+          if (error.message && (
+            error.message.includes('User not found') ||
+            error.message.includes('Invalid password') ||
+            error.message.includes('Invalid email')
+          )) {
+            userFriendlyMessage = error.message
+          }
+          
           set({
-            error: errorDetails.message,
-            errorDetails: errorDetails,
+            error: userFriendlyMessage,
+            errorDetails: null, // Don't show technical error details
             isLoading: false
           })
-          throw error
+          throw new Error(userFriendlyMessage)
         }
       },
 
@@ -131,13 +142,24 @@ export const useAuthStore = create<AuthStore>()(
           get().setTokens(accessToken, refreshToken)
 
         } catch (error: any) {
-          const errorDetails = ProfessionalErrorHandler.formatError(error)
+          // Google-style: Never show connection errors, always show user-friendly messages
+          let userFriendlyMessage = 'Registration failed. Please try again.'
+          
+          // Only show specific errors for validation issues, never for network problems
+          if (error.message && (
+            error.message.includes('already exists') ||
+            error.message.includes('Invalid email') ||
+            error.message.includes('Weak password')
+          )) {
+            userFriendlyMessage = error.message
+          }
+          
           set({
-            error: errorDetails.message,
-            errorDetails: errorDetails,
+            error: userFriendlyMessage,
+            errorDetails: null, // Don't show technical error details
             isLoading: false
           })
-          throw error
+          throw new Error(userFriendlyMessage)
         }
       },
 
