@@ -86,7 +86,7 @@ export class LocalAuthService {
     return 'hashed_' + btoa(password);
   }
 
-  // GOOGLE-STYLE: Password reset with enhanced security
+  // GOOGLE-STYLE: Password reset with server-side API integration
   async resetPassword(token: string, newPassword: string): Promise<AuthResponse> {
     try {
       console.log('🔐 GOOGLE-STYLE: resetPassword called with token:', token);
@@ -103,87 +103,37 @@ export class LocalAuthService {
         };
       }
       
-      // GOOGLE-STYLE: Find and validate token
-      const tokenData = this.resetTokens.get(token);
-      if (!tokenData) {
+      // GOOGLE-STYLE: Call server-side API for password reset
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${apiUrl}/api/auth/reset-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: token,
+          newPassword: newPassword
+        })
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        console.log('✅ GOOGLE-STYLE: Password reset completed via server API');
         return {
-          success: false,
-          error: {
-            code: 'INVALID_TOKEN',
-            message: 'Invalid or expired reset token'
-          }
+          success: true,
+          message: data.message || 'Your password has been reset successfully. Please log in with your new password.'
         };
-      }
-      
-      // GOOGLE-STYLE: Check if token is expired
-      if (new Date(tokenData.expiresAt) < new Date()) {
-        this.resetTokens.delete(token);
-        return {
-          success: false,
-          error: {
-            code: 'TOKEN_EXPIRED',
-            message: 'Reset token has expired. Please request a new password reset.'
-          }
-        };
-      }
-      
-      // GOOGLE-STYLE: Check if token is already used
-      if (tokenData.used) {
-        return {
-          success: false,
-          error: {
-            code: 'TOKEN_USED',
-            message: 'This reset token has already been used. Please request a new password reset.'
-          }
-        };
-      }
-      
-      // GOOGLE-STYLE: Find user by email or create new one
-      let user = Array.from(this.users.values()).find(u => u.email.toLowerCase() === tokenData.email.toLowerCase());
-      
-      if (!user) {
-        // GOOGLE-STYLE: Create new user account
-        user = {
-          id: this.generateId(),
-          email: tokenData.email,
-          firstName: 'User',
-          lastName: 'Account',
-          role: 'CANDIDATE',
-          isVerified: true,
-          isActive: true,
-          passwordHash: this.hashPassword(newPassword),
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        };
-        
-        this.users.set(user.id, user);
-        console.log('🔐 GOOGLE-STYLE: Created new user account');
       } else {
-        // GOOGLE-STYLE: Update existing user password
-        user.passwordHash = this.hashPassword(newPassword);
-        user.updatedAt = new Date().toISOString();
-        this.users.set(user.id, user);
-        console.log('🔐 GOOGLE-STYLE: Updated existing user password');
+        console.log('❌ GOOGLE-STYLE: Server API error:', data);
+        return {
+          success: false,
+          error: {
+            code: data.error?.code || 'RESET_FAILED',
+            message: data.error?.message || 'An error occurred while resetting your password. Please try again.'
+          }
+        };
       }
-      
-      // GOOGLE-STYLE: Mark token as used
-      tokenData.used = true;
-      tokenData.usedAt = new Date().toISOString();
-      this.resetTokens.set(token, tokenData);
-      
-      // GOOGLE-STYLE: Save to localStorage
-      localStorage.setItem('askyacham_users', JSON.stringify(Array.from(this.users.values())));
-      localStorage.setItem('askyacham_reset_tokens', JSON.stringify(Array.from(this.resetTokens.values())));
-      
-      // GOOGLE-STYLE: Clear all sessions for security
-      this.sessions.clear();
-      localStorage.removeItem('askyacham_sessions');
-      
-      console.log('✅ GOOGLE-STYLE: Password reset completed successfully');
-      return {
-        success: true,
-        message: 'Your password has been reset successfully. Please log in with your new password.'
-      };
       
     } catch (error) {
       console.error('❌ GOOGLE-STYLE ERROR in resetPassword:', error);
@@ -239,56 +189,45 @@ export class LocalAuthService {
     };
   }
 
-  // GOOGLE-STYLE: Token validation with proper security checks
+  // GOOGLE-STYLE: Token validation with server-side API integration
   async validateResetToken(token: string): Promise<AuthResponse> {
     try {
       console.log('🔐 GOOGLE-STYLE: validateResetToken called with token:', token);
 
-      // GOOGLE-STYLE: Find token in storage
-      const tokenData = this.resetTokens.get(token);
-      if (!tokenData) {
+      // GOOGLE-STYLE: Call server-side API for token validation
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${apiUrl}/api/auth/validate-reset-token`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: token
+        })
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        console.log('✅ GOOGLE-STYLE: Token is valid via server API');
+        return {
+          success: true,
+          data: {
+            user: data.data?.user || { email: 'user@example.com' },
+            accessToken: '',
+            refreshToken: ''
+          }
+        };
+      } else {
+        console.log('❌ GOOGLE-STYLE: Server API error:', data);
         return {
           success: false,
           error: {
-            code: 'INVALID_TOKEN',
-            message: 'Invalid reset token'
+            code: data.error?.code || 'INVALID_TOKEN',
+            message: data.error?.message || 'Invalid or expired reset token'
           }
         };
       }
-
-      // GOOGLE-STYLE: Check if token is expired
-      if (new Date(tokenData.expiresAt) < new Date()) {
-        this.resetTokens.delete(token);
-        return {
-          success: false,
-          error: {
-            code: 'TOKEN_EXPIRED',
-            message: 'Reset token has expired'
-          }
-        };
-      }
-
-      // GOOGLE-STYLE: Check if token is already used
-      if (tokenData.used) {
-        return {
-          success: false,
-          error: {
-            code: 'TOKEN_USED',
-            message: 'Reset token has already been used'
-          }
-        };
-      }
-
-      // GOOGLE-STYLE: Return success with user email for display
-      console.log('✅ GOOGLE-STYLE: Token is valid');
-      return {
-        success: true,
-        data: {
-          user: { email: tokenData.email } as any,
-          accessToken: '',
-          refreshToken: ''
-        }
-      };
       
     } catch (error) {
       console.error('❌ GOOGLE-STYLE ERROR in validateResetToken:', error);
@@ -302,7 +241,7 @@ export class LocalAuthService {
     }
   }
 
-  // GOOGLE-STYLE: Forgot password with enhanced security and UX
+  // GOOGLE-STYLE: Forgot password with server-side API integration
   async forgotPassword(email: string): Promise<AuthResponse> {
     try {
       console.log('🔐 GOOGLE-STYLE: forgotPassword called with email:', email);
@@ -319,55 +258,34 @@ export class LocalAuthService {
         };
       }
       
-      // GOOGLE-STYLE: Check if user exists (but don't reveal this to prevent email enumeration)
-      const existingUser = Array.from(this.users.values()).find(u => u.email.toLowerCase() === email.toLowerCase());
+      // GOOGLE-STYLE: Call server-side API for forgot password
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${apiUrl}/api/auth/forgot-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email
+        })
+      });
+
+      const data = await response.json();
       
-      // GOOGLE-STYLE: Rate limiting - check for recent requests
-      const recentRequests = this.getRecentResetRequests(email);
-      if (recentRequests.length >= 3) {
+      if (response.ok) {
+        console.log('✅ GOOGLE-STYLE: Password reset email sent via server API');
+        return {
+          success: true,
+          message: data.message || 'If an account with that email exists, we\'ve sent you a password reset link. Please check your inbox and spam folder.'
+        };
+      } else {
+        console.log('❌ GOOGLE-STYLE: Server API error:', data);
         return {
           success: false,
           error: {
-            code: 'RATE_LIMITED',
-            message: 'Too many password reset requests. Please wait 15 minutes before trying again.'
+            code: data.error?.code || 'API_ERROR',
+            message: data.error?.message || 'Failed to send password reset email. Please try again.'
           }
-        };
-      }
-      
-      // GOOGLE-STYLE: Generate secure token with longer length
-      const resetToken = this.generateSecureToken();
-      console.log('🔐 GOOGLE-STYLE: Generated secure reset token');
-      
-      const resetTokenData = {
-        token: resetToken,
-        userId: existingUser?.id || 'unknown',
-        email: email.toLowerCase(),
-        expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(), // 15 minutes
-        used: false,
-        createdAt: new Date().toISOString(),
-        ipAddress: 'unknown', // In real app, get from request
-        userAgent: 'unknown'  // In real app, get from request
-      };
-      
-      // GOOGLE-STYLE: Store token with cleanup of old tokens
-      this.resetTokens.set(resetToken, resetTokenData);
-      this.cleanupExpiredTokens();
-      localStorage.setItem('askyacham_reset_tokens', JSON.stringify(Array.from(this.resetTokens.values())));
-      
-      // GOOGLE-STYLE: Always return success (even if user doesn't exist) to prevent enumeration
-      const emailSent = await this.sendPasswordResetEmail(email, resetToken, existingUser?.firstName || 'User');
-      
-      if (emailSent) {
-        console.log('✅ GOOGLE-STYLE: Password reset email sent successfully');
-        return {
-          success: true,
-          message: 'If an account with that email exists, we\'ve sent you a password reset link. Please check your inbox and spam folder.'
-        };
-      } else {
-        // GOOGLE-STYLE: Still return success to prevent enumeration
-        return {
-          success: true,
-          message: 'If an account with that email exists, we\'ve sent you a password reset link. Please check your inbox and spam folder.'
         };
       }
       
@@ -412,36 +330,29 @@ export class LocalAuthService {
     }
   }
 
-  // GOOGLE-STYLE: Send password reset email with Google-like design
+  // GOOGLE-STYLE: Send password reset email via server API
   private async sendPasswordResetEmail(email: string, token: string, firstName: string): Promise<boolean> {
     try {
-      const resetUrl = `${window.location.origin}/reset-password?token=${token}`;
-      
-      const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
+      // Use the server-side API endpoint instead of calling SendGrid directly
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${apiUrl}/api/auth/forgot-password`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${process.env.SENDGRID_API_KEY || 'YOUR_SENDGRID_API_KEY_HERE'}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          personalizations: [{
-            to: [{ email: email }],
-            subject: 'Reset your password - Ask Ya Cham'
-          }],
-          from: { 
-            email: 'noreply@askyacham.com',
-            name: 'Ask Ya Cham'
-          },
-          content: [
-            {
-              type: 'text/html',
-              value: this.generateGoogleStyleEmailTemplate(firstName, resetUrl, token, email)
-            }
-          ]
+          email: email
         })
       });
 
-      return response.ok;
+      if (response.ok) {
+        console.log('✅ GOOGLE-STYLE: Password reset email sent via API');
+        return true;
+      } else {
+        const errorData = await response.json();
+        console.log('❌ GOOGLE-STYLE: API error:', errorData);
+        return false;
+      }
     } catch (error) {
       console.error('❌ GOOGLE-STYLE: Email send error:', error);
       return false;
