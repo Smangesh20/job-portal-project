@@ -2,30 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-
-// Check for redirect BEFORE any imports that might execute code
-if (typeof window !== 'undefined' && window.location.origin === 'https://www.askyacham.com') {
-  console.log('🔍 Module-level redirect: www.askyacham.com -> askyacham.com');
-  const currentUrl = window.location.href;
-  const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
-  console.log('🔍 Redirecting to:', newUrl);
-  window.location.replace(newUrl);
-}
-
-// Import after redirect check
 import { localAuthService } from '@/lib/local-auth'
 
 export default function ResetPasswordPage() {
-  // Additional redirect check at component level
-  if (typeof window !== 'undefined' && window.location.origin === 'https://www.askyacham.com') {
-    console.log('🔍 Component-level redirect: www.askyacham.com -> askyacham.com');
-    const currentUrl = window.location.href;
-    const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
-    console.log('🔍 Redirecting to:', newUrl);
-    window.location.replace(newUrl);
-    // Return a loading component to prevent further execution
-    return <div>Redirecting...</div>;
-  }
 
   const router = useRouter()
   const searchParams = useSearchParams()

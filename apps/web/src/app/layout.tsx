@@ -94,14 +94,14 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              if (typeof window !== 'undefined' && window.location.origin === 'https://www.askyacham.com' && window.location.pathname.includes('/auth/reset-password')) {
+              if (typeof window !== 'undefined' && window.location.origin === 'https://www.askyacham.com') {
                 console.log('🔍 Layout-level redirect: www.askyacham.com -> askyacham.com');
                 const currentUrl = window.location.href;
                 const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
                 console.log('🔍 Redirecting to:', newUrl);
                 window.location.replace(newUrl);
-                // Stop execution by returning early
-                return;
+                // Prevent any further execution
+                throw new Error('Redirecting to correct domain');
               }
             `,
           }}
