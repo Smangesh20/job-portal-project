@@ -925,32 +925,7 @@ class LocalAuthService {
         this.loadFromStorage();
         console.log('🔍 After reload, available reset tokens:', Array.from(this.resetTokens.keys()));
         
-        // If still no tokens, check if we're in wrong context
-        if (this.resetTokens.size === 0) {
-          console.log('🔍 Still no tokens after reload, checking context...');
-          const currentOrigin = window.location.origin;
-          const expectedOrigin = 'https://askyacham.com';
-          
-          // Check if we've already redirected to prevent infinite loops
-          const hasRedirected = sessionStorage.getItem('reset_password_redirected');
-          
-          if (currentOrigin !== expectedOrigin && !hasRedirected) {
-            console.log('🔍 Context mismatch detected! Current:', currentOrigin, 'Expected:', expectedOrigin);
-            console.log('🔍 Redirecting to correct context...');
-            sessionStorage.setItem('reset_password_redirected', 'true');
-            window.location.href = `https://askyacham.com/auth/reset-password?token=${token}`;
-        return {
-          success: false,
-          error: {
-                code: 'CONTEXT_MISMATCH',
-                message: 'Redirecting to correct context...'
-              }
-            };
-          } else if (hasRedirected) {
-            console.log('🔍 Already redirected, clearing redirect flag and continuing...');
-            sessionStorage.removeItem('reset_password_redirected');
-          }
-        }
+        // No redirect needed since www.askyacham.com is the primary domain
       }
       
       const resetTokenData = this.resetTokens.get(token);
@@ -1136,23 +1111,7 @@ class LocalAuthService {
             console.log('🔍 Current context:', window.location.origin);
             console.log('🔍 Real user data is likely stored in askyacham.com context, not www.askyacham.com');
             
-            // Check if we're in the wrong context and need to redirect
-            if (window.location.origin === 'https://www.askyacham.com') {
-              // Check if we've already redirected to prevent infinite loops
-              const hasRedirected = sessionStorage.getItem('reset_password_redirected');
-              if (!hasRedirected) {
-                console.log('🔍 Redirecting from www.askyacham.com to askyacham.com to access real user data');
-                sessionStorage.setItem('reset_password_redirected', 'true');
-                const currentUrl = window.location.href;
-                const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
-                console.log('🔍 Redirecting to:', newUrl);
-                window.location.href = newUrl;
-                return;
-              } else {
-                console.log('🔍 Already redirected, clearing redirect flag and continuing...');
-                sessionStorage.removeItem('reset_password_redirected');
-              }
-            }
+            // No redirect needed since www.askyacham.com is the primary domain
           }
           }
           
