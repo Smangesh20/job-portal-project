@@ -1,9 +1,29 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Redirects disabled to prevent infinite loops
-  // Handle www redirects at DNS/CDN level instead
   async redirects() {
-    return []
+    return [
+      // Redirect common auth routes to their correct paths
+      {
+        source: '/register',
+        destination: '/auth/register',
+        permanent: true,
+      },
+      {
+        source: '/login',
+        destination: '/auth/login',
+        permanent: true,
+      },
+      {
+        source: '/forgot-password',
+        destination: '/auth/forgot-password',
+        permanent: true,
+      },
+      {
+        source: '/reset-password',
+        destination: '/auth/reset-password',
+        permanent: true,
+      },
+    ]
   },
   experimental: {
     serverComponentsExternalPackages: [],
