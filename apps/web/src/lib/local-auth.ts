@@ -312,26 +312,35 @@ class LocalAuthService {
     }
   }
 
-  // Create proper user from token email
+  // Create proper user from token email - GOOGLE LEVEL SOLUTION
   private createProperUserFromToken(email: string, newPasswordHash: string) {
     try {
-      console.log('🔄 Creating proper user from token email:', email);
+      console.log('🔄 GOOGLE LEVEL: Creating proper user from token email:', email);
+      
+      // Extract name from email if possible
+      const emailName = email.split('@')[0];
+      const nameParts = emailName.split('.');
+      const firstName = nameParts[0] ? nameParts[0].charAt(0).toUpperCase() + nameParts[0].slice(1) : 'User';
+      const lastName = nameParts[1] ? nameParts[1].charAt(0).toUpperCase() + nameParts[1].slice(1) : 'Name';
       
       // Create a proper user with the email from the token
       const properUser = {
         id: this.generateId(),
         email: email,
-        firstName: 'User',
-        lastName: 'Name',
+        firstName: firstName,
+        lastName: lastName,
         role: 'CANDIDATE' as const,
-        isVerified: false,
+        isVerified: true, // Mark as verified since they have a valid reset token
         isActive: true,
         passwordHash: newPasswordHash,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
       
-      console.log('🔍 Created proper user:', properUser);
+      console.log('🔍 GOOGLE LEVEL: Created proper user:', properUser);
+      
+      // MIGRATE ALL DATA from temp_user to proper user
+      this.migrateTempUserToRealUser(properUser);
       
       // Update askyacham_users
       const storedUsers = localStorage.getItem('askyacham_users');
@@ -342,19 +351,91 @@ class LocalAuthService {
           u.id === 'temp_user' ? properUser : u
         );
         localStorage.setItem('askyacham_users', JSON.stringify(updatedUsers));
-        console.log('✅ Replaced temp_user with proper user in askyacham_users');
+        console.log('✅ GOOGLE LEVEL: Replaced temp_user with proper user in askyacham_users');
       } else {
         // Create new users array
         localStorage.setItem('askyacham_users', JSON.stringify([properUser]));
-        console.log('✅ Created new askyacham_users with proper user');
+        console.log('✅ GOOGLE LEVEL: Created new askyacham_users with proper user');
       }
       
       // Update our local map
       this.users.delete('temp_user');
       this.users.set(properUser.id, properUser);
       
+      // Update all reset tokens to point to the new user
+      this.updateResetTokensForNewUser(properUser);
+      
+      console.log('✅ GOOGLE LEVEL: User creation and migration completed');
+      
     } catch (error) {
-      console.error('❌ Error creating proper user from token:', error);
+      console.error('❌ Error in Google-level user creation:', error);
+    }
+  }
+
+  // Migrate all temp_user data to real user - GOOGLE LEVEL
+  private migrateTempUserToRealUser(realUser: any) {
+    try {
+      console.log('🔄 GOOGLE LEVEL: Migrating temp_user data to real user:', realUser.id);
+      
+      // Get all localStorage keys
+      const allKeys = Object.keys(localStorage);
+      
+      for (const key of allKeys) {
+        try {
+          const data = localStorage.getItem(key);
+          if (data) {
+            const parsed = JSON.parse(data);
+            
+            if (Array.isArray(parsed)) {
+              // Array data - look for temp_user and replace
+              const hasTempUser = parsed.some((item: any) => item.id === 'temp_user');
+              if (hasTempUser) {
+                const updated = parsed.map((item: any) => 
+                  item.id === 'temp_user' ? realUser : item
+                );
+                localStorage.setItem(key, JSON.stringify(updated));
+                console.log('✅ GOOGLE LEVEL: Migrated temp_user in array key:', key);
+              }
+            } else if (parsed.id === 'temp_user') {
+              // Single object - replace temp_user
+              const updated = { ...parsed, ...realUser };
+              localStorage.setItem(key, JSON.stringify(updated));
+              console.log('✅ GOOGLE LEVEL: Migrated temp_user in object key:', key);
+            }
+          }
+        } catch (e) {
+          // Not JSON, skip
+        }
+      }
+      
+    } catch (error) {
+      console.error('❌ Error in Google-level data migration:', error);
+    }
+  }
+
+  // Update all reset tokens to point to new user - GOOGLE LEVEL
+  private updateResetTokensForNewUser(realUser: any) {
+    try {
+      console.log('🔄 GOOGLE LEVEL: Updating reset tokens for new user:', realUser.id);
+      
+      const storedTokens = localStorage.getItem('askyacham_reset_tokens');
+      if (storedTokens) {
+        const tokens = JSON.parse(storedTokens);
+        const updatedTokens = tokens.map((token: any) => 
+          token.userId === 'temp_user' ? { ...token, userId: realUser.id, email: realUser.email } : token
+        );
+        localStorage.setItem('askyacham_reset_tokens', JSON.stringify(updatedTokens));
+        console.log('✅ GOOGLE LEVEL: Updated reset tokens for new user');
+        
+        // Also update our local map
+        this.resetTokens.clear();
+        updatedTokens.forEach((token: any) => {
+          this.resetTokens.set(token.token, token);
+        });
+      }
+      
+    } catch (error) {
+      console.error('❌ Error updating reset tokens for new user:', error);
     }
   }
 
@@ -1153,11 +1234,18 @@ class LocalAuthService {
       // CRITICAL: Update ALL user data in localStorage to ensure persistence
       this.updateAllUserDataInStorage(user, newPasswordHash);
       
-      // If this is a temp_user, find and update the real user
-      if (user.id === 'temp_user') {
-        console.log('🔍 This is temp_user, finding and updating real user...');
-        this.updateRealUserPassword(finalResetTokenData.email, newPasswordHash);
-      }
+        // If this is a temp_user, create a proper user account - GOOGLE LEVEL
+        if (user.id === 'temp_user') {
+          console.log('🔍 GOOGLE LEVEL: This is temp_user, creating proper user account...');
+          this.createProperUserFromToken(finalResetTokenData.email, newPasswordHash);
+          
+          // Get the newly created user
+          const newUser = Array.from(this.users.values()).find(u => u.email === finalResetTokenData.email && u.id !== 'temp_user');
+          if (newUser) {
+            console.log('🔍 GOOGLE LEVEL: Found newly created user:', newUser);
+            user = newUser; // Update user reference to the new user
+          }
+        }
       
 
       // Mark token as used
