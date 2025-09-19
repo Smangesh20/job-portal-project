@@ -84,16 +84,18 @@ class LocalAuthService {
     }
   }
 
-  // Restore missing data from available sources
+  // Restore missing data from available sources - AGGRESSIVE SEARCH
   private restoreMissingData() {
     try {
-      console.log('🔄 Restoring missing data...');
+      console.log('🔄 AGGRESSIVE: Restoring missing data...');
       
       // Look for any user data in localStorage
       const allKeys = Object.keys(localStorage);
       let foundUsers = null;
       let foundSessions = null;
       let foundResetTokens = null;
+      
+      console.log('🔍 AGGRESSIVE: Searching all keys for user data...');
       
       // Search for user data in any key
       for (const key of allKeys) {
@@ -102,11 +104,17 @@ class LocalAuthService {
           try {
             const parsed = JSON.parse(value);
             
-            // Check if it's user data
-            if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].id && parsed[0].email) {
-              if (!foundUsers && key.includes('user')) {
+            // Check if it's user data - be more aggressive
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              // Check if any item in the array looks like a user
+              const hasUserData = parsed.some((item: any) => 
+                item && typeof item === 'object' && 
+                (item.id || item.email || item.firstName || item.lastName)
+              );
+              
+              if (hasUserData && !foundUsers) {
                 foundUsers = parsed;
-                console.log('🔍 Found users in key:', key);
+                console.log('🔍 AGGRESSIVE: Found users in key:', key);
               }
             }
             
@@ -134,7 +142,7 @@ class LocalAuthService {
       // Restore the data
       if (foundUsers) {
         localStorage.setItem('askyacham_users', JSON.stringify(foundUsers));
-        console.log('✅ Restored users data');
+        console.log('✅ AGGRESSIVE: Restored users data');
       }
       
       if (foundSessions) {
@@ -148,7 +156,7 @@ class LocalAuthService {
       }
       
     } catch (error) {
-      console.error('❌ Error restoring missing data:', error);
+      console.error('❌ Error in aggressive data restoration:', error);
     }
   }
 
@@ -204,13 +212,18 @@ class LocalAuthService {
     }
   }
 
-  // Update real user password when working with temp_user
+  // Update real user password when working with temp_user - AGGRESSIVE SEARCH
   private updateRealUserPassword(email: string, newPasswordHash: string) {
     try {
-      console.log('🔄 Updating real user password for email:', email);
+      console.log('🔄 AGGRESSIVE: Updating real user password for email:', email);
       
-      // Look for the real user in all localStorage keys
+      // First, try to find the real user by looking for any user with a different email
+      // that might be the actual user (not temp@example.com)
       const allKeys = Object.keys(localStorage);
+      let realUserFound = false;
+      
+      console.log('🔍 AGGRESSIVE: Searching all localStorage keys for real user...');
+      
       for (const key of allKeys) {
         try {
           const data = localStorage.getItem(key);
@@ -218,32 +231,43 @@ class LocalAuthService {
             const parsed = JSON.parse(data);
             
             if (Array.isArray(parsed)) {
-              // Array of users - find by email
-              const realUser = parsed.find((u: any) => u.email === email && u.id !== 'temp_user');
-              if (realUser) {
-                console.log('🔍 Found real user by email:', realUser);
-                realUser.passwordHash = newPasswordHash;
-                realUser.updatedAt = new Date().toISOString();
-                
-                // Update the array
-                const updated = parsed.map((u: any) => u.email === email ? realUser : u);
-                localStorage.setItem(key, JSON.stringify(updated));
-                console.log('✅ Updated real user password in key:', key);
-                
-                // Also update our local map
-                this.users.set(realUser.id, realUser);
-                break;
+              // Array of users - look for any user that's not temp_user
+              for (const user of parsed) {
+                if (user.id && user.id !== 'temp_user' && user.email && user.email !== 'temp@example.com') {
+                  console.log('🔍 AGGRESSIVE: Found potential real user in array:', user);
+                  
+                  // Update this user's password
+                  user.passwordHash = newPasswordHash;
+                  user.updatedAt = new Date().toISOString();
+                  
+                  // Update the array
+                  const updated = parsed.map((u: any) => u.id === user.id ? user : u);
+                  localStorage.setItem(key, JSON.stringify(updated));
+                  console.log('✅ AGGRESSIVE: Updated real user password in key:', key);
+                  
+                  // Also update our local map
+                  this.users.set(user.id, user);
+                  realUserFound = true;
+                  
+                  // Also update the temp_user to point to the real user
+                  this.updateTempUserToRealUser(user);
+                  break;
+                }
               }
-            } else if (parsed.email === email && parsed.id !== 'temp_user') {
+            } else if (parsed.id && parsed.id !== 'temp_user' && parsed.email && parsed.email !== 'temp@example.com') {
               // Single user object
-              console.log('🔍 Found real user by email (single object):', parsed);
+              console.log('🔍 AGGRESSIVE: Found potential real user (single object):', parsed);
               parsed.passwordHash = newPasswordHash;
               parsed.updatedAt = new Date().toISOString();
               localStorage.setItem(key, JSON.stringify(parsed));
-              console.log('✅ Updated real user password in key:', key);
+              console.log('✅ AGGRESSIVE: Updated real user password in key:', key);
               
               // Also update our local map
               this.users.set(parsed.id, parsed);
+              realUserFound = true;
+              
+              // Also update the temp_user to point to the real user
+              this.updateTempUserToRealUser(parsed);
               break;
             }
           }
@@ -252,8 +276,85 @@ class LocalAuthService {
         }
       }
       
+      // If no real user found, create a proper user with the email from the token
+      if (!realUserFound) {
+        console.log('🔍 AGGRESSIVE: No real user found, creating proper user...');
+        this.createProperUserFromToken(email, newPasswordHash);
+      }
+      
     } catch (error) {
-      console.error('❌ Error updating real user password:', error);
+      console.error('❌ Error in aggressive real user password update:', error);
+    }
+  }
+
+  // Update temp_user to point to real user
+  private updateTempUserToRealUser(realUser: any) {
+    try {
+      console.log('🔄 Updating temp_user to point to real user:', realUser);
+      
+      // Update temp_user in askyacham_users
+      const storedUsers = localStorage.getItem('askyacham_users');
+      if (storedUsers) {
+        const users = JSON.parse(storedUsers);
+        const updatedUsers = users.map((u: any) => 
+          u.id === 'temp_user' ? realUser : u
+        );
+        localStorage.setItem('askyacham_users', JSON.stringify(updatedUsers));
+        console.log('✅ Updated temp_user to real user in askyacham_users');
+      }
+      
+      // Update our local map
+      this.users.delete('temp_user');
+      this.users.set(realUser.id, realUser);
+      
+    } catch (error) {
+      console.error('❌ Error updating temp_user to real user:', error);
+    }
+  }
+
+  // Create proper user from token email
+  private createProperUserFromToken(email: string, newPasswordHash: string) {
+    try {
+      console.log('🔄 Creating proper user from token email:', email);
+      
+      // Create a proper user with the email from the token
+      const properUser = {
+        id: this.generateId(),
+        email: email,
+        firstName: 'User',
+        lastName: 'Name',
+        role: 'CANDIDATE' as const,
+        isVerified: false,
+        isActive: true,
+        passwordHash: newPasswordHash,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      console.log('🔍 Created proper user:', properUser);
+      
+      // Update askyacham_users
+      const storedUsers = localStorage.getItem('askyacham_users');
+      if (storedUsers) {
+        const users = JSON.parse(storedUsers);
+        // Replace temp_user with proper user
+        const updatedUsers = users.map((u: any) => 
+          u.id === 'temp_user' ? properUser : u
+        );
+        localStorage.setItem('askyacham_users', JSON.stringify(updatedUsers));
+        console.log('✅ Replaced temp_user with proper user in askyacham_users');
+      } else {
+        // Create new users array
+        localStorage.setItem('askyacham_users', JSON.stringify([properUser]));
+        console.log('✅ Created new askyacham_users with proper user');
+      }
+      
+      // Update our local map
+      this.users.delete('temp_user');
+      this.users.set(properUser.id, properUser);
+      
+    } catch (error) {
+      console.error('❌ Error creating proper user from token:', error);
     }
   }
 
