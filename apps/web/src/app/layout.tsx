@@ -94,15 +94,12 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              if (typeof window !== 'undefined' && window.location.origin === 'https://www.askyacham.com') {
+              if (typeof window !== 'undefined' && window.location.hostname === 'www.askyacham.com') {
                 console.log('🔍 Layout-level redirect: www.askyacham.com -> askyacham.com');
                 const currentUrl = window.location.href;
                 const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
                 console.log('🔍 Redirecting to:', newUrl);
-                // Use meta refresh for immediate redirect without JavaScript errors
-                document.write('<meta http-equiv="refresh" content="0; url=' + newUrl + '">');
-                document.write('<h1>Redirecting to correct domain...</h1>');
-                // Also try window.location as backup
+                // Use replace to avoid adding to history
                 window.location.replace(newUrl);
               }
             `,
