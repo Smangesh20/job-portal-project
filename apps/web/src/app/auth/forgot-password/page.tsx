@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { localAuthService } from '@/lib/local-auth'
-import { emailService } from '@/lib/email-service'
 
 export default function ForgotPasswordPage() {
   const router = useRouter()
@@ -36,9 +35,8 @@ export default function ForgotPasswordPage() {
   }
 
   const handleViewSentEmails = () => {
-    const emails = emailService.getSentEmails()
-    console.log('Sent emails:', emails)
-    alert(`Check console for sent emails. Found ${emails.length} emails.`)
+    console.log('Email functionality now handled by server-side API')
+    alert('Email functionality is now handled by the server-side API. Check the server logs for email sending details.')
   }
 
   if (showEmailSent) {

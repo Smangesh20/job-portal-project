@@ -104,7 +104,7 @@ export class LocalAuthService {
       }
       
       // GOOGLE-STYLE: Call server-side API for password reset
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://ask-ya-cham-api.onrender.com';
       const response = await fetch(`${apiUrl}/api/auth/reset-password`, {
         method: 'POST',
         headers: {
@@ -195,7 +195,7 @@ export class LocalAuthService {
       console.log('🔐 GOOGLE-STYLE: validateResetToken called with token:', token);
 
       // GOOGLE-STYLE: Call server-side API for token validation
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://ask-ya-cham-api.onrender.com';
       const response = await fetch(`${apiUrl}/api/auth/validate-reset-token`, {
         method: 'POST',
         headers: {
@@ -259,7 +259,7 @@ export class LocalAuthService {
       }
       
       // GOOGLE-STYLE: Call server-side API for forgot password
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://ask-ya-cham-api.onrender.com';
       const response = await fetch(`${apiUrl}/api/auth/forgot-password`, {
         method: 'POST',
         headers: {
@@ -334,7 +334,7 @@ export class LocalAuthService {
   private async sendPasswordResetEmail(email: string, token: string, firstName: string): Promise<boolean> {
     try {
       // Use the server-side API endpoint instead of calling SendGrid directly
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://ask-ya-cham-api.onrender.com';
       const response = await fetch(`${apiUrl}/api/auth/forgot-password`, {
         method: 'POST',
         headers: {
