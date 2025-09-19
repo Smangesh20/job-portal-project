@@ -1,15 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { ThemeProvider } from '@/components/providers/theme-provider'
-import { QueryProvider } from '@/components/providers/query-provider'
-import { AuthProvider } from '@/components/providers/auth-provider'
-import { SocketProvider } from '@/components/providers/socket-provider'
-import { ErrorBoundary } from '@/components/error-boundary'
-import { ErrorPreventionProvider } from '@/components/providers/error-prevention-provider'
-import InfiniteErrorBoundary from '@/components/error-boundaries/infinite-error-boundary'
-import '@/lib/error-prevention-init'
-import { Toaster } from 'react-hot-toast'
 import Header from '@/components/layouts/header'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -93,50 +84,10 @@ export default function RootLayout({
         <meta httpEquiv="Expires" content="0" />
       </head>
       <body className={inter.className}>
-        <InfiniteErrorBoundary>
-          <ErrorBoundary>
-            <ErrorPreventionProvider>
-              <ThemeProvider
-                attribute="class"
-                defaultTheme="light"
-                enableSystem={false}
-                disableTransitionOnChange
-              >
-                <QueryProvider>
-                  <AuthProvider>
-                    <SocketProvider>
-                      <Header />
-                      {children}
-                    <Toaster
-                      position="top-right"
-                      toastOptions={{
-                        duration: 4000,
-                        style: {
-                          background: 'var(--background)',
-                          color: 'var(--foreground)',
-                          border: '1px solid var(--border)',
-                        },
-                        success: {
-                          iconTheme: {
-                            primary: 'var(--primary)',
-                            secondary: 'var(--primary-foreground)',
-                          },
-                        },
-                        error: {
-                          iconTheme: {
-                            primary: 'var(--destructive)',
-                            secondary: 'var(--destructive-foreground)',
-                          },
-                        },
-                      }}
-                    />
-                    </SocketProvider>
-                  </AuthProvider>
-                </QueryProvider>
-              </ThemeProvider>
-            </ErrorPreventionProvider>
-          </ErrorBoundary>
-        </InfiniteErrorBoundary>
+        <div>
+          <Header />
+          {children}
+        </div>
       </body>
     </html>
   )
