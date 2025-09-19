@@ -2,7 +2,7 @@
   "version": 2,
   "name": "ask-ya-cham-quantum-platform",
   "buildCommand": "cd apps/web && npm run build",
-  "installCommand": "npm install && cd apps/web && npm install",
+  "installCommand": "cd apps/web && npm install",
   "outputDirectory": "apps/web/.next",
   "public": true,
   "git": {
