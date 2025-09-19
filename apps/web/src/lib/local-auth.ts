@@ -362,8 +362,8 @@ export class LocalAuthService {
   }
 
   // GOOGLE ULTIMATE: Get current user
-  getCurrentUser(): User | null {
-    console.log('🚀 GOOGLE ULTIMATE: getCurrentUser called');
+  getCurrentUser(accessToken?: string): User | null {
+    console.log('🚀 GOOGLE ULTIMATE: getCurrentUser called with token:', accessToken);
     const users = Array.from(this.users.values());
     return users.length > 0 ? users[0] : null;
   }
