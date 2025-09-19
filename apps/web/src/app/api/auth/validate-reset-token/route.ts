@@ -19,9 +19,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Proxy request to backend API
-    const backendUrl = 'https://ask-ya-cham-api.onrender.com/api/auth/validate-reset-token';
+    const backendUrl = process.env.BACKEND_API_URL || 'https://ask-ya-cham-api.onrender.com';
+    const fullUrl = `${backendUrl}/api/auth/validate-reset-token`;
     
-    const response = await fetch(backendUrl, {
+    const response = await fetch(fullUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
