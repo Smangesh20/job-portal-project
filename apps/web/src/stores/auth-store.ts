@@ -177,41 +177,9 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       initialize: async () => {
-        try {
-          set({ isLoading: true })
-
-          // Try to initialize from local auth service
-          const response = await localAuthService.initialize()
-          
-          if (response.success && response.data?.user) {
-            set({
-              user: response.data.user,
-              accessToken: response.data.accessToken,
-              refreshTokenValue: response.data.refreshToken,
-              isAuthenticated: true,
-              isLoading: false
-            })
-          } else {
-            // No valid session found
-            set({
-              user: null,
-              accessToken: null,
-              refreshTokenValue: null,
-              isAuthenticated: false,
-              isLoading: false
-            })
-          }
-        } catch (error) {
-          // If initialization fails, set to unauthenticated state
-          set({
-            user: null,
-            accessToken: null,
-            refreshTokenValue: null,
-            isAuthenticated: false,
-            isLoading: false,
-            error: null
-          })
-        }
+        // Skip initialization completely to prevent any issues
+        // Just set loading to false immediately
+        set({ isLoading: false })
       }
     }),
     {

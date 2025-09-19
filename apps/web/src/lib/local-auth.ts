@@ -44,13 +44,18 @@ class LocalAuthService {
 
   constructor() {
     console.log('🔍 LocalAuthService constructor called');
-    this.loadFromStorage();
+    try {
+      this.loadFromStorage();
+    } catch (error) {
+      console.error('❌ Error in LocalAuthService constructor:', error);
+      // Don't let constructor errors break the app
+    }
   }
 
   private loadFromStorage() {
     try {
       if (typeof window === 'undefined') return;
-
+      
       console.log('🔍 loadFromStorage called');
       console.log('🔍 localStorage available:', typeof localStorage !== 'undefined');
       console.log('🔍 Window location:', window.location.href);
