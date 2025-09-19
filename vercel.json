@@ -16,11 +16,20 @@
     "autoAlias": true
   },
   "env": {
-    "NODE_ENV": "production"
+    "NODE_ENV": "production",
+    "SERVER_TIMEOUT": "30000",
+    "REQUEST_TIMEOUT": "25000",
+    "KEEP_ALIVE_TIMEOUT": "65000",
+    "HEADERS_TIMEOUT": "66000"
   },
   "build": {
     "env": {
       "NODE_ENV": "production"
+    }
+  },
+  "functions": {
+    "apps/web/src/app/api/**/*.ts": {
+      "maxDuration": 30
     }
   },
   "regions": ["iad1"],

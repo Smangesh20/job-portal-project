@@ -8,6 +8,7 @@ services:
     startCommand: npm start
     autoDeploy: true
     healthCheckPath: /api/health
+    healthCheckTimeout: 30
     envVars:
       - key: NODE_ENV
         value: production
@@ -27,6 +28,14 @@ services:
         generateValue: true
       - key: SESSION_SECRET
         generateValue: true
+      - key: SERVER_TIMEOUT
+        value: "30000"
+      - key: REQUEST_TIMEOUT
+        value: "25000"
+      - key: KEEP_ALIVE_TIMEOUT
+        value: "65000"
+      - key: HEADERS_TIMEOUT
+        value: "66000"
     scaling:
       minInstances: 1
       maxInstances: 3

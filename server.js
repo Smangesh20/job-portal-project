@@ -34,6 +34,11 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Server timeout configuration
+const serverTimeout = parseInt(process.env.SERVER_TIMEOUT || '30000', 10); // 30 seconds
+const keepAliveTimeout = parseInt(process.env.KEEP_ALIVE_TIMEOUT || '65000', 10); // 65 seconds
+const headersTimeout = parseInt(process.env.HEADERS_TIMEOUT || '66000', 10); // 66 seconds
+
 // =============================================================================
 // QUANTUM COMPUTING SIMULATION ENGINE
 // =============================================================================
@@ -654,6 +659,25 @@ app.use(hpp());
 // Logging
 app.use(morgan('combined'));
 
+// Request timeout middleware
+app.use((req, res, next) => {
+  const requestTimeout = parseInt(process.env.REQUEST_TIMEOUT || '25000', 10); // 25 seconds
+  
+  req.setTimeout(requestTimeout, () => {
+    console.warn(`⚠️  Request timeout for ${req.method} ${req.path}`);
+    if (!res.headersSent) {
+      res.status(408).json({
+        success: false,
+        error: 'Request Timeout',
+        message: 'The request took too long to process. Please try again.',
+        timeout: requestTimeout
+      });
+    }
+  });
+  
+  next();
+});
+
 // Static files
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -1009,24 +1033,69 @@ app.use(errorPrevention.handleError.bind(errorPrevention));
 // =============================================================================
 // START SERVER
 // =============================================================================
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`🚀 Ask Ya Cham Quantum Platform running on port ${PORT}`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`⚡ Health check: http://localhost:${PORT}/health`);
   console.log(`📊 API endpoint: http://localhost:${PORT}/api`);
   console.log(`🔬 Quantum Engine: ${quantumEngine.quantumState}`);
   console.log(`🌟 Platform Status: LIVE AND OPERATIONAL`);
+  console.log(`⏱️  Server timeout: ${serverTimeout}ms`);
 });
 
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  console.log('SIGTERM received, shutting down gracefully');
-  process.exit(0);
+// Configure server timeouts
+server.timeout = serverTimeout;
+server.keepAliveTimeout = keepAliveTimeout;
+server.headersTimeout = headersTimeout;
+
+// Handle server timeout events
+server.on('timeout', (socket) => {
+  console.warn('⚠️  Server timeout detected, closing connection');
+  socket.destroy();
 });
 
-process.on('SIGINT', () => {
-  console.log('SIGINT received, shutting down gracefully');
-  process.exit(0);
+server.on('clientError', (err, socket) => {
+  console.error('🚨 Client error:', err.message);
+  if (err.code === 'ECONNRESET' || err.code === 'EPIPE') {
+    socket.destroy();
+  } else {
+    socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
+  }
+});
+
+// Graceful shutdown with timeout
+const gracefulShutdown = (signal) => {
+  console.log(`${signal} received, shutting down gracefully`);
+  
+  server.close((err) => {
+    if (err) {
+      console.error('Error during server shutdown:', err);
+      process.exit(1);
+    }
+    
+    console.log('Server closed successfully');
+    process.exit(0);
+  });
+  
+  // Force shutdown after 10 seconds
+  setTimeout(() => {
+    console.error('Forced shutdown after timeout');
+    process.exit(1);
+  }, 10000);
+};
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
+// Handle uncaught exceptions and unhandled rejections
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+  gracefulShutdown('UNCAUGHT_EXCEPTION');
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  gracefulShutdown('UNHANDLED_REJECTION');
 });
 
 module.exports = app;
