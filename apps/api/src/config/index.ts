@@ -61,7 +61,11 @@ export const config = {
 
   // CORS configuration
   cors: {
-    origin: process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3000'],
+    origin: process.env.CORS_ORIGIN?.split(',') || [
+      'http://localhost:3000',
+      'https://www.askyacham.com',
+      'https://askyacham.com'
+    ],
     credentials: true,
   },
 
