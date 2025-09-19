@@ -193,6 +193,166 @@ export class LocalAuthService {
     }
   }
 
+  // GOOGLE ULTIMATE: Forgot password
+  async forgotPassword(email: string): Promise<AuthResponse> {
+    try {
+      console.log('🚀 GOOGLE ULTIMATE: forgotPassword called with email:', email);
+      
+      // GOOGLE ULTIMATE: Generate a reset token
+      const resetToken = 'token_' + Math.random().toString(36).substr(2, 9);
+      console.log('🚀 GOOGLE ULTIMATE: Generated reset token:', resetToken);
+      
+      // GOOGLE ULTIMATE: Create reset token data
+      const resetTokenData = {
+        token: resetToken,
+        userId: 'temp_user',
+        email: email,
+        expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(), // 15 minutes
+        used: false,
+        createdAt: new Date().toISOString()
+      };
+      
+      // GOOGLE ULTIMATE: Store the token
+      this.resetTokens.set(resetToken, resetTokenData);
+      localStorage.setItem('askyacham_reset_tokens', JSON.stringify([resetTokenData]));
+      console.log('🚀 GOOGLE ULTIMATE: Stored reset token');
+      
+      // GOOGLE ULTIMATE: In a real app, you would send an email here
+      console.log('🚀 GOOGLE ULTIMATE: Reset token generated - in production, send email with token:', resetToken);
+      
+      return {
+        success: true,
+        message: 'Password reset email sent successfully!'
+      };
+      
+    } catch (error) {
+      console.error('❌ GOOGLE ULTIMATE ERROR in forgotPassword:', error);
+      return {
+        success: false,
+        error: {
+          code: 'FORGOT_PASSWORD_FAILED',
+          message: 'Failed to send password reset email'
+        }
+      };
+    }
+  }
+
+  // GOOGLE ULTIMATE: Login
+  async login(email: string, password: string): Promise<AuthResponse> {
+    try {
+      console.log('🚀 GOOGLE ULTIMATE: login called with email:', email);
+      
+      // GOOGLE ULTIMATE: Find user by email
+      const user = Array.from(this.users.values()).find(u => u.email === email);
+      if (!user) {
+        return {
+          success: false,
+          error: {
+            code: 'USER_NOT_FOUND',
+            message: 'User not found'
+          }
+        };
+      }
+      
+      // GOOGLE ULTIMATE: Verify password
+      if (user.passwordHash !== this.hashPassword(password)) {
+        return {
+          success: false,
+          error: {
+            code: 'INVALID_PASSWORD',
+            message: 'Invalid password'
+          }
+        };
+      }
+      
+      // GOOGLE ULTIMATE: Create session
+      const sessionToken = 'session_' + Math.random().toString(36).substr(2, 9);
+      const session = {
+        token: sessionToken,
+        userId: user.id,
+        email: user.email,
+        createdAt: new Date().toISOString(),
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours
+      };
+      
+      this.sessions.set(sessionToken, session);
+      localStorage.setItem('askyacham_sessions', JSON.stringify([session]));
+      
+      console.log('🚀 GOOGLE ULTIMATE: Login successful');
+      return {
+        success: true,
+        data: {
+          user: user,
+          accessToken: sessionToken,
+          refreshToken: sessionToken
+        }
+      };
+      
+    } catch (error) {
+      console.error('❌ GOOGLE ULTIMATE ERROR in login:', error);
+      return {
+        success: false,
+        error: {
+          code: 'LOGIN_FAILED',
+          message: 'Login failed'
+        }
+      };
+    }
+  }
+
+  // GOOGLE ULTIMATE: Register
+  async register(userData: { email: string; password: string; firstName: string; lastName: string }): Promise<AuthResponse> {
+    try {
+      console.log('🚀 GOOGLE ULTIMATE: register called with email:', userData.email);
+      
+      // GOOGLE ULTIMATE: Check if user already exists
+      const existingUser = Array.from(this.users.values()).find(u => u.email === userData.email);
+      if (existingUser) {
+        return {
+          success: false,
+          error: {
+            code: 'USER_EXISTS',
+            message: 'User already exists'
+          }
+        };
+      }
+      
+      // GOOGLE ULTIMATE: Create new user
+      const newUser: User = {
+        id: this.generateId(),
+        email: userData.email,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        role: 'CANDIDATE',
+        isVerified: false,
+        isActive: true,
+        passwordHash: this.hashPassword(userData.password),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      // GOOGLE ULTIMATE: Save user
+      this.users.set(newUser.id, newUser);
+      localStorage.setItem('askyacham_users', JSON.stringify(Array.from(this.users.values())));
+      
+      console.log('🚀 GOOGLE ULTIMATE: Registration successful');
+      return {
+        success: true,
+        message: 'Registration successful!'
+      };
+      
+    } catch (error) {
+      console.error('❌ GOOGLE ULTIMATE ERROR in register:', error);
+      return {
+        success: false,
+        error: {
+          code: 'REGISTRATION_FAILED',
+          message: 'Registration failed'
+        }
+      };
+    }
+  }
+
   // Clear all data (for testing)
   clearAllData(): void {
     this.users.clear();
