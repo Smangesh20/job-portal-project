@@ -103,8 +103,8 @@ export class LocalAuthService {
         };
       }
       
-      // GOOGLE-STYLE: Call local API route (proxies to backend)
-      const response = await fetch('/api/auth/reset-password', {
+      // GOOGLE-STYLE: Call local API route
+      const response = await fetch('/api/reset-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -205,8 +205,8 @@ export class LocalAuthService {
     try {
       console.log('🔐 GOOGLE-STYLE: validateResetToken called with token:', token);
 
-      // GOOGLE-STYLE: Call local API route (proxies to backend)
-      const response = await fetch('/api/auth/validate-reset-token', {
+      // GOOGLE-STYLE: Call local API route
+      const response = await fetch('/api/validate-token', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -280,8 +280,8 @@ export class LocalAuthService {
         };
       }
       
-      // GOOGLE-STYLE: Call local API route (proxies to backend)
-      const response = await fetch('/api/auth/forgot-password', {
+      // GOOGLE-STYLE: Call local API route
+      const response = await fetch('/api/forgot-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
