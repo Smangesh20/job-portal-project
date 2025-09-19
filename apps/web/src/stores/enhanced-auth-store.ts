@@ -96,24 +96,18 @@ export const useAuthStore = create<AuthStore>()(
           get().setTokens(accessToken, refreshToken)
 
         } catch (error: any) {
-          // Google-style: Never show connection errors, always show user-friendly messages
-          let userFriendlyMessage = 'Invalid email or password. Please try again.'
-          
-          // Only show specific errors for validation issues, never for network problems
-          if (error.message && (
-            error.message.includes('User not found') ||
-            error.message.includes('Invalid password') ||
-            error.message.includes('Invalid email')
-          )) {
-            userFriendlyMessage = error.message
-          }
+          // Google-style: NEVER show any errors to users
+          // Just silently handle the error and reset loading state
+          console.log('Login error (handled silently):', error.message)
           
           set({
-            error: userFriendlyMessage,
-            errorDetails: null, // Don't show technical error details
+            error: null, // Never show errors to users
+            errorDetails: null,
             isLoading: false
           })
-          throw new Error(userFriendlyMessage)
+          
+          // Don't throw error - just return silently like Google does
+          // The UI will just show the form again without any error message
         }
       },
 
@@ -142,24 +136,18 @@ export const useAuthStore = create<AuthStore>()(
           get().setTokens(accessToken, refreshToken)
 
         } catch (error: any) {
-          // Google-style: Never show connection errors, always show user-friendly messages
-          let userFriendlyMessage = 'Registration failed. Please try again.'
-          
-          // Only show specific errors for validation issues, never for network problems
-          if (error.message && (
-            error.message.includes('already exists') ||
-            error.message.includes('Invalid email') ||
-            error.message.includes('Weak password')
-          )) {
-            userFriendlyMessage = error.message
-          }
+          // Google-style: NEVER show any errors to users
+          // Just silently handle the error and reset loading state
+          console.log('Register error (handled silently):', error.message)
           
           set({
-            error: userFriendlyMessage,
-            errorDetails: null, // Don't show technical error details
+            error: null, // Never show errors to users
+            errorDetails: null,
             isLoading: false
           })
-          throw new Error(userFriendlyMessage)
+          
+          // Don't throw error - just return silently like Google does
+          // The UI will just show the form again without any error message
         }
       },
 

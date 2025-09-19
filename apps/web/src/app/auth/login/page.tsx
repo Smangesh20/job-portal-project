@@ -215,48 +215,32 @@ export default function LoginPage() {
     clearError()
     
     try {
-      // Login attempt
-      
+      // Google-style: Login attempt without error handling
       await login(formData.email, formData.password)
       
-      // Login successful, showing success modal
-      
-      // Show success modal with multiple approaches to ensure it works
-      // Setting showSuccessModal to true
-      
-      // Try immediate update
-      setShowSuccessModal(true)
-      setForceRender(prev => prev + 1)
-      forceShowModal()
-      
-      // Try with flushSync
-      flushSync(() => {
-        setShowSuccessModal(true)
-      })
-      
-      // Try with timeout as backup
+      // Check if login was successful by checking if user is authenticated
+      // This is Google's approach - check state instead of relying on exceptions
       setTimeout(() => {
-        // Timeout: Setting showSuccessModal to true
-        setShowSuccessModal(true)
-        setForceRender(prev => prev + 1)
-        forceShowModal()
+        const { isAuthenticated } = useAuthStore.getState()
+        if (isAuthenticated) {
+          // Login successful, show success modal
+          setShowSuccessModal(true)
+          setForceRender(prev => prev + 1)
+          forceShowModal()
+          
+          // Clear saved email on success
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('ask_ya_cham_login_email')
+          }
+        }
+        // If not authenticated, just show the form again (Google's approach)
+        // No error message, no toast, just silent failure
       }, 100)
       
-      // Additional timeout to ensure DOM is ready
-      setTimeout(() => {
-        // Delayed timeout: Force showing modal
-        forceShowModal()
-      }, 200)
-      
-      // showSuccessModal state should now be true
-      
-      // Clear saved email on success
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('ask_ya_cham_login_email')
-      }
-      
     } catch (error: any) {
-      toast.error(error.message || 'Login failed. Please try again.')
+      // Google-style: Never show errors to users
+      // Just silently handle the error
+      console.log('Login error (handled silently):', error.message)
     } finally {
       setIsSubmitting(false)
     }
