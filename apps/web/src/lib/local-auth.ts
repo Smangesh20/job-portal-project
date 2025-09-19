@@ -474,6 +474,74 @@ class LocalAuthService {
     } as User));
   }
 
+  // Initialize authentication service
+  async initialize(): Promise<AuthResponse> {
+    try {
+      console.log('🔍 initialize called');
+      
+      // Load data from localStorage
+      this.loadFromStorage();
+      
+      // Check if there are any valid sessions
+      const validSessions = Array.from(this.sessions.values()).filter(session => {
+        return new Date(session.expiresAt) > new Date();
+      });
+      
+      if (validSessions.length === 0) {
+        console.log('🔍 No valid sessions found');
+        return {
+          success: true,
+          data: {
+            user: null,
+            accessToken: null,
+            refreshToken: null
+          }
+        };
+      }
+      
+      // Get the most recent valid session
+      const latestSession = validSessions.sort((a, b) => 
+        new Date(b.expiresAt).getTime() - new Date(a.expiresAt).getTime()
+      )[0];
+      
+      // Find the user for this session
+      const user = this.users.get(latestSession.userId);
+      if (!user) {
+        console.log('🔍 User not found for session');
+        return {
+          success: true,
+          data: {
+            user: null,
+            accessToken: null,
+            refreshToken: null
+          }
+        };
+      }
+      
+      // Generate new access token
+      const accessToken = this.generateToken();
+      
+      console.log('🔍 Initialization successful, user:', user.email);
+      return {
+        success: true,
+        data: {
+          user,
+          accessToken,
+          refreshToken: latestSession.id
+        }
+      };
+    } catch (error: any) {
+      console.error('❌ initialize error:', error);
+      return {
+        success: false,
+        error: {
+          code: 'INITIALIZATION_ERROR',
+          message: error.message || 'Failed to initialize authentication'
+        }
+      };
+    }
+  }
+
   // Forgot password - generate reset token
   async forgotPassword(email: string): Promise<AuthResponse> {
     try {

@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware'
 import { AuthUser } from '@/types/auth'
 import { enhancedAPIClient } from '@/lib/api-client'
 import { ProfessionalErrorHandler, ErrorDetails } from '@/lib/error-handler'
+import { localAuthService } from '@/lib/local-auth'
 
 interface AuthState {
   user: AuthUser | null
@@ -198,30 +199,43 @@ export const useAuthStore = create<AuthStore>()(
         try {
           set({ isLoading: true })
 
-          const accessToken = localStorage.getItem('accessToken')
-          const refreshToken = localStorage.getItem('refreshToken')
+          // Use localAuthService to initialize
+          const response = await localAuthService.initialize()
 
-          if (!accessToken || !refreshToken) {
-            set({ isLoading: false })
-            return
+          if (response.success && response.data) {
+            const { user, accessToken, refreshToken } = response.data
+
+            if (user && accessToken && refreshToken) {
+              set({
+                user,
+                accessToken,
+                refreshTokenValue: refreshToken,
+                isAuthenticated: true,
+                isLoading: false
+              })
+            } else {
+              // No valid session found
+              set({
+                user: null,
+                accessToken: null,
+                refreshTokenValue: null,
+                isAuthenticated: false,
+                isLoading: false
+              })
+            }
+          } else {
+            // Initialization failed
+            set({
+              user: null,
+              accessToken: null,
+              refreshTokenValue: null,
+              isAuthenticated: false,
+              isLoading: false,
+              error: response.error?.message || 'Initialization failed'
+            })
           }
-
-          // Set tokens
-          set({ accessToken, refreshTokenValue: refreshToken })
-
-          // Set authorization header
-          // Authorization headers are handled by the enhanced API client
-
-          // Verify token and get user info
-          // User verification handled by enhanced API client
-          const response = { data: { data: { user: { id: 'mock_user', email: 'mock@example.com', name: 'Mock User' } } } }
-
-          set({
-            user: (response as any).data.data.user,
-            isAuthenticated: true,
-            isLoading: false
-          })
-        } catch (error) {
+        } catch (error: any) {
+          console.error('❌ Auth store initialization error:', error)
           // If initialization fails, clear auth state
           set({
             user: null,
@@ -229,12 +243,8 @@ export const useAuthStore = create<AuthStore>()(
             refreshTokenValue: null,
             isAuthenticated: false,
             isLoading: false,
-            error: null
+            error: error.message || 'Failed to initialize authentication'
           })
-
-          // Authorization headers are handled by the enhanced API client
-          localStorage.removeItem('accessToken')
-          localStorage.removeItem('refreshToken')
         }
       }
     }),
