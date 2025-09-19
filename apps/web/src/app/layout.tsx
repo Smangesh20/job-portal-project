@@ -99,9 +99,11 @@ export default function RootLayout({
                 const currentUrl = window.location.href;
                 const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
                 console.log('🔍 Redirecting to:', newUrl);
+                // Use meta refresh for immediate redirect without JavaScript errors
+                document.write('<meta http-equiv="refresh" content="0; url=' + newUrl + '">');
+                document.write('<h1>Redirecting to correct domain...</h1>');
+                // Also try window.location as backup
                 window.location.replace(newUrl);
-                // Prevent any further execution
-                throw new Error('Redirecting to correct domain');
               }
             `,
           }}
