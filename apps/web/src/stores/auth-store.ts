@@ -115,8 +115,11 @@ export const useAuthStore = create<AuthStore>()(
         try {
           set({ isLoading: true })
 
-          // Call local auth service logout
-          await localAuthService.logout()
+          // Get current refresh token and call local auth service logout
+          const { refreshTokenValue } = get()
+          if (refreshTokenValue) {
+            await localAuthService.logout(refreshTokenValue)
+          }
 
           // Clear state
           set({
