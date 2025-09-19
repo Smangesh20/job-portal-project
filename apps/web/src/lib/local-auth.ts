@@ -369,8 +369,8 @@ export class LocalAuthService {
   }
 
   // GOOGLE ULTIMATE: Logout
-  logout(): void {
-    console.log('🚀 GOOGLE ULTIMATE: logout called');
+  logout(refreshToken?: string): void {
+    console.log('🚀 GOOGLE ULTIMATE: logout called with refreshToken:', refreshToken);
     this.sessions.clear();
     localStorage.removeItem('askyacham_sessions');
     console.log('🚀 GOOGLE ULTIMATE: Logout successful');
