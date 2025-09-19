@@ -1,8 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { AuthUser } from '@/types/auth'
-import { enhancedAPIClient } from '@/lib/api-client'
-import { ProfessionalErrorHandler, ErrorDetails } from '@/lib/error-handler'
 import { localAuthService } from '@/lib/local-auth'
 
 interface AuthState {
@@ -12,7 +10,6 @@ interface AuthState {
   isLoading: boolean
   isAuthenticated: boolean
   error: string | null
-  errorDetails: ErrorDetails | null
 }
 
 interface AuthActions {
@@ -20,7 +17,6 @@ interface AuthActions {
   setTokens: (accessToken: string, refreshToken: string) => void
   setLoading: (loading: boolean) => void
   setError: (error: string | null) => void
-  setErrorDetails: (errorDetails: ErrorDetails | null) => void
   login: (email: string, password: string) => Promise<void>
   register: (data: any) => Promise<void>
   logout: () => Promise<void>
@@ -41,7 +37,6 @@ export const useAuthStore = create<AuthStore>()(
       isLoading: false,
       isAuthenticated: false,
       error: null,
-      errorDetails: null,
 
       // Actions
       setUser: (user) => {
@@ -52,7 +47,6 @@ export const useAuthStore = create<AuthStore>()(
         set({ accessToken, refreshTokenValue: refreshToken })
         if (accessToken) {
           localStorage.setItem('accessToken', accessToken)
-          // Authorization headers are handled by the enhanced API client
         }
         if (refreshToken) {
           localStorage.setItem('refreshToken', refreshToken)
@@ -63,36 +57,28 @@ export const useAuthStore = create<AuthStore>()(
 
       setError: (error) => set({ error }),
 
-      setErrorDetails: (errorDetails) => set({ errorDetails }),
-
-      clearError: () => set({ error: null, errorDetails: null }),
+      clearError: () => set({ error: null }),
 
       login: async (email: string, password: string) => {
         try {
-          set({ isLoading: true, error: null, errorDetails: null })
+          set({ isLoading: true, error: null })
 
-          const response = await enhancedAPIClient.post('/auth/login', {
-            email,
-            password
-          })
+          const response = await localAuthService.login(email, password)
 
-          const { user, accessToken, refreshToken } = (response as any).data.data
-
-          set({
-            user,
-            accessToken,
-            refreshTokenValue: refreshToken,
-            isAuthenticated: true,
-            isLoading: false
-          })
-
-          // Set authorization header for future requests
-          // Authorization headers are handled by the enhanced API client
+          if (response.success && response.data) {
+            set({
+              user: response.data.user,
+              accessToken: response.data.accessToken,
+              refreshTokenValue: response.data.refreshToken,
+              isAuthenticated: true,
+              isLoading: false
+            })
+          } else {
+            throw new Error(response.error?.message || 'Login failed')
+          }
         } catch (error: any) {
-          const errorDetails = ProfessionalErrorHandler.formatError(error)
           set({
-            error: errorDetails.message,
-            errorDetails: errorDetails,
+            error: error.message || 'Login failed',
             isLoading: false
           })
           throw error
@@ -101,27 +87,24 @@ export const useAuthStore = create<AuthStore>()(
 
       register: async (data) => {
         try {
-          set({ isLoading: true, error: null, errorDetails: null })
+          set({ isLoading: true, error: null })
 
-          const response = await enhancedAPIClient.post('/auth/register', data)
+          const response = await localAuthService.register(data)
 
-          const { user, accessToken, refreshToken } = (response as any).data.data
-
-          set({
-            user,
-            accessToken,
-            refreshTokenValue: refreshToken,
-            isAuthenticated: true,
-            isLoading: false
-          })
-
-          // Set authorization header for future requests
-          // Authorization headers are handled by the enhanced API client
+          if (response.success && response.data) {
+            set({
+              user: response.data.user,
+              accessToken: response.data.accessToken,
+              refreshTokenValue: response.data.refreshToken,
+              isAuthenticated: true,
+              isLoading: false
+            })
+          } else {
+            throw new Error(response.error?.message || 'Registration failed')
+          }
         } catch (error: any) {
-          const errorDetails = ProfessionalErrorHandler.formatError(error)
           set({
-            error: errorDetails.message,
-            errorDetails: errorDetails,
+            error: error.message || 'Registration failed',
             isLoading: false
           })
           throw error
@@ -132,8 +115,8 @@ export const useAuthStore = create<AuthStore>()(
         try {
           set({ isLoading: true })
 
-          // Call logout endpoint
-          // Logout endpoint call removed - handled by enhanced API client
+          // Call local auth service logout
+          await localAuthService.logout()
 
           // Clear state
           set({
@@ -145,14 +128,11 @@ export const useAuthStore = create<AuthStore>()(
             error: null
           })
 
-          // Clear authorization header
-          // Authorization headers are handled by the enhanced API client
-
           // Clear localStorage
           localStorage.removeItem('accessToken')
           localStorage.removeItem('refreshToken')
         } catch (error) {
-          // Even if logout fails on server, clear local state
+          // Even if logout fails, clear local state
           set({
             user: null,
             accessToken: null,
@@ -162,7 +142,6 @@ export const useAuthStore = create<AuthStore>()(
             error: null
           })
 
-          // Authorization headers are handled by the enhanced API client
           localStorage.removeItem('accessToken')
           localStorage.removeItem('refreshToken')
         }
@@ -176,18 +155,17 @@ export const useAuthStore = create<AuthStore>()(
             throw new Error('No refresh token available')
           }
 
-          // Token refresh handled by enhanced API client
-          const response = { data: { data: { accessToken: 'mock_token', refreshToken: 'mock_refresh' } } }
+          // Use local auth service for token refresh
+          const response = await localAuthService.refreshToken(refreshToken)
 
-          const { accessToken: newAccessToken, refreshToken: newRefreshToken } = (response as any).data.data
-
-          set({
-            accessToken: newAccessToken,
-            refreshTokenValue: newRefreshToken
-          })
-
-          // Update authorization header
-          // Authorization headers are handled by the enhanced API client
+          if (response.success && response.data) {
+            set({
+              accessToken: response.data.accessToken,
+              refreshTokenValue: response.data.refreshToken
+            })
+          } else {
+            throw new Error('Token refresh failed')
+          }
         } catch (error) {
           // If refresh fails, logout user
           await get().logout()
@@ -196,8 +174,41 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       initialize: async () => {
-        // Simple initialization - just set loading to false
-        set({ isLoading: false })
+        try {
+          set({ isLoading: true })
+
+          // Try to initialize from local auth service
+          const response = await localAuthService.initialize()
+          
+          if (response.success && response.data?.user) {
+            set({
+              user: response.data.user,
+              accessToken: response.data.accessToken,
+              refreshTokenValue: response.data.refreshToken,
+              isAuthenticated: true,
+              isLoading: false
+            })
+          } else {
+            // No valid session found
+            set({
+              user: null,
+              accessToken: null,
+              refreshTokenValue: null,
+              isAuthenticated: false,
+              isLoading: false
+            })
+          }
+        } catch (error) {
+          // If initialization fails, set to unauthenticated state
+          set({
+            user: null,
+            accessToken: null,
+            refreshTokenValue: null,
+            isAuthenticated: false,
+            isLoading: false,
+            error: null
+          })
+        }
       }
     }),
     {
