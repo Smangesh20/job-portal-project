@@ -106,6 +106,11 @@ class ApiService {
   // Search jobs with retry logic
   async searchJobs(params: JobSearchParams): Promise<JobSearchResponse> {
     try {
+      // Always use mock API to prevent network errors
+      if (USE_MOCK_API) {
+        return mockAPI.searchJobs(params);
+      }
+      
       const response = await retryOperation(
         () => apiClient.post<JobSearchResponse>('/api/research/search', params),
         3,
@@ -121,6 +126,11 @@ class ApiService {
   // Get job details with retry logic
   async getJobDetails(jobId: number): Promise<JobDetailsResponse> {
     try {
+      // Always use mock API to prevent network errors
+      if (USE_MOCK_API) {
+        return mockAPI.getJobDetails(jobId);
+      }
+      
       const response = await retryOperation(
         () => apiClient.get<JobDetailsResponse>(`/api/research/jobs/${jobId}`),
         3,
@@ -156,6 +166,11 @@ class ApiService {
   // Generic GET request with error handling
   async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
     try {
+      // Always use mock API to prevent network errors
+      if (USE_MOCK_API) {
+        return mockAPI.get<T>(url, config);
+      }
+      
       const response = await apiClient.get<T>(url, config);
       return response.data;
     } catch (error) {
@@ -166,6 +181,11 @@ class ApiService {
   // Generic POST request with error handling
   async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
     try {
+      // Always use mock API to prevent network errors
+      if (USE_MOCK_API) {
+        return mockAPI.post<T>(url, data, config);
+      }
+      
       const response = await apiClient.post<T>(url, data, config);
       return response.data;
     } catch (error) {
@@ -176,6 +196,11 @@ class ApiService {
   // Generic PUT request with error handling
   async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
     try {
+      // Always use mock API to prevent network errors
+      if (USE_MOCK_API) {
+        return mockAPI.put<T>(url, data, config);
+      }
+      
       const response = await apiClient.put<T>(url, data, config);
       return response.data;
     } catch (error) {
@@ -186,6 +211,11 @@ class ApiService {
   // Generic DELETE request with error handling
   async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
     try {
+      // Always use mock API to prevent network errors
+      if (USE_MOCK_API) {
+        return mockAPI.delete<T>(url, config);
+      }
+      
       const response = await apiClient.delete<T>(url, config);
       return response.data;
     } catch (error) {
