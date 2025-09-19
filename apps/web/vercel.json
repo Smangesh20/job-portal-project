@@ -9,7 +9,8 @@
         }
       ],
       "destination": "https://askyacham.com/$1",
-      "permanent": true
+      "permanent": true,
+      "statusCode": 301
     }
   ],
   "headers": [
@@ -18,7 +19,7 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate"
+          "value": "no-cache, no-store, must-revalidate, max-age=0"
         },
         {
           "key": "Pragma",
@@ -27,8 +28,17 @@
         {
           "key": "Expires",
           "value": "0"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
         }
       ]
     }
-  ]
+  ],
+  "functions": {
+    "apps/web/src/app/**/*.tsx": {
+      "maxDuration": 10
+    }
+  }
 }

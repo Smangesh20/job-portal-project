@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting...</title>
+    <meta http-equiv="refresh" content="0; url=https://askyacham.com">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <script>
+        // Google-level redirect - execute immediately
+        if (window.location.hostname === 'www.askyacham.com') {
+            console.log('🚀 DNS-LEVEL REDIRECT: www.askyacham.com -> askyacham.com');
+            const currentUrl = window.location.href;
+            const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
+            console.log('🚀 Redirecting to:', newUrl);
+            
+            // Stop all loading immediately
+            window.stop();
+            
+            // Clear page content
+            document.documentElement.innerHTML = '';
+            
+            // Show redirect message
+            document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Redirecting...</title>
+                    <meta http-equiv="refresh" content="0; url=${newUrl}">
+                </head>
+                <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f5f5f5;">
+                    <h1>Redirecting...</h1>
+                    <p>Please wait while we redirect you to the correct domain.</p>
+                    <script>window.location.replace('${newUrl}');</script>
+                </body>
+                </html>
+            `);
+            
+            // Force redirect
+            window.location.replace(newUrl);
+        }
+    </script>
+</head>
+<body>
+    <div style="font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f5f5f5;">
+        <h1>Redirecting...</h1>
+        <p>Please wait while we redirect you to the correct domain.</p>
+    </div>
+</body>
+</html>

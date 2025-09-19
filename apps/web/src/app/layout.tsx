@@ -88,9 +88,35 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
         <meta httpEquiv="Pragma" content="no-cache" />
         <meta httpEquiv="Expires" content="0" />
+        <meta httpEquiv="X-Robots-Tag" content="noindex, nofollow" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                if (typeof window !== 'undefined' && window.location.hostname === 'www.askyacham.com') {
+                  console.log('🚀 GOOGLE-LEVEL REDIRECT: www.askyacham.com -> askyacham.com');
+                  const currentUrl = window.location.href;
+                  const newUrl = currentUrl.replace('www.askyacham.com', 'askyacham.com');
+                  console.log('🚀 Redirecting to:', newUrl);
+                  
+                  // Google-level aggressive redirect - stop everything immediately
+                  window.stop();
+                  document.documentElement.innerHTML = '';
+                  document.body.innerHTML = '<div style="font-family: Arial; text-align: center; padding: 50px; background: #f5f5f5;"><h1>Redirecting...</h1><p>Please wait while we redirect you to the correct domain.</p></div>';
+                  
+                  // Force immediate redirect
+                  window.location.replace(newUrl);
+                  
+                  // Prevent any further execution
+                  throw new Error('Redirecting to correct domain');
+                }
+              })();
+            `,
+          }}
+        />
       </head>
       <body className={inter.className}>
         <InfiniteErrorBoundary>
