@@ -38,17 +38,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         // Add timeout to prevent infinite loading
         const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Initialization timeout')), 5000)
+          setTimeout(() => reject(new Error('Initialization timeout')), 3000)
         )
         
         await Promise.race([initialize(), timeoutPromise])
       } catch (error) {
         console.error('Auth initialization error:', error)
+        // Don't let initialization errors block the app
       } finally {
         setIsInitialized(true)
       }
     }
 
+    // Run initialization in background without blocking
     initAuth()
   }, [initialize])
 
@@ -91,7 +93,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  // Show loading spinner only for auth operations, not during initialization
+  // Don't block the page during initialization - let it render normally
+  // Only show loading for actual auth operations
   if (isLoading && isInitialized) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-white">
