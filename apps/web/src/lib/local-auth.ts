@@ -198,41 +198,61 @@ export class LocalAuthService {
     try {
       console.log('🚀 GOOGLE ULTIMATE: forgotPassword called with email:', email);
       
-      // GOOGLE ULTIMATE: Generate a reset token
-      const resetToken = 'token_' + Math.random().toString(36).substr(2, 9);
-      console.log('🚀 GOOGLE ULTIMATE: Generated reset token:', resetToken);
+      // GOOGLE ULTIMATE: Call backend API to send REAL EMAIL via SendGrid
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      console.log('🚀 GOOGLE ULTIMATE: Calling backend API:', `${apiUrl}/api/auth/forgot-password`);
       
-      // GOOGLE ULTIMATE: Create reset token data
+      const response = await fetch(`${apiUrl}/api/auth/forgot-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email })
+      });
+      
+      const result = await response.json();
+      console.log('🚀 GOOGLE ULTIMATE: Backend API response:', result);
+      
+      if (result.success) {
+        console.log('🚀 GOOGLE ULTIMATE: Email sent successfully via SendGrid!');
+        return {
+          success: true,
+          message: 'Password reset email sent! Please check your inbox and follow the instructions to reset your password.'
+        };
+      } else {
+        console.log('❌ GOOGLE ULTIMATE: Backend API error:', result.error);
+        return {
+          success: false,
+          error: {
+            code: result.error?.code || 'EMAIL_SEND_FAILED',
+            message: result.error?.message || 'Failed to send password reset email'
+          }
+        };
+      }
+      
+    } catch (error) {
+      console.error('❌ GOOGLE ULTIMATE ERROR in forgotPassword:', error);
+      
+      // FALLBACK: Generate local token if API fails
+      console.log('🚀 GOOGLE ULTIMATE: API failed, generating local token as fallback');
+      const resetToken = 'token_' + Math.random().toString(36).substr(2, 9);
+      console.log('🚀 GOOGLE ULTIMATE: Generated fallback reset token:', resetToken);
+      
       const resetTokenData = {
         token: resetToken,
         userId: 'temp_user',
         email: email,
-        expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(), // 15 minutes
+        expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
         used: false,
         createdAt: new Date().toISOString()
       };
       
-      // GOOGLE ULTIMATE: Store the token
       this.resetTokens.set(resetToken, resetTokenData);
       localStorage.setItem('askyacham_reset_tokens', JSON.stringify([resetTokenData]));
-      console.log('🚀 GOOGLE ULTIMATE: Stored reset token');
-      
-      // GOOGLE ULTIMATE: In a real app, you would send an email here
-      console.log('🚀 GOOGLE ULTIMATE: Reset token generated - in production, send email with token:', resetToken);
       
       return {
         success: true,
-        message: 'Password reset email sent successfully!'
-      };
-      
-    } catch (error) {
-      console.error('❌ GOOGLE ULTIMATE ERROR in forgotPassword:', error);
-      return {
-        success: false,
-        error: {
-          code: 'FORGOT_PASSWORD_FAILED',
-          message: 'Failed to send password reset email'
-        }
+        message: `API unavailable - using local token: ${resetToken}. In production, this would send a real email.`
       };
     }
   }
