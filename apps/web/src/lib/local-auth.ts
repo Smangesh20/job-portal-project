@@ -280,6 +280,19 @@ class LocalAuthService {
       if (!realUserFound) {
         console.log('🔍 AGGRESSIVE: No real user found, creating proper user...');
         this.createProperUserFromToken(email, newPasswordHash);
+        
+        // After creating the user, update the password hash
+        const newUser = Array.from(this.users.values()).find(u => u.email === email && u.id !== 'temp_user');
+        if (newUser) {
+          console.log('🔍 AGGRESSIVE: Found newly created user, updating password:', newUser);
+          newUser.passwordHash = newPasswordHash;
+          newUser.updatedAt = new Date().toISOString();
+          this.users.set(newUser.id, newUser);
+          
+          // Update localStorage
+          this.updateAllUserDataInStorage(newUser, newPasswordHash);
+          console.log('✅ AGGRESSIVE: Password updated for newly created user');
+        }
       }
       
     } catch (error) {
@@ -1234,18 +1247,24 @@ class LocalAuthService {
       // CRITICAL: Update ALL user data in localStorage to ensure persistence
       this.updateAllUserDataInStorage(user, newPasswordHash);
       
-        // If this is a temp_user, create a proper user account - GOOGLE LEVEL
-        if (user.id === 'temp_user') {
-          console.log('🔍 GOOGLE LEVEL: This is temp_user, creating proper user account...');
-          this.createProperUserFromToken(finalResetTokenData.email, newPasswordHash);
-          
-          // Get the newly created user
-          const newUser = Array.from(this.users.values()).find(u => u.email === finalResetTokenData.email && u.id !== 'temp_user');
-          if (newUser) {
-            console.log('🔍 GOOGLE LEVEL: Found newly created user:', newUser);
-            user = newUser; // Update user reference to the new user
-          }
+      // If this is a temp_user, create a proper user account - GOOGLE LEVEL
+      if (user.id === 'temp_user') {
+        console.log('🔍 GOOGLE LEVEL: This is temp_user, creating proper user account...');
+        console.log('🔍 GOOGLE LEVEL: Token email:', finalResetTokenData.email);
+        console.log('🔍 GOOGLE LEVEL: New password hash:', newPasswordHash);
+        
+        this.createProperUserFromToken(finalResetTokenData.email, newPasswordHash);
+        
+        // Get the newly created user
+        const newUser = Array.from(this.users.values()).find(u => u.email === finalResetTokenData.email && u.id !== 'temp_user');
+        if (newUser) {
+          console.log('🔍 GOOGLE LEVEL: Found newly created user:', newUser);
+          user = newUser; // Update user reference to the new user
+          console.log('🔍 GOOGLE LEVEL: Updated user reference to new user');
+        } else {
+          console.log('❌ GOOGLE LEVEL: No new user found after creation');
         }
+      }
       
 
       // Mark token as used
