@@ -19,9 +19,9 @@ class EmailService {
 
   constructor() {
     this.baseUrl = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
-    // Force correct domain for production
+    // Force correct domain for production - use www as primary
     if (this.baseUrl.includes('askyacham.com')) {
-      this.baseUrl = 'https://askyacham.com';
+      this.baseUrl = 'https://www.askyacham.com';
     }
   }
 
