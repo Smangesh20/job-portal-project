@@ -80,12 +80,12 @@ const navigation = [
 const secondaryNavigation = [
   {
     name: 'Profile',
-    href: '/dashboard?tab=profile',
+    href: '/dashboard/profile',
     icon: User
   },
   {
     name: 'Notifications',
-    href: '/dashboard?tab=notifications',
+    href: '/dashboard/notifications',
     icon: Bell,
     badge: '5'
   },
@@ -101,7 +101,7 @@ const secondaryNavigation = [
   },
   {
     name: 'Settings',
-    href: '/dashboard?tab=settings',
+    href: '/dashboard/settings',
     icon: Settings
   },
   {

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { DashboardLayout } from '@/components/layouts/dashboard-layout'
 import { EnterpriseProfile } from '@/components/profile/enterprise-profile'
 import { EnterpriseSettings } from '@/components/settings/enterprise-settings'
@@ -31,23 +31,22 @@ import {
   EyeOff
 } from 'lucide-react'
 
-export default function DashboardPage() {
+export default function DashboardTabPage() {
   const [activeTab, setActiveTab] = useState('overview')
-  const searchParams = useSearchParams()
-  const router = useRouter()
+  const params = useParams()
 
   useEffect(() => {
-    const tab = searchParams.get('tab')
-    if (tab && ['overview', 'profile', 'notifications', 'settings'].includes(tab)) {
+    const tab = params.tab?.[0] || 'overview'
+    if (['overview', 'profile', 'notifications', 'settings'].includes(tab)) {
       setActiveTab(tab)
     }
-  }, [searchParams])
+  }, [params])
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab)
     // Update URL without causing a full page reload
     const url = new URL(window.location.href)
-    url.searchParams.set('tab', tab)
+    url.pathname = `/dashboard/${tab}`
     window.history.replaceState({}, '', url.toString())
   }
 
