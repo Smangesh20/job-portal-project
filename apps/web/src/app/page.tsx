@@ -39,7 +39,7 @@ function ErrorFallback({ error, resetErrorBoundary }: { error: Error; resetError
 export default function HomePage() {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
-      <main className="min-h-screen mobile-min-h-screen">
+      <main className="min-h-screen">
         <HeroSection />
         <FeaturesSection />
         <VisionMissionSection />

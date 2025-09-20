@@ -412,8 +412,8 @@ export function EnterpriseHeader() {
             ))}
           </nav>
 
-          {/* Search Bar - Mobile Optimized */}
-          <div className="mobile-hidden md:flex items-center flex-1 max-w-md mx-8">
+          {/* Search Bar - Desktop Optimized */}
+          <div className="hidden md:flex items-center flex-1 max-w-lg mx-8">
             <form onSubmit={handleSearch} className="w-full">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -422,12 +422,12 @@ export function EnterpriseHeader() {
                   placeholder="Search jobs, companies, skills..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent mobile-focus-visible"
+                  className="w-full pl-10 pr-20 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
                 />
                 <Button
                   type="submit"
                   size="sm"
-                  className="absolute right-1 top-1/2 transform -translate-y-1/2"
+                  className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700"
                 >
                   Search
                 </Button>
