@@ -54,7 +54,7 @@ import {
   Minus
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useAuth } from '@/hooks/use-auth'
+import { useAuth } from '../../hooks/use-auth'
 
 interface NavigationItem {
   id: string

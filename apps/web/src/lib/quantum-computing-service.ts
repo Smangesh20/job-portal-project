@@ -4,7 +4,7 @@
  */
 
 import { QuantumJobMatch, QuantumProfile } from '@/types/quantum'
-import { errorPreventionSystem } from '@/lib/error-prevention'
+import { ErrorPreventionSystem } from '@/lib/error-prevention-system'
 
 // Quantum Computing Provider Configuration
 export interface QuantumProvider {
@@ -99,12 +99,8 @@ export class RealQuantumComputingService {
         return matches
       })()
     } catch (error) {
-      errorPreventionSystem.reportError('QUANTUM_ALGORITHM_ERROR' as any, {
-        component: 'QuantumComputingService',
-        action: 'executeQuantumJobMatching',
-        timestamp: new Date(),
-        context: { error, provider }
-      })
+      // Error handling for quantum algorithm
+      console.error('Quantum algorithm error:', error)
       
       // Fallback to simulation
       return this.fallbackQuantumSimulation(profile, jobs)

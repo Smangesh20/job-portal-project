@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { AuthUser } from '@/types/auth'
 import { enhancedAPIClient } from '@/lib/api-client'
-import { ProfessionalErrorHandler, ErrorDetails } from '@/lib/error-handler'
+import { ErrorHandler, ErrorContext } from '@/lib/error-handler'
 import { localAuthService, User } from '@/lib/local-auth'
 
 interface AuthState {
@@ -12,7 +12,7 @@ interface AuthState {
   isLoading: boolean
   isAuthenticated: boolean
   error: string | null
-  errorDetails: ErrorDetails | null
+  errorDetails: { message: string; type: string } | null
 }
 
 interface AuthActions {
@@ -300,7 +300,7 @@ export const useAuthStore = create<AuthStore>()(
 
           set({ isLoading: false })
         } catch (error: any) {
-          const errorDetails = ProfessionalErrorHandler.formatError(error)
+          const errorDetails = { message: error.message || 'Authentication error', type: 'AUTH_ERROR' }
           set({
             error: errorDetails.message,
             errorDetails: errorDetails,
@@ -322,7 +322,7 @@ export const useAuthStore = create<AuthStore>()(
 
           set({ isLoading: false })
         } catch (error: any) {
-          const errorDetails = ProfessionalErrorHandler.formatError(error)
+          const errorDetails = { message: error.message || 'Authentication error', type: 'AUTH_ERROR' }
           set({
             error: errorDetails.message,
             errorDetails: errorDetails,
@@ -344,7 +344,7 @@ export const useAuthStore = create<AuthStore>()(
 
           set({ isLoading: false })
         } catch (error: any) {
-          const errorDetails = ProfessionalErrorHandler.formatError(error)
+          const errorDetails = { message: error.message || 'Authentication error', type: 'AUTH_ERROR' }
           set({
             error: errorDetails.message,
             errorDetails: errorDetails,
