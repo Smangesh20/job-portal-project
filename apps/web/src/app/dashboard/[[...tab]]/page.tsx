@@ -146,57 +146,71 @@ export default function DashboardTabPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
+      <div className="space-y-4 sm:space-y-6">
+        {/* Header - Mobile Optimized */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-2">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1 sm:mt-2">
               Welcome back! Here's what's happening with your job search.
             </p>
           </div>
-          <div className="flex items-center space-x-4">
-            <Button variant="outline">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+            <Button variant="outline" size="sm" className="w-full sm:w-auto">
               <FileText className="h-4 w-4 mr-2" />
-              Export Report
+              <span className="hidden sm:inline">Export Report</span>
+              <span className="sm:hidden">Export</span>
             </Button>
-            <Button>
+            <Button size="sm" className="w-full sm:w-auto">
               <Briefcase className="h-4 w-4 mr-2" />
-              Find Jobs
+              <span className="hidden sm:inline">Find Jobs</span>
+              <span className="sm:hidden">Jobs</span>
             </Button>
           </div>
         </div>
 
-        <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="profile">Profile</TabsTrigger>
-            <TabsTrigger value="notifications">Notifications</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-4 sm:space-y-6">
+          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 h-auto">
+            <TabsTrigger value="overview" className="text-xs sm:text-sm py-2 px-2">
+              <span className="hidden sm:inline">Overview</span>
+              <span className="sm:hidden">Home</span>
+            </TabsTrigger>
+            <TabsTrigger value="profile" className="text-xs sm:text-sm py-2 px-2">
+              <span className="hidden sm:inline">Profile</span>
+              <span className="sm:hidden">Profile</span>
+            </TabsTrigger>
+            <TabsTrigger value="notifications" className="text-xs sm:text-sm py-2 px-2">
+              <span className="hidden sm:inline">Notifications</span>
+              <span className="sm:hidden">Alerts</span>
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="text-xs sm:text-sm py-2 px-2">
+              <span className="hidden sm:inline">Settings</span>
+              <span className="sm:hidden">Settings</span>
+            </TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-6">
+          <TabsContent value="overview" className="space-y-4 sm:space-y-6">
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
               {stats.map((stat, index) => (
-                <Card key={index}>
-                  <CardContent className="p-6">
+                <Card key={index} className="hover:shadow-md transition-shadow">
+                  <CardContent className="p-3 sm:p-6">
                     <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 truncate">
                           {stat.title}
                         </p>
-                        <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                        <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white">
                           {stat.value}
                         </p>
-                        <p className="text-sm text-green-600 flex items-center mt-1">
-                          <TrendingUp className="h-3 w-3 mr-1" />
-                          {stat.change}
+                        <p className="text-xs sm:text-sm text-green-600 flex items-center mt-1">
+                          <TrendingUp className="h-3 w-3 mr-1 flex-shrink-0" />
+                          <span className="truncate">{stat.change}</span>
                         </p>
                       </div>
-                      <div className={`p-3 rounded-full bg-gray-100 dark:bg-gray-800 ${stat.color}`}>
-                        <stat.icon className="h-6 w-6" />
+                      <div className={`p-2 sm:p-3 rounded-full bg-gray-100 dark:bg-gray-800 ${stat.color} flex-shrink-0 ml-2`}>
+                        <stat.icon className="h-4 w-4 sm:h-6 sm:w-6" />
                       </div>
                     </div>
                   </CardContent>
@@ -204,7 +218,7 @@ export default function DashboardTabPage() {
               ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
               {/* Recent Activity */}
               <Card>
                 <CardHeader>

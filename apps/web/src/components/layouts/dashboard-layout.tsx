@@ -11,12 +11,12 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
       {/* Sidebar - Mobile Optimized */}
       <Sidebar />
       
       {/* Main Content - Mobile Optimized */}
-      <div className="lg:pl-64">
+      <div className="lg:pl-64 flex-1 flex flex-col">
         {/* Header - Mobile Optimized */}
         <Header />
         
@@ -24,8 +24,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         <Breadcrumb />
         
         {/* Page Content - Mobile Optimized */}
-        <main className="p-4 sm:p-6 lg:p-8 min-h-screen">
-          <div className="max-w-7xl mx-auto">
+        <main className="flex-1 p-2 sm:p-4 lg:p-6 overflow-auto">
+          <div className="max-w-7xl mx-auto w-full">
             {children}
           </div>
         </main>
