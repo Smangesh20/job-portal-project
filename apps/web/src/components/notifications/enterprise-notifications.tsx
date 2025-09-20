@@ -15,8 +15,8 @@ import {
   Filter, 
   Search, 
   Settings, 
-  MarkAsRead, 
-  MarkAsUnread, 
+  CheckCircle2, 
+  Circle, 
   Archive, 
   Trash2, 
   Star, 
@@ -335,7 +335,7 @@ export function EnterpriseNotifications() {
             </div>
             <div className="flex items-center space-x-4">
               <Button variant="outline" onClick={markAllAsRead}>
-                <MarkAsRead className="h-4 w-4 mr-2" />
+                <CheckCircle2 className="h-4 w-4 mr-2" />
                 Mark All Read
               </Button>
               <Button variant="outline" onClick={clearAll}>
@@ -508,7 +508,7 @@ export function EnterpriseNotifications() {
                                   onClick={() => markAsRead(notification.id)}
                                   className="h-8 w-8 p-0"
                                 >
-                                  <Check className="h-4 w-4" />
+                                  <CheckCircle2 className="h-4 w-4" />
                                 </Button>
                               ) : (
                                 <Button
@@ -517,7 +517,7 @@ export function EnterpriseNotifications() {
                                   onClick={() => markAsUnread(notification.id)}
                                   className="h-8 w-8 p-0"
                                 >
-                                  <Eye className="h-4 w-4" />
+                                  <Circle className="h-4 w-4" />
                                 </Button>
                               )}
                               <Button
