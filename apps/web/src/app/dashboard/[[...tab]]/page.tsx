@@ -39,6 +39,8 @@ export default function DashboardTabPage() {
     const tab = params.tab?.[0] || 'overview'
     if (['overview', 'profile', 'notifications', 'settings'].includes(tab)) {
       setActiveTab(tab)
+    } else {
+      setActiveTab('overview')
     }
   }, [params])
 
