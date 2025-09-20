@@ -77,39 +77,39 @@ const navigation = [
   }
 ]
 
-const secondaryNavigation = [
-  {
-    name: 'Profile',
-    href: '/dashboard/profile',
-    icon: User
-  },
-  {
-    name: 'Notifications',
-    href: '/dashboard/notifications',
-    icon: Bell,
-    badge: '5'
-  },
-  {
-    name: 'Analytics',
-    href: '/analytics',
-    icon: BarChart3
-  },
-  {
-    name: 'Network',
-    href: '/network',
-    icon: Users
-  },
-  {
-    name: 'Settings',
-    href: '/dashboard/settings',
-    icon: Settings
-  },
-  {
-    name: 'Help',
-    href: '/help',
-    icon: HelpCircle
-  }
-]
+  const secondaryNavigation = [
+    {
+      name: 'Profile',
+      href: '/dashboard?tab=profile',
+      icon: User
+    },
+    {
+      name: 'Notifications',
+      href: '/dashboard?tab=notifications',
+      icon: Bell,
+      badge: '5'
+    },
+    {
+      name: 'Analytics',
+      href: '/analytics',
+      icon: BarChart3
+    },
+    {
+      name: 'Network',
+      href: '/network',
+      icon: Users
+    },
+    {
+      name: 'Settings',
+      href: '/dashboard?tab=settings',
+      icon: Settings
+    },
+    {
+      name: 'Help',
+      href: '/help',
+      icon: HelpCircle
+    }
+  ]
 
 export function Sidebar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
