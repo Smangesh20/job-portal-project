@@ -196,13 +196,7 @@ const nextConfig = {
       );
     }
 
-    // Ensure middleware is not affected by webpack optimizations
-    // Exclude middleware from webpack optimizations
-    if (config.externals) {
-      config.externals.push({
-        './middleware': 'commonjs ./middleware',
-      });
-    }
+    // Middleware removed - no longer needed
 
     // Optimize bundle size
     if (!dev) {
