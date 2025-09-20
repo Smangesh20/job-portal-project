@@ -41,16 +41,13 @@ export class LocalAuthService {
   }
 
   // Create a test user for development
-  public createTestUser() {
+  private createTestUser() {
     try {
       if (typeof window === 'undefined') return;
       
       // Check if test user already exists
       const existingUser = Array.from(this.users.values()).find(u => u.email === 'test@example.com');
-      if (existingUser) {
-        console.log('🚀 GOOGLE ULTIMATE: Test user already exists');
-        return;
-      }
+      if (existingUser) return;
 
       // Create test user
       const testUser: User = {
@@ -69,7 +66,6 @@ export class LocalAuthService {
       this.users.set(testUser.id, testUser);
       localStorage.setItem('askyacham_users', JSON.stringify(Array.from(this.users.values())));
       console.log('🚀 GOOGLE ULTIMATE: Test user created - test@example.com / password123');
-      console.log('🚀 GOOGLE ULTIMATE: Test user password hash:', testUser.passwordHash);
     } catch (error) {
       console.error('❌ GOOGLE ULTIMATE ERROR creating test user:', error);
     }
@@ -580,30 +576,27 @@ export class LocalAuthService {
     try {
       console.log('🚀 GOOGLE ULTIMATE: login called with email:', email);
       
-      // Google-style: Ensure test user exists before login
-      this.createTestUser();
-      
       // GOOGLE ULTIMATE: Find user by email (case insensitive)
       const user = Array.from(this.users.values()).find(u => u.email.toLowerCase() === email.toLowerCase());
       if (!user) {
-        console.log('🚀 GOOGLE ULTIMATE: User not found for email:', email);
-        console.log('🚀 GOOGLE ULTIMATE: Available users:', Array.from(this.users.values()).map(u => u.email));
+        console.log('❌ GOOGLE ULTIMATE: User not found for email:', email);
         return {
           success: false,
           error: {
             code: 'USER_NOT_FOUND',
-            message: 'User not found'
+            message: 'Invalid email or password'
           }
         };
       }
       
       // GOOGLE ULTIMATE: Verify password
       if (user.passwordHash !== this.hashPassword(password)) {
+        console.log('❌ GOOGLE ULTIMATE: Invalid password for email:', email);
         return {
           success: false,
           error: {
             code: 'INVALID_PASSWORD',
-            message: 'Invalid password'
+            message: 'Invalid email or password'
           }
         };
       }
@@ -619,9 +612,9 @@ export class LocalAuthService {
       };
       
       this.sessions.set(sessionToken, session);
-      localStorage.setItem('askyacham_sessions', JSON.stringify([session]));
+      localStorage.setItem('askyacham_sessions', JSON.stringify(Array.from(this.sessions.values())));
       
-      console.log('🚀 GOOGLE ULTIMATE: Login successful');
+      console.log('🚀 GOOGLE ULTIMATE: Login successful for user:', user.email);
       return {
         success: true,
         data: {
@@ -648,14 +641,15 @@ export class LocalAuthService {
     try {
       console.log('🚀 GOOGLE ULTIMATE: register called with email:', userData.email);
       
-      // GOOGLE ULTIMATE: Check if user already exists
-      const existingUser = Array.from(this.users.values()).find(u => u.email === userData.email);
+      // GOOGLE ULTIMATE: Check if user already exists (case insensitive)
+      const existingUser = Array.from(this.users.values()).find(u => u.email.toLowerCase() === userData.email.toLowerCase());
       if (existingUser) {
+        console.log('❌ GOOGLE ULTIMATE: User already exists for email:', userData.email);
         return {
           success: false,
           error: {
             code: 'USER_EXISTS',
-            message: 'User already exists'
+            message: 'An account with this email already exists'
           }
         };
       }
@@ -663,34 +657,39 @@ export class LocalAuthService {
       // GOOGLE ULTIMATE: Create new user
       const newUser: User = {
         id: this.generateId(),
-        email: userData.email,
+        email: userData.email.toLowerCase(), // Store email in lowercase
         firstName: userData.firstName,
         lastName: userData.lastName,
         role: 'CANDIDATE',
-            isVerified: false,
-            isActive: true,
+        isVerified: true, // Auto-verify for demo
+        isActive: true,
         passwordHash: this.hashPassword(userData.password),
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          };
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
       
       // GOOGLE ULTIMATE: Save user
       this.users.set(newUser.id, newUser);
       localStorage.setItem('askyacham_users', JSON.stringify(Array.from(this.users.values())));
       
-      console.log('🚀 GOOGLE ULTIMATE: Registration successful');
-        return {
+      console.log('🚀 GOOGLE ULTIMATE: Registration successful for user:', newUser.email);
+      return {
         success: true,
-        message: 'Registration successful!'
+        message: 'Registration successful! You can now log in.',
+        data: {
+          user: newUser,
+          accessToken: '',
+          refreshToken: ''
+        }
       };
       
     } catch (error) {
       console.error('❌ GOOGLE ULTIMATE ERROR in register:', error);
-        return {
-          success: false,
-          error: {
+      return {
+        success: false,
+        error: {
           code: 'REGISTRATION_FAILED',
-          message: 'Registration failed'
+          message: 'Registration failed. Please try again.'
         }
       };
     }

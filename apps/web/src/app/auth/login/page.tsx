@@ -222,10 +222,8 @@ export default function LoginPage() {
       // Use a more reliable approach to check if login was successful
       const checkAuthState = () => {
         const { isAuthenticated } = useAuthStore.getState()
-        console.log('🚀 GOOGLE-STYLE: Checking auth state:', isAuthenticated)
         if (isAuthenticated) {
           // Login successful, show success modal
-          console.log('🚀 GOOGLE-STYLE: Login successful, showing modal')
           setShowSuccessModal(true)
           setForceRender(prev => prev + 1)
           forceShowModal()
@@ -235,7 +233,6 @@ export default function LoginPage() {
             localStorage.removeItem('ask_ya_cham_login_email')
           }
         } else {
-          console.log('🚀 GOOGLE-STYLE: Not authenticated, showing form')
           // If not authenticated, just show the form again (Google's approach)
           // No error message, no toast, just silent failure
         }
@@ -243,8 +240,7 @@ export default function LoginPage() {
       
       // Check immediately and also after a short delay
       checkAuthState()
-      setTimeout(checkAuthState, 200)
-      setTimeout(checkAuthState, 500)
+      setTimeout(checkAuthState, 100)
       
     } catch (error: any) {
       // Show error to user

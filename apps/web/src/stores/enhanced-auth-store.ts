@@ -79,20 +79,14 @@ export const useAuthStore = create<AuthStore>()(
         try {
           set({ isLoading: true, error: null, errorDetails: null })
 
-          // Google-style: Ensure test user exists
-          localAuthService.createTestUser()
-
           // Use local authentication service for persistent login
           const response = await localAuthService.login(email, password)
 
           if (!response.success) {
-            console.log('🚀 GOOGLE-STYLE: Login failed:', response.error?.message)
             throw new Error(response.error?.message || 'Login failed')
           }
 
           const { user, accessToken, refreshToken } = response.data!
-
-          console.log('🚀 GOOGLE-STYLE: Login successful for user:', user.email)
 
           // Set authentication state immediately
           set({
@@ -109,10 +103,8 @@ export const useAuthStore = create<AuthStore>()(
           // Force a small delay to ensure state is updated
           await new Promise(resolve => setTimeout(resolve, 100))
 
-          return true
-
         } catch (error: any) {
-          console.log('🚀 GOOGLE-STYLE: Login error:', error.message)
+          console.log('Login error:', error.message)
           
           set({
             error: error.message || 'Login failed',

@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AuthUser } from '@/types/auth'
-import { useAuthStore } from '@/stores/auth-store'
+import { useAuthStore } from '@/stores/enhanced-auth-store'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 
 interface AuthContextType {
