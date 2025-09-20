@@ -50,7 +50,9 @@ export default function DashboardTabPage() {
 
   // Google-style: Handle direct /dashboard access
   useEffect(() => {
-    if (!params.tab || params.tab.length === 0) {
+    // Check if we're on /dashboard without any tab
+    const currentPath = window.location.pathname
+    if (currentPath === '/dashboard' || (!params.tab || params.tab.length === 0)) {
       // If no tab parameter, redirect to overview
       setIsRedirecting(true)
       router.replace('/dashboard/overview')

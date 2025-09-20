@@ -41,13 +41,16 @@ export class LocalAuthService {
   }
 
   // Create a test user for development
-  private createTestUser() {
+  public createTestUser() {
     try {
       if (typeof window === 'undefined') return;
       
       // Check if test user already exists
       const existingUser = Array.from(this.users.values()).find(u => u.email === 'test@example.com');
-      if (existingUser) return;
+      if (existingUser) {
+        console.log('🚀 GOOGLE ULTIMATE: Test user already exists');
+        return;
+      }
 
       // Create test user
       const testUser: User = {
@@ -66,6 +69,7 @@ export class LocalAuthService {
       this.users.set(testUser.id, testUser);
       localStorage.setItem('askyacham_users', JSON.stringify(Array.from(this.users.values())));
       console.log('🚀 GOOGLE ULTIMATE: Test user created - test@example.com / password123');
+      console.log('🚀 GOOGLE ULTIMATE: Test user password hash:', testUser.passwordHash);
     } catch (error) {
       console.error('❌ GOOGLE ULTIMATE ERROR creating test user:', error);
     }
@@ -576,9 +580,14 @@ export class LocalAuthService {
     try {
       console.log('🚀 GOOGLE ULTIMATE: login called with email:', email);
       
-      // GOOGLE ULTIMATE: Find user by email
-      const user = Array.from(this.users.values()).find(u => u.email === email);
+      // Google-style: Ensure test user exists before login
+      this.createTestUser();
+      
+      // GOOGLE ULTIMATE: Find user by email (case insensitive)
+      const user = Array.from(this.users.values()).find(u => u.email.toLowerCase() === email.toLowerCase());
       if (!user) {
+        console.log('🚀 GOOGLE ULTIMATE: User not found for email:', email);
+        console.log('🚀 GOOGLE ULTIMATE: Available users:', Array.from(this.users.values()).map(u => u.email));
         return {
           success: false,
           error: {
