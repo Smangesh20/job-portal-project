@@ -1,4 +1,13 @@
 /** @type {import('next').NextConfig} */
+
+// Fix for 'self is not defined' error during build
+if (typeof globalThis !== 'undefined') {
+  globalThis.self = globalThis;
+}
+if (typeof global !== 'undefined') {
+  global.self = global;
+}
+
 const nextConfig = {
   async redirects() {
     return [
@@ -137,6 +146,24 @@ const nextConfig = {
         net: false,
         tls: false,
       };
+    }
+
+    // Fix for 'self is not defined' error during build
+    if (isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      };
+      
+      // Define global variables for server-side rendering
+      const webpack = require('webpack');
+      config.plugins.push(
+        new webpack.DefinePlugin({
+          'self': 'globalThis',
+        })
+      );
     }
 
     // Optimize bundle size

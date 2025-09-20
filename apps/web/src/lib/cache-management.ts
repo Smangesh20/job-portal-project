@@ -264,15 +264,17 @@ export const cacheBusting = {
 
 // Initialize cache management
 export const initializeCacheManagement = () => {
-  // Set up periodic cleanup
-  setInterval(() => {
-    cacheManager['cleanExpired']()
-  }, 60 * 60 * 1000) // Every hour
+  if (typeof window !== 'undefined') {
+    // Set up periodic cleanup
+    setInterval(() => {
+      cacheManager['cleanExpired']()
+    }, 60 * 60 * 1000) // Every hour
 
-  // Clear cache on version change
-  const currentVersion = localStorage.getItem('app-version')
-  if (currentVersion !== CACHE_CONFIG.version) {
-    cacheManager.clear()
-    localStorage.setItem('app-version', CACHE_CONFIG.version)
+    // Clear cache on version change
+    const currentVersion = localStorage.getItem('app-version')
+    if (currentVersion !== CACHE_CONFIG.version) {
+      cacheManager.clear()
+      localStorage.setItem('app-version', CACHE_CONFIG.version)
+    }
   }
 }
