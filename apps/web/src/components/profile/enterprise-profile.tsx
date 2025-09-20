@@ -220,16 +220,16 @@ export function EnterpriseProfile() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Profile Header */}
-        <Card className="mb-4 sm:mb-8">
-          <CardContent className="p-4 sm:p-8">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-              <div className="flex items-center space-x-4 sm:space-x-6">
+        <Card className="mb-8">
+          <CardContent className="p-8">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+              <div className="flex items-center space-x-6">
                 <div className="relative">
-                  <Avatar className="h-16 w-16 sm:h-20 sm:w-20 lg:h-24 lg:w-24">
+                  <Avatar className="h-24 w-24">
                     <AvatarImage src={profileData.avatar} />
-                    <AvatarFallback className="text-lg sm:text-xl lg:text-2xl">
+                    <AvatarFallback className="text-2xl">
                       {profileData.name.split(' ').map(n => n[0]).join('')}
                     </AvatarFallback>
                   </Avatar>
@@ -243,58 +243,56 @@ export function EnterpriseProfile() {
                     </Button>
                   )}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-2 mb-2">
-                    <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white truncate">
+                <div>
+                  <div className="flex items-center space-x-2 mb-2">
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
                       {profileData.name}
                     </h1>
                     {profileData.verification.premium && (
-                      <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 w-fit">
+                      <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
                         <Star className="h-3 w-3 mr-1" />
                         Premium
                       </Badge>
                     )}
                   </div>
-                  <p className="text-sm sm:text-lg lg:text-xl text-gray-600 dark:text-gray-400 mb-1 truncate">
+                  <p className="text-xl text-gray-600 dark:text-gray-400 mb-1">
                     {profileData.title} at {profileData.company}
                   </p>
-                  <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-500 truncate">
+                  <p className="text-gray-500 dark:text-gray-500">
                     {profileData.location} • {profileData.experienceYears} years experience
                   </p>
-                  <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-2">
-                    <div className="flex items-center text-xs sm:text-sm text-gray-500">
-                      <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-1 flex-shrink-0" />
-                      <span className="truncate">{profileData.profileViews} views</span>
+                  <div className="flex items-center space-x-4 mt-2">
+                    <div className="flex items-center text-sm text-gray-500">
+                      <Eye className="h-4 w-4 mr-1" />
+                      {profileData.profileViews} profile views
                     </div>
-                    <div className="flex items-center text-xs sm:text-sm text-gray-500">
-                      <Users className="h-3 w-3 sm:h-4 sm:w-4 mr-1 flex-shrink-0" />
-                      <span className="truncate">{profileData.connections} connections</span>
+                    <div className="flex items-center text-sm text-gray-500">
+                      <Users className="h-4 w-4 mr-1" />
+                      {profileData.connections} connections
                     </div>
-                    <div className="flex items-center text-xs sm:text-sm text-gray-500">
-                      <Award className="h-3 w-3 sm:h-4 sm:w-4 mr-1 flex-shrink-0" />
-                      <span className="truncate">{profileData.recommendations} recommendations</span>
+                    <div className="flex items-center text-sm text-gray-500">
+                      <Award className="h-4 w-4 mr-1" />
+                      {profileData.recommendations} recommendations
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 mt-4 lg:mt-0">
+              <div className="flex items-center space-x-4 mt-6 lg:mt-0">
                 {isEditing ? (
-                  <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
-                    <Button onClick={handleSave} className="bg-green-600 hover:bg-green-700 w-full sm:w-auto">
+                  <div className="flex space-x-2">
+                    <Button onClick={handleSave} className="bg-green-600 hover:bg-green-700">
                       <Save className="h-4 w-4 mr-2" />
-                      <span className="hidden sm:inline">Save Changes</span>
-                      <span className="sm:hidden">Save</span>
+                      Save Changes
                     </Button>
-                    <Button variant="outline" onClick={handleCancel} className="w-full sm:w-auto">
+                    <Button variant="outline" onClick={handleCancel}>
                       <X className="h-4 w-4 mr-2" />
                       Cancel
                     </Button>
                   </div>
                 ) : (
-                  <Button onClick={() => setIsEditing(true)} className="w-full sm:w-auto">
+                  <Button onClick={() => setIsEditing(true)}>
                     <Edit className="h-4 w-4 mr-2" />
-                    <span className="hidden sm:inline">Edit Profile</span>
-                    <span className="sm:hidden">Edit</span>
+                    Edit Profile
                   </Button>
                 )}
               </div>

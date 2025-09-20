@@ -146,11 +146,13 @@ export default function DashboardTabPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-4 sm:space-y-6">
+      <div className="min-h-screen w-full">
         {/* Header - Mobile Optimized */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 mb-6">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white truncate">
+              Dashboard
+            </h1>
             <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1 sm:mt-2">
               Welcome back! Here's what's happening with your job search.
             </p>
@@ -191,7 +193,7 @@ export default function DashboardTabPage() {
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-4 sm:space-y-6">
-            {/* Stats Grid */}
+            {/* Stats Grid - Mobile Optimized */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
               {stats.map((stat, index) => (
                 <Card key={index} className="hover:shadow-md transition-shadow">

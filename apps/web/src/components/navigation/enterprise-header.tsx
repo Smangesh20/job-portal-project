@@ -331,89 +331,80 @@ export function EnterpriseHeader() {
         </div>
       </div>
 
-      {/* Main Navigation - Mobile Optimized */}
-      <div className="mobile-container-xl">
-        <div className="flex items-center justify-between h-16 mobile-h-auto">
-          {/* Logo - Mobile Optimized */}
-          <div className="flex-shrink-0">
-            <Link href="/" className="flex items-center space-x-2 mobile-gap-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mobile-scale-95">
-                <Brain className="h-6 w-6 text-white" />
-              </div>
-              <div className="mobile-hidden sm:block">
-                <div className="mobile-text-xl font-bold text-gray-900">AskYaCham</div>
-                <div className="mobile-text-xs text-gray-500">Quantum Job Matching</div>
-              </div>
-              <div className="mobile-only">
-                <div className="mobile-text-lg font-bold text-gray-900">AYC</div>
-              </div>
-            </Link>
-          </div>
+        {/* Main Navigation - Mobile Optimized */}
+        <div className="mobile-container-xl">
+          <div className="flex items-center justify-between h-16 mobile-h-auto">
+            {/* Logo - Mobile Optimized */}
+            <div className="flex-shrink-0">
+              <Link href="/" className="flex items-center space-x-2 mobile-gap-2">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mobile-scale-95">
+                  <Brain className="h-6 w-6 text-white" />
+                </div>
+                <div className="mobile-hidden sm:block">
+                  <div className="mobile-text-xl font-bold text-gray-900">AskYaCham</div>
+                  <div className="mobile-text-xs text-gray-500">Quantum Job Matching</div>
+                </div>
+                <div className="mobile-only">
+                  <div className="mobile-text-lg font-bold text-gray-900">AYC</div>
+                </div>
+              </Link>
+            </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-1">
-            {mainNavigation.map((item) => (
-              <div key={item.id} className="relative dropdown-container">
-                <Button
-                  variant={isActive(item.href) ? "default" : "ghost"}
-                  className={`flex items-center space-x-1 px-3 py-2 ${
-                    isActive(item.href) ? 'bg-blue-600 text-white' : 'text-gray-700 hover:text-blue-600'
-                  }`}
-                  onMouseEnter={() => setActiveDropdown(item.id)}
-                  onMouseLeave={() => setActiveDropdown(null)}
-                >
-                  {item.icon && <item.icon className="h-4 w-4" />}
-                  <span>{item.label}</span>
-                  {item.badge && (
-                    <Badge variant="secondary" className="ml-1 text-xs">
-                      {item.badge}
-                    </Badge>
-                  )}
-                  {item.children && <ChevronDown className="h-3 w-3" />}
-                </Button>
-
-                {/* Dropdown Menu */}
-                <AnimatePresence>
-                  {activeDropdown === item.id && item.children && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      className="absolute top-full left-0 mt-1 w-80 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50"
-                      onMouseEnter={() => setActiveDropdown(item.id)}
-                      onMouseLeave={() => setActiveDropdown(null)}
+            {/* Desktop Navigation - Hidden on Mobile */}
+            <nav className="hidden lg:flex items-center space-x-8 flex-1 justify-center">
+              {mainNavigation.map((item) => {
+                const IconComponent = item.icon
+                const isActive = isActive(item.href)
+                
+                return (
+                  <div key={item.id} className="relative group">
+                    <Link
+                      href={item.href}
+                      className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        isActive
+                          ? 'text-blue-600 bg-blue-50'
+                          : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
+                      }`}
                     >
-                      <div className="px-4 py-2 border-b border-gray-100">
-                        <h3 className="font-semibold text-gray-900">{item.label}</h3>
-                        <p className="text-sm text-gray-600">{item.description}</p>
+                      {IconComponent && <IconComponent className="h-4 w-4" />}
+                      <span>{item.label}</span>
+                      {item.badge && (
+                        <Badge variant="secondary" className="ml-1 text-xs">
+                          {item.badge}
+                        </Badge>
+                      )}
+                    </Link>
+                    
+                    {/* Dropdown Menu */}
+                    {item.children && (
+                      <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                        <div className="py-1">
+                          {item.children.map((child) => (
+                            <Link
+                              key={child.id}
+                              href={child.href}
+                              className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600"
+                            >
+                              {child.icon && <child.icon className="h-4 w-4" />}
+                              <span>{child.label}</span>
+                              {child.badge && (
+                                <Badge variant="secondary" className="ml-auto text-xs">
+                                  {child.badge}
+                                </Badge>
+                              )}
+                            </Link>
+                          ))}
+                        </div>
                       </div>
-                      <div className="py-2">
-                        {item.children.map((child) => (
-                          <Link
-                            key={child.id}
-                            href={child.href}
-                            className="flex items-start space-x-3 px-4 py-3 hover:bg-gray-50 transition-colors"
-                          >
-                            <div className="flex-shrink-0 mt-1">
-                              <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                            </div>
-                            <div className="flex-1">
-                              <div className="font-medium text-gray-900">{child.label}</div>
-                              <div className="text-sm text-gray-600">{child.description}</div>
-                            </div>
-                            <ChevronRight className="h-4 w-4 text-gray-400" />
-                          </Link>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            ))}
-          </nav>
+                    )}
+                  </div>
+                )
+              })}
+            </nav>
+
 
           {/* Search Bar - Desktop Optimized */}
-          <div className="hidden md:flex items-center flex-1 max-w-lg mx-8">
+          <div className="hidden md:flex items-center flex-1 max-w-2xl mx-4 lg:mx-8">
             <form onSubmit={handleSearch} className="w-full">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -422,12 +413,12 @@ export function EnterpriseHeader() {
                   placeholder="Search jobs, companies, skills..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-20 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
+                  className="w-full pl-10 pr-20 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm text-sm"
                 />
                 <Button
                   type="submit"
                   size="sm"
-                  className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700"
+                  className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-xs px-3"
                 >
                   Search
                 </Button>
