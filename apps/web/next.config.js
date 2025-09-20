@@ -7,6 +7,9 @@ if (typeof globalThis !== 'undefined') {
 if (typeof global !== 'undefined') {
   global.self = global;
 }
+if (typeof self === 'undefined') {
+  global.self = global;
+}
 
 const nextConfig = {
   async redirects() {
@@ -164,6 +167,22 @@ const nextConfig = {
           'self': 'globalThis',
         })
       );
+      
+      // Add global polyfill for self
+      config.plugins.push(
+        new webpack.ProvidePlugin({
+          'self': 'globalThis',
+        })
+      );
+      
+      // Add banner plugin to inject polyfill at the top of every file
+      config.plugins.push(
+        new webpack.BannerPlugin({
+          banner: 'if (typeof self === "undefined") { var self = globalThis || global; }',
+          raw: true,
+          entryOnly: false,
+        })
+      );
     }
 
     // Optimize bundle size
@@ -175,6 +194,7 @@ const nextConfig = {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
             chunks: 'all',
+            enforce: true,
           },
           common: {
             name: 'common',
