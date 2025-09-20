@@ -135,15 +135,387 @@
   @apply animate-spin rounded-full border-2 border-muted border-t-primary;
 }
 
-/* Responsive utilities */
+/* Mobile-First Responsive Utilities */
+.mobile-only {
+  @apply block sm:hidden;
+}
+
+.tablet-only {
+  @apply hidden sm:block lg:hidden;
+}
+
+.desktop-only {
+  @apply hidden lg:block;
+}
+
+.mobile-hidden {
+  @apply hidden sm:block;
+}
+
+.desktop-hidden {
+  @apply block sm:hidden;
+}
+
+/* Mobile-specific spacing */
+.mobile-px {
+  @apply px-4 sm:px-6 lg:px-8;
+}
+
+.mobile-py {
+  @apply py-4 sm:py-6 lg:py-8;
+}
+
+.mobile-mx {
+  @apply mx-4 sm:mx-6 lg:mx-8;
+}
+
+.mobile-my {
+  @apply my-4 sm:my-6 lg:my-8;
+}
+
+/* Mobile text sizes */
+.mobile-text-xs {
+  @apply text-xs sm:text-sm;
+}
+
+.mobile-text-sm {
+  @apply text-sm sm:text-base;
+}
+
+.mobile-text-base {
+  @apply text-base sm:text-lg;
+}
+
+.mobile-text-lg {
+  @apply text-lg sm:text-xl;
+}
+
+.mobile-text-xl {
+  @apply text-xl sm:text-2xl;
+}
+
+.mobile-text-2xl {
+  @apply text-2xl sm:text-3xl;
+}
+
+.mobile-text-3xl {
+  @apply text-3xl sm:text-4xl;
+}
+
+.mobile-text-4xl {
+  @apply text-4xl sm:text-5xl;
+}
+
+/* Mobile grid utilities */
+.mobile-grid-1 {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
+}
+
+.mobile-grid-2 {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4;
+}
+
+.mobile-grid-3 {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+}
+
+/* Mobile flex utilities */
+.mobile-flex-col {
+  @apply flex flex-col sm:flex-row;
+}
+
+.mobile-flex-row {
+  @apply flex flex-row sm:flex-col lg:flex-row;
+}
+
+.mobile-items-center {
+  @apply items-center sm:items-start lg:items-center;
+}
+
+.mobile-justify-center {
+  @apply justify-center sm:justify-start lg:justify-center;
+}
+
+/* Mobile spacing utilities */
+.mobile-gap-2 {
+  @apply gap-2 sm:gap-4 lg:gap-6;
+}
+
+.mobile-gap-4 {
+  @apply gap-4 sm:gap-6 lg:gap-8;
+}
+
+.mobile-gap-6 {
+  @apply gap-6 sm:gap-8 lg:gap-12;
+}
+
+/* Mobile width utilities */
+.mobile-w-full {
+  @apply w-full sm:w-auto;
+}
+
+.mobile-w-auto {
+  @apply w-auto sm:w-full;
+}
+
+/* Mobile height utilities */
+.mobile-h-auto {
+  @apply h-auto sm:h-screen;
+}
+
+.mobile-min-h-screen {
+  @apply min-h-screen sm:min-h-0;
+}
+
+/* Mobile overflow utilities */
+.mobile-overflow-hidden {
+  @apply overflow-hidden sm:overflow-visible;
+}
+
+.mobile-overflow-x-auto {
+  @apply overflow-x-auto sm:overflow-x-visible;
+}
+
+/* Mobile position utilities */
+.mobile-relative {
+  @apply relative sm:static;
+}
+
+.mobile-fixed {
+  @apply fixed sm:static;
+}
+
+.mobile-sticky {
+  @apply sticky sm:static;
+}
+
+/* Mobile z-index utilities */
+.mobile-z-10 {
+  @apply z-10 sm:z-0;
+}
+
+.mobile-z-20 {
+  @apply z-20 sm:z-0;
+}
+
+.mobile-z-30 {
+  @apply z-30 sm:z-0;
+}
+
+.mobile-z-40 {
+  @apply z-40 sm:z-0;
+}
+
+.mobile-z-50 {
+  @apply z-50 sm:z-0;
+}
+
+/* Mobile border utilities */
+.mobile-border-0 {
+  @apply border-0 sm:border;
+}
+
+.mobile-border-t {
+  @apply border-t sm:border-0;
+}
+
+.mobile-border-b {
+  @apply border-b sm:border-0;
+}
+
+.mobile-border-l {
+  @apply border-l sm:border-0;
+}
+
+.mobile-border-r {
+  @apply border-r sm:border-0;
+}
+
+/* Mobile shadow utilities */
+.mobile-shadow-none {
+  @apply shadow-none sm:shadow;
+}
+
+.mobile-shadow-sm {
+  @apply shadow-sm sm:shadow;
+}
+
+.mobile-shadow-md {
+  @apply shadow-md sm:shadow-lg;
+}
+
+.mobile-shadow-lg {
+  @apply shadow-lg sm:shadow-xl;
+}
+
+/* Mobile backdrop utilities */
+.mobile-backdrop-blur {
+  @apply backdrop-blur-sm sm:backdrop-blur-none;
+}
+
+.mobile-backdrop-blur-md {
+  @apply backdrop-blur-md sm:backdrop-blur-none;
+}
+
+.mobile-backdrop-blur-lg {
+  @apply backdrop-blur-lg sm:backdrop-blur-none;
+}
+
+/* Mobile transform utilities */
+.mobile-scale-95 {
+  @apply scale-95 sm:scale-100;
+}
+
+.mobile-scale-105 {
+  @apply scale-105 sm:scale-100;
+}
+
+.mobile-rotate-0 {
+  @apply rotate-0 sm:rotate-90;
+}
+
+.mobile-rotate-90 {
+  @apply rotate-90 sm:rotate-0;
+}
+
+/* Mobile transition utilities */
+.mobile-transition-all {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.mobile-transition-transform {
+  @apply transition-transform duration-300 ease-in-out;
+}
+
+.mobile-transition-opacity {
+  @apply transition-opacity duration-300 ease-in-out;
+}
+
+/* Mobile animation utilities */
+.mobile-animate-pulse {
+  @apply animate-pulse sm:animate-none;
+}
+
+.mobile-animate-bounce {
+  @apply animate-bounce sm:animate-none;
+}
+
+.mobile-animate-spin {
+  @apply animate-spin sm:animate-none;
+}
+
+/* Mobile focus utilities */
+.mobile-focus-visible {
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2;
+}
+
+/* Mobile touch utilities */
+.mobile-touch-manipulation {
+  @apply touch-manipulation;
+}
+
+.mobile-touch-none {
+  @apply touch-none sm:touch-auto;
+}
+
+.mobile-touch-pan-x {
+  @apply touch-pan-x;
+}
+
+.mobile-touch-pan-y {
+  @apply touch-pan-y;
+}
+
+.mobile-touch-pinch-zoom {
+  @apply touch-pinch-zoom;
+}
+
+/* Mobile scroll utilities */
+.mobile-scroll-smooth {
+  @apply scroll-smooth;
+}
+
+.mobile-scroll-auto {
+  @apply scroll-auto;
+}
+
+.mobile-scrollbar-hide {
+  @apply scrollbar-hide;
+}
+
+/* Mobile safe area utilities */
+.mobile-safe-top {
+  @apply pt-safe-top;
+}
+
+.mobile-safe-bottom {
+  @apply pb-safe-bottom;
+}
+
+.mobile-safe-left {
+  @apply pl-safe-left;
+}
+
+.mobile-safe-right {
+  @apply pr-safe-right;
+}
+
+.mobile-safe-x {
+  @apply px-safe-x;
+}
+
+.mobile-safe-y {
+  @apply py-safe-y;
+}
+
+.mobile-safe-inset {
+  @apply p-safe-inset;
+}
+
+/* Mobile container utilities */
+.mobile-container {
+  @apply w-full max-w-sm mx-auto px-4 sm:max-w-md sm:px-6 md:max-w-lg md:px-8 lg:max-w-xl lg:px-12 xl:max-w-2xl xl:px-16 2xl:max-w-4xl 2xl:px-20;
+}
+
+.mobile-container-sm {
+  @apply w-full max-w-xs mx-auto px-4 sm:max-w-sm sm:px-6 md:max-w-md md:px-8 lg:max-w-lg lg:px-12 xl:max-w-xl xl:px-16 2xl:max-w-2xl 2xl:px-20;
+}
+
+.mobile-container-lg {
+  @apply w-full max-w-md mx-auto px-4 sm:max-w-lg sm:px-6 md:max-w-xl md:px-8 lg:max-w-2xl lg:px-12 xl:max-w-4xl xl:px-16 2xl:max-w-6xl 2xl:px-20;
+}
+
+.mobile-container-xl {
+  @apply w-full max-w-lg mx-auto px-4 sm:max-w-xl sm:px-6 md:max-w-2xl md:px-8 lg:max-w-4xl lg:px-12 xl:max-w-6xl xl:px-16 2xl:max-w-7xl 2xl:px-20;
+}
+
+/* Mobile breakpoint utilities */
 @media (max-width: 640px) {
-  .mobile-hidden {
+  .sm\:mobile-hidden {
     @apply hidden;
   }
 }
 
-@media (min-width: 641px) {
-  .desktop-hidden {
+@media (max-width: 768px) {
+  .md\:mobile-hidden {
+    @apply hidden;
+  }
+}
+
+@media (max-width: 1024px) {
+  .lg\:mobile-hidden {
+    @apply hidden;
+  }
+}
+
+@media (max-width: 1280px) {
+  .xl\:mobile-hidden {
+    @apply hidden;
+  }
+}
+
+@media (max-width: 1536px) {
+  .2xl\:mobile-hidden {
     @apply hidden;
   }
 }

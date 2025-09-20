@@ -292,53 +292,60 @@ export function EnterpriseHeader() {
         ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200' 
         : 'bg-white shadow-sm'
     }`}>
-      {/* Top Bar */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between text-sm">
-            <div className="flex items-center space-x-6">
+      {/* Top Bar - Mobile Optimized */}
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 mobile-py">
+        <div className="mobile-container-xl">
+          <div className="flex items-center justify-between mobile-text-xs">
+            <div className="flex items-center mobile-gap-2">
               <div className="flex items-center space-x-2">
                 <Zap className="h-4 w-4" />
-                <span>Quantum-Powered Job Matching</span>
+                <span className="mobile-hidden">Quantum-Powered Job Matching</span>
+                <span className="mobile-only">Quantum Jobs</span>
               </div>
-              <div className="hidden md:flex items-center space-x-4">
-                <a href="mailto:info@askyacham.com" className="flex items-center space-x-1 hover:text-blue-200">
+              <div className="mobile-hidden md:flex items-center mobile-gap-2">
+                <a href="mailto:info@askyacham.com" className="flex items-center space-x-1 hover:text-blue-200 mobile-transition-all">
                   <Mail className="h-3 w-3" />
-                  <span>info@askyacham.com</span>
+                  <span className="mobile-hidden lg:inline">info@askyacham.com</span>
+                  <span className="mobile-only">Email</span>
                 </a>
-                <a href="tel:+1-555-ASK-YACH" className="flex items-center space-x-1 hover:text-blue-200">
+                <a href="tel:+1-555-ASK-YACH" className="flex items-center space-x-1 hover:text-blue-200 mobile-transition-all">
                   <Phone className="h-3 w-3" />
-                  <span>+1 (555) ASK-YACH</span>
+                  <span className="mobile-hidden lg:inline">+1 (555) ASK-YACH</span>
+                  <span className="mobile-only">Call</span>
                 </a>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="hidden md:flex items-center space-x-2">
+            <div className="flex items-center mobile-gap-2">
+              <div className="mobile-hidden md:flex items-center space-x-2">
                 <Globe className="h-3 w-3" />
-                <span>English</span>
+                <span className="mobile-hidden lg:inline">English</span>
                 <ChevronDown className="h-3 w-3" />
               </div>
               <div className="flex items-center space-x-2">
                 <Shield className="h-3 w-3" />
-                <span>Secure Platform</span>
+                <span className="mobile-hidden lg:inline">Secure Platform</span>
+                <span className="mobile-only">Secure</span>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main Navigation */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
+      {/* Main Navigation - Mobile Optimized */}
+      <div className="mobile-container-xl">
+        <div className="flex items-center justify-between h-16 mobile-h-auto">
+          {/* Logo - Mobile Optimized */}
           <div className="flex-shrink-0">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+            <Link href="/" className="flex items-center space-x-2 mobile-gap-2">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mobile-scale-95">
                 <Brain className="h-6 w-6 text-white" />
               </div>
-              <div className="hidden sm:block">
-                <div className="text-xl font-bold text-gray-900">AskYaCham</div>
-                <div className="text-xs text-gray-500">Quantum Job Matching</div>
+              <div className="mobile-hidden sm:block">
+                <div className="mobile-text-xl font-bold text-gray-900">AskYaCham</div>
+                <div className="mobile-text-xs text-gray-500">Quantum Job Matching</div>
+              </div>
+              <div className="mobile-only">
+                <div className="mobile-text-lg font-bold text-gray-900">AYC</div>
               </div>
             </Link>
           </div>
@@ -405,8 +412,8 @@ export function EnterpriseHeader() {
             ))}
           </nav>
 
-          {/* Search Bar */}
-          <div className="hidden md:flex items-center flex-1 max-w-md mx-8">
+          {/* Search Bar - Mobile Optimized */}
+          <div className="mobile-hidden md:flex items-center flex-1 max-w-md mx-8">
             <form onSubmit={handleSearch} className="w-full">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -415,7 +422,7 @@ export function EnterpriseHeader() {
                   placeholder="Search jobs, companies, skills..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent mobile-focus-visible"
                 />
                 <Button
                   type="submit"
@@ -428,12 +435,12 @@ export function EnterpriseHeader() {
             </form>
           </div>
 
-          {/* User Actions */}
-          <div className="flex items-center space-x-2">
-            {/* Notifications */}
-            <Button variant="ghost" size="sm" className="relative">
+          {/* User Actions - Mobile Optimized */}
+          <div className="flex items-center mobile-gap-2">
+            {/* Notifications - Mobile Optimized */}
+            <Button variant="ghost" size="sm" className="relative mobile-scale-95">
               <Bell className="h-5 w-5" />
-              <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center text-xs">
+              <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center mobile-text-xs">
                 3
               </Badge>
             </Button>
@@ -443,17 +450,17 @@ export function EnterpriseHeader() {
               <div className="relative dropdown-container">
                 <Button
                   variant="ghost"
-                  className="flex items-center space-x-2"
+                  className="flex items-center mobile-gap-2 mobile-scale-95"
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                 >
-                  <Avatar className="h-8 w-8">
+                  <Avatar className="h-8 w-8 mobile-scale-95">
                     <AvatarImage src={user?.avatar} />
                     <AvatarFallback>
                       {user?.name?.charAt(0) || 'U'}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="hidden sm:block text-sm font-medium">{user?.name || 'User'}</span>
-                  <ChevronDown className="h-4 w-4" />
+                  <span className="mobile-hidden sm:block mobile-text-sm font-medium">{user?.name || 'User'}</span>
+                  <ChevronDown className="h-4 w-4 mobile-scale-95" />
                 </Button>
 
                 <AnimatePresence>
@@ -520,7 +527,7 @@ export function EnterpriseHeader() {
             <Button
               variant="ghost"
               size="sm"
-              className="lg:hidden"
+              className="lg:hidden mobile-scale-95 mobile-touch-manipulation"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -528,8 +535,8 @@ export function EnterpriseHeader() {
           </div>
         </div>
 
-        {/* Mobile Search */}
-        <div className="md:hidden pb-4">
+        {/* Mobile Search - Enhanced */}
+        <div className="md:hidden mobile-py">
           <form onSubmit={handleSearch}>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -538,35 +545,38 @@ export function EnterpriseHeader() {
                 placeholder="Search jobs, companies, skills..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent mobile-focus-visible mobile-touch-manipulation"
               />
+              <Button type="submit" size="sm" className="absolute right-2 top-1/2 transform -translate-y-1/2 mobile-scale-95">
+                Search
+              </Button>
             </div>
           </form>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu - Enhanced */}
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden border-t border-gray-200 bg-white"
+              className="lg:hidden border-t border-gray-200 bg-white mobile-backdrop-blur"
             >
-              <div className="px-4 py-4 space-y-4">
+              <div className="mobile-px mobile-py mobile-gap-4">
                 {mainNavigation.map((item) => (
                   <div key={item.id}>
                     <Link
                       href={item.href}
-                      className={`flex items-center space-x-3 px-3 py-2 rounded-lg ${
+                      className={`flex items-center mobile-gap-2 mobile-px mobile-py rounded-lg mobile-transition-all mobile-touch-manipulation ${
                         isActive(item.href) ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-50'
                       }`}
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      {item.icon && <item.icon className="h-5 w-5" />}
-                      <span className="font-medium">{item.label}</span>
+                      {item.icon && <item.icon className="h-5 w-5 mobile-scale-95" />}
+                      <span className="mobile-text-sm font-medium">{item.label}</span>
                       {item.badge && (
-                        <Badge variant="secondary" className="ml-auto text-xs">
+                        <Badge variant="secondary" className="ml-auto mobile-text-xs">
                           {item.badge}
                         </Badge>
                       )}
@@ -577,7 +587,7 @@ export function EnterpriseHeader() {
                           <Link
                             key={child.id}
                             href={child.href}
-                            className="block px-3 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg"
+                            className="block mobile-px mobile-py mobile-text-sm text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg mobile-transition-all mobile-touch-manipulation"
                             onClick={() => setIsMenuOpen(false)}
                           >
                             {child.label}
@@ -588,20 +598,20 @@ export function EnterpriseHeader() {
                   </div>
                 ))}
                 
-                {/* Support Links */}
-                <div className="border-t border-gray-200 pt-4">
-                  <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                {/* Support Links - Mobile Optimized */}
+                <div className="border-t border-gray-200 mobile-py">
+                  <div className="mobile-text-xs font-semibold text-gray-500 uppercase tracking-wider mobile-my">
                     Support
                   </div>
                   {supportNavigation.map((item) => (
                     <Link
                       key={item.id}
                       href={item.href}
-                      className="flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg"
+                      className="flex items-center mobile-gap-2 mobile-px mobile-py text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg mobile-transition-all mobile-touch-manipulation"
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      {item.icon && <item.icon className="h-4 w-4" />}
-                      <span>{item.label}</span>
+                      {item.icon && <item.icon className="h-4 w-4 mobile-scale-95" />}
+                      <span className="mobile-text-sm">{item.label}</span>
                     </Link>
                   ))}
                 </div>

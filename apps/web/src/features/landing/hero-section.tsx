@@ -38,7 +38,7 @@ export function HeroSection() {
       <div className="absolute top-40 right-20 w-32 h-32 bg-secondary-200/30 rounded-full blur-xl animate-pulse delay-1000" />
       <div className="absolute bottom-20 left-1/4 w-24 h-24 bg-accent-200/30 rounded-full blur-xl animate-pulse delay-2000" />
 
-      <div className="relative container mx-auto px-4 py-20 lg:py-32">
+      <div className="relative mobile-container-xl mobile-py">
         <div className="max-w-4xl mx-auto text-center">
           {/* Badge */}
           <motion.div
@@ -47,9 +47,10 @@ export function HeroSection() {
             transition={{ duration: 0.6 }}
             className="mb-8"
           >
-            <Badge variant="secondary" className="px-4 py-2 text-sm font-medium">
-              <SparklesIcon className="w-4 h-4 mr-2" />
-              Quantum Computing-Powered Job Matching Platform
+            <Badge variant="secondary" className="mobile-px mobile-py mobile-text-sm font-medium">
+              <SparklesIcon className="w-4 h-4 mr-2 mobile-scale-95" />
+              <span className="mobile-hidden">Quantum Computing-Powered Job Matching Platform</span>
+              <span className="mobile-only">Quantum Job Matching</span>
             </Badge>
           </motion.div>
 
@@ -58,14 +59,24 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6"
+            className="mobile-text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-gray-900 mobile-my"
           >
-            Find Your{' '}
-            <span className="bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-              Dream Job
+            <span className="mobile-hidden">
+              Find Your{' '}
+              <span className="bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
+                Dream Job
+              </span>
+              <br />
+              with Quantum Computing Precision
             </span>
-            <br />
-            with Quantum Computing Precision
+            <span className="mobile-only">
+              Find Your{' '}
+              <span className="bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
+                Dream Job
+              </span>
+              <br />
+              with Quantum Precision
+            </span>
           </motion.h1>
 
           {/* Subtitle */}
@@ -73,10 +84,16 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed"
+            className="mobile-text-lg sm:text-xl md:text-2xl text-gray-600 mobile-my max-w-3xl mx-auto leading-relaxed"
           >
-            Connect with opportunities that match your skills, values, and career aspirations. 
-            Our advanced quantum computing technology ensures perfect matches between talented professionals and innovative companies.
+            <span className="mobile-hidden">
+              Connect with opportunities that match your skills, values, and career aspirations. 
+              Our advanced quantum computing technology ensures perfect matches between talented professionals and innovative companies.
+            </span>
+            <span className="mobile-only">
+              Connect with opportunities that match your skills and career aspirations. 
+              Our quantum technology ensures perfect matches.
+            </span>
           </motion.p>
 
           {/* CTA Section */}
@@ -84,23 +101,23 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
+            className="mobile-flex-col mobile-gap-4 mobile-justify-center mobile-items-center mobile-my"
           >
-            <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
+            <div className="mobile-flex-col mobile-gap-4 mobile-w-full max-w-md">
               <Input
                 type="email"
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="flex-1"
+                className="flex-1 mobile-focus-visible mobile-touch-manipulation"
               />
               <Button 
                 size="lg" 
                 onClick={handleGetStarted}
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto mobile-touch-manipulation mobile-scale-95"
               >
                 Get Started
-                <ArrowRightIcon className="w-5 h-5 ml-2" />
+                <ArrowRightIcon className="w-5 h-5 ml-2 mobile-scale-95" />
               </Button>
             </div>
           </motion.div>
