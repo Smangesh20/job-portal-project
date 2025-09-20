@@ -37,6 +37,38 @@ export class LocalAuthService {
   constructor() {
     console.log('🚀 GOOGLE ULTIMATE: LocalAuthService initialized');
     this.loadFromStorage();
+    this.createTestUser();
+  }
+
+  // Create a test user for development
+  private createTestUser() {
+    try {
+      if (typeof window === 'undefined') return;
+      
+      // Check if test user already exists
+      const existingUser = Array.from(this.users.values()).find(u => u.email === 'test@example.com');
+      if (existingUser) return;
+
+      // Create test user
+      const testUser: User = {
+        id: 'test_user_123',
+        email: 'test@example.com',
+        firstName: 'Test',
+        lastName: 'User',
+        role: 'CANDIDATE',
+        isVerified: true,
+        isActive: true,
+        passwordHash: this.hashPassword('password123'),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      this.users.set(testUser.id, testUser);
+      localStorage.setItem('askyacham_users', JSON.stringify(Array.from(this.users.values())));
+      console.log('🚀 GOOGLE ULTIMATE: Test user created - test@example.com / password123');
+    } catch (error) {
+      console.error('❌ GOOGLE ULTIMATE ERROR creating test user:', error);
+    }
   }
 
   static getInstance(): LocalAuthService {

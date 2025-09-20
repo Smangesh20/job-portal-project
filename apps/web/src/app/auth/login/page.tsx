@@ -238,9 +238,9 @@ export default function LoginPage() {
       }, 100)
       
     } catch (error: any) {
-      // Google-style: Never show errors to users
-      // Just silently handle the error
-      console.log('Login error (handled silently):', error.message)
+      // Show error to user
+      console.log('Login error:', error.message)
+      // Error will be displayed by the ProfessionalError component
     } finally {
       setIsSubmitting(false)
     }
@@ -249,14 +249,16 @@ export default function LoginPage() {
   // Handle success modal continue
   const handleSuccessContinue = useCallback(() => {
     setShowSuccessModal(false)
-    router.push('/dashboard')
-  }, [router])
+    // Use window.location.href for reliable navigation
+    window.location.href = '/dashboard'
+  }, [])
 
   // Handle success modal close
   const handleSuccessClose = useCallback(() => {
     setShowSuccessModal(false)
-    router.push('/dashboard')
-  }, [router])
+    // Use window.location.href for reliable navigation
+    window.location.href = '/dashboard'
+  }, [])
 
   return (
     <PublicRoute>

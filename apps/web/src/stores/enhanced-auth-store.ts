@@ -88,6 +88,7 @@ export const useAuthStore = create<AuthStore>()(
 
           const { user, accessToken, refreshToken } = response.data!
 
+          // Set authentication state immediately
           set({
             user: user as AuthUser,
             accessToken,
@@ -99,15 +100,19 @@ export const useAuthStore = create<AuthStore>()(
           // Store tokens
           get().setTokens(accessToken, refreshToken)
 
+          // Force a small delay to ensure state is updated
+          await new Promise(resolve => setTimeout(resolve, 100))
+
         } catch (error: any) {
-          // Set error state for proper error handling
-          const errorDetails = { message: error.message || 'Authentication error', type: 'AUTH_ERROR' }
+          console.log('Login error:', error.message)
+          
           set({
             error: error.message || 'Login failed',
-            errorDetails: errorDetails,
+            errorDetails: { message: error.message || 'Login failed', type: 'AUTH_ERROR' },
             isLoading: false
           })
-          throw error // Re-throw to allow proper error handling in components
+          
+          throw error
         }
       },
 
@@ -122,28 +127,26 @@ export const useAuthStore = create<AuthStore>()(
             throw new Error(response.error?.message || 'Registration failed')
           }
 
-          const { user, accessToken, refreshToken } = response.data!
-
+          // For registration, we don't automatically log in the user
+          // They need to log in separately
           set({
-            user: user as AuthUser,
-            accessToken,
-            refreshTokenValue: refreshToken,
-            isAuthenticated: true,
+            user: null,
+            accessToken: null,
+            refreshTokenValue: null,
+            isAuthenticated: false,
             isLoading: false
           })
-
-          // Store tokens
-          get().setTokens(accessToken, refreshToken)
 
         } catch (error: any) {
-          // Set error state for proper error handling
-          const errorDetails = { message: error.message || 'Registration error', type: 'AUTH_ERROR' }
+          console.log('Register error:', error.message)
+          
           set({
             error: error.message || 'Registration failed',
-            errorDetails: errorDetails,
+            errorDetails: { message: error.message || 'Registration failed', type: 'AUTH_ERROR' },
             isLoading: false
           })
-          throw error // Re-throw to allow proper error handling in components
+          
+          throw error
         }
       },
 
