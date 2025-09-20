@@ -34,6 +34,7 @@ import {
 
 export default function DashboardTabPage() {
   const [activeTab, setActiveTab] = useState('overview')
+  const [isRedirecting, setIsRedirecting] = useState(false)
   const params = useParams()
   const router = useRouter()
 
@@ -46,6 +47,15 @@ export default function DashboardTabPage() {
       router.replace('/dashboard/overview')
     }
   }, [params, router])
+
+  // Google-style: Handle direct /dashboard access
+  useEffect(() => {
+    if (!params.tab || params.tab.length === 0) {
+      // If no tab parameter, redirect to overview
+      setIsRedirecting(true)
+      router.replace('/dashboard/overview')
+    }
+  }, [params.tab, router])
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab)
@@ -146,6 +156,20 @@ export default function DashboardTabPage() {
       posted: '3 days ago'
     }
   ]
+
+  // Show loading state while redirecting
+  if (isRedirecting) {
+    return (
+      <ProtectedPage>
+        <div className="flex min-h-screen items-center justify-center bg-white">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Redirecting to dashboard...</p>
+          </div>
+        </div>
+      </ProtectedPage>
+    )
+  }
 
   return (
     <ProtectedPage>
