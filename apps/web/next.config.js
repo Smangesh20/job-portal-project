@@ -183,24 +183,39 @@ const nextConfig = {
           entryOnly: false,
         })
       );
+      
+      // Fix webpack runtime issues
+      config.optimization = config.optimization || {};
+      config.optimization.runtimeChunk = false;
+      
+      // Add additional safety checks
+      config.plugins.push(
+        new webpack.DefinePlugin({
+          'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
+        })
+      );
     }
 
     // Optimize bundle size
     if (!dev) {
       config.optimization.splitChunks = {
         chunks: 'all',
+        minSize: 20000,
+        maxSize: 244000,
         cacheGroups: {
           vendor: {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
             chunks: 'all',
             enforce: true,
+            priority: 10,
           },
           common: {
             name: 'common',
             minChunks: 2,
             chunks: 'all',
             enforce: true,
+            priority: 5,
           },
         },
       };
