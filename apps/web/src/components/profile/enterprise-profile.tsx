@@ -50,10 +50,10 @@ interface ProfileData {
   avatar: string
   title: string
   company: string
-  experience: number
+  experienceYears: number
   skills: string[]
   education: Education[]
-  experience: WorkExperience[]
+  workExperience: WorkExperience[]
   achievements: Achievement[]
   socialLinks: SocialLink[]
   preferences: UserPreferences
@@ -136,7 +136,7 @@ export function EnterpriseProfile() {
     avatar: '',
     title: 'Senior Software Engineer',
     company: 'Tech Corp',
-    experience: 8,
+    experienceYears: 8,
     skills: ['React', 'Node.js', 'TypeScript', 'AWS', 'Docker', 'Kubernetes', 'Python', 'PostgreSQL'],
     education: [
       {
@@ -150,7 +150,7 @@ export function EnterpriseProfile() {
         description: 'Specialized in Machine Learning and Artificial Intelligence'
       }
     ],
-    experience: [
+    workExperience: [
       {
         id: '1',
         company: 'Tech Corp',
@@ -259,7 +259,7 @@ export function EnterpriseProfile() {
                     {profileData.title} at {profileData.company}
                   </p>
                   <p className="text-gray-500 dark:text-gray-500">
-                    {profileData.location} • {profileData.experience} years experience
+                    {profileData.location} • {profileData.experienceYears} years experience
                   </p>
                   <div className="flex items-center space-x-4 mt-2">
                     <div className="flex items-center text-sm text-gray-500">
@@ -399,7 +399,7 @@ export function EnterpriseProfile() {
 
           {/* Experience Tab */}
           <TabsContent value="experience" className="space-y-6">
-            {profileData.experience.map((exp) => (
+            {profileData.workExperience.map((exp) => (
               <Card key={exp.id}>
                 <CardContent className="p-6">
                   <div className="flex justify-between items-start">
