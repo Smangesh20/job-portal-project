@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import { DashboardLayout } from '@/components/layouts/dashboard-layout'
+import { ProtectedRoute } from '@/components/auth/route-guard'
 import { EnterpriseProfile } from '@/components/profile/enterprise-profile'
 import { EnterpriseSettings } from '@/components/settings/enterprise-settings'
 import { EnterpriseNotifications } from '@/components/notifications/enterprise-notifications'
@@ -145,8 +146,9 @@ export default function DashboardTabPage() {
   ]
 
   return (
-    <DashboardLayout>
-      <div className="min-h-screen w-full">
+    <ProtectedRoute>
+      <DashboardLayout>
+        <div className="min-h-screen w-full">
         {/* Header - Mobile Optimized */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 mb-6">
           <div className="flex-1 min-w-0">
@@ -349,7 +351,8 @@ export default function DashboardTabPage() {
             <EnterpriseSettings />
           </TabsContent>
         </Tabs>
-      </div>
-    </DashboardLayout>
+        </div>
+      </DashboardLayout>
+    </ProtectedRoute>
   )
 }

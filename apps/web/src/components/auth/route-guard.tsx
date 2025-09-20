@@ -20,14 +20,13 @@ export function RouteGuard({
   const router = useRouter()
 
   useEffect(() => {
-    // Disable automatic redirects to prevent URL disappearing
-    // if (!isLoading) {
-    //   if (requireAuth && !isAuthenticated) {
-    //     router.push(redirectTo)
-    //   } else if (!requireAuth && isAuthenticated) {
-    //     router.push('/dashboard')
-    //   }
-    // }
+    if (!isLoading) {
+      if (requireAuth && !isAuthenticated) {
+        router.push(redirectTo)
+      } else if (!requireAuth && isAuthenticated) {
+        router.push('/dashboard')
+      }
+    }
   }, [isAuthenticated, isLoading, requireAuth, redirectTo, router])
 
   if (isLoading) {
@@ -66,8 +65,8 @@ export function PublicRoute({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      // Don't redirect immediately - let the success modal show first
-      // The individual pages will handle navigation after showing success modal
+      // Redirect authenticated users to dashboard
+      router.push('/dashboard')
     }
   }, [isAuthenticated, isLoading, router])
 

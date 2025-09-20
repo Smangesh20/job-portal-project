@@ -100,18 +100,14 @@ export const useAuthStore = create<AuthStore>()(
           get().setTokens(accessToken, refreshToken)
 
         } catch (error: any) {
-          // Google-style: NEVER show any errors to users
-          // Just silently handle the error and reset loading state
-          console.log('Login error (handled silently):', error.message)
-          
+          // Set error state for proper error handling
+          const errorDetails = { message: error.message || 'Authentication error', type: 'AUTH_ERROR' }
           set({
-            error: null, // Never show errors to users
-            errorDetails: null,
+            error: error.message || 'Login failed',
+            errorDetails: errorDetails,
             isLoading: false
           })
-          
-          // Don't throw error - just return silently like Google does
-          // The UI will just show the form again without any error message
+          throw error // Re-throw to allow proper error handling in components
         }
       },
 
@@ -140,18 +136,14 @@ export const useAuthStore = create<AuthStore>()(
           get().setTokens(accessToken, refreshToken)
 
         } catch (error: any) {
-          // Google-style: NEVER show any errors to users
-          // Just silently handle the error and reset loading state
-          console.log('Register error (handled silently):', error.message)
-          
+          // Set error state for proper error handling
+          const errorDetails = { message: error.message || 'Registration error', type: 'AUTH_ERROR' }
           set({
-            error: null, // Never show errors to users
-            errorDetails: null,
+            error: error.message || 'Registration failed',
+            errorDetails: errorDetails,
             isLoading: false
           })
-          
-          // Don't throw error - just return silently like Google does
-          // The UI will just show the form again without any error message
+          throw error // Re-throw to allow proper error handling in components
         }
       },
 
