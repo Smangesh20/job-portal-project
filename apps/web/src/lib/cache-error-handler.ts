@@ -3,7 +3,7 @@
  * Handles all browser cache, storage, and memory related errors
  */
 
-import { errorPreventionSystem, ErrorType } from './error-prevention'
+// Simplified error handling
 
 export interface CacheError {
   type: 'localStorage' | 'sessionStorage' | 'indexedDB' | 'cache' | 'memory' | 'cookie'
@@ -349,13 +349,7 @@ export class CacheErrorHandler {
     this.cacheHealthStatus.set(error.type, false)
     
     // Report to error prevention system
-    const errorType = this.mapCacheErrorToErrorType(error.type)
-    errorPreventionSystem.reportError(errorType, {
-      component: 'CacheErrorHandler',
-      action: error.operation,
-      cacheState: this.cacheHealthStatus,
-      errorDetails: error
-    })
+    console.error('Cache error:', error)
     
     // Attempt recovery
     this.attemptCacheErrorRecovery(error)
@@ -364,24 +358,7 @@ export class CacheErrorHandler {
     console.error('Cache error detected:', error)
   }
 
-  private mapCacheErrorToErrorType(cacheErrorType: string): ErrorType {
-    switch (cacheErrorType) {
-      case 'localStorage':
-        return ErrorType.LOCAL_STORAGE_ERROR
-      case 'sessionStorage':
-        return ErrorType.SESSION_STORAGE_ERROR
-      case 'indexedDB':
-        return ErrorType.INDEXED_DB_ERROR
-      case 'cache':
-        return ErrorType.BROWSER_CACHE_ERROR
-      case 'memory':
-        return ErrorType.MEMORY_LEAK
-      case 'cookie':
-        return ErrorType.COOKIE_ERROR
-      default:
-        return ErrorType.CACHE_CORRUPTION_ERROR
-    }
-  }
+  // Simplified error mapping removed
 
   private attemptCacheErrorRecovery(error: CacheError) {
     switch (error.type) {

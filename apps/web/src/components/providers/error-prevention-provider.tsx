@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useEffect, ReactNode } from 'react'
-import { errorPreventionSystem } from '@/lib/error-prevention'
+// Removed error prevention system import
 
 interface ErrorPreventionContextType {
   errorStats: any
@@ -26,11 +26,11 @@ export function ErrorPreventionProvider({ children }: ErrorPreventionProviderPro
   }, [])
 
   const refreshErrorStats = () => {
-    return errorPreventionSystem.getErrorHistory()
+    return [] // Simplified error history
   }
 
   const contextValue: ErrorPreventionContextType = {
-    errorStats: errorPreventionSystem.getErrorHistory(),
+    errorStats: [], // Simplified error stats
     isQuantumFallbackMode: false, // Simplified for now
     refreshErrorStats
   }

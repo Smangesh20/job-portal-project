@@ -3,7 +3,7 @@
  * Handles all quantum computing specific errors and edge cases
  */
 
-import { errorPreventionSystem, ErrorType } from './error-prevention'
+// Simplified error handling
 
 export interface QuantumError {
   type: 'decoherence' | 'gate_error' | 'measurement_error' | 'entanglement_error' | 'calibration_error' | 'noise_error'
@@ -280,13 +280,7 @@ export class QuantumErrorHandler {
     this.errorHistory.push(error)
 
     // Report to error prevention system
-    const errorType = this.mapQuantumErrorToErrorType(error.type)
-    errorPreventionSystem.reportError(errorType, {
-      component: 'QuantumErrorHandler',
-      action: 'handleQuantumError',
-      quantumState: this.quantumState,
-      errorDetails: error
-    })
+    console.error('Quantum error:', error)
 
     // Attempt recovery
     this.attemptQuantumErrorRecovery(error)
@@ -295,24 +289,7 @@ export class QuantumErrorHandler {
     console.error('Quantum error detected:', error)
   }
 
-  private mapQuantumErrorToErrorType(quantumErrorType: string): ErrorType {
-    switch (quantumErrorType) {
-      case 'decoherence':
-        return ErrorType.QUANTUM_DECOHERENCE_ERROR
-      case 'gate_error':
-        return ErrorType.QUANTUM_GATE_ERROR
-      case 'measurement_error':
-        return ErrorType.QUANTUM_MEASUREMENT_ERROR
-      case 'entanglement_error':
-        return ErrorType.QUANTUM_ENTANGLEMENT_ERROR
-      case 'calibration_error':
-        return ErrorType.QUANTUM_CALIBRATION_ERROR
-      case 'noise_error':
-        return ErrorType.QUANTUM_NOISE_ERROR
-      default:
-        return ErrorType.QUANTUM_ALGORITHM_ERROR
-    }
-  }
+  // Simplified error mapping removed
 
   private attemptQuantumErrorRecovery(error: QuantumError) {
     const errorKey = `${error.type}_${error.timestamp.getTime()}`

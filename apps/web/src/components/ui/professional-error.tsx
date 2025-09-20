@@ -10,7 +10,15 @@ import {
   XMarkIcon,
   ArrowPathIcon
 } from '@heroicons/react/24/outline'
-import { ErrorDetails } from '@/lib/error-handler'
+// Simplified error details interface
+interface ErrorDetails {
+  message: string
+  type: string
+  title?: string
+  action?: string
+  code?: string
+  severity?: 'low' | 'medium' | 'high' | 'critical'
+}
 
 interface ProfessionalErrorProps {
   error: ErrorDetails

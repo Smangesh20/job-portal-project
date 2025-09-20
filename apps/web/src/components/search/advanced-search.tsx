@@ -25,7 +25,11 @@ import {
   Zap,
   Target,
   Brain,
-  Lightbulb
+  Lightbulb,
+  FileText,
+  GraduationCap,
+  Calendar,
+  Crown
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 

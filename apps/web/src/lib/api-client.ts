@@ -1,5 +1,29 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { AppError, handleApiError, retryOperation } from './error-handler';
+// Simplified error handling
+interface AppError {
+  message: string
+  code?: string
+  status?: number
+}
+
+const handleApiError = (error: any): AppError => {
+  return {
+    message: error.message || 'API Error',
+    code: error.code,
+    status: error.status
+  }
+}
+
+const retryOperation = async (operation: () => Promise<any>, maxRetries: number = 3): Promise<any> => {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await operation()
+    } catch (error) {
+      if (i === maxRetries - 1) throw error
+      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)))
+    }
+  }
+}
 import { mockAPI } from './mock-api';
 import { googleStyleErrorHandler } from './google-style-error-handler';
 
@@ -153,8 +177,7 @@ class ApiService {
       
       const response = await retryOperation(
         () => apiClient.get<JobDetailsResponse>(`/api/research/jobs/${jobId}`),
-        3,
-        1000
+        3
       );
       
       return response.data;

@@ -21,7 +21,7 @@ import {
   Zap,
   BarChart3,
   PieChart,
-  LineChart,
+  LineChart as LineChartIcon,
   Activity,
   Clock,
   DollarSign,
@@ -401,7 +401,7 @@ export function AdvancedAnalytics() {
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={data.performance.applicationTrend}>
+                  <RechartsLineChart data={data.performance.applicationTrend}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="month" />
                     <YAxis />
@@ -409,7 +409,7 @@ export function AdvancedAnalytics() {
                     <Line type="monotone" dataKey="applications" stroke="#3B82F6" strokeWidth={2} />
                     <Line type="monotone" dataKey="interviews" stroke="#10B981" strokeWidth={2} />
                     <Line type="monotone" dataKey="offers" stroke="#F59E0B" strokeWidth={2} />
-                  </LineChart>
+                  </RechartsLineChart>
                 </ResponsiveContainer>
               </CardContent>
             </Card>

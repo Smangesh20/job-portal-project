@@ -2,7 +2,11 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { AuthUser } from '@/types/auth'
 import { enhancedAPIClient } from '@/lib/api-client'
-import { ErrorHandler, ErrorContext } from '@/lib/error-handler'
+// Simplified error details interface
+interface ErrorDetails {
+  message: string
+  type: string
+}
 import { localAuthService, User } from '@/lib/local-auth'
 
 interface AuthState {

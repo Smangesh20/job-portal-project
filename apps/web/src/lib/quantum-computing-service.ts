@@ -4,7 +4,7 @@
  */
 
 import { QuantumJobMatch, QuantumProfile } from '@/types/quantum'
-import { ErrorPreventionSystem } from '@/lib/error-prevention-system'
+// Removed error prevention system import
 
 // Quantum Computing Provider Configuration
 export interface QuantumProvider {

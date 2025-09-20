@@ -1,7 +1,7 @@
 'use client'
 
 import React, { Component, ErrorInfo, ReactNode } from 'react'
-import { errorPreventionSystem, ErrorType, ErrorSeverity } from '@/lib/error-prevention'
+// Removed complex error prevention system import
 import { Button } from '@/components/ui/button'
 import { AlertTriangle, RefreshCw, Home, Bug } from 'lucide-react'
 
@@ -50,12 +50,7 @@ export class InfiniteErrorBoundary extends Component<Props, State> {
     const { errorId } = this.state
 
     // Report error to prevention system
-    errorPreventionSystem.reportError(ErrorType.COMPONENT_MOUNT_ERROR, {
-      component: errorInfo.componentStack || 'Unknown',
-      action: 'componentDidCatch',
-      stackTrace: error.stack,
-      errorId
-    })
+    console.error('Component mount error:', error, errorInfo)
 
     // Update state
     this.setState({
@@ -137,11 +132,7 @@ export class InfiniteErrorBoundary extends Component<Props, State> {
 
     if (error) {
       // Report recovery attempt
-      errorPreventionSystem.reportError(ErrorType.CRITICAL_ERROR, {
-        component: 'InfiniteErrorBoundary',
-        action: 'attemptRecovery',
-        stackTrace: error.stack
-      })
+      console.error('Critical error:', error)
 
       // Clear caches
       try {

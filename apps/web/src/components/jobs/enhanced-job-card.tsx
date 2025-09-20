@@ -37,8 +37,7 @@ import {
   Brain,
   Lightbulb,
   Trophy,
-  Fire,
-  Bolt
+  Flame
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'react-hot-toast'
@@ -189,7 +188,7 @@ export function EnhancedJobCard({
         {job.isUrgent && (
           <div className="absolute top-12 right-4 z-10">
             <Badge variant="destructive" className="animate-pulse">
-              <Fire className="h-3 w-3 mr-1" />
+              <Flame className="h-3 w-3 mr-1" />
               Urgent
             </Badge>
           </div>

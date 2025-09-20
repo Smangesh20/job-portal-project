@@ -150,7 +150,7 @@ const mockDataActivities: DataActivity[] = [
     ipAddress: '192.168.1.100',
     location: 'San Francisco, CA',
     device: 'Chrome on Windows 10',
-    status: 'completed'
+    status: 'success'
   }
 ]
 

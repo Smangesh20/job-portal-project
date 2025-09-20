@@ -6,7 +6,7 @@ import React, { Component, ErrorInfo, ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ExclamationTriangleIcon, ArrowPathIcon } from '@heroicons/react/24/outline'
-import { errorPreventionSystem } from '@/lib/error-prevention'
+// Removed error prevention system import
 
 interface Props {
   children: ReactNode
@@ -43,12 +43,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     // Log error to error prevention system
-    errorPreventionSystem.reportError('COMPONENT_MOUNT_ERROR' as any, {
-      component: 'ErrorBoundary',
-      action: 'componentDidCatch',
-      stackTrace: error.stack,
-      timestamp: new Date()
-    })
+    console.error('Component mount error:', error, errorInfo)
 
     this.setState({
       error,
@@ -74,7 +69,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   private handleReportError = () => {
-    const errorHistory = errorPreventionSystem.getErrorHistory()
+    const errorHistory = [] // Simplified error history
     // In a real app, you would send this to your error reporting service
     alert('Error reported to development team. Error ID: ' + this.state.errorId)
   }
@@ -188,12 +183,7 @@ export function withErrorBoundary<P extends object>(
 // Hook for error boundary functionality
 export function useErrorHandler() {
   const handleError = (error: Error, errorInfo?: ErrorInfo) => {
-    errorPreventionSystem.reportError('UNEXPECTED_ERROR' as any, {
-      component: 'useErrorHandler',
-      action: 'handleError',
-      stackTrace: error.stack,
-      timestamp: new Date()
-    })
+    console.error('Unexpected error:', error)
     }
 
   return { handleError }
