@@ -1,51 +1,150 @@
-'use client';
+'use client'
 
-import { ErrorBoundary } from 'react-error-boundary';
-import { HeroSection } from '@/features/landing/hero-section';
-import { FeaturesSection } from '@/features/landing/features-section';
-import { VisionMissionSection } from '@/features/landing/vision-mission-section';
-import { DistinctiveFeaturesSection } from '@/features/landing/distinctive-features-section';
-import { ResearchSection } from '@/features/landing/research-section';
-
-// Error Fallback Component
-function ErrorFallback({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () => void }) {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-6">
-        <div className="flex items-center justify-center w-12 h-12 mx-auto bg-red-100 rounded-full">
-          <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 19.5c-.77.833.192 2.5 1.732 2.5z" />
-          </svg>
-        </div>
-        <div className="mt-4 text-center">
-          <h3 className="text-lg font-medium text-gray-900">Something went wrong</h3>
-          <p className="mt-2 text-sm text-gray-500">
-            We're sorry, but something unexpected happened. Please try again.
-          </p>
-          <div className="mt-4">
-            <button
-              onClick={resetErrorBoundary}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              Try again
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { 
+  ArrowRightIcon, 
+  SparklesIcon, 
+  UserGroupIcon,
+  BuildingOfficeIcon,
+  ChartBarIcon,
+  GlobeAltIcon,
+  BriefcaseIcon,
+  StarIcon
+} from '@heroicons/react/24/outline'
 
 export default function HomePage() {
+  const router = useRouter()
+  const [email, setEmail] = useState('')
+
+  const handleGetStarted = () => {
+    if (email) {
+      router.push(`/auth/register?email=${encodeURIComponent(email)}`)
+    } else {
+      router.push('/auth/register')
+    }
+  }
+
+  const handleSignIn = () => {
+    router.push('/auth/login')
+  }
+
   return (
-    <ErrorBoundary FallbackComponent={ErrorFallback}>
-      <main className="min-h-screen">
-        <HeroSection />
-        <FeaturesSection />
-        <VisionMissionSection />
-        <DistinctiveFeaturesSection />
-        <ResearchSection />
+    <div className="min-h-screen bg-white">
+      {/* Header */}
+      <header className="border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <h1 className="text-2xl font-bold text-gray-900">AskYaCham</h1>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Button variant="ghost" onClick={handleSignIn}>
+                Sign In
+              </Button>
+              <Button onClick={handleGetStarted}>
+                Get Started
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center">
+          <Badge variant="secondary" className="mb-8">
+            <SparklesIcon className="w-4 h-4 mr-2" />
+            Quantum-Powered Job Matching
+          </Badge>
+          
+          <h1 className="text-4xl sm:text-6xl font-bold text-gray-900 mb-6">
+            Find Your{' '}
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Dream Job
+            </span>
+            <br />
+            with Quantum Precision
+          </h1>
+          
+          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            Connect with opportunities that match your skills, values, and career aspirations. 
+            Our advanced quantum computing technology ensures perfect matches.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md mx-auto">
+            <Input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="flex-1"
+            />
+            <Button 
+              size="lg" 
+              onClick={handleGetStarted}
+              className="w-full sm:w-auto"
+            >
+              Get Started
+              <ArrowRightIcon className="w-5 h-5 ml-2" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Features */}
+        <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8">
+          <Card>
+            <CardHeader>
+              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                <BriefcaseIcon className="w-6 h-6 text-blue-600" />
+              </div>
+              <CardTitle>Smart Job Matching</CardTitle>
+              <CardDescription>
+                Our quantum algorithms analyze your profile and match you with the perfect opportunities.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                <ChartBarIcon className="w-6 h-6 text-green-600" />
+              </div>
+              <CardTitle>Advanced Analytics</CardTitle>
+              <CardDescription>
+                Get insights into your job search performance and optimize your applications.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                <UserGroupIcon className="w-6 h-6 text-purple-600" />
+              </div>
+              <CardTitle>Professional Network</CardTitle>
+              <CardDescription>
+                Connect with industry professionals and expand your career network.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
       </main>
-    </ErrorBoundary>
-  );
+
+      {/* Footer */}
+      <footer className="bg-gray-50 border-t border-gray-200 mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-center text-gray-600">
+            <p>&copy; 2024 AskYaCham. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  )
 }
