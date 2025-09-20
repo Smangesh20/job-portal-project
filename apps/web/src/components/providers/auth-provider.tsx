@@ -10,10 +10,13 @@ interface AuthContextType {
   user: AuthUser | null
   isLoading: boolean
   isAuthenticated: boolean
+  error: string | null
+  errorDetails: { message: string; type: string } | null
   login: (email: string, password: string) => Promise<boolean>
   register: (data: any) => Promise<void>
   logout: () => Promise<void>
   refreshToken: () => Promise<void>
+  clearError: () => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -24,10 +27,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     user,
     isLoading,
     isAuthenticated,
+    error,
+    errorDetails,
     login: loginStore,
     register: registerStore,
     logout: logoutStore,
     refreshToken: refreshTokenStore,
+    clearError: clearErrorStore,
     initialize
   } = useAuthStore()
 
@@ -91,6 +97,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  const clearError = () => {
+    clearErrorStore()
+  }
+
   // Never show loading screens that could block the URL
   // Always render the children to keep URL visible
 
@@ -98,10 +108,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     user,
     isLoading,
     isAuthenticated,
+    error,
+    errorDetails,
     login,
     register,
     logout,
-    refreshToken
+    refreshToken,
+    clearError
   }
 
   return (
