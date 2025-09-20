@@ -234,8 +234,7 @@ const nextConfig = {
   output: 'standalone',
   // Trailing slash configuration
   trailingSlash: false,
-  // Asset prefix for CDN
-  assetPrefix: process.env.NODE_ENV === 'production' ? 'https://cdn.askyacham.com' : '',
+  // Asset prefix removed - using default Vercel CDN
 }
 
 module.exports = nextConfig
