@@ -75,80 +75,91 @@ export const useAuthStore = create<AuthStore>()(
 
       clearError: () => set({ error: null, errorDetails: null }),
 
-      login: async (email: string, password: string) => {
-        try {
-          set({ isLoading: true, error: null, errorDetails: null })
+  login: async (email: string, password: string) => {
+    try {
+      set({ isLoading: true, error: null, errorDetails: null })
 
-          // Use local authentication service for persistent login
-          const response = await localAuthService.login(email, password)
+      console.log('🔐 LOGIN ATTEMPT:', email)
 
-          if (!response.success) {
-            throw new Error(response.error?.message || 'Login failed')
-          }
+      // Use local authentication service for persistent login
+      const response = await localAuthService.login(email, password)
 
-          const { user, accessToken, refreshToken } = response.data!
+      console.log('🔐 LOGIN RESPONSE:', response)
 
-          // Set authentication state immediately
-          set({
-            user: user as AuthUser,
-            accessToken,
-            refreshTokenValue: refreshToken,
-            isAuthenticated: true,
-            isLoading: false
-          })
+      if (!response.success) {
+        throw new Error(response.error?.message || 'Login failed')
+      }
 
-          // Store tokens
-          get().setTokens(accessToken, refreshToken)
+      const { user, accessToken, refreshToken } = response.data!
 
-          // Force a small delay to ensure state is updated
-          await new Promise(resolve => setTimeout(resolve, 100))
+      console.log('🔐 LOGIN SUCCESS:', user.email)
 
-        } catch (error: any) {
-          console.log('Login error:', error.message)
-          
-          set({
-            error: error.message || 'Login failed',
-            errorDetails: { message: error.message || 'Login failed', type: 'AUTH_ERROR' },
-            isLoading: false
-          })
-          
-          throw error
-        }
-      },
+      // Set authentication state immediately
+      set({
+        user: user as AuthUser,
+        accessToken,
+        refreshTokenValue: refreshToken,
+        isAuthenticated: true,
+        isLoading: false
+      })
 
-      register: async (data) => {
-        try {
-          set({ isLoading: true, error: null, errorDetails: null })
+      // Store tokens
+      get().setTokens(accessToken, refreshToken)
 
-          // Use local authentication service for persistent registration
-          const response = await localAuthService.register(data)
+      console.log('🔐 AUTH STATE SET:', get().isAuthenticated)
 
-          if (!response.success) {
-            throw new Error(response.error?.message || 'Registration failed')
-          }
+    } catch (error: any) {
+      console.log('❌ LOGIN ERROR:', error.message)
+      
+      set({
+        error: error.message || 'Login failed',
+        errorDetails: { message: error.message || 'Login failed', type: 'AUTH_ERROR' },
+        isLoading: false
+      })
+      
+      throw error
+    }
+  },
 
-          // For registration, we don't automatically log in the user
-          // They need to log in separately
-          set({
-            user: null,
-            accessToken: null,
-            refreshTokenValue: null,
-            isAuthenticated: false,
-            isLoading: false
-          })
+  register: async (data) => {
+    try {
+      set({ isLoading: true, error: null, errorDetails: null })
 
-        } catch (error: any) {
-          console.log('Register error:', error.message)
-          
-          set({
-            error: error.message || 'Registration failed',
-            errorDetails: { message: error.message || 'Registration failed', type: 'AUTH_ERROR' },
-            isLoading: false
-          })
-          
-          throw error
-        }
-      },
+      console.log('🔐 REGISTER ATTEMPT:', data.email)
+
+      // Use local authentication service for persistent registration
+      const response = await localAuthService.register(data)
+
+      console.log('🔐 REGISTER RESPONSE:', response)
+
+      if (!response.success) {
+        throw new Error(response.error?.message || 'Registration failed')
+      }
+
+      console.log('🔐 REGISTER SUCCESS:', data.email)
+
+      // For registration, we don't automatically log in the user
+      // They need to log in separately
+      set({
+        user: null,
+        accessToken: null,
+        refreshTokenValue: null,
+        isAuthenticated: false,
+        isLoading: false
+      })
+
+    } catch (error: any) {
+      console.log('❌ REGISTER ERROR:', error.message)
+      
+      set({
+        error: error.message || 'Registration failed',
+        errorDetails: { message: error.message || 'Registration failed', type: 'AUTH_ERROR' },
+        isLoading: false
+      })
+      
+      throw error
+    }
+  },
 
       logout: async () => {
         try {

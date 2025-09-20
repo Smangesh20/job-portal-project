@@ -112,7 +112,7 @@ const SuccessModal = ({ isOpen, onClose, onContinue }: {
 export default function LoginPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { login, isLoading, error, isAuthenticated } = useAuth()
+  const { login, isLoading, error, errorDetails, clearError } = useAuth()
   
   // Form state with persistence
   const [formData, setFormData] = useState(() => {
@@ -199,8 +199,11 @@ export default function LoginPage() {
       localStorage.setItem('ask_ya_cham_login_email', value)
     }
     
-    // Error handling is managed by the auth store
-  }, [error])
+    // Clear errors when user starts typing
+    if (error) {
+      clearError()
+    }
+  }, [error, clearError])
 
   // Handle form submission
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
@@ -209,12 +212,13 @@ export default function LoginPage() {
     if (isSubmitting) return
     
     setIsSubmitting(true)
+    clearError()
     
     try {
-      // Attempt login
+      // Google-style: Login attempt without error handling
       await login(formData.email, formData.password)
       
-      // If we get here, login was successful
+      // Google-style: Login successful, show success modal
       setShowSuccessModal(true)
       setForceRender(prev => prev + 1)
       forceShowModal()
@@ -225,12 +229,13 @@ export default function LoginPage() {
       }
       
     } catch (error: any) {
-      // Login failed - error will be shown by the auth store
+      // Show error to user
       console.log('Login error:', error.message)
+      // Error will be displayed by the ProfessionalError component
     } finally {
       setIsSubmitting(false)
     }
-  }, [formData, login, isSubmitting])
+  }, [formData, login, clearError, isSubmitting])
 
   // Handle success modal continue
   const handleSuccessContinue = useCallback(() => {
