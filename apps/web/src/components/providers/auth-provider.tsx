@@ -3,14 +3,14 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AuthUser } from '@/types/auth'
-import { useAuthStore } from '@/stores/enhanced-auth-store'
+import { useAuthStore } from '@/stores/auth-store'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 
 interface AuthContextType {
   user: AuthUser | null
   isLoading: boolean
   isAuthenticated: boolean
-  login: (email: string, password: string) => Promise<boolean>
+  login: (email: string, password: string) => Promise<void>
   register: (data: any) => Promise<void>
   logout: () => Promise<void>
   refreshToken: () => Promise<void>
@@ -41,16 +41,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string) => {
     try {
       await loginStore(email, password)
-      
-      // Google-style: Check if login was successful
-      const { isAuthenticated } = useAuthStore.getState()
-      if (isAuthenticated) {
-        // Success message will be shown in the login page component
-        // Navigation is handled by the page component after showing success modal
-        return true
-      } else {
-        throw new Error('Login failed')
-      }
+      // Login successful - the store will handle state updates
     } catch (error) {
       throw error
     }

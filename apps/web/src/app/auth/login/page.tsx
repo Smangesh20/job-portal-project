@@ -18,7 +18,7 @@ import {
   LockClosedIcon,
   EnvelopeIcon
 } from '@heroicons/react/24/outline'
-import { useAuthStore } from '@/stores/enhanced-auth-store'
+import { useAuth } from '@/components/providers/auth-provider'
 import { toast } from 'react-hot-toast'
 import Link from 'next/link'
 import { ProfessionalError } from '@/components/ui/professional-error'
@@ -112,7 +112,7 @@ const SuccessModal = ({ isOpen, onClose, onContinue }: {
 export default function LoginPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { login, isLoading, error, errorDetails, clearError } = useAuthStore()
+  const { login, isLoading, error, isAuthenticated } = useAuth()
   
   // Form state with persistence
   const [formData, setFormData] = useState(() => {
@@ -199,11 +199,8 @@ export default function LoginPage() {
       localStorage.setItem('ask_ya_cham_login_email', value)
     }
     
-    // Clear errors when user starts typing
-    if (error) {
-      clearError()
-    }
-  }, [error, clearError])
+    // Error handling is managed by the auth store
+  }, [error])
 
   // Handle form submission
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
@@ -212,44 +209,28 @@ export default function LoginPage() {
     if (isSubmitting) return
     
     setIsSubmitting(true)
-    clearError()
     
     try {
-      // Google-style: Login attempt without error handling
+      // Attempt login
       await login(formData.email, formData.password)
       
-      // Google-style: Check authentication state immediately
-      // Use a more reliable approach to check if login was successful
-      const checkAuthState = () => {
-        const { isAuthenticated } = useAuthStore.getState()
-        if (isAuthenticated) {
-          // Login successful, show success modal
-          setShowSuccessModal(true)
-          setForceRender(prev => prev + 1)
-          forceShowModal()
-          
-          // Clear saved email on success
-          if (typeof window !== 'undefined') {
-            localStorage.removeItem('ask_ya_cham_login_email')
-          }
-        } else {
-          // If not authenticated, just show the form again (Google's approach)
-          // No error message, no toast, just silent failure
-        }
+      // If we get here, login was successful
+      setShowSuccessModal(true)
+      setForceRender(prev => prev + 1)
+      forceShowModal()
+      
+      // Clear saved email on success
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('ask_ya_cham_login_email')
       }
       
-      // Check immediately and also after a short delay
-      checkAuthState()
-      setTimeout(checkAuthState, 100)
-      
     } catch (error: any) {
-      // Show error to user
+      // Login failed - error will be shown by the auth store
       console.log('Login error:', error.message)
-      // Error will be displayed by the ProfessionalError component
     } finally {
       setIsSubmitting(false)
     }
-  }, [formData, login, clearError, isSubmitting])
+  }, [formData, login, isSubmitting])
 
   // Handle success modal continue
   const handleSuccessContinue = useCallback(() => {
