@@ -524,18 +524,36 @@ export function EnterpriseSettings() {
                 </div>
                 <div className="space-y-4">
                   <h3 className="font-medium">Contact Information</h3>
-                  {Object.entries(settingsData.privacy).filter(([key]) => key.startsWith('show')).map(([key, visible]) => (
-                    <div key={key} className="flex items-center justify-between">
-                      <span className="text-sm capitalize">{key.replace('show', 'Show ')}</span>
-                      <Switch
-                        checked={visible}
-                        onCheckedChange={(checked) => setSettingsData({
-                          ...settingsData,
-                          privacy: { ...settingsData.privacy, [key]: checked }
-                        })}
-                      />
-                    </div>
-                  ))}
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Show Email</span>
+                    <Switch
+                      checked={settingsData.privacy.showEmail}
+                      onCheckedChange={(checked) => setSettingsData({
+                        ...settingsData,
+                        privacy: { ...settingsData.privacy, showEmail: checked }
+                      })}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Show Phone</span>
+                    <Switch
+                      checked={settingsData.privacy.showPhone}
+                      onCheckedChange={(checked) => setSettingsData({
+                        ...settingsData,
+                        privacy: { ...settingsData.privacy, showPhone: checked }
+                      })}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Show Location</span>
+                    <Switch
+                      checked={settingsData.privacy.showLocation}
+                      onCheckedChange={(checked) => setSettingsData({
+                        ...settingsData,
+                        privacy: { ...settingsData.privacy, showLocation: checked }
+                      })}
+                    />
+                  </div>
                 </div>
               </CardContent>
             </Card>
