@@ -47,7 +47,7 @@ export default function ContactPage() {
       title: "Email Support",
       description: "Get help via email",
       icon: EnvelopeIcon,
-      contact: "info.askyacham@gmail.com",
+      contact: "info@askyacham.com",
       details: "We respond within 24 hours"
     },
     {

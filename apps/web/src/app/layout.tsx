@@ -1,10 +1,13 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import Header from '@/components/layouts/header'
+import { EnterpriseHeader } from '@/components/navigation/enterprise-header'
 import { AuthProvider } from '@/components/providers/auth-provider'
 import { ConnectionStatus, ConnectionBanner } from '@/components/ui/connection-status'
 import { GoogleNetworkHandler } from '@/components/providers/google-error-boundary'
+import { GlobalErrorBoundary } from '@/components/error-boundary/global-error-boundary'
+import { initializeErrorPrevention } from '@/lib/error-prevention'
+import { initializeCacheManagement } from '@/lib/cache-management'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -87,14 +90,31 @@ export default function RootLayout({
         <meta httpEquiv="Expires" content="0" />
       </head>
       <body className={inter.className}>
-        <GoogleNetworkHandler>
-          <AuthProvider>
-            <ConnectionBanner />
-            <Header />
-            {children}
-            <ConnectionStatus />
-          </AuthProvider>
-        </GoogleNetworkHandler>
+        <GlobalErrorBoundary>
+          <GoogleNetworkHandler>
+            <AuthProvider>
+              <ConnectionBanner />
+              <EnterpriseHeader />
+              {children}
+              <ConnectionStatus />
+            </AuthProvider>
+          </GoogleNetworkHandler>
+        </GlobalErrorBoundary>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Initialize error prevention and cache management
+              (function() {
+                try {
+                  ${initializeErrorPrevention.toString()}();
+                  ${initializeCacheManagement.toString()}();
+                } catch (e) {
+                  console.error('Initialization error:', e);
+                }
+              })();
+            `,
+          }}
+        />
       </body>
     </html>
   )

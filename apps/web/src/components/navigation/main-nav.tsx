@@ -99,7 +99,7 @@ export default function MainNavigation() {
       name: 'Contact Us',
       href: '/contact',
       icon: EnvelopeIcon,
-      description: 'info.askyacham@gmail.com'
+      description: 'info@askyacham.com'
     },
     {
       name: 'Live Chat',

@@ -151,8 +151,8 @@ export default function TermsPage() {
                   <h2 className="text-xl font-bold text-gray-900 mb-4">12. Contact</h2>
                   <p className="text-gray-700 leading-relaxed">
                     For questions or concerns regarding these Terms, please contact us at:{' '}
-                    <a href="mailto:info.askyacham@gmail.com" className="text-green-600 hover:text-green-800 font-medium">
-                      info.askyacham@gmail.com
+                    <a href="mailto:info@askyacham.com" className="text-green-600 hover:text-green-800 font-medium">
+                      info@askyacham.com
                     </a>
                   </p>
                 </section>

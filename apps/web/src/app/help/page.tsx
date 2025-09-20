@@ -54,7 +54,7 @@ export default function HelpPage() {
       title: "Email Support",
       description: "Get help via email within 24 hours",
       icon: EnvelopeIcon,
-      contact: "info.askyacham@gmail.com",
+      contact: "info@askyacham.com",
       action: "Send Email"
     },
     {

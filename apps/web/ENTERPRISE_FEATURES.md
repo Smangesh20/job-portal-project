@@ -103,7 +103,7 @@ Your Ask Ya Cham platform has been transformed into a **world-class, top profess
 ```bash
 # SendGrid Configuration
 NEXT_PUBLIC_SENDGRID_API_KEY=your_sendgrid_api_key
-NEXT_PUBLIC_FROM_EMAIL=info.askyacham@gmail.com
+NEXT_PUBLIC_FROM_EMAIL=info@askyacham.com
 
 # App Configuration
 NEXT_PUBLIC_APP_URL=http://localhost:3000
