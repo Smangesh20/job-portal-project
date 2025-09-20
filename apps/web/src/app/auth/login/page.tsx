@@ -22,7 +22,7 @@ import { useAuthStore } from '@/stores/enhanced-auth-store'
 import { toast } from 'react-hot-toast'
 import Link from 'next/link'
 import { ProfessionalError } from '@/components/ui/professional-error'
-import { PublicRoute } from '@/components/auth/route-guard'
+import { AuthPage } from '@/components/auth/google-auth-guard'
 
 // World-Class Success Modal Component
 const SuccessModal = ({ isOpen, onClose, onContinue }: { 
@@ -218,9 +218,9 @@ export default function LoginPage() {
       // Google-style: Login attempt without error handling
       await login(formData.email, formData.password)
       
-      // Check if login was successful by checking if user is authenticated
-      // This is Google's approach - check state instead of relying on exceptions
-      setTimeout(() => {
+      // Google-style: Check authentication state immediately
+      // Use a more reliable approach to check if login was successful
+      const checkAuthState = () => {
         const { isAuthenticated } = useAuthStore.getState()
         if (isAuthenticated) {
           // Login successful, show success modal
@@ -232,10 +232,15 @@ export default function LoginPage() {
           if (typeof window !== 'undefined') {
             localStorage.removeItem('ask_ya_cham_login_email')
           }
+        } else {
+          // If not authenticated, just show the form again (Google's approach)
+          // No error message, no toast, just silent failure
         }
-        // If not authenticated, just show the form again (Google's approach)
-        // No error message, no toast, just silent failure
-      }, 100)
+      }
+      
+      // Check immediately and also after a short delay
+      checkAuthState()
+      setTimeout(checkAuthState, 100)
       
     } catch (error: any) {
       // Show error to user
@@ -249,19 +254,31 @@ export default function LoginPage() {
   // Handle success modal continue
   const handleSuccessContinue = useCallback(() => {
     setShowSuccessModal(false)
-    // Use window.location.href for reliable navigation
-    window.location.href = '/dashboard'
+    // Google-style: Check for return URL
+    const urlParams = new URLSearchParams(window.location.search)
+    const returnUrl = urlParams.get('returnUrl')
+    if (returnUrl) {
+      window.location.href = decodeURIComponent(returnUrl)
+    } else {
+      window.location.href = '/dashboard'
+    }
   }, [])
 
   // Handle success modal close
   const handleSuccessClose = useCallback(() => {
     setShowSuccessModal(false)
-    // Use window.location.href for reliable navigation
-    window.location.href = '/dashboard'
+    // Google-style: Check for return URL
+    const urlParams = new URLSearchParams(window.location.search)
+    const returnUrl = urlParams.get('returnUrl')
+    if (returnUrl) {
+      window.location.href = decodeURIComponent(returnUrl)
+    } else {
+      window.location.href = '/dashboard'
+    }
   }, [])
 
   return (
-    <PublicRoute>
+    <AuthPage>
       <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-blue-900 dark:to-indigo-900 p-4">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-40" style={{
@@ -514,6 +531,6 @@ export default function LoginPage() {
         </div>
       </div>
       </div>
-    </PublicRoute>
+    </AuthPage>
   )
 }

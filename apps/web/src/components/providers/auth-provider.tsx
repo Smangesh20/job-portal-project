@@ -41,8 +41,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string) => {
     try {
       await loginStore(email, password)
-      // Success message will be shown in the login page component
-      // Navigation is handled by the page component after showing success modal
+      
+      // Google-style: Check if login was successful
+      const { isAuthenticated } = useAuthStore.getState()
+      if (isAuthenticated) {
+        // Success message will be shown in the login page component
+        // Navigation is handled by the page component after showing success modal
+        return true
+      } else {
+        throw new Error('Login failed')
+      }
     } catch (error) {
       throw error
     }

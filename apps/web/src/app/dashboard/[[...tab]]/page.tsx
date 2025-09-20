@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { DashboardLayout } from '@/components/layouts/dashboard-layout'
+import { ProtectedPage } from '@/components/auth/google-auth-guard'
 import { EnterpriseProfile } from '@/components/profile/enterprise-profile'
 import { EnterpriseSettings } from '@/components/settings/enterprise-settings'
 import { EnterpriseNotifications } from '@/components/notifications/enterprise-notifications'
@@ -34,15 +35,17 @@ import {
 export default function DashboardTabPage() {
   const [activeTab, setActiveTab] = useState('overview')
   const params = useParams()
+  const router = useRouter()
 
   useEffect(() => {
     const tab = params.tab?.[0] || 'overview'
     if (['overview', 'profile', 'notifications', 'settings'].includes(tab)) {
       setActiveTab(tab)
     } else {
-      setActiveTab('overview')
+      // Google-style: Redirect to overview for invalid tabs
+      router.replace('/dashboard/overview')
     }
-  }, [params])
+  }, [params, router])
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab)
@@ -145,7 +148,8 @@ export default function DashboardTabPage() {
   ]
 
   return (
-    <DashboardLayout>
+    <ProtectedPage>
+      <DashboardLayout>
       <div className="min-h-screen w-full">
         {/* Header - Mobile Optimized */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 mb-6">
@@ -350,6 +354,7 @@ export default function DashboardTabPage() {
           </TabsContent>
         </Tabs>
       </div>
-    </DashboardLayout>
+      </DashboardLayout>
+    </ProtectedPage>
   )
 }
