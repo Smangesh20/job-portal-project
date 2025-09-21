@@ -142,12 +142,12 @@ export function EnterpriseHeader() {
               </div>
 
               {/* User Menu */}
-              <div className="relative flex items-center space-x-2">
+              <div className="relative flex items-center space-x-3">
                 <Button 
                   variant="ghost" 
                   size="sm" 
                   onClick={() => router.push('/auth/login')}
-                  className="flex items-center space-x-2"
+                  className="flex items-center space-x-2 text-gray-700 hover:text-gray-900"
                 >
                   <User className="w-5 h-5" />
                   <span className="hidden sm:block">Sign In</span>
@@ -155,7 +155,7 @@ export function EnterpriseHeader() {
                 <Button 
                   size="sm" 
                   onClick={() => router.push('/auth/register')}
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-all duration-200"
                 >
                   Sign Up
                 </Button>
@@ -216,14 +216,14 @@ export function EnterpriseHeader() {
               </form>
               
               {/* Mobile Auth Buttons */}
-              <div className="pt-4 border-t border-gray-200 flex flex-col space-y-2">
+              <div className="pt-4 border-t border-gray-200 flex flex-col space-y-3">
                 <Button 
                   variant="outline" 
                   onClick={() => {
                     router.push('/auth/login')
                     setIsMenuOpen(false)
                   }}
-                  className="w-full"
+                  className="w-full py-3 text-gray-700 border-gray-300 hover:bg-gray-50"
                 >
                   Sign In
                 </Button>
@@ -232,7 +232,7 @@ export function EnterpriseHeader() {
                     router.push('/auth/register')
                     setIsMenuOpen(false)
                   }}
-                  className="w-full bg-blue-600 hover:bg-blue-700"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg shadow-sm"
                 >
                   Sign Up
                 </Button>
