@@ -31,7 +31,14 @@ export function EnterpriseHeader() {
     }
   }
 
-  const publicNavigation = [
+  interface NavigationItem {
+    name: string
+    href: string
+    current?: boolean
+    badge?: string
+  }
+
+  const publicNavigation: NavigationItem[] = [
     { name: 'Home', href: '/', current: true },
     { name: 'About', href: '/about' },
     { name: 'How it Works', href: '/how-it-works' },
@@ -39,7 +46,7 @@ export function EnterpriseHeader() {
     { name: 'Contact', href: '/contact' },
   ]
 
-  const dashboardNavigation = [
+  const dashboardNavigation: NavigationItem[] = [
     { name: 'Dashboard', href: '/dashboard', current: true },
     { name: 'Jobs', href: '/jobs', badge: '12' },
     { name: 'Companies', href: '/companies' },
@@ -115,9 +122,9 @@ export function EnterpriseHeader() {
                   }`}
                 >
                   <span>{item.name}</span>
-                  {'badge' in item && item.badge && (
+                  {item.badge && (
                     <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
-                      {item.badge}
+                      {String(item.badge)}
                     </span>
                   )}
                 </Link>
@@ -239,9 +246,9 @@ export function EnterpriseHeader() {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <span>{item.name}</span>
-                  {'badge' in item && item.badge && (
+                  {item.badge && (
                     <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
-                      {item.badge}
+                      {String(item.badge)}
                     </span>
                   )}
                 </Link>
