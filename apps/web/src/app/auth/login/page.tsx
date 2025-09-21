@@ -61,7 +61,9 @@ export default function LoginPage() {
   }
 
   const handleGoToDashboard = () => {
-    router.push('/dashboard')
+    console.log('🚀 GOOGLE-STYLE: Redirecting to dashboard...')
+    // Force immediate redirect
+    window.location.href = '/dashboard'
   }
 
   if (showSuccess) {

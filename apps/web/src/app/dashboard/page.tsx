@@ -32,6 +32,7 @@ export default function DashboardPage() {
 
   // Redirect if not authenticated
   if (!isLoading && !isAuthenticated) {
+    console.log('🚀 GOOGLE-STYLE: Not authenticated, redirecting to login...')
     router.push('/auth/login')
     return null
   }

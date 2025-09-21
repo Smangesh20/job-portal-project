@@ -34,8 +34,11 @@ export function useAuthUnified() {
         const accessToken = localStorage.getItem('accessToken')
         const userData = localStorage.getItem('userData')
         
+        console.log('🚀 GOOGLE-STYLE: Checking auth - token:', !!accessToken, 'userData:', !!userData)
+        
         if (accessToken && userData) {
           const user = JSON.parse(userData)
+          console.log('🚀 GOOGLE-STYLE: User found in localStorage:', user)
           setAuthState({
             user,
             isAuthenticated: true,
@@ -43,6 +46,7 @@ export function useAuthUnified() {
             error: null
           })
         } else {
+          console.log('🚀 GOOGLE-STYLE: No auth data found')
           setAuthState({
             user: null,
             isAuthenticated: false,
@@ -61,8 +65,8 @@ export function useAuthUnified() {
       }
     }
 
-    // Only check auth if we're not on login page
-    if (typeof window !== 'undefined' && !window.location.pathname.includes('/auth/login')) {
+    // Always check auth, but don't show errors on login page
+    if (typeof window !== 'undefined') {
       checkAuth()
     } else {
       setAuthState({
