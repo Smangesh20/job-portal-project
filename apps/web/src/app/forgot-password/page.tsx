@@ -18,18 +18,36 @@ export default function ForgotPasswordPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
-    setError('')
-    setMessage('')
+    
+    if (!email.trim()) {
+      setError('Please enter your email address')
+      return
+    }
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      setIsLoading(true)
+      setError('')
       
-      setShowEmailSent(true)
-      setMessage('If an account with that email exists, we have sent a password reset link.')
-    } catch (error: any) {
-      setError('An error occurred. Please try again.')
+      // Call the forgot password API
+      const response = await fetch('/api/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: email.trim() }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setMessage(`Password reset instructions have been sent to ${email}. Please check your email and click the link to reset your password.`)
+        setShowEmailSent(true)
+      } else {
+        setError(data.error?.message || 'Failed to send reset email. Please try again.')
+      }
+    } catch (error) {
+      console.error('Reset password error:', error)
+      setError('Failed to send reset email. Please try again.')
     } finally {
       setIsLoading(false)
     }
