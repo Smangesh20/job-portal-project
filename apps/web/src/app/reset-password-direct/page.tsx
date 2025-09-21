@@ -9,9 +9,13 @@ import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
 export default function ResetPasswordDirectPage() {
+  console.log('🔐 GOOGLE-STYLE: ResetPasswordDirectPage component loaded')
+  
   const router = useRouter()
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
+  
+  console.log('🔐 GOOGLE-STYLE: Token from URL:', token)
 
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -226,6 +230,18 @@ export default function ResetPasswordDirectPage() {
                 disabled={isLoading || !password || !confirmPassword || !token}
               >
                 {isLoading ? 'Resetting Password...' : 'Reset Password'}
+              </Button>
+              
+              {/* Google-style: Test button to verify click detection */}
+              <Button
+                type="button"
+                onClick={() => {
+                  console.log('🔐 GOOGLE-STYLE: Test button clicked!')
+                  alert('🔐 GOOGLE-STYLE: Test button works! Form submission might be the issue.')
+                }}
+                className="w-full mt-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
+              >
+                Test Button (Click Me)
               </Button>
             </form>
 
