@@ -56,12 +56,22 @@ export function useAuthUnified() {
           user: null,
           isAuthenticated: false,
           isLoading: false,
-          error: 'Authentication check failed'
+          error: null
         })
       }
     }
 
-    checkAuth()
+    // Only check auth if we're not on login page
+    if (typeof window !== 'undefined' && !window.location.pathname.includes('/auth/login')) {
+      checkAuth()
+    } else {
+      setAuthState({
+        user: null,
+        isAuthenticated: false,
+        isLoading: false,
+        error: null
+      })
+    }
   }, [])
 
   const login = async (email: string, password: string) => {
