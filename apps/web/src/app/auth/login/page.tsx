@@ -45,15 +45,36 @@ export default function LoginPage() {
         return
       }
 
-      // Simple test user check (like Google's approach)
-      if (formData.email === 'test@example.com' && formData.password === 'password123') {
+      // API-based authentication
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok && data.success) {
+        // Store tokens securely
+        if (data.data.accessToken) {
+          localStorage.setItem('accessToken', data.data.accessToken)
+        }
+        if (data.data.refreshToken) {
+          localStorage.setItem('refreshToken', data.data.refreshToken)
+        }
+        
         // Success - show success message
         setShowSuccess(true)
         setTimeout(() => {
           router.push('/dashboard')
         }, 1500)
       } else {
-        setError('Invalid email or password')
+        setError(data.error?.message || 'Invalid email or password')
       }
     } catch (err) {
       setError('Something went wrong. Please try again.')
@@ -178,11 +199,11 @@ export default function LoginPage() {
                   <div className="w-full border-t border-gray-300" />
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">Test account</span>
+                  <span className="px-2 bg-white text-gray-500">Secure Login</span>
                 </div>
               </div>
               <div className="mt-4 text-center text-sm text-gray-600">
-                <p>Use: <strong>test@example.com</strong> / <strong>password123</strong></p>
+                <p>Your credentials are encrypted and securely transmitted.</p>
               </div>
             </div>
           </CardContent>

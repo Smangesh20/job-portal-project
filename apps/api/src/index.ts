@@ -8,6 +8,8 @@ import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import dotenv from 'dotenv';
 import path from 'path';
+import { productionSecurityMiddleware, securityLogger } from './middleware/production-security';
+import { developmentProtection, hideDevelopmentInfo, disableDebugging, protectEnvironmentVariables, blockAttackPatterns } from './middleware/development-protection';
 
 // Load environment variables
 dotenv.config({ path: path.join(__dirname, '../../../../.env') });
@@ -120,6 +122,17 @@ authRoutes.post('/register', async (req: Request, res: Response) => {
         error: {
           code: 'USER_EXISTS',
           message: 'User with this email already exists'
+        }
+      });
+    }
+
+    // Validate password strength
+    if (password.length < 8) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'WEAK_PASSWORD',
+          message: 'Password must be at least 8 characters long'
         }
       });
     }
@@ -346,20 +359,18 @@ class Application {
   }
 
   private initializeMiddleware(): void {
-    // Security middleware
-    this.app.use(helmet({
-      contentSecurityPolicy: {
-        directives: {
-          defaultSrc: ["'self'"],
-          styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-          fontSrc: ["'self'", "https://fonts.gstatic.com"],
-          imgSrc: ["'self'", "data:", "https:"],
-          scriptSrc: ["'self'"],
-          connectSrc: ["'self'", "ws:", "wss:"],
-        },
-      },
-      crossOriginEmbedderPolicy: false,
-    }));
+    // Apply production security middleware
+    productionSecurityMiddleware(this.app);
+    
+    // Development protection middleware
+    this.app.use(developmentProtection);
+    this.app.use(hideDevelopmentInfo);
+    this.app.use(disableDebugging);
+    this.app.use(protectEnvironmentVariables);
+    this.app.use(blockAttackPatterns);
+    
+    // Security logging
+    this.app.use(securityLogger);
 
     // CORS configuration
     this.app.use(cors({
