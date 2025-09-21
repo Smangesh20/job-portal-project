@@ -142,10 +142,22 @@ export function EnterpriseHeader() {
               </div>
 
               {/* User Menu */}
-              <div className="relative">
-                <Button variant="ghost" size="sm" className="flex items-center space-x-2">
+              <div className="relative flex items-center space-x-2">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => router.push('/auth/login')}
+                  className="flex items-center space-x-2"
+                >
                   <User className="w-5 h-5" />
                   <span className="hidden sm:block">Sign In</span>
+                </Button>
+                <Button 
+                  size="sm" 
+                  onClick={() => router.push('/auth/register')}
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  Sign Up
                 </Button>
               </div>
 
@@ -202,6 +214,29 @@ export function EnterpriseHeader() {
                   Search
                 </Button>
               </form>
+              
+              {/* Mobile Auth Buttons */}
+              <div className="pt-4 border-t border-gray-200 flex flex-col space-y-2">
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    router.push('/auth/login')
+                    setIsMenuOpen(false)
+                  }}
+                  className="w-full"
+                >
+                  Sign In
+                </Button>
+                <Button 
+                  onClick={() => {
+                    router.push('/auth/register')
+                    setIsMenuOpen(false)
+                  }}
+                  className="w-full bg-blue-600 hover:bg-blue-700"
+                >
+                  Sign Up
+                </Button>
+              </div>
             </div>
           </div>
         )}
