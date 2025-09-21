@@ -145,21 +145,17 @@ class ApiService {
         return mockAPI.searchJobs(params);
       }
       
-      // Use Google-style request handler
+      // Use direct API call with fallback
       const url = `${API_BASE_URL}/api/research/search`;
       const fallbackData = await mockAPI.searchJobs(params);
       
-      return await googleStyleErrorHandler.makeRequest<JobSearchResponse>(
-        url,
-        {
-          method: 'POST',
-          body: JSON.stringify(params),
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        },
-        fallbackData
-      );
+      try {
+        const response = await apiClient.post<JobSearchResponse>(url, params);
+        return response.data;
+      } catch (error) {
+        console.log('API Error (using fallback):', error);
+        return fallbackData;
+      }
     } catch (error) {
       // Fallback to mock data if Google-style handler fails
       return await mockAPI.searchJobs(params);
@@ -198,11 +194,13 @@ class ApiService {
         }
       };
       
-      return await googleStyleErrorHandler.makeRequest<{ success: boolean; data: any }>(
-        '/api/health',
-        { method: 'GET' },
-        fallbackData
-      );
+      try {
+        const response = await apiClient.get<{ success: boolean; data: any }>('/api/health');
+        return response.data;
+      } catch (error) {
+        console.log('Health check error (using fallback):', error);
+        return fallbackData;
+      }
     } catch (error) {
       // Return mock health check if all else fails
       return {
