@@ -283,9 +283,9 @@ export function EnterpriseHeader() {
   return (
     <>
       {/* Top Banner */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-purple-600 to-blue-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between py-2 text-sm">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-purple-600 to-blue-600 text-white h-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+          <div className="flex items-center justify-between h-full text-sm">
             <div className="flex items-center space-x-6">
               <div className="flex items-center space-x-2">
                 <Sparkles className="w-4 h-4 text-yellow-300" />
@@ -331,8 +331,8 @@ export function EnterpriseHeader() {
                   <Crown className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold text-gray-900 group-hover:text-purple-600 transition-colors">AskYaCham</h1>
-                  <p className="text-xs text-gray-500 font-medium hidden sm:block">Quantum Job Matching</p>
+                  <h1 className="text-2xl font-bold text-gray-900 group-hover:text-purple-600 transition-colors">AskYaCham</h1>
+                  <p className="text-sm text-gray-500 font-medium hidden sm:block">Quantum Job Matching</p>
                 </div>
               </Link>
             </div>
@@ -618,11 +618,11 @@ export function EnterpriseHeader() {
                       <span className="hidden sm:block text-sm font-medium">Sign In</span>
                     </Button>
                     <Button 
-                      size="sm" 
+                      size="lg" 
                       onClick={() => router.push('/auth/register')}
-                      className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium px-4 sm:px-6 py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
+                      className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
                     >
-                      <UserPlus className="w-4 h-4 mr-2" />
+                      <UserPlus className="w-5 h-5 mr-2" />
                       Sign Up
                     </Button>
                   </div>
@@ -786,7 +786,7 @@ export function EnterpriseHeader() {
       </header>
       
       {/* Spacer for fixed header */}
-      <div className="h-24"></div>
+      <div className="h-20"></div>
     </>
   )
 }
