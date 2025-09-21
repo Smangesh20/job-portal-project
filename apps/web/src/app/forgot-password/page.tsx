@@ -35,10 +35,39 @@ export default function ForgotPasswordPage() {
     }
   }
 
-  const handleDemoReset = () => {
-    // For demo purposes, redirect to reset password with a demo token
-    const demoToken = 'demo_token_' + Math.random().toString(36).substr(2, 9)
-    router.push(`/reset-password-direct?token=${demoToken}`)
+  const handleSendResetEmail = async () => {
+    if (!email.trim()) {
+      setError('Please enter your email address')
+      return
+    }
+
+    try {
+      setIsLoading(true)
+      setError('')
+      
+      // Call the forgot password API
+      const response = await fetch('/api/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: email.trim() }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setMessage(`Password reset instructions have been sent to ${email}. Please check your email and click the link to reset your password.`)
+        setShowEmailSent(true)
+      } else {
+        setError(data.error?.message || 'Failed to send reset email. Please try again.')
+      }
+    } catch (error) {
+      console.error('Reset password error:', error)
+      setError('Failed to send reset email. Please try again.')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   if (showEmailSent) {
@@ -53,10 +82,11 @@ export default function ForgotPasswordPage() {
               
               <div className="space-y-3">
                 <Button 
-                  onClick={handleDemoReset}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+                  onClick={handleSendResetEmail}
+                  disabled={isLoading}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Demo Reset Password
+                  {isLoading ? 'Sending...' : 'Send Reset Instructions'}
                 </Button>
                 
                 <Button 

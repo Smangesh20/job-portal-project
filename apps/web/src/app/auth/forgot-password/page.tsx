@@ -34,10 +34,39 @@ export default function ForgotPasswordPage() {
     }
   }
 
-  const handleViewSentEmails = () => {
-    // For demo purposes, redirect to simple reset page
-    const demoToken = 'demo_token_' + Math.random().toString(36).substr(2, 9)
-    router.push(`/auth/reset-password-simple?token=${demoToken}`)
+  const handleSendResetEmail = async () => {
+    if (!email.trim()) {
+      setError('Please enter your email address')
+      return
+    }
+
+    try {
+      setIsLoading(true)
+      setError('')
+      
+      // Call the forgot password API
+      const response = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: email.trim() }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setMessage(`Password reset instructions have been sent to ${email}. Please check your email and click the link to reset your password.`)
+        setShowEmailSent(true)
+      } else {
+        setError(data.error?.message || 'Failed to send reset email. Please try again.')
+      }
+    } catch (error) {
+      console.error('Reset password error:', error)
+      setError('Failed to send reset email. Please try again.')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   if (showEmailSent) {
@@ -100,10 +129,11 @@ export default function ForgotPasswordPage() {
               </button>
 
               <button
-                onClick={handleViewSentEmails}
-                className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                onClick={handleSendResetEmail}
+                disabled={isLoading}
+                className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Demo Reset Password
+                {isLoading ? 'Sending...' : 'Send Reset Instructions'}
               </button>
             </div>
           </div>
