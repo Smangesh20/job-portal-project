@@ -332,7 +332,7 @@ export function EnterpriseHeader() {
                 </div>
                 <div>
                   <h1 className="text-xl font-bold text-gray-900 group-hover:text-purple-600 transition-colors">AskYaCham</h1>
-                  <p className="text-xs text-gray-500 font-medium">Quantum Job Matching</p>
+                  <p className="text-xs text-gray-500 font-medium hidden sm:block">Quantum Job Matching</p>
                 </div>
               </Link>
             </div>
@@ -620,7 +620,7 @@ export function EnterpriseHeader() {
                     <Button 
                       size="sm" 
                       onClick={() => router.push('/auth/register')}
-                      className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium px-6 py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 whitespace-nowrap"
+                      className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium px-4 sm:px-6 py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
                     >
                       <UserPlus className="w-4 h-4 mr-2" />
                       Sign Up
