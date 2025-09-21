@@ -49,21 +49,32 @@ export default function ResetPasswordDirectPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     console.log('🔐 GOOGLE-STYLE: Reset password form submitted')
+    console.log('🔐 GOOGLE-STYLE: Form data:', { password: password.length, confirmPassword: confirmPassword.length, token: !!token })
+    
+    // Google-style: Clear previous errors first
+    setError('')
+    setMessage('')
     
     if (password !== confirmPassword) {
+      console.log('🔐 GOOGLE-STYLE: Password mismatch error')
       setError('Passwords do not match')
       return
     }
 
     if (password.length < 8) {
+      console.log('🔐 GOOGLE-STYLE: Password too short error')
       setError('Password must be at least 8 characters long')
       return
     }
 
-    console.log('🔐 GOOGLE-STYLE: Calling reset password API with token:', token)
+    if (!token) {
+      console.log('🔐 GOOGLE-STYLE: No token error')
+      setError('No reset token provided')
+      return
+    }
+
+    console.log('🔐 GOOGLE-STYLE: All validations passed, calling API')
     setIsLoading(true)
-    setError('')
-    setMessage('')
 
     try {
       // Call the real reset password API
@@ -83,15 +94,17 @@ export default function ResetPasswordDirectPage() {
       console.log('🔐 GOOGLE-STYLE: API response data:', data)
 
       if (data.success) {
+        console.log('🔐 GOOGLE-STYLE: Password reset successful')
         setMessage('Password reset successfully! You can now login with your new password.')
         setTimeout(() => {
           router.push('/auth/login')
         }, 2000)
       } else {
+        console.log('🔐 GOOGLE-STYLE: API returned error:', data.error)
         setError(data.error?.message || 'Failed to reset password. Please try again.')
       }
     } catch (error: any) {
-      console.error('Reset password error:', error)
+      console.error('🔐 GOOGLE-STYLE: Reset password error:', error)
       setError('An error occurred. Please try again.')
     } finally {
       setIsLoading(false)
@@ -205,11 +218,14 @@ export default function ResetPasswordDirectPage() {
 
               <Button
                 type="submit"
-                className="w-full"
-                disabled={isLoading}
-                onClick={() => console.log('🔐 GOOGLE-STYLE: Reset password button clicked')}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isLoading || !password || !confirmPassword || !token}
+                onClick={() => {
+                  console.log('🔐 GOOGLE-STYLE: Reset password button clicked')
+                  console.log('🔐 GOOGLE-STYLE: Button state:', { isLoading, password: !!password, confirmPassword: !!confirmPassword, token: !!token })
+                }}
               >
-                {isLoading ? 'Resetting...' : 'Reset Password'}
+                {isLoading ? 'Resetting Password...' : 'Reset Password'}
               </Button>
             </form>
 
