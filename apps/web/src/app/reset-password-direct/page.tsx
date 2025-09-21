@@ -48,8 +48,12 @@ export default function ResetPasswordDirectPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('🔐 GOOGLE-STYLE: Reset password form submitted')
+    console.log('🔐 GOOGLE-STYLE: Reset password form submitted - FORM IS WORKING!')
     console.log('🔐 GOOGLE-STYLE: Form data:', { password: password.length, confirmPassword: confirmPassword.length, token: !!token })
+    console.log('🔐 GOOGLE-STYLE: Button should be working now!')
+    
+    // Google-style: Show immediate feedback
+    alert('🔐 GOOGLE-STYLE: Reset password button clicked! Check console for details.')
     
     // Google-style: Clear previous errors first
     setError('')
@@ -220,10 +224,6 @@ export default function ResetPasswordDirectPage() {
                 type="submit"
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isLoading || !password || !confirmPassword || !token}
-                onClick={() => {
-                  console.log('🔐 GOOGLE-STYLE: Reset password button clicked')
-                  console.log('🔐 GOOGLE-STYLE: Button state:', { isLoading, password: !!password, confirmPassword: !!confirmPassword, token: !!token })
-                }}
               >
                 {isLoading ? 'Resetting Password...' : 'Reset Password'}
               </Button>
