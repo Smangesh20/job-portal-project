@@ -50,17 +50,18 @@ export default function LoginPage() {
       const result = await login(formData.email, formData.password)
       
       if (result.success) {
-        // Success - show success message for 2 seconds
+        // Success - show success message with button
         setShowSuccess(true)
-        setTimeout(() => {
-          router.push('/dashboard')
-        }, 2000)
       } else {
         setError(result.error || 'Login failed')
       }
     } catch (err) {
       setError('Something went wrong. Please try again.')
     }
+  }
+
+  const handleGoToDashboard = () => {
+    router.push('/dashboard')
   }
 
   if (showSuccess) {
@@ -71,8 +72,24 @@ export default function LoginPage() {
             <div className="text-center">
               <CheckCircleIcon className="w-16 h-16 text-green-500 mx-auto mb-4" />
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome back!</h2>
-              <p className="text-gray-600 mb-6">You have successfully signed in.</p>
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+              <p className="text-gray-600 mb-6">You have successfully signed in to your account.</p>
+              
+              <div className="space-y-3">
+                <Button 
+                  onClick={handleGoToDashboard}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+                >
+                  Go to Dashboard
+                </Button>
+                
+                <Button 
+                  variant="outline"
+                  onClick={() => setShowSuccess(false)}
+                  className="w-full text-gray-600 hover:text-gray-800 hover:bg-gray-50"
+                >
+                  Back to Login
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>

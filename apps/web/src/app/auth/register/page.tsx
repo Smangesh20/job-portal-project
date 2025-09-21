@@ -86,21 +86,29 @@ const SuccessModal = ({ isOpen, onClose, onContinue }: {
                 className="text-gray-600 mb-8 leading-relaxed"
               >
                 Congratulations! Your Ask Ya Cham account has been created successfully. 
-                Welcome to the future of job matching with quantum computing technology. 
-                You will now be redirected to the home page.
+                Welcome to the future of job matching with quantum computing technology.
               </motion.p>
 
-              {/* Button */}
+              {/* Buttons */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
+                className="space-y-3"
               >
                 <Button
                   onClick={onContinue}
-                  className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
                 >
-                  Go to Home
+                  Go to Dashboard
+                </Button>
+                
+                <Button
+                  onClick={onClose}
+                  variant="outline"
+                  className="w-full text-gray-600 hover:text-gray-800 hover:bg-gray-50 font-semibold py-3 px-6 rounded-xl transition-all duration-200"
+                >
+                  Back to Home
                 </Button>
               </motion.div>
             </div>
@@ -387,7 +395,7 @@ export default function RegisterPage() {
   // Handle success modal continue
   const handleSuccessContinue = useCallback(() => {
     setShowSuccessModal(false)
-    router.push('/')
+    router.push('/dashboard')
   }, [router])
 
   // Handle success modal close
@@ -909,6 +917,13 @@ export default function RegisterPage() {
         </div>
       </div>
     </div>
+
+    {/* Success Modal */}
+    <SuccessModal
+      isOpen={showSuccessModal}
+      onClose={handleSuccessClose}
+      onContinue={handleSuccessContinue}
+    />
     </PublicRoute>
   )
 }
