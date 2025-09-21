@@ -25,7 +25,6 @@ const retryOperation = async (operation: () => Promise<any>, maxRetries: number 
   }
 }
 import { mockAPI } from './mock-api';
-import { googleStyleErrorHandler } from './google-style-error-handler';
 
 // API Configuration
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';

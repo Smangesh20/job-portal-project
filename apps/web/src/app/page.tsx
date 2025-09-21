@@ -66,7 +66,7 @@ export default function HomePage() {
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
-          <div className="text-center">
+        <div className="text-center">
             {/* Badge */}
             <div className="mb-8">
               <Badge className="bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 border-purple-200 px-6 py-2 text-sm font-semibold">
@@ -83,13 +83,13 @@ export default function HomePage() {
               </span>
               <br />
               with Quantum Precision
-            </h1>
-
+          </h1>
+          
             {/* Subtitle */}
             <p className="text-xl sm:text-2xl text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed">
-              Connect with opportunities that match your skills, values, and career aspirations. 
-              Our advanced quantum computing technology ensures perfect matches.
-            </p>
+            Connect with opportunities that match your skills, values, and career aspirations. 
+            Our advanced quantum computing technology ensures perfect matches.
+          </p>
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
@@ -101,10 +101,10 @@ export default function HomePage() {
                 <RocketLaunchIcon className="w-5 h-5 mr-2" />
                 Get Started Free
               </Button>
-              <Button 
-                size="lg" 
-                onClick={handleSignIn}
-                variant="outline"
+            <Button 
+              size="lg" 
+              onClick={handleSignIn}
+              variant="outline"
                 className="border-2 border-gray-300 hover:border-purple-500 hover:text-purple-600 px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300"
               >
                 <EyeIcon className="w-5 h-5 mr-2" />
@@ -326,8 +326,8 @@ export default function HomePage() {
                 <li><a href="/api" className="text-gray-400 hover:text-white transition-colors">API</a></li>
                 <li><a href="/integrations" className="text-gray-400 hover:text-white transition-colors">Integrations</a></li>
               </ul>
-            </div>
-            
+          </div>
+
             <div>
               <h4 className="text-lg font-semibold mb-4">Company</h4>
               <ul className="space-y-3">
@@ -338,7 +338,7 @@ export default function HomePage() {
               </ul>
             </div>
           </div>
-          
+
           <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
               &copy; 2024 AskYaCham. All rights reserved.
@@ -347,7 +347,7 @@ export default function HomePage() {
               <a href="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors">Privacy</a>
               <a href="/terms" className="text-gray-400 hover:text-white text-sm transition-colors">Terms</a>
               <a href="/cookies" className="text-gray-400 hover:text-white text-sm transition-colors">Cookies</a>
-            </div>
+          </div>
           </div>
         </div>
       </footer>
