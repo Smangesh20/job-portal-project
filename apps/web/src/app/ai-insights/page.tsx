@@ -218,7 +218,7 @@ export default function AIInsightsPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
-                  <TargetIcon className="w-6 h-6 mr-2 text-purple-600" />
+                  <FlagIcon className="w-6 h-6 mr-2 text-purple-600" />
                   Recommended Career Progressions
                 </CardTitle>
                 <CardDescription>
