@@ -87,7 +87,6 @@ import {
   Maximize,
   Minimize,
   Fullscreen,
-  FullscreenExit,
   ZoomIn,
   ZoomOut,
   Move,
