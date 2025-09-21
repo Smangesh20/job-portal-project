@@ -126,6 +126,18 @@ export default function DashboardPage() {
                 <Button size="sm" onClick={() => router.push('/profile')}>
                   View Profile
                 </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => {
+                    localStorage.removeItem('accessToken')
+                    localStorage.removeItem('refreshToken')
+                    router.push('/auth/login')
+                  }}
+                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                >
+                  Logout
+                </Button>
               </div>
             </div>
           </div>

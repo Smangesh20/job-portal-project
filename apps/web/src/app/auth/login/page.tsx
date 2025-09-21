@@ -68,11 +68,11 @@ export default function LoginPage() {
           localStorage.setItem('refreshToken', data.data.refreshToken)
         }
         
-        // Success - show success message
+        // Success - show success message for 2 seconds
         setShowSuccess(true)
         setTimeout(() => {
           router.push('/dashboard')
-        }, 1500)
+        }, 2000)
       } else {
         setError(data.error?.message || 'Invalid email or password')
       }
