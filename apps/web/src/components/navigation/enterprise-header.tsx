@@ -32,7 +32,7 @@ export function EnterpriseHeader() {
   }
 
   const navigation = [
-    { name: 'Home', href: '/', current: true },
+    { name: isAuthenticated ? 'Dashboard' : 'Home', href: isAuthenticated ? '/dashboard' : '/', current: true },
     { name: 'Jobs', href: '/jobs', badge: '12' },
     { name: 'Companies', href: '/companies' },
     { name: 'Career Tools', href: '/career-tools' },

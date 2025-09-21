@@ -2,248 +2,308 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import ProtectedRoute from '@/components/protected-route'
+import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Badge } from '@/components/ui/badge'
 import { 
-  User, 
-  Settings, 
-  Bell, 
-  Briefcase, 
-  TrendingUp, 
-  Calendar, 
-  Award,
-  FileText,
-  Clock,
-  Star,
-  Eye
-} from 'lucide-react'
+  BriefcaseIcon,
+  BuildingOfficeIcon,
+  ChartBarIcon,
+  UserGroupIcon,
+  MagnifyingGlassIcon,
+  BellIcon,
+  StarIcon,
+  ClockIcon,
+  MapPinIcon,
+  HeartIcon,
+  ArrowRightIcon,
+  SparklesIcon,
+  TrendingUpIcon,
+  TargetIcon
+} from '@heroicons/react/24/outline'
 
 export default function DashboardPage() {
-  const [activeTab, setActiveTab] = useState('overview')
   const router = useRouter()
+  const { user } = useAuth()
+  const [searchQuery, setSearchQuery] = useState('')
 
-  const handleLogout = () => {
-    router.push('/')
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      router.push(`/jobs?search=${encodeURIComponent(searchQuery)}`)
+    }
   }
 
-  const stats = [
+  const quickActions = [
     {
-      title: 'Profile Views',
-      value: '1,247',
-      change: '+12%',
-      icon: Eye,
-      color: 'text-blue-600'
+      title: 'Browse Jobs',
+      description: 'Explore opportunities matched to your profile',
+      icon: BriefcaseIcon,
+      href: '/jobs',
+      color: 'blue'
     },
     {
-      title: 'Job Applications',
-      value: '23',
-      change: '+5',
-      icon: Briefcase,
-      color: 'text-green-600'
+      title: 'Companies',
+      description: 'Discover companies hiring in your field',
+      icon: BuildingOfficeIcon,
+      href: '/companies',
+      color: 'green'
     },
     {
-      title: 'Interviews',
-      value: '8',
-      change: '+2',
-      icon: Calendar,
-      color: 'text-purple-600'
+      title: 'Career Tools',
+      description: 'Build your professional profile',
+      icon: TargetIcon,
+      href: '/career-tools',
+      color: 'purple'
     },
     {
-      title: 'Offers',
-      value: '3',
-      change: '+1',
-      icon: Award,
-      color: 'text-yellow-600'
+      title: 'AI Insights',
+      description: 'Get personalized career recommendations',
+      icon: SparklesIcon,
+      href: '/ai-insights',
+      color: 'orange'
+    }
+  ]
+
+  const recentJobs = [
+    {
+      id: 1,
+      title: 'Senior Software Engineer',
+      company: 'TechCorp Inc.',
+      location: 'San Francisco, CA',
+      type: 'Full-time',
+      salary: '$120k - $160k',
+      posted: '2 hours ago',
+      match: 95
+    },
+    {
+      id: 2,
+      title: 'Product Manager',
+      company: 'InnovateLabs',
+      location: 'Remote',
+      type: 'Full-time',
+      salary: '$100k - $140k',
+      posted: '5 hours ago',
+      match: 92
+    },
+    {
+      id: 3,
+      title: 'UX Designer',
+      company: 'DesignStudio',
+      location: 'New York, NY',
+      type: 'Full-time',
+      salary: '$80k - $120k',
+      posted: '1 day ago',
+      match: 88
     }
   ]
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Button variant="outline" onClick={handleLogout}>
-                Sign Out
-              </Button>
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gray-50">
+        {/* Dashboard Header */}
+        <div className="bg-white border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  Welcome back, {user?.name || 'User'}!
+                </h1>
+                <p className="text-gray-600 mt-1">
+                  Here's what's happening with your job search today.
+                </p>
+              </div>
+              <div className="flex items-center space-x-4">
+                <Button variant="outline" size="sm">
+                  <BellIcon className="w-4 h-4 mr-2" />
+                  Notifications
+                  <Badge variant="secondary" className="ml-2">3</Badge>
+                </Button>
+                <Button size="sm" onClick={() => router.push('/profile')}>
+                  View Profile
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="profile">Profile</TabsTrigger>
-            <TabsTrigger value="notifications">Notifications</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
-          </TabsList>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Search Section */}
+          <Card className="mb-8">
+            <CardContent className="p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Job Search</h2>
+              <form onSubmit={handleSearch} className="flex gap-4">
+                <div className="flex-1 relative">
+                  <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Input
+                    type="text"
+                    placeholder="Search jobs, companies, or keywords..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+                <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+                  Search
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
 
-          {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-6">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Welcome back!</h2>
-              <p className="text-gray-600 mb-8">Here's what's happening with your job search.</p>
+          {/* Quick Actions */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {quickActions.map((action) => (
+              <Card key={action.title} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => router.push(action.href)}>
+                <CardContent className="p-6">
+                  <div className={`w-12 h-12 bg-${action.color}-100 rounded-lg flex items-center justify-center mb-4`}>
+                    <action.icon className={`w-6 h-6 text-${action.color}-600`} />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{action.title}</h3>
+                  <p className="text-gray-600 text-sm">{action.description}</p>
+                  <ArrowRightIcon className="w-4 h-4 text-gray-400 mt-2" />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Recent Job Matches */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <TrendingUpIcon className="w-5 h-5 mr-2 text-green-600" />
+                    Your Latest Job Matches
+                  </CardTitle>
+                  <CardDescription>
+                    Jobs matched to your profile with high compatibility scores
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {recentJobs.map((job) => (
+                      <div key={job.id} className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <h4 className="text-lg font-semibold text-gray-900 mb-1">{job.title}</h4>
+                            <p className="text-gray-600 mb-2">{job.company}</p>
+                            <div className="flex items-center space-x-4 text-sm text-gray-500">
+                              <div className="flex items-center">
+                                <MapPinIcon className="w-4 h-4 mr-1" />
+                                {job.location}
+                              </div>
+                              <div className="flex items-center">
+                                <ClockIcon className="w-4 h-4 mr-1" />
+                                {job.posted}
+                              </div>
+                            </div>
+                            <div className="flex items-center mt-3">
+                              <Badge variant="secondary" className="mr-2">{job.type}</Badge>
+                              <span className="text-sm text-gray-600">{job.salary}</span>
+                            </div>
+                          </div>
+                          <div className="flex flex-col items-end space-y-2">
+                            <Badge className="bg-green-100 text-green-800">
+                              {job.match}% Match
+                            </Badge>
+                            <div className="flex space-x-2">
+                              <Button size="sm" variant="outline">
+                                <HeartIcon className="w-4 h-4" />
+                              </Button>
+                              <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                                Apply
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-6 text-center">
+                    <Button variant="outline" onClick={() => router.push('/jobs')}>
+                      View All Jobs
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {stats.map((stat, index) => (
-                <Card key={index}>
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">{stat.title}</p>
-                        <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                        <p className="text-sm text-green-600 flex items-center mt-1">
-                          <TrendingUp className="h-4 w-4 mr-1" />
-                          {stat.change}
-                        </p>
+            {/* Sidebar */}
+            <div className="space-y-6">
+              {/* Profile Completion */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Profile Completion</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span>Profile Strength</span>
+                        <span>75%</span>
                       </div>
-                      <div className={`p-3 rounded-full bg-gray-100 ${stat.color}`}>
-                        <stat.icon className="h-6 w-6" />
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className="bg-blue-600 h-2 rounded-full" style={{ width: '75%' }}></div>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center">
+                        <CheckCircleIcon className="w-4 h-4 text-green-500 mr-2" />
+                        <span>Basic Information</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircleIcon className="w-4 h-4 text-green-500 mr-2" />
+                        <span>Skills & Experience</span>
+                      </div>
+                      <div className="flex items-center">
+                        <div className="w-4 h-4 border-2 border-gray-300 rounded-full mr-2"></div>
+                        <span className="text-gray-500">Portfolio</span>
+                      </div>
+                      <div className="flex items-center">
+                        <div className="w-4 h-4 border-2 border-gray-300 rounded-full mr-2"></div>
+                        <span className="text-gray-500">References</span>
+                      </div>
+                    </div>
+                    <Button size="sm" className="w-full" onClick={() => router.push('/profile')}>
+                      Complete Profile
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Activity Summary */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">This Week</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">Applications</span>
+                      <span className="text-sm font-semibold">12</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">Profile Views</span>
+                      <span className="text-sm font-semibold">28</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">Job Matches</span>
+                      <span className="text-sm font-semibold">8</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">Interviews</span>
+                      <span className="text-sm font-semibold">3</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-
-            {/* Recent Activity */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Clock className="h-5 w-5 mr-2" />
-                  Recent Activity
-                </CardTitle>
-                <CardDescription>
-                  Your latest job search activities
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-start space-x-3">
-                    <Briefcase className="h-5 w-5 text-blue-600 mt-1" />
-                    <div>
-                      <p className="font-medium">Applied to Senior Software Engineer at Google</p>
-                      <p className="text-sm text-gray-500">2 hours ago</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <Calendar className="h-5 w-5 text-purple-600 mt-1" />
-                    <div>
-                      <p className="font-medium">Interview scheduled with Microsoft</p>
-                      <p className="text-sm text-gray-500">1 day ago</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <Award className="h-5 w-5 text-yellow-600 mt-1" />
-                    <div>
-                      <p className="font-medium">Received offer from Amazon</p>
-                      <p className="text-sm text-gray-500">3 days ago</p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Profile Tab */}
-          <TabsContent value="profile">
-            <Card>
-              <CardHeader>
-                <CardTitle>Profile</CardTitle>
-                <CardDescription>Manage your profile information</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Name</label>
-                    <input
-                      type="text"
-                      defaultValue="Test User"
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Email</label>
-                    <input
-                      type="email"
-                      defaultValue="test@example.com"
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                    />
-                  </div>
-                  <Button>Save Changes</Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Notifications Tab */}
-          <TabsContent value="notifications">
-            <Card>
-              <CardHeader>
-                <CardTitle>Notifications</CardTitle>
-                <CardDescription>Manage your notification preferences</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium">New job matches</p>
-                      <p className="text-sm text-gray-500">Get notified when new jobs match your profile</p>
-                    </div>
-                    <input type="checkbox" defaultChecked className="rounded" />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium">Application updates</p>
-                      <p className="text-sm text-gray-500">Updates on your job applications</p>
-                    </div>
-                    <input type="checkbox" defaultChecked className="rounded" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Settings Tab */}
-          <TabsContent value="settings">
-            <Card>
-              <CardHeader>
-                <CardTitle>Settings</CardTitle>
-                <CardDescription>Manage your account settings</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Current Password</label>
-                    <input
-                      type="password"
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">New Password</label>
-                    <input
-                      type="password"
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                    />
-                  </div>
-                  <Button>Update Password</Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </main>
-    </div>
+          </div>
+        </div>
+      </div>
+    </ProtectedRoute>
   )
 }

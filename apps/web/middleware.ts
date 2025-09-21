@@ -12,7 +12,7 @@ export function middleware(request: NextRequest) {
 
   // If user is trying to access auth pages while logged in, redirect to dashboard
   if (isAuthenticated && isPublicRoute) {
-    return NextResponse.redirect(new URL('/', request.url));
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
   // If user is not authenticated and trying to access any non-public route, redirect to login
@@ -20,6 +20,11 @@ export function middleware(request: NextRequest) {
     const loginUrl = new URL('/auth/login', request.url);
     loginUrl.searchParams.set('redirect', request.nextUrl.pathname);
     return NextResponse.redirect(loginUrl);
+  }
+
+  // If authenticated user tries to access homepage, redirect to dashboard
+  if (isAuthenticated && request.nextUrl.pathname === '/') {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
   const response = NextResponse.next()
