@@ -29,6 +29,24 @@ export function useAuthUnified() {
 
   // Check authentication on mount
   useEffect(() => {
+    // Clear any corrupted localStorage data first
+    const clearCorruptedData = () => {
+      try {
+        const userData = localStorage.getItem('userData')
+        if (userData === 'undefined' || userData === 'null' || userData === '') {
+          console.log('🚀 GOOGLE-STYLE: Clearing corrupted localStorage data')
+          localStorage.removeItem('accessToken')
+          localStorage.removeItem('refreshToken')
+          localStorage.removeItem('userData')
+        }
+      } catch (error) {
+        console.log('🚀 GOOGLE-STYLE: Error checking localStorage, clearing all auth data')
+        localStorage.removeItem('accessToken')
+        localStorage.removeItem('refreshToken')
+        localStorage.removeItem('userData')
+      }
+    }
+
     const checkAuth = () => {
       try {
         const accessToken = localStorage.getItem('accessToken')
@@ -36,17 +54,31 @@ export function useAuthUnified() {
         
         console.log('🚀 GOOGLE-STYLE: Checking auth - token:', !!accessToken, 'userData:', !!userData)
         
-        if (accessToken && userData) {
-          const user = JSON.parse(userData)
-          console.log('🚀 GOOGLE-STYLE: User found in localStorage:', user)
-          setAuthState({
-            user,
-            isAuthenticated: true,
-            isLoading: false,
-            error: null
-          })
+        if (accessToken && userData && userData !== 'undefined' && userData !== 'null') {
+          try {
+            const user = JSON.parse(userData)
+            console.log('🚀 GOOGLE-STYLE: User found in localStorage:', user)
+            setAuthState({
+              user,
+              isAuthenticated: true,
+              isLoading: false,
+              error: null
+            })
+          } catch (parseError) {
+            console.log('🚀 GOOGLE-STYLE: Invalid userData, clearing storage:', userData)
+            // Clear corrupted data
+            localStorage.removeItem('accessToken')
+            localStorage.removeItem('refreshToken')
+            localStorage.removeItem('userData')
+            setAuthState({
+              user: null,
+              isAuthenticated: false,
+              isLoading: false,
+              error: null
+            })
+          }
         } else {
-          console.log('🚀 GOOGLE-STYLE: No auth data found')
+          console.log('🚀 GOOGLE-STYLE: No valid auth data found')
           setAuthState({
             user: null,
             isAuthenticated: false,
@@ -67,6 +99,7 @@ export function useAuthUnified() {
 
     // Always check auth, but don't show errors on login page
     if (typeof window !== 'undefined') {
+      clearCorruptedData()
       checkAuth()
     } else {
       setAuthState({
@@ -96,7 +129,7 @@ export function useAuthUnified() {
         // Store tokens and user data
         localStorage.setItem('accessToken', data.data.accessToken)
         localStorage.setItem('refreshToken', data.data.refreshToken)
-        localStorage.setItem('userData', JSON.stringify(data.data.user))
+        localStorage.setItem('userData', JSON.stringify(data.data.user || {}))
 
         // Update state
         setAuthState({
@@ -145,7 +178,7 @@ export function useAuthUnified() {
         // Store tokens and user data
         localStorage.setItem('accessToken', data.data.accessToken)
         localStorage.setItem('refreshToken', data.data.refreshToken)
-        localStorage.setItem('userData', JSON.stringify(data.data.user))
+        localStorage.setItem('userData', JSON.stringify(data.data.user || {}))
 
         // Update state
         setAuthState({
