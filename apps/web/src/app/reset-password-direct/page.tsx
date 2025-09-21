@@ -48,6 +48,7 @@ export default function ResetPasswordDirectPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    console.log('🔐 GOOGLE-STYLE: Reset password form submitted')
     
     if (password !== confirmPassword) {
       setError('Passwords do not match')
@@ -59,6 +60,7 @@ export default function ResetPasswordDirectPage() {
       return
     }
 
+    console.log('🔐 GOOGLE-STYLE: Calling reset password API with token:', token)
     setIsLoading(true)
     setError('')
     setMessage('')
@@ -76,7 +78,9 @@ export default function ResetPasswordDirectPage() {
         }),
       })
 
+      console.log('🔐 GOOGLE-STYLE: API response status:', response.status)
       const data = await response.json()
+      console.log('🔐 GOOGLE-STYLE: API response data:', data)
 
       if (data.success) {
         setMessage('Password reset successfully! You can now login with your new password.')
@@ -203,6 +207,7 @@ export default function ResetPasswordDirectPage() {
                 type="submit"
                 className="w-full"
                 disabled={isLoading}
+                onClick={() => console.log('🔐 GOOGLE-STYLE: Reset password button clicked')}
               >
                 {isLoading ? 'Resetting...' : 'Reset Password'}
               </Button>
