@@ -1,7 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-// Security middleware for production deployment
+// Security and authentication middleware
 export function middleware(request: NextRequest) {
+  const accessToken = request.cookies.get('accessToken')?.value;
+  const refreshToken = request.cookies.get('refreshToken')?.value;
+  const isAuthenticated = !!accessToken; // Simplified check
+
+  // Public routes that don't require authentication
+  const publicRoutes = ['/auth/login', '/auth/register', '/auth/forgot-password', '/auth/reset-password'];
+  const isPublicRoute = publicRoutes.includes(request.nextUrl.pathname);
+
+  // If user is trying to access auth pages while logged in, redirect to dashboard
+  if (isAuthenticated && isPublicRoute) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
+
+  // If user is not authenticated and trying to access any non-public route, redirect to login
+  if (!isAuthenticated && !isPublicRoute) {
+    const loginUrl = new URL('/auth/login', request.url);
+    loginUrl.searchParams.set('redirect', request.nextUrl.pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
   const response = NextResponse.next()
 
   // Security headers

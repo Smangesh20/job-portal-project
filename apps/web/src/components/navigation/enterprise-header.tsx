@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { useAuth } from '@/hooks/useAuth'
 import { 
   Search,
   Bell,
@@ -21,6 +22,7 @@ export function EnterpriseHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const router = useRouter()
+  const { user, logout, isAuthenticated } = useAuth()
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -141,24 +143,57 @@ export function EnterpriseHeader() {
                 </Button>
               </div>
 
-              {/* User Menu - Always visible like Google */}
+              {/* User Menu - Dynamic based on auth status */}
               <div className="flex items-center space-x-2">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={() => router.push('/auth/login')}
-                  className="flex items-center space-x-1 text-gray-700 hover:text-gray-900 hover:bg-gray-100 px-3 py-2 rounded-md"
-                >
-                  <User className="w-4 h-4" />
-                  <span className="hidden sm:block text-sm">Sign In</span>
-                </Button>
-                <Button 
-                  size="sm" 
-                  onClick={() => router.push('/auth/register')}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md text-sm whitespace-nowrap"
-                >
-                  Sign Up
-                </Button>
+                {isAuthenticated && user ? (
+                  <>
+                    <div className="flex items-center space-x-2">
+                      <div className="hidden sm:flex items-center space-x-2">
+                        <span className="text-sm text-gray-700">Welcome, {user.name}</span>
+                      </div>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={() => router.push('/profile')}
+                        className="flex items-center space-x-1 text-gray-700 hover:text-gray-900 hover:bg-gray-100 px-3 py-2 rounded-md"
+                      >
+                        <User className="w-4 h-4" />
+                        <span className="hidden sm:block text-sm">Profile</span>
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={() => {
+                          logout()
+                          router.push('/auth/login')
+                        }}
+                        className="flex items-center space-x-1 text-gray-700 hover:text-red-600 hover:bg-red-50 px-3 py-2 rounded-md"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        <span className="hidden sm:block text-sm">Logout</span>
+                      </Button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => router.push('/auth/login')}
+                      className="flex items-center space-x-1 text-gray-700 hover:text-gray-900 hover:bg-gray-100 px-3 py-2 rounded-md"
+                    >
+                      <User className="w-4 h-4" />
+                      <span className="hidden sm:block text-sm">Sign In</span>
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      onClick={() => router.push('/auth/register')}
+                      className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md text-sm whitespace-nowrap"
+                    >
+                      Sign Up
+                    </Button>
+                  </>
+                )}
               </div>
 
               {/* Mobile Menu Button */}
@@ -217,25 +252,55 @@ export function EnterpriseHeader() {
               
               {/* Mobile Auth Buttons */}
               <div className="pt-4 border-t border-gray-200 flex flex-col space-y-3">
-                <Button 
-                  variant="outline" 
-                  onClick={() => {
-                    router.push('/auth/login')
-                    setIsMenuOpen(false)
-                  }}
-                  className="w-full py-3 text-gray-700 border-gray-300 hover:bg-gray-50"
-                >
-                  Sign In
-                </Button>
-                <Button 
-                  onClick={() => {
-                    router.push('/auth/register')
-                    setIsMenuOpen(false)
-                  }}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg shadow-sm"
-                >
-                  Sign Up
-                </Button>
+                {isAuthenticated && user ? (
+                  <>
+                    <div className="px-3 py-2 text-sm text-gray-600">
+                      Welcome, {user.name}
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        router.push('/profile')
+                        setIsMenuOpen(false)
+                      }}
+                      className="w-full py-3 text-gray-700 border-gray-300 hover:bg-gray-50"
+                    >
+                      Profile
+                    </Button>
+                    <Button 
+                      onClick={() => {
+                        logout()
+                        router.push('/auth/login')
+                        setIsMenuOpen(false)
+                      }}
+                      className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-3 rounded-lg shadow-sm"
+                    >
+                      Logout
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        router.push('/auth/login')
+                        setIsMenuOpen(false)
+                      }}
+                      className="w-full py-3 text-gray-700 border-gray-300 hover:bg-gray-50"
+                    >
+                      Sign In
+                    </Button>
+                    <Button 
+                      onClick={() => {
+                        router.push('/auth/register')
+                        setIsMenuOpen(false)
+                      }}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg shadow-sm"
+                    >
+                      Sign Up
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>

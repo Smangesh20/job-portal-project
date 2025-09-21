@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import ProtectedRoute from '@/components/protected-route'
+import { useAuth } from '@/hooks/useAuth'
 import { 
   ArrowRightIcon, 
   SparklesIcon, 
@@ -14,11 +16,15 @@ import {
   ChartBarIcon,
   GlobeAltIcon,
   BriefcaseIcon,
-  StarIcon
+  StarIcon,
+  UserIcon,
+  BellIcon,
+  CogIcon
 } from '@heroicons/react/24/outline'
 
 export default function HomePage() {
   const router = useRouter()
+  const { user, logout } = useAuth()
   const [email, setEmail] = useState('')
 
   const handleGetStarted = () => {
@@ -33,8 +39,14 @@ export default function HomePage() {
     router.push('/auth/login')
   }
 
+  const handleLogout = () => {
+    logout()
+    router.push('/auth/login')
+  }
+
   return (
-    <div className="min-h-screen bg-white">
+    <ProtectedRoute>
+      <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center">
@@ -43,37 +55,74 @@ export default function HomePage() {
             Quantum-Powered Job Matching
           </Badge>
           
-          <h1 className="text-4xl sm:text-6xl font-bold text-gray-900 mb-6">
-            Find Your{' '}
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Dream Job
-            </span>
-            <br />
-            with Quantum Precision
-          </h1>
-          
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Connect with opportunities that match your skills, values, and career aspirations. 
-            Our advanced quantum computing technology ensures perfect matches.
-          </p>
+          {user ? (
+            <>
+              <h1 className="text-4xl sm:text-6xl font-bold text-gray-900 mb-6">
+                Welcome back,{' '}
+                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  {user.name}
+                </span>
+                !
+              </h1>
+              
+              <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                Ready to find your next opportunity? Your personalized job matches are waiting.
+              </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md mx-auto">
-            <Input
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="flex-1"
-            />
-            <Button 
-              size="lg" 
-              onClick={handleGetStarted}
-              className="w-full sm:w-auto"
-            >
-              Get Started
-              <ArrowRightIcon className="w-5 h-5 ml-2" />
-            </Button>
-          </div>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md mx-auto">
+                <Button 
+                  size="lg" 
+                  onClick={() => router.push('/jobs')}
+                  className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700"
+                >
+                  Browse Jobs
+                  <ArrowRightIcon className="w-5 h-5 ml-2" />
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  onClick={() => router.push('/profile')}
+                  className="w-full sm:w-auto"
+                >
+                  View Profile
+                </Button>
+              </div>
+            </>
+          ) : (
+            <>
+              <h1 className="text-4xl sm:text-6xl font-bold text-gray-900 mb-6">
+                Find Your{' '}
+                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  Dream Job
+                </span>
+                <br />
+                with Quantum Precision
+              </h1>
+              
+              <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                Connect with opportunities that match your skills, values, and career aspirations. 
+                Our advanced quantum computing technology ensures perfect matches.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md mx-auto">
+                <Input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="flex-1"
+                />
+                <Button 
+                  size="lg" 
+                  onClick={handleGetStarted}
+                  className="w-full sm:w-auto"
+                >
+                  Get Started
+                  <ArrowRightIcon className="w-5 h-5 ml-2" />
+                </Button>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Features */}
@@ -234,6 +283,7 @@ export default function HomePage() {
           </div>
         </div>
       </footer>
-    </div>
+      </div>
+    </ProtectedRoute>
   )
 }
