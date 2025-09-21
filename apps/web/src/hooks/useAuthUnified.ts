@@ -9,6 +9,9 @@ interface User {
   firstName: string
   lastName: string
   name: string
+  role?: string
+  isVerified?: boolean
+  isActive?: boolean
 }
 
 interface AuthState {

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter, usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuthUnified } from '@/hooks/useAuthUnified'
 import { 
   Search,
   Bell,
@@ -131,11 +131,48 @@ export function EnterpriseHeader() {
     { id: 1, title: 'New job match found', message: 'Software Engineer at Google', time: '2m ago', unread: true },
     { id: 2, title: 'Application status update', message: 'Your application at Microsoft was reviewed', time: '1h ago', unread: true },
     { id: 3, title: 'Profile completion', message: 'Complete your profile to get better matches', time: '3h ago', unread: false },
+    { id: 4, title: 'Welcome to AskYaCham!', message: 'Start exploring job opportunities', time: '1d ago', unread: false },
+    { id: 5, title: 'New companies added', message: '50+ new companies are hiring', time: '2d ago', unread: false },
   ])
-  
+
   const router = useRouter()
   const pathname = usePathname()
-  const { user, logout, isAuthenticated } = useAuth()
+  const { user, logout, isAuthenticated } = useAuthUnified()
+
+  // Add new notifications periodically (Google-style)
+  useEffect(() => {
+    if (!isAuthenticated) return
+
+    const interval = setInterval(() => {
+      const newNotification = {
+        id: Date.now(),
+        title: 'New job opportunities',
+        message: `${Math.floor(Math.random() * 10) + 1} new jobs match your profile`,
+        time: 'Just now',
+        unread: true
+      }
+      
+      setNotifications(prev => [newNotification, ...prev.slice(0, 9)]) // Keep only 10 notifications
+    }, 30000) // Add notification every 30 seconds
+
+    return () => clearInterval(interval)
+  }, [isAuthenticated])
+
+  // Mark notification as read
+  const markAsRead = (notificationId: number) => {
+    setNotifications(prev => 
+      prev.map(notif => 
+        notif.id === notificationId ? { ...notif, unread: false } : notif
+      )
+    )
+  }
+
+  // Mark all notifications as read
+  const markAllAsRead = () => {
+    setNotifications(prev => 
+      prev.map(notif => ({ ...notif, unread: false }))
+    )
+  }
   const searchRef = useRef<HTMLInputElement>(null)
   const userMenuRef = useRef<HTMLDivElement>(null)
   const notificationRef = useRef<HTMLDivElement>(null)
@@ -338,7 +375,7 @@ export function EnterpriseHeader() {
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden xl:flex items-center space-x-1">
+            <nav className="hidden lg:flex items-center space-x-1">
               {navigation.map((item) => (
                 <div key={item.name} className="relative group">
                   <Link
@@ -479,9 +516,10 @@ export function EnterpriseHeader() {
                         {notifications.map((notification) => (
                           <div
                             key={notification.id}
-                            className={`px-4 py-3 hover:bg-gray-50 transition-colors ${
+                            className={`px-4 py-3 hover:bg-gray-50 transition-colors cursor-pointer ${
                               notification.unread ? 'bg-blue-50 border-l-4 border-blue-500' : ''
                             }`}
+                            onClick={() => markAsRead(notification.id)}
                           >
                             <div className="flex items-start space-x-3">
                               <div className={`w-2 h-2 rounded-full mt-2 ${
@@ -496,8 +534,16 @@ export function EnterpriseHeader() {
                           </div>
                         ))}
                       </div>
-                      <div className="px-4 py-2 border-t border-gray-100">
-                        <Button variant="ghost" size="sm" className="w-full text-purple-600 hover:text-purple-700">
+                      <div className="px-4 py-2 border-t border-gray-100 space-y-2">
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="w-full text-purple-600 hover:text-purple-700"
+                          onClick={markAllAsRead}
+                        >
+                          Mark all as read
+                        </Button>
+                        <Button variant="ghost" size="sm" className="w-full text-gray-600 hover:text-gray-700">
                           View all notifications
                         </Button>
                       </div>

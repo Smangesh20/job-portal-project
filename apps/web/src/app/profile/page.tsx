@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useAuthStore } from '@/stores/enhanced-auth-store'
+import { useAuthUnified } from '@/hooks/useAuthUnified'
 import { profileService, UserProfile, ProfileUpdateData } from '@/lib/profile-service'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -29,7 +29,7 @@ import {
 import { toast } from 'react-hot-toast'
 
 export default function ProfilePage() {
-  const { user, isAuthenticated } = useAuthStore()
+  const { user, isAuthenticated, isLoading: authLoading } = useAuthUnified()
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
@@ -41,6 +41,33 @@ export default function ProfilePage() {
       loadProfile()
     }
   }, [isAuthenticated, user])
+
+  // Redirect if not authenticated
+  if (!authLoading && !isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <ExclamationTriangleIcon className="w-8 h-8 text-yellow-600" />
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Authentication Required</h1>
+          <p className="text-gray-600 mb-6">Please log in to view your profile.</p>
+          <Button onClick={() => window.location.href = '/auth/login'}>
+            Go to Login
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
+  // Show loading while checking auth
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      </div>
+    )
+  }
 
   const loadProfile = async () => {
     if (!user) return
