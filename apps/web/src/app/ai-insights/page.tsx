@@ -6,9 +6,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { 
   ChartBarIcon,
-  TrendingUpIcon,
+  ArrowTrendingUpIcon,
   LightBulbIcon,
-  BrainIcon,
+  CpuChipIcon,
   TargetIcon,
   RocketLaunchIcon
 } from '@heroicons/react/24/outline'
@@ -28,7 +28,7 @@ export default function AIInsightsPage() {
       id: 'skills',
       name: 'Skills Demand',
       description: 'Most in-demand skills and emerging technologies',
-      icon: TrendingUpIcon,
+      icon: ArrowTrendingUpIcon,
       color: 'green'
     },
     {
@@ -42,7 +42,7 @@ export default function AIInsightsPage() {
       id: 'salary',
       name: 'Salary Insights',
       description: 'Market-based salary predictions and negotiations',
-      icon: BrainIcon,
+      icon: CpuChipIcon,
       color: 'orange'
     }
   ]

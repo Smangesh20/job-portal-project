@@ -10,8 +10,8 @@ import {
   MapPinIcon,
   UsersIcon,
   StarIcon,
-  FilterIcon,
-  SearchIcon,
+  FunnelIcon,
+  MagnifyingGlassIcon,
   PlusIcon
 } from '@heroicons/react/24/outline'
 
@@ -84,7 +84,7 @@ export default function CompaniesPage() {
           <div className="flex flex-col lg:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
-                <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <Input
                   placeholder="Search companies..."
                   value={searchQuery}
@@ -95,7 +95,7 @@ export default function CompaniesPage() {
             </div>
             <div className="flex gap-2">
               <Button variant="outline" className="flex items-center gap-2">
-                <FilterIcon className="w-4 h-4" />
+                <FunnelIcon className="w-4 h-4" />
                 Filters
               </Button>
               <Button className="bg-blue-600 hover:bg-blue-700">

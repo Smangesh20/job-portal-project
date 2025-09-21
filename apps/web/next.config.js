@@ -62,10 +62,6 @@ const nextConfig = {
     formats: ['image/webp', 'image/avif'],
   },
 
-  // Environment variables validation
-  env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
-  },
 
   // Production optimizations
   compress: true,
@@ -100,8 +96,6 @@ const nextConfig = {
     }),
   },
 
-  // Disable telemetry in production
-  telemetry: false,
 }
 
 module.exports = nextConfig

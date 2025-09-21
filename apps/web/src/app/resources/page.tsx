@@ -11,9 +11,9 @@ import {
   DocumentTextIcon,
   AcademicCapIcon,
   LightBulbIcon,
-  SearchIcon,
+  MagnifyingGlassIcon,
   ArrowRightIcon,
-  DownloadIcon
+  ArrowDownTrayIcon
 } from '@heroicons/react/24/outline'
 
 export default function ResourcesPage() {
@@ -138,7 +138,7 @@ export default function ResourcesPage() {
           <div className="flex flex-col lg:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
-                <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <Input
                   placeholder="Search resources..."
                   value={searchQuery}
@@ -203,7 +203,7 @@ export default function ResourcesPage() {
                       ))}
                     </div>
                     <Button className="w-full bg-blue-600 hover:bg-blue-700">
-                      <DownloadIcon className="w-4 h-4 mr-2" />
+                      <ArrowDownTrayIcon className="w-4 h-4 mr-2" />
                       Download
                     </Button>
                   </div>
@@ -256,8 +256,8 @@ export default function ResourcesPage() {
                             ))}
                           </div>
                           <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                            <DownloadIcon className="w-4 h-4 mr-2" />
-                            Download
+                          <ArrowDownTrayIcon className="w-4 h-4 mr-2" />
+                          Download
                           </Button>
                         </div>
                       </div>
