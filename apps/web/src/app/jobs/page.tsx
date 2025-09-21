@@ -1,10 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useJobs } from '@/hooks/useJobs'
+import { Job } from '@/lib/jobs-service'
 import { 
   BriefcaseIcon,
   MapPinIcon,
@@ -13,69 +16,119 @@ import {
   StarIcon,
   FunnelIcon,
   MagnifyingGlassIcon,
-  HeartIcon
+  HeartIcon,
+  ArrowTopRightOnSquareIcon,
+  EyeIcon,
+  UsersIcon,
+  CheckCircleIcon,
+  ExclamationTriangleIcon
 } from '@heroicons/react/24/outline'
 
 export default function JobsPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedFilters, setSelectedFilters] = useState<string[]>([])
+  const [locationFilter, setLocationFilter] = useState('')
+  const [showFilters, setShowFilters] = useState(false)
+  const [applyingJobs, setApplyingJobs] = useState<Set<string>>(new Set())
+  const [savingJobs, setSavingJobs] = useState<Set<string>>(new Set())
 
-  const jobs = [
-    {
-      id: 1,
-      title: 'Senior Software Engineer',
-      company: 'Quantum Tech Solutions',
-      location: 'San Francisco, CA',
-      type: 'Full-time',
-      salary: '$120k - $180k',
-      posted: '2 days ago',
-      description: 'Join our quantum computing team to build next-generation applications.',
-      tags: ['React', 'Node.js', 'Quantum Computing', 'Remote'],
-      rating: 4.8,
-      logo: '/logos/quantum-tech.png'
-    },
-    {
-      id: 2,
-      title: 'AI Research Scientist',
-      company: 'AI Innovations Inc',
-      location: 'Seattle, WA',
-      type: 'Full-time',
-      salary: '$150k - $200k',
-      posted: '1 day ago',
-      description: 'Lead cutting-edge AI research in machine learning and neural networks.',
-      tags: ['Python', 'TensorFlow', 'Research', 'PhD'],
-      rating: 4.6,
-      logo: '/logos/ai-innovations.png'
-    },
-    {
-      id: 3,
-      title: 'Frontend Developer',
-      company: 'Future Finance Corp',
-      location: 'New York, NY',
-      type: 'Full-time',
-      salary: '$90k - $130k',
-      posted: '3 days ago',
-      description: 'Build beautiful user interfaces for our financial technology platform.',
-      tags: ['React', 'TypeScript', 'UI/UX', 'Finance'],
-      rating: 4.7,
-      logo: '/logos/future-finance.png'
-    },
-    {
-      id: 4,
-      title: 'Data Scientist',
-      company: 'Green Energy Systems',
-      location: 'Austin, TX',
-      type: 'Full-time',
-      salary: '$100k - $140k',
-      posted: '4 days ago',
-      description: 'Analyze energy data to optimize sustainable solutions.',
-      tags: ['Python', 'Machine Learning', 'Data Analysis', 'Energy'],
-      rating: 4.9,
-      logo: '/logos/green-energy.png'
-    }
-  ]
+  const {
+    jobs,
+    isLoading,
+    error,
+    hasMore,
+    total,
+    loadMoreJobs,
+    searchJobs,
+    applyForJob,
+    saveJob,
+    getLocations,
+    getCompanies,
+    getIndustries,
+    getTags,
+    clearError
+  } = useJobs()
 
   const jobTypes = ['Full-time', 'Part-time', 'Contract', 'Remote', 'Internship']
+  const locations = getLocations()
+  const companies = getCompanies()
+  const industries = getIndustries()
+  const tags = getTags()
+
+  // Handle search
+  const handleSearch = async () => {
+    const filters = {
+      search: searchQuery,
+      location: locationFilter,
+      type: selectedFilters.length > 0 ? selectedFilters : undefined
+    }
+    await searchJobs(filters)
+  }
+
+  // Handle filter toggle
+  const toggleFilter = (type: string) => {
+    if (selectedFilters.includes(type)) {
+      setSelectedFilters(selectedFilters.filter(f => f !== type))
+    } else {
+      setSelectedFilters([...selectedFilters, type])
+    }
+  }
+
+  // Handle apply for job
+  const handleApplyForJob = async (job: Job) => {
+    setApplyingJobs(prev => new Set(prev).add(job.id))
+    try {
+      const success = await applyForJob(job.id)
+      if (success) {
+        // Show success message
+        console.log('🚀 ENTERPRISE: Successfully applied for job:', job.title)
+      } else {
+        console.error('🚀 ENTERPRISE: Failed to apply for job:', job.title)
+      }
+    } catch (error) {
+      console.error('🚀 ENTERPRISE: Error applying for job:', error)
+    } finally {
+      setApplyingJobs(prev => {
+        const newSet = new Set(prev)
+        newSet.delete(job.id)
+        return newSet
+      })
+    }
+  }
+
+  // Handle save job
+  const handleSaveJob = async (job: Job) => {
+    setSavingJobs(prev => new Set(prev).add(job.id))
+    try {
+      const success = await saveJob(job.id)
+      if (success) {
+        console.log('🚀 ENTERPRISE: Job saved:', job.title)
+      } else {
+        console.error('🚀 ENTERPRISE: Failed to save job:', job.title)
+      }
+    } catch (error) {
+      console.error('🚀 ENTERPRISE: Error saving job:', error)
+    } finally {
+      setSavingJobs(prev => {
+        const newSet = new Set(prev)
+        newSet.delete(job.id)
+        return newSet
+      })
+    }
+  }
+
+  // Handle load more
+  const handleLoadMore = async () => {
+    await loadMoreJobs()
+  }
+
+  // Clear error when user starts typing
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => clearError(), 5000)
+      return () => clearTimeout(timer)
+    }
+  }, [error, clearError])
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -86,7 +139,25 @@ export default function JobsPage() {
           <p className="text-lg text-gray-600">
             Discover your next career opportunity with our quantum-powered matching
           </p>
+          {total > 0 && (
+            <p className="text-sm text-gray-500 mt-2">
+              Showing {jobs.length} of {total} jobs
+            </p>
+          )}
         </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
+            <div className="flex">
+              <ExclamationTriangleIcon className="h-5 w-5 text-red-400" />
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-red-800">Error</h3>
+                <p className="text-sm text-red-700 mt-1">{error}</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Search and Filters */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
@@ -98,20 +169,83 @@ export default function JobsPage() {
                   placeholder="Search jobs, companies, or keywords..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                   className="pl-10"
                 />
               </div>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" className="flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                className="flex items-center gap-2"
+                onClick={() => setShowFilters(!showFilters)}
+              >
                 <FunnelIcon className="w-4 h-4" />
                 Filters
               </Button>
-              <Button className="bg-blue-600 hover:bg-blue-700">
-                Search
+              <Button 
+                className="bg-blue-600 hover:bg-blue-700"
+                onClick={handleSearch}
+                disabled={isLoading}
+              >
+                {isLoading ? 'Searching...' : 'Search'}
               </Button>
             </div>
           </div>
+
+          {/* Advanced Filters */}
+          {showFilters && (
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                <Select value={locationFilter} onValueChange={setLocationFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select location" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All Locations</SelectItem>
+                    {locations.map((location) => (
+                      <SelectItem key={location} value={location}>
+                        {location}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Company</label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select company" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All Companies</SelectItem>
+                    {companies.map((company) => (
+                      <SelectItem key={company} value={company}>
+                        {company}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Industry</label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select industry" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All Industries</SelectItem>
+                    {industries.map((industry) => (
+                      <SelectItem key={industry} value={industry}>
+                        {industry}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
 
           {/* Job Type Filters */}
           <div className="mt-4 flex flex-wrap gap-2">
@@ -120,13 +254,7 @@ export default function JobsPage() {
                 key={type}
                 variant={selectedFilters.includes(type) ? "default" : "outline"}
                 className="cursor-pointer hover:bg-blue-100"
-                onClick={() => {
-                  if (selectedFilters.includes(type)) {
-                    setSelectedFilters(selectedFilters.filter(f => f !== type))
-                  } else {
-                    setSelectedFilters([...selectedFilters, type])
-                  }
-                }}
+                onClick={() => toggleFilter(type)}
               >
                 {type}
               </Badge>
@@ -134,10 +262,18 @@ export default function JobsPage() {
           </div>
         </div>
 
+        {/* Loading State */}
+        {isLoading && jobs.length === 0 && (
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-sm text-gray-600">Loading jobs...</p>
+          </div>
+        )}
+
         {/* Jobs List */}
         <div className="space-y-4">
           {jobs.map((job) => (
-            <Card key={job.id} className="hover:shadow-lg transition-shadow">
+            <Card key={job.id} className={`hover:shadow-lg transition-shadow ${job.isNew ? 'ring-2 ring-green-200' : ''} ${job.isUpdated ? 'ring-2 ring-blue-200' : ''}`}>
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
                   <div className="flex items-start space-x-4 flex-1">
@@ -146,9 +282,32 @@ export default function JobsPage() {
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-lg font-semibold text-gray-900">{job.title}</h3>
-                        <Button variant="ghost" size="sm" className="text-gray-400 hover:text-red-500">
-                          <HeartIcon className="w-4 h-4" />
+                        <div className="flex items-center space-x-2">
+                          <h3 className="text-lg font-semibold text-gray-900">{job.title}</h3>
+                          {job.isNew && (
+                            <Badge variant="default" className="bg-green-100 text-green-800 text-xs">
+                              NEW
+                            </Badge>
+                          )}
+                          {job.isUpdated && (
+                            <Badge variant="default" className="bg-blue-100 text-blue-800 text-xs">
+                              UPDATED
+                            </Badge>
+                          )}
+                          {job.isUrgent && (
+                            <Badge variant="destructive" className="text-xs">
+                              URGENT
+                            </Badge>
+                          )}
+                        </div>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className={`${job.saved ? 'text-red-500' : 'text-gray-400'} hover:text-red-500`}
+                          onClick={() => handleSaveJob(job)}
+                          disabled={savingJobs.has(job.id)}
+                        >
+                          <HeartIcon className={`w-4 h-4 ${job.saved ? 'fill-current' : ''}`} />
                         </Button>
                       </div>
                       <div className="flex items-center space-x-4 text-sm text-gray-600 mb-2">
@@ -156,6 +315,14 @@ export default function JobsPage() {
                         <div className="flex items-center">
                           <StarIcon className="w-4 h-4 text-yellow-400 fill-current mr-1" />
                           {job.rating}
+                        </div>
+                        <div className="flex items-center text-xs text-gray-500">
+                          <EyeIcon className="w-3 h-3 mr-1" />
+                          {job.views} views
+                        </div>
+                        <div className="flex items-center text-xs text-gray-500">
+                          <UsersIcon className="w-3 h-3 mr-1" />
+                          {job.applications} applications
                         </div>
                       </div>
                       <div className="flex items-center space-x-4 text-sm text-gray-600 mb-3">
@@ -171,6 +338,11 @@ export default function JobsPage() {
                           <ClockIcon className="w-4 h-4 mr-1" />
                           {job.posted}
                         </div>
+                        {job.isRemote && (
+                          <Badge variant="outline" className="text-xs">
+                            Remote
+                          </Badge>
+                        )}
                       </div>
                       <p className="text-gray-700 mb-3 line-clamp-2">{job.description}</p>
                       <div className="flex items-center justify-between">
@@ -183,9 +355,31 @@ export default function JobsPage() {
                         </div>
                         <div className="flex items-center space-x-2">
                           <span className="text-sm font-semibold text-green-600">{job.salary}</span>
-                          <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                            Apply Now
-                          </Button>
+                          {job.applied ? (
+                            <div className="flex items-center text-green-600 text-sm">
+                              <CheckCircleIcon className="w-4 h-4 mr-1" />
+                              Applied
+                            </div>
+                          ) : (
+                            <Button 
+                              size="sm" 
+                              className="bg-blue-600 hover:bg-blue-700"
+                              onClick={() => handleApplyForJob(job)}
+                              disabled={applyingJobs.has(job.id)}
+                            >
+                              {applyingJobs.has(job.id) ? 'Applying...' : 'Apply Now'}
+                            </Button>
+                          )}
+                          {job.applicationUrl && (
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => window.open(job.applicationUrl, '_blank')}
+                            >
+                              <ArrowTopRightOnSquareIcon className="w-4 h-4 mr-1" />
+                              External
+                            </Button>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -196,12 +390,46 @@ export default function JobsPage() {
           ))}
         </div>
 
+        {/* No Jobs Found */}
+        {!isLoading && jobs.length === 0 && (
+          <div className="text-center py-12">
+            <BriefcaseIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No jobs found</h3>
+            <p className="text-gray-600 mb-4">Try adjusting your search criteria or filters</p>
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setSearchQuery('')
+                setLocationFilter('')
+                setSelectedFilters([])
+                handleSearch()
+              }}
+            >
+              Clear Filters
+            </Button>
+          </div>
+        )}
+
         {/* Load More */}
-        <div className="text-center mt-8">
-          <Button variant="outline" size="lg">
-            Load More Jobs
-          </Button>
-        </div>
+        {hasMore && (
+          <div className="text-center mt-8">
+            <Button 
+              variant="outline" 
+              size="lg"
+              onClick={handleLoadMore}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Loading...' : 'Load More Jobs'}
+            </Button>
+          </div>
+        )}
+
+        {/* End of Results */}
+        {!hasMore && jobs.length > 0 && (
+          <div className="text-center mt-8">
+            <p className="text-sm text-gray-500">You've reached the end of the results</p>
+          </div>
+        )}
       </div>
     </div>
   )

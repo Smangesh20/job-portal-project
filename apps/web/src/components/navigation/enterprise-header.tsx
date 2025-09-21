@@ -350,6 +350,12 @@ export function EnterpriseHeader() {
                     }`}
                     onMouseEnter={() => setActiveDropdown(item.name)}
                     onMouseLeave={() => setActiveDropdown(null)}
+                    onClick={(e) => {
+                      if (item.children) {
+                        e.preventDefault()
+                        setActiveDropdown(activeDropdown === item.name ? null : item.name)
+                      }
+                    }}
                   >
                     {item.icon}
                     <span>{item.name}</span>
