@@ -15,11 +15,8 @@ export function useAuth() {
   useEffect(() => {
     const checkAuth = () => {
       try {
-        // Check for access token in cookies
-        const accessToken = document.cookie
-          .split('; ')
-          .find(row => row.startsWith('accessToken='))
-          ?.split('=')[1]
+        // Check for access token in localStorage (matching login page)
+        const accessToken = localStorage.getItem('accessToken')
 
         if (accessToken) {
           // In a real app, you would decode the JWT token to get user info
@@ -56,14 +53,18 @@ export function useAuth() {
 
       if (response.ok) {
         const data = await response.json()
-        // Set cookies (in a real app, this would be handled by the API)
-        document.cookie = `accessToken=${data.token}; path=/; secure; samesite=strict`
-        document.cookie = `refreshToken=${data.refreshToken}; path=/; secure; samesite=strict`
+        // Store tokens in localStorage (matching login page)
+        if (data.data.accessToken) {
+          localStorage.setItem('accessToken', data.data.accessToken)
+        }
+        if (data.data.refreshToken) {
+          localStorage.setItem('refreshToken', data.data.refreshToken)
+        }
         
         setUser({
-          id: data.user.id,
-          email: data.user.email,
-          name: data.user.name
+          id: data.data.user.id,
+          email: data.data.user.email,
+          name: data.data.user.firstName + ' ' + data.data.user.lastName
         })
         
         return { success: true }
@@ -76,9 +77,9 @@ export function useAuth() {
   }
 
   const logout = () => {
-    // Clear cookies
-    document.cookie = 'accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
-    document.cookie = 'refreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+    // Clear localStorage
+    localStorage.removeItem('accessToken')
+    localStorage.removeItem('refreshToken')
     setUser(null)
   }
 
