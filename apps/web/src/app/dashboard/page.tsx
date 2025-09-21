@@ -2,8 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import ProtectedRoute from '@/components/protected-route'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuthUnified } from '@/hooks/useAuthUnified'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -28,8 +27,23 @@ import {
 
 export default function DashboardPage() {
   const router = useRouter()
-  const { user } = useAuth()
+  const { user, isAuthenticated, isLoading, logout } = useAuthUnified()
   const [searchQuery, setSearchQuery] = useState('')
+
+  // Redirect if not authenticated
+  if (!isLoading && !isAuthenticated) {
+    router.push('/auth/login')
+    return null
+  }
+
+  // Show loading while checking auth
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      </div>
+    )
+  }
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -103,15 +117,14 @@ export default function DashboardPage() {
   ]
 
   return (
-    <ProtectedRoute>
-      <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50">
         {/* Dashboard Header */}
         <div className="bg-white border-b border-gray-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-3xl font-bold text-gray-900">
-                  Welcome back, {user?.name || 'User'}!
+                  Welcome back, {user?.firstName || user?.name || 'User'}!
                 </h1>
                 <p className="text-gray-600 mt-1">
                   Here's what's happening with your job search today.
@@ -129,11 +142,7 @@ export default function DashboardPage() {
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  onClick={() => {
-                    localStorage.removeItem('accessToken')
-                    localStorage.removeItem('refreshToken')
-                    router.push('/auth/login')
-                  }}
+                  onClick={logout}
                   className="text-red-600 hover:text-red-700 hover:bg-red-50"
                 >
                   Logout
@@ -317,6 +326,5 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
-    </ProtectedRoute>
   )
 }

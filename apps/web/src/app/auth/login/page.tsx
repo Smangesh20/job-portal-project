@@ -12,15 +12,16 @@ import {
   CheckCircleIcon
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
+import { useAuthUnified } from '@/hooks/useAuthUnified'
 
 export default function LoginPage() {
   const router = useRouter()
+  const { login, isLoading, error: authError, clearError } = useAuthUnified()
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   })
   const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [showSuccess, setShowSuccess] = useState(false)
 
@@ -31,55 +32,34 @@ export default function LoginPage() {
       [name]: value
     }))
     if (error) setError('')
+    if (authError) clearError()
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
     setError('')
+    clearError()
+
+    // Simple validation
+    if (!formData.email || !formData.password) {
+      setError('Please fill in all fields')
+      return
+    }
 
     try {
-      // Simple validation
-      if (!formData.email || !formData.password) {
-        setError('Please fill in all fields')
-        return
-      }
-
-      // API-based authentication
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (response.ok && data.success) {
-        // Store tokens securely
-        if (data.data.accessToken) {
-          localStorage.setItem('accessToken', data.data.accessToken)
-        }
-        if (data.data.refreshToken) {
-          localStorage.setItem('refreshToken', data.data.refreshToken)
-        }
-        
+      const result = await login(formData.email, formData.password)
+      
+      if (result.success) {
         // Success - show success message for 2 seconds
         setShowSuccess(true)
         setTimeout(() => {
           router.push('/dashboard')
         }, 2000)
       } else {
-        setError(data.error?.message || 'Invalid email or password')
+        setError(result.error || 'Login failed')
       }
     } catch (err) {
       setError('Something went wrong. Please try again.')
-    } finally {
-      setIsLoading(false)
     }
   }
 
@@ -124,9 +104,9 @@ export default function LoginPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              {error && (
+              {(error || authError) && (
                 <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
-                  {error}
+                  {error || authError}
                 </div>
               )}
 

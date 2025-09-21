@@ -35,8 +35,9 @@ export default function ForgotPasswordPage() {
   }
 
   const handleViewSentEmails = () => {
-    console.log('Email functionality now handled by server-side API')
-    alert('Email functionality is now handled by the server-side API. Check the server logs for email sending details.')
+    // For demo purposes, redirect to simple reset page
+    const demoToken = 'demo_token_' + Math.random().toString(36).substr(2, 9)
+    router.push(`/auth/reset-password-simple?token=${demoToken}`)
   }
 
   if (showEmailSent) {
@@ -102,7 +103,7 @@ export default function ForgotPasswordPage() {
                 onClick={handleViewSentEmails}
                 className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
               >
-                View Sent Emails (Dev)
+                Demo Reset Password
               </button>
             </div>
           </div>
