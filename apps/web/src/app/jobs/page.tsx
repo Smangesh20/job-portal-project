@@ -28,6 +28,8 @@ export default function JobsPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedFilters, setSelectedFilters] = useState<string[]>([])
   const [locationFilter, setLocationFilter] = useState('')
+  const [companyFilter, setCompanyFilter] = useState('')
+  const [industryFilter, setIndustryFilter] = useState('')
   const [showFilters, setShowFilters] = useState(false)
   const [applyingJobs, setApplyingJobs] = useState<Set<string>>(new Set())
   const [savingJobs, setSavingJobs] = useState<Set<string>>(new Set())
@@ -55,13 +57,27 @@ export default function JobsPage() {
   const industries = getIndustries()
   const tags = getTags()
 
+  // Auto-search when filters change (Google-style)
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (searchQuery || locationFilter || companyFilter || industryFilter || selectedFilters.length > 0) {
+        handleSearch()
+      }
+    }, 500) // Debounce search
+
+    return () => clearTimeout(timeoutId)
+  }, [searchQuery, locationFilter, companyFilter, industryFilter, selectedFilters])
+
   // Handle search
   const handleSearch = async () => {
     const filters = {
       search: searchQuery,
       location: locationFilter,
+      company: companyFilter,
+      industry: industryFilter ? [industryFilter] : undefined,
       type: selectedFilters.length > 0 ? selectedFilters : undefined
     }
+    console.log('🚀 GOOGLE-STYLE: Searching with filters:', filters)
     await searchJobs(filters)
   }
 
@@ -72,6 +88,16 @@ export default function JobsPage() {
     } else {
       setSelectedFilters([...selectedFilters, type])
     }
+  }
+
+  // Clear all filters
+  const clearFilters = () => {
+    setSearchQuery('')
+    setLocationFilter('')
+    setCompanyFilter('')
+    setIndustryFilter('')
+    setSelectedFilters([])
+    console.log('🚀 GOOGLE-STYLE: Cleared all filters')
   }
 
   // Handle apply for job
@@ -152,8 +178,24 @@ export default function JobsPage() {
             <div className="flex">
               <ExclamationTriangleIcon className="h-5 w-5 text-red-400" />
               <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800">Error</h3>
+                <h3 className="text-sm font-medium text-red-800">Connection Issue</h3>
                 <p className="text-sm text-red-700 mt-1">{error}</p>
+                <div className="mt-3 flex gap-2">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    onClick={() => window.location.reload()}
+                  >
+                    Refresh Page
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    onClick={clearError}
+                  >
+                    Try Again
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
@@ -184,6 +226,13 @@ export default function JobsPage() {
                 Filters
               </Button>
               <Button 
+                variant="outline" 
+                className="flex items-center gap-2"
+                onClick={clearFilters}
+              >
+                Clear
+              </Button>
+              <Button 
                 className="bg-blue-600 hover:bg-blue-700"
                 onClick={handleSearch}
                 disabled={isLoading}
@@ -199,7 +248,7 @@ export default function JobsPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
                 <Select value={locationFilter} onValueChange={setLocationFilter}>
-                  <SelectTrigger>
+                  <SelectTrigger className="cursor-pointer">
                     <SelectValue placeholder="Select location" />
                   </SelectTrigger>
                   <SelectContent>
@@ -214,8 +263,8 @@ export default function JobsPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Company</label>
-                <Select>
-                  <SelectTrigger>
+                <Select value={companyFilter} onValueChange={setCompanyFilter}>
+                  <SelectTrigger className="cursor-pointer">
                     <SelectValue placeholder="Select company" />
                   </SelectTrigger>
                   <SelectContent>
@@ -230,8 +279,8 @@ export default function JobsPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Industry</label>
-                <Select>
-                  <SelectTrigger>
+                <Select value={industryFilter} onValueChange={setIndustryFilter}>
+                  <SelectTrigger className="cursor-pointer">
                     <SelectValue placeholder="Select industry" />
                   </SelectTrigger>
                   <SelectContent>
