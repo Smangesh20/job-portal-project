@@ -74,9 +74,9 @@ export function EnterpriseHeader() {
       </div>
 
       {/* Main Navigation */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
+      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-16 min-h-16">
             {/* Logo */}
             <div className="flex items-center">
               <Link href="/" className="flex items-center space-x-3">
@@ -91,7 +91,7 @@ export function EnterpriseHeader() {
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center space-x-8">
+            <nav className="hidden xl:flex items-center space-x-6">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
@@ -113,16 +113,16 @@ export function EnterpriseHeader() {
             </nav>
 
             {/* Search and Actions */}
-            <div className="flex items-center space-x-4">
-              {/* Search */}
-              <form onSubmit={handleSearch} className="hidden md:flex items-center">
+            <div className="flex items-center space-x-2">
+              {/* Search - Hidden on smaller screens to make room for auth buttons */}
+              <form onSubmit={handleSearch} className="hidden lg:flex items-center">
                 <div className="relative">
                   <Input
                     type="text"
                     placeholder="Search jobs..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-64 pl-10 pr-4 py-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-48 pl-10 pr-4 py-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 </div>
@@ -131,8 +131,8 @@ export function EnterpriseHeader() {
                 </Button>
               </form>
 
-              {/* Notifications */}
-              <div className="relative">
+              {/* Notifications - Hidden on smaller screens */}
+              <div className="relative hidden md:block">
                 <Button variant="ghost" size="sm" className="relative">
                   <Bell className="w-5 h-5" />
                   <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
@@ -141,21 +141,21 @@ export function EnterpriseHeader() {
                 </Button>
               </div>
 
-              {/* User Menu */}
-              <div className="relative flex items-center space-x-3">
+              {/* User Menu - Always visible like Google */}
+              <div className="flex items-center space-x-2">
                 <Button 
                   variant="ghost" 
                   size="sm" 
                   onClick={() => router.push('/auth/login')}
-                  className="flex items-center space-x-2 text-gray-700 hover:text-gray-900"
+                  className="flex items-center space-x-1 text-gray-700 hover:text-gray-900 hover:bg-gray-100 px-3 py-2 rounded-md"
                 >
-                  <User className="w-5 h-5" />
-                  <span className="hidden sm:block">Sign In</span>
+                  <User className="w-4 h-4" />
+                  <span className="hidden sm:block text-sm">Sign In</span>
                 </Button>
                 <Button 
                   size="sm" 
                   onClick={() => router.push('/auth/register')}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-all duration-200"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md text-sm whitespace-nowrap"
                 >
                   Sign Up
                 </Button>
