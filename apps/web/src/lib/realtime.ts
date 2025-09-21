@@ -41,6 +41,12 @@ class EnterpriseRealtimeManager {
   }
 
   private initializeConnection() {
+    // Only initialize if we have a valid WebSocket URL
+    if (!this.config.websocketUrl || this.config.websocketUrl === '') {
+      console.log('🚀 ENTERPRISE: Skipping WebSocket connection - no URL configured');
+      return;
+    }
+    
     // Try WebSocket first, fallback to SSE
     if (typeof WebSocket !== 'undefined') {
       this.initializeWebSocket();
@@ -237,15 +243,37 @@ class EnterpriseRealtimeManager {
 
 // Enterprise configuration
 const realtimeConfig: RealtimeConfig = {
-  websocketUrl: process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'ws://localhost:3001/ws',
+  websocketUrl: process.env.NEXT_PUBLIC_WEBSOCKET_URL || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'ws://localhost:3001/ws' : ''),
   sseUrl: process.env.NEXT_PUBLIC_SSE_URL || '/api/realtime/sse',
   reconnectInterval: 5000,
   maxReconnectAttempts: 10,
   heartbeatInterval: 30000
 };
 
-// Singleton instance
-export const realtimeManager = new EnterpriseRealtimeManager(realtimeConfig);
+// Singleton instance - lazy initialization
+let realtimeManagerInstance: EnterpriseRealtimeManager | null = null;
+
+export const realtimeManager = {
+  getInstance: () => {
+    if (!realtimeManagerInstance) {
+      realtimeManagerInstance = new EnterpriseRealtimeManager(realtimeConfig);
+    }
+    return realtimeManagerInstance;
+  },
+  // Proxy methods to avoid breaking existing code
+  subscribe: (type: string, callback: (data: any) => void) => {
+    return realtimeManager.getInstance().subscribe(type, callback);
+  },
+  send: (type: string, data: any) => {
+    return realtimeManager.getInstance().send(type, data);
+  },
+  getConnectionStatus: () => {
+    return realtimeManager.getInstance().getConnectionStatus();
+  },
+  disconnect: () => {
+    return realtimeManager.getInstance().disconnect();
+  }
+};
 
 // React hook for easy integration (client-side only)
 export function useRealtime() {

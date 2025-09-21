@@ -40,11 +40,11 @@ export interface APIRequest {
 
 // API configuration
 const API_CONFIG = {
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'),
   timeout: 30000,
   retries: 3,
   cacheTTL: 300000, // 5 minutes
-  realtimeEnabled: true
+  realtimeEnabled: typeof window !== 'undefined' && window.location.hostname === 'localhost'
 };
 
 class EnterpriseAPIClient {
