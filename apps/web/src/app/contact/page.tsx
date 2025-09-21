@@ -1,245 +1,189 @@
-'use client'
+import { Metadata } from 'next'
 
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { 
-  EnvelopeIcon,
-  PhoneIcon,
-  MapPinIcon,
-  ClockIcon,
-  ChatBubbleLeftRightIcon,
-  PaperAirplaneIcon
-} from '@heroicons/react/24/outline'
+export const metadata: Metadata = {
+  title: 'Contact AskYaCham - Get in Touch',
+  description: 'Get in touch with the AskYaCham team. We\'re here to help with your career journey.',
+}
 
 export default function ContactPage() {
-  const [isClient, setIsClient] = useState(false)
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  })
-
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
-
-  if (!isClient) {
-    return null
-  }
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
-  }
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Handle form submission
-    console.log('Form submitted:', formData)
-  }
-
-  const contactInfo = [
-    {
-      title: "Email Support",
-      description: "Get help via email",
-      icon: EnvelopeIcon,
-      contact: "info@askyacham.com",
-      details: "We respond within 24 hours"
-    },
-    {
-      title: "Phone Support",
-      description: "Speak with our team",
-      icon: PhoneIcon,
-      contact: "+1-800-ASK-YACHAM",
-      details: "Mon-Fri 9AM-6PM EST"
-    },
-    {
-      title: "Office Address",
-      description: "Visit our headquarters",
-      icon: MapPinIcon,
-      contact: "123 Quantum Street, Tech City, TC 12345",
-      details: "By appointment only"
-    },
-    {
-      title: "Live Chat",
-      description: "Chat with us online",
-      icon: ChatBubbleLeftRightIcon,
-      contact: "Available 24/7",
-      details: "Instant responses"
-    }
-  ]
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-green-50 to-emerald-100">
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
-          <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl flex items-center justify-center">
-              <EnvelopeIcon className="h-8 w-8 text-white" />
-            </div>
-          </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Contact Us</h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            We're here to help! Get in touch with our support team
+    <div className="min-h-screen bg-white">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl sm:text-5xl font-bold mb-6">Contact Us</h1>
+          <p className="text-xl text-blue-100 max-w-2xl mx-auto">
+            Have questions? We're here to help you on your career journey.
           </p>
-        </motion.div>
+        </div>
+      </section>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Contact Information */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Get in Touch</h2>
-            <div className="space-y-6">
-              {contactInfo.map((info, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow duration-200">
-                  <CardContent className="p-6">
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <info.icon className="h-6 w-6 text-green-600" />
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">{info.title}</h3>
-                        <p className="text-gray-600 mb-2">{info.description}</p>
-                        <p className="text-sm font-medium text-gray-900 mb-1">{info.contact}</p>
-                        <p className="text-xs text-gray-500">{info.details}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            {/* Business Hours */}
-            <Card className="mt-8">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <ClockIcon className="h-5 w-5 text-green-600" />
-                  Business Hours
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Monday - Friday</span>
-                    <span className="font-medium">9:00 AM - 6:00 PM EST</span>
+      {/* Contact Form */}
+      <section className="py-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Contact Form */}
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">Send us a message</h2>
+              <form className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
+                      First Name
+                    </label>
+                    <input
+                      type="text"
+                      id="firstName"
+                      name="firstName"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="John"
+                    />
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Saturday</span>
-                    <span className="font-medium">10:00 AM - 4:00 PM EST</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Sunday</span>
-                    <span className="font-medium">Closed</span>
+                  <div>
+                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
+                      Last Name
+                    </label>
+                    <input
+                      type="text"
+                      id="lastName"
+                      name="lastName"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Doe"
+                    />
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-          >
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <PaperAirplaneIcon className="h-5 w-5 text-green-600" />
-                  Send us a Message
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                        Full Name
-                      </label>
-                      <Input
-                        id="name"
-                        name="name"
-                        type="text"
-                        value={formData.name}
-                        onChange={handleInputChange}
-                        placeholder="Your full name"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                        Email Address
-                      </label>
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        placeholder="your@email.com"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
-                      Subject
-                    </label>
-                    <Input
-                      id="subject"
-                      name="subject"
-                      type="text"
-                      value={formData.subject}
-                      onChange={handleInputChange}
-                      placeholder="What's this about?"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                      Message
-                    </label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      rows={6}
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      placeholder="Tell us how we can help you..."
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-none"
-                      required
-                    />
-                  </div>
-
-                  <Button
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="john@example.com"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+                    Subject
+                  </label>
+                  <select
+                    id="subject"
+                    name="subject"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
-                    <PaperAirplaneIcon className="h-4 w-4 mr-2" />
-                    Send Message
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </motion.div>
+                    <option value="">Select a topic</option>
+                    <option value="general">General Inquiry</option>
+                    <option value="support">Technical Support</option>
+                    <option value="billing">Billing Question</option>
+                    <option value="partnership">Partnership Opportunity</option>
+                    <option value="feedback">Feedback</option>
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                    Message
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    rows={6}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Tell us how we can help you..."
+                  ></textarea>
+                </div>
+                <button
+                  type="submit"
+                  className="w-full bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Send Message
+                </button>
+              </form>
+            </div>
+
+            {/* Contact Information */}
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">Get in touch</h2>
+              <div className="space-y-8">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Email Us</h3>
+                  <p className="text-gray-600 mb-2">General inquiries:</p>
+                  <a href="mailto:hello@askyacham.com" className="text-blue-600 hover:text-blue-700">
+                    hello@askyacham.com
+                  </a>
+                  <p className="text-gray-600 mb-2 mt-4">Support:</p>
+                  <a href="mailto:support@askyacham.com" className="text-blue-600 hover:text-blue-700">
+                    support@askyacham.com
+                  </a>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Call Us</h3>
+                  <p className="text-gray-600 mb-2">Monday - Friday, 9AM - 6PM EST</p>
+                  <a href="tel:+15552759242" className="text-blue-600 hover:text-blue-700">
+                    +1 (555) ASK-YACH
+                  </a>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Office Address</h3>
+                  <p className="text-gray-600">
+                    AskYaCham Headquarters<br />
+                    123 Quantum Plaza<br />
+                    San Francisco, CA 94105<br />
+                    United States
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Social Media</h3>
+                  <div className="flex space-x-4">
+                    <a href="#" className="text-blue-600 hover:text-blue-700">
+                      LinkedIn
+                    </a>
+                    <a href="#" className="text-blue-600 hover:text-blue-700">
+                      Twitter
+                    </a>
+                    <a href="#" className="text-blue-600 hover:text-blue-700">
+                      Facebook
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="bg-gray-50 py-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h2>
+          </div>
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">How quickly do you respond to inquiries?</h3>
+              <p className="text-gray-600">
+                We typically respond to all inquiries within 24 hours during business days. For urgent matters, please call our support line.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">Do you offer phone support?</h3>
+              <p className="text-gray-600">
+                Yes, we offer phone support for Professional and Enterprise plan users. Free plan users can reach us via email.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">Can I schedule a demo?</h3>
+              <p className="text-gray-600">
+                Absolutely! We'd love to show you how AskYaCham can transform your career search. Contact us to schedule a personalized demo.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }
-

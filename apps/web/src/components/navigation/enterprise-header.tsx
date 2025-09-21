@@ -31,14 +31,24 @@ export function EnterpriseHeader() {
     }
   }
 
-  const navigation = [
-    { name: isAuthenticated ? 'Dashboard' : 'Home', href: isAuthenticated ? '/dashboard' : '/', current: true },
+  const publicNavigation = [
+    { name: 'Home', href: '/', current: true },
+    { name: 'About', href: '/about' },
+    { name: 'How it Works', href: '/how-it-works' },
+    { name: 'Pricing', href: '/pricing' },
+    { name: 'Contact', href: '/contact' },
+  ]
+
+  const dashboardNavigation = [
+    { name: 'Dashboard', href: '/dashboard', current: true },
     { name: 'Jobs', href: '/jobs', badge: '12' },
     { name: 'Companies', href: '/companies' },
     { name: 'Career Tools', href: '/career-tools' },
     { name: 'AI Insights', href: '/ai-insights' },
     { name: 'Resources', href: '/resources' },
   ]
+
+  const navigation = isAuthenticated ? dashboardNavigation : publicNavigation
 
   return (
     <>
@@ -116,32 +126,36 @@ export function EnterpriseHeader() {
 
             {/* Search and Actions */}
             <div className="flex items-center space-x-2">
-              {/* Search - Hidden on smaller screens to make room for auth buttons */}
-              <form onSubmit={handleSearch} className="hidden lg:flex items-center">
-                <div className="relative">
-                  <Input
-                    type="text"
-                    placeholder="Search jobs..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-48 pl-10 pr-4 py-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                </div>
-                <Button type="submit" className="ml-2 bg-blue-600 hover:bg-blue-700">
-                  Search
-                </Button>
-              </form>
+              {/* Search - Only show for authenticated users */}
+              {isAuthenticated && (
+                <form onSubmit={handleSearch} className="hidden lg:flex items-center">
+                  <div className="relative">
+                    <Input
+                      type="text"
+                      placeholder="Search jobs..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-48 pl-10 pr-4 py-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  </div>
+                  <Button type="submit" className="ml-2 bg-blue-600 hover:bg-blue-700">
+                    Search
+                  </Button>
+                </form>
+              )}
 
-              {/* Notifications - Hidden on smaller screens */}
-              <div className="relative hidden md:block">
-                <Button variant="ghost" size="sm" className="relative">
-                  <Bell className="w-5 h-5" />
-                  <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    3
-                  </span>
-                </Button>
-              </div>
+              {/* Notifications - Only show for authenticated users */}
+              {isAuthenticated && (
+                <div className="relative hidden md:block">
+                  <Button variant="ghost" size="sm" className="relative">
+                    <Bell className="w-5 h-5" />
+                    <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                      3
+                    </span>
+                  </Button>
+                </div>
+              )}
 
               {/* User Menu - Dynamic based on auth status */}
               <div className="flex items-center space-x-2">
@@ -233,22 +247,24 @@ export function EnterpriseHeader() {
                 </Link>
               ))}
               
-              {/* Mobile Search */}
-              <form onSubmit={handleSearch} className="pt-4 border-t border-gray-200">
-                <div className="relative">
-                  <Input
-                    type="text"
-                    placeholder="Search jobs..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                </div>
-                <Button type="submit" className="w-full mt-2 bg-blue-600 hover:bg-blue-700">
-                  Search
-                </Button>
-              </form>
+              {/* Mobile Search - Only show for authenticated users */}
+              {isAuthenticated && (
+                <form onSubmit={handleSearch} className="pt-4 border-t border-gray-200">
+                  <div className="relative">
+                    <Input
+                      type="text"
+                      placeholder="Search jobs..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  </div>
+                  <Button type="submit" className="w-full mt-2 bg-blue-600 hover:bg-blue-700">
+                    Search
+                  </Button>
+                </form>
+              )}
               
               {/* Mobile Auth Buttons */}
               <div className="pt-4 border-t border-gray-200 flex flex-col space-y-3">
