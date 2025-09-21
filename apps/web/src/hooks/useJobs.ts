@@ -18,12 +18,12 @@ export function useJobs() {
 
   // Subscribe to real-time updates
   useEffect(() => {
-    const unsubscribe = jobsService.subscribe((updatedJobs) => {
+    const subscription = jobsService.subscribe((updatedJobs) => {
       setJobs(updatedJobs);
     });
 
     return () => {
-      unsubscribe();
+      subscription.unsubscribe();
     };
   }, []);
 
