@@ -22,7 +22,8 @@ import {
   ArrowRightIcon,
   SparklesIcon,
   ArrowTrendingUpIcon,
-  FlagIcon
+  FlagIcon,
+  CheckCircleIcon
 } from '@heroicons/react/24/outline'
 
 export default function DashboardPage() {
