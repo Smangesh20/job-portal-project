@@ -21,8 +21,8 @@ import {
   HeartIcon,
   ArrowRightIcon,
   SparklesIcon,
-  TrendingUpIcon,
-  TargetIcon
+  ArrowTrendingUpIcon,
+  FlagIcon
 } from '@heroicons/react/24/outline'
 
 export default function DashboardPage() {
@@ -55,7 +55,7 @@ export default function DashboardPage() {
     {
       title: 'Career Tools',
       description: 'Build your professional profile',
-      icon: TargetIcon,
+      icon: FlagIcon,
       href: '/career-tools',
       color: 'purple'
     },
@@ -175,7 +175,7 @@ export default function DashboardPage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center">
-                    <TrendingUpIcon className="w-5 h-5 mr-2 text-green-600" />
+                    <ArrowTrendingUpIcon className="w-5 h-5 mr-2 text-green-600" />
                     Your Latest Job Matches
                   </CardTitle>
                   <CardDescription>
