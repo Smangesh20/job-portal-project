@@ -56,8 +56,7 @@ export default function ResetPasswordDirectPage() {
     console.log('🔐 GOOGLE-STYLE: Form data:', { password: password.length, confirmPassword: confirmPassword.length, token: !!token })
     console.log('🔐 GOOGLE-STYLE: Button should be working now!')
     
-    // Google-style: Show immediate feedback
-    alert('🔐 GOOGLE-STYLE: Reset password button clicked! Check console for details.')
+    // Google-style: Found the real issue - API field mismatch
     
     // Google-style: Clear previous errors first
     setError('')
@@ -93,7 +92,8 @@ export default function ResetPasswordDirectPage() {
         },
         body: JSON.stringify({ 
           token,
-          password: password.trim()
+          newPassword: password.trim(),
+          confirmPassword: confirmPassword.trim()
         }),
       })
 
@@ -230,18 +230,6 @@ export default function ResetPasswordDirectPage() {
                 disabled={isLoading || !password || !confirmPassword || !token}
               >
                 {isLoading ? 'Resetting Password...' : 'Reset Password'}
-              </Button>
-              
-              {/* Google-style: Test button to verify click detection */}
-              <Button
-                type="button"
-                onClick={() => {
-                  console.log('🔐 GOOGLE-STYLE: Test button clicked!')
-                  alert('🔐 GOOGLE-STYLE: Test button works! Form submission might be the issue.')
-                }}
-                className="w-full mt-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
-              >
-                Test Button (Click Me)
               </Button>
             </form>
 

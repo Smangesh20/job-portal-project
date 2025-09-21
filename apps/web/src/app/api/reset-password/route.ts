@@ -3,15 +3,29 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { token, password } = body;
+    const { token, newPassword, confirmPassword } = body;
 
-    if (!token || !password) {
+    if (!token || !newPassword || !confirmPassword) {
       return NextResponse.json(
         { 
           success: false, 
           error: { 
             code: 'MISSING_FIELDS', 
-            message: 'Token and new password are required' 
+            message: 'Token, new password, and confirm password are required' 
+          } 
+        },
+        { status: 400 }
+      );
+    }
+
+    // Validate password match
+    if (newPassword !== confirmPassword) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: { 
+            code: 'PASSWORD_MISMATCH', 
+            message: 'Passwords do not match' 
           } 
         },
         { status: 400 }
@@ -19,7 +33,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate password strength
-    if (password.length < 8) {
+    if (newPassword.length < 8) {
       return NextResponse.json(
         { 
           success: false, 
