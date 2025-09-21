@@ -115,7 +115,7 @@ export function EnterpriseHeader() {
                   }`}
                 >
                   <span>{item.name}</span>
-                  {item.badge && (
+                  {'badge' in item && item.badge && (
                     <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
                       {item.badge}
                     </span>
@@ -239,7 +239,7 @@ export function EnterpriseHeader() {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <span>{item.name}</span>
-                  {item.badge && (
+                  {'badge' in item && item.badge && (
                     <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
                       {item.badge}
                     </span>
