@@ -3,9 +3,9 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { token, newPassword } = body;
+    const { token, password } = body;
 
-    if (!token || !newPassword) {
+    if (!token || !password) {
       return NextResponse.json(
         { 
           success: false, 
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate password strength
-    if (newPassword.length < 8) {
+    if (password.length < 8) {
       return NextResponse.json(
         { 
           success: false, 

@@ -26,8 +26,24 @@ export default function ResetPasswordDirectPage() {
       return
     }
     
-    // For demo purposes, accept any token
-    setIsValidToken(true)
+    // Validate token with API
+    const validateToken = async () => {
+      try {
+        const response = await fetch(`/api/validate-token?token=${token}`)
+        const data = await response.json()
+        
+        if (data.success) {
+          setIsValidToken(true)
+        } else {
+          setError(data.error?.message || 'Invalid or expired reset token')
+        }
+      } catch (error) {
+        console.error('Token validation error:', error)
+        setError('Failed to validate reset token')
+      }
+    }
+    
+    validateToken()
   }, [token])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -48,14 +64,30 @@ export default function ResetPasswordDirectPage() {
     setMessage('')
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      setMessage('Password reset successfully! You can now login with your new password.')
-      setTimeout(() => {
-        router.push('/auth/login')
-      }, 2000)
+      // Call the real reset password API
+      const response = await fetch('/api/reset-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          token,
+          password: password.trim()
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setMessage('Password reset successfully! You can now login with your new password.')
+        setTimeout(() => {
+          router.push('/auth/login')
+        }, 2000)
+      } else {
+        setError(data.error?.message || 'Failed to reset password. Please try again.')
+      }
     } catch (error: any) {
+      console.error('Reset password error:', error)
       setError('An error occurred. Please try again.')
     } finally {
       setIsLoading(false)
