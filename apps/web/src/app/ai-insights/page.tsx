@@ -9,7 +9,7 @@ import {
   ArrowTrendingUpIcon,
   LightBulbIcon,
   CpuChipIcon,
-  TargetIcon,
+  FlagIcon,
   RocketLaunchIcon
 } from '@heroicons/react/24/outline'
 
@@ -35,7 +35,7 @@ export default function AIInsightsPage() {
       id: 'career',
       name: 'Career Paths',
       description: 'AI-powered career progression recommendations',
-      icon: TargetIcon,
+      icon: FlagIcon,
       color: 'purple'
     },
     {
