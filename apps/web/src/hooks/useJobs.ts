@@ -138,6 +138,35 @@ export function useJobs() {
     return jobsService.getTags();
   }, []);
 
+  // World data methods
+  const getWorldStats = useCallback(() => {
+    return jobsService.getWorldStats();
+  }, []);
+
+  const getIndianJobs = useCallback(() => {
+    return jobsService.getIndianJobs();
+  }, []);
+
+  const getGlobalJobs = useCallback(() => {
+    return jobsService.getGlobalJobs();
+  }, []);
+
+  const getJobsByCountry = useCallback((country: string) => {
+    return jobsService.getJobsByCountry(country);
+  }, []);
+
+  const getJobsByCity = useCallback((city: string) => {
+    return jobsService.getJobsByCity(city);
+  }, []);
+
+  const getWorldCompanies = useCallback(() => {
+    return jobsService.getWorldCompanies();
+  }, []);
+
+  const getIndianCompanies = useCallback(() => {
+    return jobsService.getIndianCompanies();
+  }, []);
+
   return {
     jobs,
     isLoading,
@@ -157,6 +186,13 @@ export function useJobs() {
     getCompanies,
     getIndustries,
     getTags,
+    getWorldStats,
+    getIndianJobs,
+    getGlobalJobs,
+    getJobsByCountry,
+    getJobsByCity,
+    getWorldCompanies,
+    getIndianCompanies,
     clearError: () => setError(null)
   };
 }

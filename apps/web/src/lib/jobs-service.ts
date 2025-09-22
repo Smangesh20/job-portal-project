@@ -1,7 +1,9 @@
 /**
  * Enterprise Jobs Service
- * Google-style real-time job data management
+ * Google-style real-time job data management with world data integration
  */
+
+import { worldDataService, WorldJob, WorldCompany } from './world-data-service';
 
 export interface Job {
   id: string;
@@ -61,6 +63,7 @@ export interface JobSearchResult {
 
 class JobsService {
   private jobs: Job[] = [];
+  private worldJobs: WorldJob[] = [];
   private isLoading = false;
   private currentPage = 1;
   private filters: JobFilters = {};
@@ -68,12 +71,52 @@ class JobsService {
 
   constructor() {
     this.initializeData();
+    this.initializeWorldData();
   }
 
   private initializeData() {
     // Initialize with Google-style real-time job data
     this.jobs = this.generateRealTimeJobs();
     console.log('🚀 GOOGLE-STYLE: Jobs service initialized with', this.jobs.length, 'jobs');
+  }
+
+  private initializeWorldData() {
+    // Initialize with world data including Indian companies
+    this.worldJobs = worldDataService.getWorldJobs();
+    console.log('🌍 GOOGLE-STYLE: World data initialized with', this.worldJobs.length, 'jobs from', worldDataService.getStats().countries, 'countries');
+  }
+
+  private convertWorldJobToJob(worldJob: WorldJob): Job {
+    return {
+      id: worldJob.id,
+      title: worldJob.title,
+      company: worldJob.company,
+      location: worldJob.location,
+      type: worldJob.type,
+      salary: worldJob.salary,
+      salaryMin: worldJob.salaryMin,
+      salaryMax: worldJob.salaryMax,
+      posted: worldJob.posted,
+      description: worldJob.description,
+      requirements: worldJob.requirements,
+      tags: worldJob.tags,
+      rating: worldJob.rating,
+      logo: worldJob.logo,
+      isRemote: worldJob.isRemote,
+      isUrgent: worldJob.isUrgent,
+      isNew: worldJob.isNew,
+      isUpdated: worldJob.isUpdated,
+      companySize: worldJob.companySize,
+      industry: worldJob.industry,
+      experienceLevel: worldJob.experienceLevel,
+      benefits: worldJob.benefits,
+      applicationUrl: worldJob.applicationUrl,
+      applicationDeadline: worldJob.applicationDeadline,
+      views: worldJob.views,
+      applications: worldJob.applications,
+      saved: worldJob.saved,
+      applied: worldJob.applied
+    };
   }
 
   private generateRealTimeJobs(): Job[] {
@@ -226,9 +269,10 @@ class JobsService {
 
   // Public methods
   async searchJobs(filters: JobFilters): Promise<JobSearchResult> {
-    console.log('🚀 GOOGLE-STYLE: Searching jobs with filters:', filters);
+    console.log('🌍 GOOGLE-STYLE: Searching world jobs with filters:', filters);
     
-    let filteredJobs = [...this.jobs];
+    // Use world data for comprehensive results including Indian companies
+    let filteredJobs = [...this.worldJobs.map(this.convertWorldJobToJob)];
 
     // Apply search filter
     if (filters.search) {
@@ -457,6 +501,37 @@ class JobsService {
       .filter(job => job.isNew || job.isUrgent || job.rating > 4.5)
       .sort((a, b) => b.rating - a.rating)
       .slice(0, 10);
+  }
+
+  // World data methods
+  getWorldStats() {
+    return worldDataService.getStats();
+  }
+
+  getJobsByCountry(country: string): Job[] {
+    return worldDataService.getJobsByCountry(country).map(this.convertWorldJobToJob);
+  }
+
+  getJobsByCity(city: string): Job[] {
+    return worldDataService.getJobsByCity(city).map(this.convertWorldJobToJob);
+  }
+
+  getIndianJobs(): Job[] {
+    return this.getJobsByCountry('India');
+  }
+
+  getGlobalJobs(): Job[] {
+    const indianJobs = this.getJobsByCountry('India');
+    const allJobs = this.worldJobs.map(this.convertWorldJobToJob);
+    return allJobs.filter(job => !indianJobs.some(indianJob => indianJob.id === job.id));
+  }
+
+  getWorldCompanies() {
+    return worldDataService.getWorldCompanies();
+  }
+
+  getIndianCompanies() {
+    return worldDataService.getWorldCompanies({ country: 'India' });
   }
 }
 

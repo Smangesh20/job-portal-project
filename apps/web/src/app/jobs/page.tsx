@@ -48,8 +48,25 @@ export default function JobsPage() {
     getCompanies,
     getIndustries,
     getTags,
+    getWorldStats,
+    getIndianJobs,
+    getGlobalJobs,
     clearError
   } = useJobs()
+
+  const [worldStats, setWorldStats] = useState<any>(null)
+  const [indianJobs, setIndianJobs] = useState<Job[]>([])
+  const [globalJobs, setGlobalJobs] = useState<Job[]>([])
+
+  useEffect(() => {
+    // Load world data statistics
+    const stats = getWorldStats()
+    setWorldStats(stats)
+    
+    // Load Indian and global jobs
+    setIndianJobs(getIndianJobs())
+    setGlobalJobs(getGlobalJobs())
+  }, [getWorldStats, getIndianJobs, getGlobalJobs])
 
   const jobTypes = ['Full-time', 'Part-time', 'Contract', 'Remote', 'Internship']
   const locations = getLocations()
@@ -171,6 +188,67 @@ export default function JobsPage() {
             </p>
           )}
         </div>
+
+        {/* World Data Statistics */}
+        {worldStats && (
+          <div className="mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+              <CardContent className="p-6">
+                <div className="flex items-center">
+                  <div className="p-2 bg-blue-100 rounded-lg">
+                    <BriefcaseIcon className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-blue-600">Total Jobs</p>
+                    <p className="text-2xl font-bold text-blue-900">{worldStats.totalJobs.toLocaleString()}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
+              <CardContent className="p-6">
+                <div className="flex items-center">
+                  <div className="p-2 bg-green-100 rounded-lg">
+                    <BuildingOfficeIcon className="h-6 w-6 text-green-600" />
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-green-600">Companies</p>
+                    <p className="text-2xl font-bold text-green-900">{worldStats.totalCompanies.toLocaleString()}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-r from-orange-50 to-amber-50 border-orange-200">
+              <CardContent className="p-6">
+                <div className="flex items-center">
+                  <div className="p-2 bg-orange-100 rounded-lg">
+                    <MapPinIcon className="h-6 w-6 text-orange-600" />
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-orange-600">Countries</p>
+                    <p className="text-2xl font-bold text-orange-900">{worldStats.countries}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-r from-purple-50 to-violet-50 border-purple-200">
+              <CardContent className="p-6">
+                <div className="flex items-center">
+                  <div className="p-2 bg-purple-100 rounded-lg">
+                    <StarIcon className="h-6 w-6 text-purple-600" />
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-purple-600">Indian Jobs</p>
+                    <p className="text-2xl font-bold text-purple-900">{worldStats.indianJobs.toLocaleString()}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         {/* Error Message */}
         {error && (
