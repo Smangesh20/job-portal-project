@@ -86,12 +86,30 @@ export default function DashboardPage() {
   useEffect(() => {
     const newDisplayName = getDisplayName()
     console.log('🚀 GOOGLE-STYLE: Updating display name to:', newDisplayName)
-    setDisplayName(newDisplayName)
+    
+    // Ensure displayName is always a clean string
+    let cleanDisplayName = newDisplayName
+    if (typeof cleanDisplayName !== 'string') {
+      console.log('🚀 GOOGLE-STYLE: Display name is not a string, converting:', cleanDisplayName)
+      cleanDisplayName = String(cleanDisplayName)
+    }
+    
+    // Remove any JSON artifacts or unwanted characters
+    cleanDisplayName = cleanDisplayName.replace(/[\[\]{}"]/g, '').trim()
+    
+    // If it still looks like JSON, use fallback
+    if (cleanDisplayName.includes('id') && cleanDisplayName.includes('email')) {
+      console.log('🚀 GOOGLE-STYLE: Display name looks like JSON, using fallback')
+      cleanDisplayName = 'Welcome Back'
+    }
+    
+    console.log('🚀 GOOGLE-STYLE: Clean display name:', cleanDisplayName)
+    setDisplayName(cleanDisplayName)
   }, [user, isAuthenticated])
 
-  // ULTIMATE ACCOUNT DATA SOLUTION - Will find your name no matter what
+  // CLEAN NAME DISPLAY SOLUTION - No more JSON artifacts
   const getDisplayName = () => {
-    console.log('🚀 GOOGLE-STYLE: Getting display name - ULTIMATE VERSION')
+    console.log('🚀 GOOGLE-STYLE: Getting display name - CLEAN VERSION')
     
     // Check ALL possible localStorage keys for user data
     const allKeys = Object.keys(localStorage)
@@ -106,37 +124,70 @@ export default function DashboardPage() {
       if (data) {
         console.log(`🚀 GOOGLE-STYLE: Found data in ${key}:`, data)
         try {
-          const parsed = JSON.parse(data)
-          if (parsed && (parsed.firstName || parsed.name || parsed.email)) {
+          // Handle both string and already parsed data
+          let parsed
+          if (typeof data === 'string') {
+            parsed = JSON.parse(data)
+          } else {
+            parsed = data
+          }
+          
+          // Ensure it's a valid object with user data
+          if (parsed && typeof parsed === 'object' && (parsed.firstName || parsed.name || parsed.email)) {
             foundUserData = parsed
             console.log(`🚀 GOOGLE-STYLE: Using data from ${key}:`, parsed)
             break
           }
         } catch (e) {
           console.log(`🚀 GOOGLE-STYLE: Error parsing ${key}:`, e)
+          // Try to extract name from malformed data
+          if (data.includes('firstName') || data.includes('email')) {
+            console.log(`🚀 GOOGLE-STYLE: Attempting to extract name from malformed data in ${key}`)
+            // Extract name from malformed JSON
+            const nameMatch = data.match(/"firstName":"([^"]+)"/)
+            if (nameMatch) {
+              foundUserData = { firstName: nameMatch[1] }
+              console.log(`🚀 GOOGLE-STYLE: Extracted firstName from malformed data:`, nameMatch[1])
+              break
+            }
+            const emailMatch = data.match(/"email":"([^"]+)"/)
+            if (emailMatch) {
+              const emailName = emailMatch[1].split('@')[0]
+              const capitalizedName = emailName.charAt(0).toUpperCase() + emailName.slice(1)
+              foundUserData = { firstName: capitalizedName }
+              console.log(`🚀 GOOGLE-STYLE: Extracted email name from malformed data:`, capitalizedName)
+              break
+            }
+          }
         }
       }
     }
     
     // PRIORITY 1: Use found user data
-    if (foundUserData) {
+    if (foundUserData && typeof foundUserData === 'object') {
       console.log('🚀 GOOGLE-STYLE: Found user data:', foundUserData)
       
-      if (foundUserData.firstName && foundUserData.lastName) {
-        const fullName = `${foundUserData.firstName} ${foundUserData.lastName}`
+      // Ensure we have valid string values
+      const firstName = foundUserData.firstName && typeof foundUserData.firstName === 'string' ? foundUserData.firstName : ''
+      const lastName = foundUserData.lastName && typeof foundUserData.lastName === 'string' ? foundUserData.lastName : ''
+      const name = foundUserData.name && typeof foundUserData.name === 'string' ? foundUserData.name : ''
+      const email = foundUserData.email && typeof foundUserData.email === 'string' ? foundUserData.email : ''
+      
+      if (firstName && lastName) {
+        const fullName = `${firstName} ${lastName}`
         console.log('🚀 GOOGLE-STYLE: Using full name:', fullName)
         return fullName
       }
-      if (foundUserData.firstName) {
-        console.log('🚀 GOOGLE-STYLE: Using first name:', foundUserData.firstName)
-        return foundUserData.firstName
+      if (firstName) {
+        console.log('🚀 GOOGLE-STYLE: Using first name:', firstName)
+        return firstName
       }
-      if (foundUserData.name) {
-        console.log('🚀 GOOGLE-STYLE: Using name field:', foundUserData.name)
-        return foundUserData.name
+      if (name) {
+        console.log('🚀 GOOGLE-STYLE: Using name field:', name)
+        return name
       }
-      if (foundUserData.email) {
-        const emailName = foundUserData.email.split('@')[0]
+      if (email) {
+        const emailName = email.split('@')[0]
         const capitalizedName = emailName.charAt(0).toUpperCase() + emailName.slice(1)
         console.log('🚀 GOOGLE-STYLE: Using email name:', capitalizedName)
         return capitalizedName
@@ -144,19 +195,23 @@ export default function DashboardPage() {
     }
     
     // PRIORITY 2: Check authentication context
-    if (user) {
+    if (user && typeof user === 'object') {
       console.log('🚀 GOOGLE-STYLE: Using auth context user:', user)
-      if (user.firstName && user.lastName) {
-        const fullName = `${user.firstName} ${user.lastName}`
+      const firstName = user.firstName && typeof user.firstName === 'string' ? user.firstName : ''
+      const lastName = user.lastName && typeof user.lastName === 'string' ? user.lastName : ''
+      const email = user.email && typeof user.email === 'string' ? user.email : ''
+      
+      if (firstName && lastName) {
+        const fullName = `${firstName} ${lastName}`
         console.log('🚀 GOOGLE-STYLE: Using auth context full name:', fullName)
         return fullName
       }
-      if (user.firstName) {
-        console.log('🚀 GOOGLE-STYLE: Using auth context first name:', user.firstName)
-        return user.firstName
+      if (firstName) {
+        console.log('🚀 GOOGLE-STYLE: Using auth context first name:', firstName)
+        return firstName
       }
-      if (user.email) {
-        const emailName = user.email.split('@')[0]
+      if (email) {
+        const emailName = email.split('@')[0]
         const capitalizedName = emailName.charAt(0).toUpperCase() + emailName.slice(1)
         console.log('🚀 GOOGLE-STYLE: Using auth context email name:', capitalizedName)
         return capitalizedName
@@ -166,7 +221,7 @@ export default function DashboardPage() {
     // PRIORITY 3: Check for any email in localStorage
     for (const key of allKeys) {
       const value = localStorage.getItem(key)
-      if (value && value.includes('@') && value.includes('.')) {
+      if (value && typeof value === 'string' && value.includes('@') && value.includes('.')) {
         console.log(`🚀 GOOGLE-STYLE: Found email in ${key}:`, value)
         const emailName = value.split('@')[0]
         const capitalizedName = emailName.charAt(0).toUpperCase() + emailName.slice(1)
