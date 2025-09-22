@@ -21,10 +21,10 @@ export default function CompaniesPage() {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([])
   
   // Company dropdown filters
-  const [industryFilter, setIndustryFilter] = useState('')
-  const [locationFilter, setLocationFilter] = useState('')
-  const [sizeFilter, setSizeFilter] = useState('')
-  const [ratingFilter, setRatingFilter] = useState('')
+  const [industryFilter, setIndustryFilter] = useState('all')
+  const [locationFilter, setLocationFilter] = useState('all')
+  const [sizeFilter, setSizeFilter] = useState('all')
+  const [ratingFilter, setRatingFilter] = useState('all')
 
   const companies = [
     {
@@ -126,7 +126,7 @@ export default function CompaniesPage() {
                     <SelectValue placeholder="Select industry" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Industries</SelectItem>
+                    <SelectItem value="all">All Industries</SelectItem>
                     {industries.map((industry) => (
                       <SelectItem key={industry} value={industry}>
                         {industry}
@@ -143,7 +143,7 @@ export default function CompaniesPage() {
                     <SelectValue placeholder="Select location" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Locations</SelectItem>
+                    <SelectItem value="all">All Locations</SelectItem>
                     {locations.map((location) => (
                       <SelectItem key={location} value={location}>
                         {location}
@@ -160,7 +160,7 @@ export default function CompaniesPage() {
                     <SelectValue placeholder="Select size" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Sizes</SelectItem>
+                    <SelectItem value="all">All Sizes</SelectItem>
                     {companySizes.map((size) => (
                       <SelectItem key={size} value={size}>
                         {size}
@@ -177,7 +177,7 @@ export default function CompaniesPage() {
                     <SelectValue placeholder="Select rating" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Ratings</SelectItem>
+                    <SelectItem value="all">All Ratings</SelectItem>
                     {ratings.map((rating) => (
                       <SelectItem key={rating} value={rating}>
                         {rating}
@@ -189,30 +189,30 @@ export default function CompaniesPage() {
             </div>
             
             {/* Filter Summary */}
-            {(industryFilter || locationFilter || sizeFilter || ratingFilter) && (
+            {(industryFilter && industryFilter !== 'all') || (locationFilter && locationFilter !== 'all') || (sizeFilter && sizeFilter !== 'all') || (ratingFilter && ratingFilter !== 'all') ? (
               <div className="mt-4 p-3 bg-blue-50 rounded-lg">
                 <p className="text-sm text-blue-800">
                   <strong>Active Filters:</strong> 
-                  {industryFilter && ` Industry: ${industryFilter}`}
-                  {locationFilter && ` Location: ${locationFilter}`}
-                  {sizeFilter && ` Size: ${sizeFilter}`}
-                  {ratingFilter && ` Rating: ${ratingFilter}`}
+                  {industryFilter && industryFilter !== 'all' && ` Industry: ${industryFilter}`}
+                  {locationFilter && locationFilter !== 'all' && ` Location: ${locationFilter}`}
+                  {sizeFilter && sizeFilter !== 'all' && ` Size: ${sizeFilter}`}
+                  {ratingFilter && ratingFilter !== 'all' && ` Rating: ${ratingFilter}`}
                 </p>
                 <Button 
                   variant="outline" 
                   size="sm" 
                   onClick={() => {
-                    setIndustryFilter('')
-                    setLocationFilter('')
-                    setSizeFilter('')
-                    setRatingFilter('')
+                    setIndustryFilter('all')
+                    setLocationFilter('all')
+                    setSizeFilter('all')
+                    setRatingFilter('all')
                   }}
                   className="mt-2"
                 >
                   Clear All Filters
                 </Button>
               </div>
-            )}
+            ) : null}
           </div>
         </div>
 

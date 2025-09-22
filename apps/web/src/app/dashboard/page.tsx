@@ -41,10 +41,10 @@ export default function DashboardPage() {
   const [customName, setCustomName] = useState('')
   
   // Dashboard dropdown filters
-  const [jobTypeFilter, setJobTypeFilter] = useState('')
-  const [locationFilter, setLocationFilter] = useState('')
-  const [companyFilter, setCompanyFilter] = useState('')
-  const [industryFilter, setIndustryFilter] = useState('')
+  const [jobTypeFilter, setJobTypeFilter] = useState('all')
+  const [locationFilter, setLocationFilter] = useState('all')
+  const [companyFilter, setCompanyFilter] = useState('all')
+  const [industryFilter, setIndustryFilter] = useState('all')
   
   // Dropdown data
   const jobTypes = ['Full-time', 'Part-time', 'Contract', 'Remote', 'Internship']
@@ -661,7 +661,7 @@ This is the name you provided during registration!`)
                         <SelectValue placeholder="Select job type" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All Job Types</SelectItem>
+                        <SelectItem value="all">All Job Types</SelectItem>
                         {jobTypes.map((type) => (
                           <SelectItem key={type} value={type}>
                             {type}
@@ -678,7 +678,7 @@ This is the name you provided during registration!`)
                         <SelectValue placeholder="Select location" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All Locations</SelectItem>
+                        <SelectItem value="all">All Locations</SelectItem>
                         {locations.map((location) => (
                           <SelectItem key={location} value={location}>
                             {location}
@@ -695,7 +695,7 @@ This is the name you provided during registration!`)
                         <SelectValue placeholder="Select company" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All Companies</SelectItem>
+                        <SelectItem value="all">All Companies</SelectItem>
                         {companies.map((company) => (
                           <SelectItem key={company} value={company}>
                             {company}
@@ -712,7 +712,7 @@ This is the name you provided during registration!`)
                         <SelectValue placeholder="Select industry" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All Industries</SelectItem>
+                        <SelectItem value="all">All Industries</SelectItem>
                         {industries.map((industry) => (
                           <SelectItem key={industry} value={industry}>
                             {industry}
@@ -724,30 +724,30 @@ This is the name you provided during registration!`)
                 </div>
                 
                 {/* Filter Summary */}
-                {(jobTypeFilter || locationFilter || companyFilter || industryFilter) && (
+                {(jobTypeFilter && jobTypeFilter !== 'all') || (locationFilter && locationFilter !== 'all') || (companyFilter && companyFilter !== 'all') || (industryFilter && industryFilter !== 'all') ? (
                   <div className="mt-4 p-3 bg-blue-50 rounded-lg">
                     <p className="text-sm text-blue-800">
                       <strong>Active Filters:</strong> 
-                      {jobTypeFilter && ` Job Type: ${jobTypeFilter}`}
-                      {locationFilter && ` Location: ${locationFilter}`}
-                      {companyFilter && ` Company: ${companyFilter}`}
-                      {industryFilter && ` Industry: ${industryFilter}`}
+                      {jobTypeFilter && jobTypeFilter !== 'all' && ` Job Type: ${jobTypeFilter}`}
+                      {locationFilter && locationFilter !== 'all' && ` Location: ${locationFilter}`}
+                      {companyFilter && companyFilter !== 'all' && ` Company: ${companyFilter}`}
+                      {industryFilter && industryFilter !== 'all' && ` Industry: ${industryFilter}`}
                     </p>
                     <Button 
                       variant="outline" 
                       size="sm" 
                       onClick={() => {
-                        setJobTypeFilter('')
-                        setLocationFilter('')
-                        setCompanyFilter('')
-                        setIndustryFilter('')
+                        setJobTypeFilter('all')
+                        setLocationFilter('all')
+                        setCompanyFilter('all')
+                        setIndustryFilter('all')
                       }}
                       className="mt-2"
                     >
                       Clear All Filters
                     </Button>
                   </div>
-                )}
+                ) : null}
               </div>
             </CardContent>
           </Card>
