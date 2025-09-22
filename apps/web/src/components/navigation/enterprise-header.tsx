@@ -139,8 +139,21 @@ export function EnterpriseHeader() {
   const pathname = usePathname()
   const { user, logout, isAuthenticated } = useAuthUnified()
 
+  // Debug logging
+  useEffect(() => {
+    console.log('🔔 GOOGLE-STYLE: Header state update:', {
+      isAuthenticated,
+      notificationsCount: notifications.length,
+      unreadCount: notifications.filter(n => n.unread).length,
+      activeDropdown,
+      isNotificationsOpen
+    })
+  }, [isAuthenticated, notifications, activeDropdown, isNotificationsOpen])
+
   // Add new notifications periodically (Google-style)
   useEffect(() => {
+    console.log('🔔 GOOGLE-STYLE: Notifications effect running, isAuthenticated:', isAuthenticated)
+    
     if (!isAuthenticated) return
 
     const interval = setInterval(() => {
@@ -152,6 +165,7 @@ export function EnterpriseHeader() {
         unread: true
       }
       
+      console.log('🔔 GOOGLE-STYLE: Adding new notification:', newNotification)
       setNotifications(prev => [newNotification, ...prev.slice(0, 9)]) // Keep only 10 notifications
     }, 30000) // Add notification every 30 seconds
 
@@ -160,6 +174,7 @@ export function EnterpriseHeader() {
 
   // Mark notification as read
   const markAsRead = (notificationId: number) => {
+    console.log('🔔 GOOGLE-STYLE: Marking notification as read:', notificationId)
     setNotifications(prev => 
       prev.map(notif => 
         notif.id === notificationId ? { ...notif, unread: false } : notif
@@ -169,6 +184,7 @@ export function EnterpriseHeader() {
 
   // Mark all notifications as read
   const markAllAsRead = () => {
+    console.log('🔔 GOOGLE-STYLE: Marking all notifications as read')
     setNotifications(prev => 
       prev.map(notif => ({ ...notif, unread: false }))
     )
@@ -390,6 +406,7 @@ export function EnterpriseHeader() {
                     onClick={(e) => {
                       if (item.children) {
                         e.preventDefault()
+                        console.log('🖱️ GOOGLE-STYLE: Dropdown clicked:', item.name, 'current:', activeDropdown)
                         setActiveDropdown(activeDropdown === item.name ? null : item.name)
                       }
                     }}
@@ -497,7 +514,10 @@ export function EnterpriseHeader() {
                     variant="ghost" 
                     size="sm" 
                     className="relative p-3 hover:bg-gray-100 rounded-xl transition-colors"
-                    onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+                    onClick={() => {
+                      console.log('🔔 GOOGLE-STYLE: Notification button clicked, current state:', isNotificationsOpen)
+                      setIsNotificationsOpen(!isNotificationsOpen)
+                    }}
                   >
                     <Bell className="w-5 h-5" />
                     {notifications.filter(n => n.unread).length > 0 && (
@@ -521,7 +541,10 @@ export function EnterpriseHeader() {
                             className={`px-4 py-3 hover:bg-gray-50 transition-colors cursor-pointer ${
                               notification.unread ? 'bg-blue-50 border-l-4 border-blue-500' : ''
                             }`}
-                            onClick={() => markAsRead(notification.id)}
+                            onClick={() => {
+                              console.log('🔔 GOOGLE-STYLE: Notification item clicked:', notification.id)
+                              markAsRead(notification.id)
+                            }}
                           >
                             <div className="flex items-start space-x-3">
                               <div className={`w-2 h-2 rounded-full mt-2 ${
@@ -541,7 +564,10 @@ export function EnterpriseHeader() {
                           variant="ghost" 
                           size="sm" 
                           className="w-full text-purple-600 hover:text-purple-700"
-                          onClick={markAllAsRead}
+                          onClick={() => {
+                            console.log('🔔 GOOGLE-STYLE: Mark all as read button clicked')
+                            markAllAsRead()
+                          }}
                         >
                           Mark all as read
                         </Button>
