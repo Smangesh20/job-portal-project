@@ -173,6 +173,20 @@ export function EnterpriseHeader() {
     return () => clearInterval(interval)
   }, [isAuthenticated])
 
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
+      if (!target.closest('[data-dropdown-name]') && !target.closest('.dropdown-menu')) {
+        console.log('🖱️ GOOGLE-STYLE: Clicking outside dropdown, closing all')
+        setActiveDropdown(null)
+      }
+    }
+
+    document.addEventListener('click', handleClickOutside)
+    return () => document.removeEventListener('click', handleClickOutside)
+  }, [])
+
   // Mark notification as read
   const markAsRead = (notificationId: number) => {
     console.log('🔔 GOOGLE-STYLE: Marking notification as read:', notificationId)
@@ -404,13 +418,26 @@ export function EnterpriseHeader() {
                     }`}
                     data-testid="dropdown-item"
                     data-dropdown-name={item.name}
-                    onMouseEnter={() => setActiveDropdown(item.name)}
-                    onMouseLeave={() => setActiveDropdown(null)}
+                    onMouseEnter={() => {
+                      if (item.children) {
+                        console.log('🖱️ GOOGLE-STYLE: Mouse enter:', item.name)
+                        setActiveDropdown(item.name)
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      if (item.children) {
+                        console.log('🖱️ GOOGLE-STYLE: Mouse leave:', item.name)
+                        setActiveDropdown(null)
+                      }
+                    }}
                     onClick={(e) => {
                       if (item.children) {
                         e.preventDefault()
+                        e.stopPropagation()
                         console.log('🖱️ GOOGLE-STYLE: Dropdown clicked:', item.name, 'current:', activeDropdown)
-                        setActiveDropdown(activeDropdown === item.name ? null : item.name)
+                        const newActiveDropdown = activeDropdown === item.name ? null : item.name
+                        setActiveDropdown(newActiveDropdown)
+                        console.log('🖱️ GOOGLE-STYLE: Setting activeDropdown to:', newActiveDropdown)
                       }
                     }}
                   >
@@ -432,7 +459,7 @@ export function EnterpriseHeader() {
                   
                   {/* Dropdown Menu */}
                   {item.children && activeDropdown === item.name && (
-                    <div className="absolute top-full left-0 mt-1 w-64 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50">
+                    <div className="dropdown-menu absolute top-full left-0 mt-1 w-64 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50">
                       <div className="px-4 py-2 border-b border-gray-100">
                         <h3 className="font-semibold text-gray-900">{item.name}</h3>
                         <p className="text-xs text-gray-500">{item.description}</p>
