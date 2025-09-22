@@ -16,6 +16,7 @@ import { BulletproofDropdown } from '@/components/bulletproof-dropdown'
 import { ToggleFilterButtons } from '@/components/toggle-filter-buttons'
 import { SimpleClickButtons } from '@/components/simple-click-buttons'
 import { BasicHtmlButtons } from '@/components/basic-html-buttons'
+import { PlainTextLinks } from '@/components/plain-text-links'
 import { 
   BriefcaseIcon,
   BuildingOfficeIcon,
@@ -700,28 +701,28 @@ This is the name you provided during registration!`)
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <h3 className="text-lg font-medium text-gray-900 mb-6">Filter Options</h3>
                 <div className="space-y-6">
-                  <BasicHtmlButtons
+                  <PlainTextLinks
                     label="Job Type"
                     options={jobTypes}
                     selectedValues={selectedJobTypes}
                     onToggle={toggleJobType}
                   />
                   
-                  <BasicHtmlButtons
+                  <PlainTextLinks
                     label="Location"
                     options={locations}
                     selectedValues={selectedLocations}
                     onToggle={toggleLocation}
                   />
                   
-                  <BasicHtmlButtons
+                  <PlainTextLinks
                     label="Company"
                     options={companies}
                     selectedValues={selectedCompanies}
                     onToggle={toggleCompany}
                   />
                   
-                  <BasicHtmlButtons
+                  <PlainTextLinks
                     label="Industry"
                     options={industries}
                     selectedValues={selectedIndustries}
@@ -780,6 +781,42 @@ This is the name you provided during registration!`)
               <p><strong>Display Name:</strong> {user ? (user.firstName || user.name || user.email || 'No name found') : 'No user'}</p>
               <p><strong>LocalStorage UserData:</strong> {typeof window !== 'undefined' ? localStorage.getItem('userData') : 'Server side'}</p>
               <p><strong>LocalStorage AccessToken:</strong> {typeof window !== 'undefined' ? localStorage.getItem('accessToken') : 'Server side'}</p>
+            </div>
+            
+            {/* Simple Name Test */}
+            <div className="mt-4 p-3 bg-white rounded border">
+              <h4 className="font-medium mb-2">Test Welcome Message</h4>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Enter your name"
+                  className="px-3 py-1 border rounded"
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      const name = (e.target as HTMLInputElement).value;
+                      if (name) {
+                        const userData = { firstName: name, name: name };
+                        localStorage.setItem('userData', JSON.stringify(userData));
+                        window.location.reload();
+                      }
+                    }
+                  }}
+                />
+                <button
+                  onClick={() => {
+                    const input = document.querySelector('input[placeholder="Enter your name"]') as HTMLInputElement;
+                    const name = input?.value;
+                    if (name) {
+                      const userData = { firstName: name, name: name };
+                      localStorage.setItem('userData', JSON.stringify(userData));
+                      window.location.reload();
+                    }
+                  }}
+                  className="px-3 py-1 bg-blue-600 text-white rounded"
+                >
+                  Set Name
+                </button>
+              </div>
             </div>
           </div>
 
