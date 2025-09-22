@@ -6,6 +6,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAuthUnified } from '@/hooks/useAuthUnified'
+import { useNotifications } from '@/contexts/NotificationContext'
 import { 
   Search,
   Bell,
@@ -124,17 +125,10 @@ export function EnterpriseHeader() {
   const [searchQuery, setSearchQuery] = useState('')
   const [isSearchFocused, setIsSearchFocused] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([])
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null)
-  const [notifications, setNotifications] = useState([
-    { id: 1, title: 'Welcome to AskYaCham!', message: 'Discover your next career opportunity', time: '2m ago', unread: true },
-    { id: 2, title: 'New job opportunities', message: '700+ jobs from 23 countries available', time: '1h ago', unread: true },
-    { id: 3, title: 'Sign up for updates', message: 'Get personalized job recommendations', time: '3h ago', unread: false },
-    { id: 4, title: 'Indian companies hiring', message: 'TCS, Infosys, Wipro and more', time: '1d ago', unread: false },
-    { id: 5, title: 'Global opportunities', message: 'Jobs from Google, Microsoft, Apple', time: '2d ago', unread: false },
-  ])
+  const { notifications, isNotificationsOpen, setIsNotificationsOpen, markAsRead, markAllAsRead, unreadCount } = useNotifications()
 
   const router = useRouter()
   const pathname = usePathname()
@@ -145,34 +139,12 @@ export function EnterpriseHeader() {
     console.log('🔔 GOOGLE-STYLE: Header state update:', {
       isAuthenticated,
       notificationsCount: notifications.length,
-      unreadCount: notifications.filter(n => n.unread).length,
+      unreadCount: unreadCount,
       activeDropdown,
       isNotificationsOpen
     })
   }, [isAuthenticated, notifications, activeDropdown, isNotificationsOpen])
 
-  // Add new notifications periodically (Google-style)
-  useEffect(() => {
-    console.log('🔔 GOOGLE-STYLE: Notifications effect running, isAuthenticated:', isAuthenticated)
-    
-    // Show notifications for all users, not just authenticated ones
-    const interval = setInterval(() => {
-      const newNotification = {
-        id: Date.now(),
-        title: isAuthenticated ? 'New job opportunities' : 'Welcome to AskYaCham!',
-        message: isAuthenticated 
-          ? `${Math.floor(Math.random() * 10) + 1} new jobs match your profile`
-          : 'Sign up to get personalized job recommendations',
-        time: 'Just now',
-        unread: true
-      }
-      
-      console.log('🔔 GOOGLE-STYLE: Adding new notification:', newNotification)
-      setNotifications(prev => [newNotification, ...prev.slice(0, 9)]) // Keep only 10 notifications
-    }, 30000) // Add notification every 30 seconds
-
-    return () => clearInterval(interval)
-  }, [isAuthenticated])
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -200,23 +172,6 @@ export function EnterpriseHeader() {
     }
   }, [hoverTimeout])
 
-  // Mark notification as read
-  const markAsRead = (notificationId: number) => {
-    console.log('🔔 GOOGLE-STYLE: Marking notification as read:', notificationId)
-    setNotifications(prev => 
-      prev.map(notif => 
-        notif.id === notificationId ? { ...notif, unread: false } : notif
-      )
-    )
-  }
-
-  // Mark all notifications as read
-  const markAllAsRead = () => {
-    console.log('🔔 GOOGLE-STYLE: Marking all notifications as read')
-    setNotifications(prev => 
-      prev.map(notif => ({ ...notif, unread: false }))
-    )
-  }
   const searchRef = useRef<HTMLInputElement>(null)
   const userMenuRef = useRef<HTMLDivElement>(null)
   const notificationRef = useRef<HTMLDivElement>(null)
@@ -596,9 +551,9 @@ export function EnterpriseHeader() {
                     }}
                   >
                     <Bell className="w-5 h-5" />
-                    {notifications.filter(n => n.unread).length > 0 && (
+                    {unreadCount > 0 && (
                       <span className="absolute -top-1 -right-1 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-semibold">
-                        {notifications.filter(n => n.unread).length}
+                        {unreadCount}
                       </span>
                     )}
                   </Button>
@@ -608,7 +563,7 @@ export function EnterpriseHeader() {
                     <div className="notification-dropdown absolute top-full right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50">
                       <div className="px-4 py-3 border-b border-gray-100">
                         <h3 className="font-semibold text-gray-900">Notifications</h3>
-                        <p className="text-xs text-gray-500">{notifications.filter(n => n.unread).length} unread</p>
+                        <p className="text-xs text-gray-500">{unreadCount} unread</p>
                       </div>
                       <div className="max-h-80 overflow-y-auto">
                         {notifications.map((notification) => (

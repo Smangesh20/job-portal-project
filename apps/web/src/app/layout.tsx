@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { EnterpriseHeader } from '@/components/navigation/enterprise-header'
 import { AuthProvider } from '@/components/providers/auth-provider'
+import { NotificationProvider } from '@/contexts/NotificationContext'
 import { ConnectionStatus, ConnectionBanner } from '@/components/ui/connection-status'
 import { GoogleNetworkHandler } from '@/components/providers/google-error-boundary'
 import { GlobalErrorBoundary } from '@/components/error-boundary/global-error-boundary'
@@ -93,10 +94,12 @@ export default function RootLayout({
         <GlobalErrorBoundary>
           <GoogleNetworkHandler>
             <AuthProvider>
-              <ConnectionBanner />
-              <EnterpriseHeader />
-              {children}
-              <ConnectionStatus />
+              <NotificationProvider>
+                <ConnectionBanner />
+                <EnterpriseHeader />
+                {children}
+                <ConnectionStatus />
+              </NotificationProvider>
             </AuthProvider>
           </GoogleNetworkHandler>
         </GlobalErrorBoundary>

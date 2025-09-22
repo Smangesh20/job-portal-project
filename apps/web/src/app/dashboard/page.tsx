@@ -7,13 +7,13 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { NotificationDropdown } from '@/components/NotificationDropdown'
 import { 
   BriefcaseIcon,
   BuildingOfficeIcon,
   ChartBarIcon,
   UserGroupIcon,
   MagnifyingGlassIcon,
-  BellIcon,
   StarIcon,
   ClockIcon,
   MapPinIcon,
@@ -138,11 +138,7 @@ export default function DashboardPage() {
                 </p>
               </div>
               <div className="flex items-center space-x-4">
-                <Button variant="outline" size="sm" onClick={() => router.push('/')}>
-                  <BellIcon className="w-4 h-4 mr-2" />
-                  Notifications
-                  <Badge variant="secondary" className="ml-2">7</Badge>
-                </Button>
+                <NotificationDropdown />
                 <Button size="sm" onClick={() => router.push('/profile')}>
                   View Profile
                 </Button>
