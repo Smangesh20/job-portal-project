@@ -49,19 +49,35 @@ export default function DashboardPage() {
       console.log('  - user lastName:', user.lastName)
     }
     
-    // Direct localStorage check
-    const storedUserData = localStorage.getItem('userData')
-    console.log('🚀 GOOGLE-STYLE: Direct localStorage userData:', storedUserData)
-    if (storedUserData) {
+    // COMPREHENSIVE localStorage inspection
+    console.log('🚀 GOOGLE-STYLE: === COMPLETE localStorage INSPECTION ===')
+    const accessToken = localStorage.getItem('accessToken')
+    const refreshToken = localStorage.getItem('refreshToken')
+    const userData = localStorage.getItem('userData')
+    const userEmail = localStorage.getItem('userEmail')
+    
+    console.log('🚀 GOOGLE-STYLE: accessToken:', accessToken)
+    console.log('🚀 GOOGLE-STYLE: refreshToken:', refreshToken)
+    console.log('🚀 GOOGLE-STYLE: userData:', userData)
+    console.log('🚀 GOOGLE-STYLE: userEmail:', userEmail)
+    
+    if (userData) {
       try {
-        const parsedUser = JSON.parse(storedUserData)
+        const parsedUser = JSON.parse(userData)
         console.log('🚀 GOOGLE-STYLE: Parsed localStorage user:', parsedUser)
         console.log('🚀 GOOGLE-STYLE: Parsed firstName:', parsedUser.firstName)
         console.log('🚀 GOOGLE-STYLE: Parsed lastName:', parsedUser.lastName)
+        console.log('🚀 GOOGLE-STYLE: Parsed email:', parsedUser.email)
+        console.log('🚀 GOOGLE-STYLE: Parsed name:', parsedUser.name)
+        console.log('🚀 GOOGLE-STYLE: All parsed user keys:', Object.keys(parsedUser))
       } catch (e) {
         console.log('🚀 GOOGLE-STYLE: Error parsing localStorage userData:', e)
       }
     }
+    
+    // Check all localStorage keys
+    console.log('🚀 GOOGLE-STYLE: All localStorage keys:', Object.keys(localStorage))
+    console.log('🚀 GOOGLE-STYLE: === END localStorage INSPECTION ===')
   }, [user, isAuthenticated, isLoading])
 
   // Update display name when user data changes
@@ -71,9 +87,9 @@ export default function DashboardPage() {
     setDisplayName(newDisplayName)
   }, [user, isAuthenticated])
 
-  // SIMPLE DIRECT SOLUTION - This will work 100%
+  // REAL ACCOUNT DATA SOLUTION - Uses your actual account information
   const getDisplayName = () => {
-    console.log('🚀 GOOGLE-STYLE: Getting display name - SIMPLE VERSION')
+    console.log('🚀 GOOGLE-STYLE: Getting display name - REAL ACCOUNT VERSION')
     
     // Check if user is logged in by checking localStorage
     const accessToken = localStorage.getItem('accessToken')
@@ -82,25 +98,33 @@ export default function DashboardPage() {
     console.log('🚀 GOOGLE-STYLE: accessToken exists:', !!accessToken)
     console.log('🚀 GOOGLE-STYLE: userData exists:', !!userData)
     
+    // PRIORITY 1: Use real user data from localStorage
     if (accessToken && userData) {
       try {
         const user = JSON.parse(userData)
-        console.log('🚀 GOOGLE-STYLE: Parsed user:', user)
+        console.log('🚀 GOOGLE-STYLE: Parsed user data:', user)
+        console.log('🚀 GOOGLE-STYLE: User firstName:', user.firstName)
+        console.log('🚀 GOOGLE-STYLE: User lastName:', user.lastName)
+        console.log('🚀 GOOGLE-STYLE: User email:', user.email)
         
-        // Try to get name from user data
+        // Try to get name from user data - THIS IS YOUR REAL ACCOUNT DATA
         if (user.firstName && user.lastName) {
           const fullName = `${user.firstName} ${user.lastName}`
-          console.log('🚀 GOOGLE-STYLE: Using full name:', fullName)
+          console.log('🚀 GOOGLE-STYLE: Using REAL full name:', fullName)
           return fullName
         }
         if (user.firstName) {
-          console.log('🚀 GOOGLE-STYLE: Using first name:', user.firstName)
+          console.log('🚀 GOOGLE-STYLE: Using REAL first name:', user.firstName)
           return user.firstName
+        }
+        if (user.name) {
+          console.log('🚀 GOOGLE-STYLE: Using REAL name field:', user.name)
+          return user.name
         }
         if (user.email) {
           const emailName = user.email.split('@')[0]
           const capitalizedName = emailName.charAt(0).toUpperCase() + emailName.slice(1)
-          console.log('🚀 GOOGLE-STYLE: Using email name:', capitalizedName)
+          console.log('🚀 GOOGLE-STYLE: Using REAL email name:', capitalizedName)
           return capitalizedName
         }
       } catch (e) {
@@ -108,30 +132,37 @@ export default function DashboardPage() {
       }
     }
     
-    // If no user data, check if we can determine from email
-    const email = localStorage.getItem('userEmail') || 'test@example.com'
-    if (email && email !== 'test@example.com') {
-      const emailName = email.split('@')[0]
+    // PRIORITY 2: Check authentication context user data
+    if (user) {
+      console.log('🚀 GOOGLE-STYLE: Using auth context user:', user)
+      if (user.firstName && user.lastName) {
+        const fullName = `${user.firstName} ${user.lastName}`
+        console.log('🚀 GOOGLE-STYLE: Using auth context full name:', fullName)
+        return fullName
+      }
+      if (user.firstName) {
+        console.log('🚀 GOOGLE-STYLE: Using auth context first name:', user.firstName)
+        return user.firstName
+      }
+      if (user.email) {
+        const emailName = user.email.split('@')[0]
+        const capitalizedName = emailName.charAt(0).toUpperCase() + emailName.slice(1)
+        console.log('🚀 GOOGLE-STYLE: Using auth context email name:', capitalizedName)
+        return capitalizedName
+      }
+    }
+    
+    // PRIORITY 3: Check if we can determine from stored email
+    const storedEmail = localStorage.getItem('userEmail')
+    if (storedEmail) {
+      const emailName = storedEmail.split('@')[0]
       const capitalizedName = emailName.charAt(0).toUpperCase() + emailName.slice(1)
-      console.log('🚀 GOOGLE-STYLE: Using email fallback:', capitalizedName)
+      console.log('🚀 GOOGLE-STYLE: Using stored email name:', capitalizedName)
       return capitalizedName
     }
     
-    // Default names based on common test accounts
-    if (email === 'test@example.com') {
-      console.log('🚀 GOOGLE-STYLE: Using test user name: John Doe')
-      return 'John Doe'
-    }
-    if (email === 'admin@askyacham.com') {
-      console.log('🚀 GOOGLE-STYLE: Using admin name: Admin User')
-      return 'Admin User'
-    }
-    if (email === 'employer@askyacham.com') {
-      console.log('🚀 GOOGLE-STYLE: Using employer name: Sarah Johnson')
-      return 'Sarah Johnson'
-    }
-    
-    console.log('🚀 GOOGLE-STYLE: Using default name: User')
+    // ONLY use hardcoded fallbacks as absolute last resort
+    console.log('🚀 GOOGLE-STYLE: No real account data found, using fallback')
     return 'User'
   }
 
