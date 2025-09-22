@@ -128,11 +128,11 @@ export function EnterpriseHeader() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([])
   const [notifications, setNotifications] = useState([
-    { id: 1, title: 'New job match found', message: 'Software Engineer at Google', time: '2m ago', unread: true },
-    { id: 2, title: 'Application status update', message: 'Your application at Microsoft was reviewed', time: '1h ago', unread: true },
-    { id: 3, title: 'Profile completion', message: 'Complete your profile to get better matches', time: '3h ago', unread: false },
-    { id: 4, title: 'Welcome to AskYaCham!', message: 'Start exploring job opportunities', time: '1d ago', unread: false },
-    { id: 5, title: 'New companies added', message: '50+ new companies are hiring', time: '2d ago', unread: false },
+    { id: 1, title: 'Welcome to AskYaCham!', message: 'Discover your next career opportunity', time: '2m ago', unread: true },
+    { id: 2, title: 'New job opportunities', message: '700+ jobs from 23 countries available', time: '1h ago', unread: true },
+    { id: 3, title: 'Sign up for updates', message: 'Get personalized job recommendations', time: '3h ago', unread: false },
+    { id: 4, title: 'Indian companies hiring', message: 'TCS, Infosys, Wipro and more', time: '1d ago', unread: false },
+    { id: 5, title: 'Global opportunities', message: 'Jobs from Google, Microsoft, Apple', time: '2d ago', unread: false },
   ])
 
   const router = useRouter()
@@ -154,13 +154,14 @@ export function EnterpriseHeader() {
   useEffect(() => {
     console.log('🔔 GOOGLE-STYLE: Notifications effect running, isAuthenticated:', isAuthenticated)
     
-    if (!isAuthenticated) return
-
+    // Show notifications for all users, not just authenticated ones
     const interval = setInterval(() => {
       const newNotification = {
         id: Date.now(),
-        title: 'New job opportunities',
-        message: `${Math.floor(Math.random() * 10) + 1} new jobs match your profile`,
+        title: isAuthenticated ? 'New job opportunities' : 'Welcome to AskYaCham!',
+        message: isAuthenticated 
+          ? `${Math.floor(Math.random() * 10) + 1} new jobs match your profile`
+          : 'Sign up to get personalized job recommendations',
         time: 'Just now',
         unread: true
       }
@@ -509,9 +510,8 @@ export function EnterpriseHeader() {
                 </div>
               )}
 
-              {/* Notifications - Only show for authenticated users */}
-              {isAuthenticated && (
-                <div className="relative hidden md:block" ref={notificationRef}>
+              {/* Notifications - Show for all users */}
+              <div className="relative hidden md:block" ref={notificationRef}>
                   <Button 
                     variant="ghost" 
                     size="sm" 
@@ -581,7 +581,6 @@ export function EnterpriseHeader() {
                     </div>
                   )}
                 </div>
-              )}
 
               {/* User Menu - Dynamic based on auth status */}
               <div className="flex items-center space-x-2">
