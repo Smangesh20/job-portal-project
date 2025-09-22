@@ -500,9 +500,11 @@ export function EnterpriseHeader() {
                     onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
                   >
                     <Bell className="w-5 h-5" />
-                    <span className="absolute -top-1 -right-1 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-semibold">
-                      {notifications.filter(n => n.unread).length}
-                    </span>
+                    {notifications.filter(n => n.unread).length > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-semibold">
+                        {notifications.filter(n => n.unread).length}
+                      </span>
+                    )}
                   </Button>
                   
                   {/* Notifications Dropdown */}

@@ -29,6 +29,7 @@ export default function DashboardPage() {
   const router = useRouter()
   const { user, isAuthenticated, isLoading, logout } = useAuthUnified()
   const [searchQuery, setSearchQuery] = useState('')
+  const [locationQuery, setLocationQuery] = useState('')
 
   // Redirect if not authenticated
   if (!isLoading && !isAuthenticated) {
@@ -48,9 +49,14 @@ export default function DashboardPage() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
+    const params = new URLSearchParams()
     if (searchQuery.trim()) {
-      router.push(`/jobs?search=${encodeURIComponent(searchQuery)}`)
+      params.set('search', searchQuery.trim())
     }
+    if (locationQuery.trim()) {
+      params.set('location', locationQuery.trim())
+    }
+    router.push(`/jobs?${params.toString()}`)
   }
 
   const quickActions = [
@@ -159,15 +165,27 @@ export default function DashboardPage() {
             <CardContent className="p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Job Search</h2>
               <form onSubmit={handleSearch} className="flex gap-4">
-                <div className="flex-1 relative">
-                  <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <Input
-                    type="text"
-                    placeholder="Search jobs, companies, or keywords..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
-                  />
+                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="relative">
+                    <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <Input
+                      type="text"
+                      placeholder="Search jobs, companies, or keywords..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                  <div className="relative">
+                    <MapPinIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <Input
+                      type="text"
+                      placeholder="Location (e.g., San Francisco, Remote)"
+                      value={locationQuery}
+                      onChange={(e) => setLocationQuery(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
                 </div>
                 <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
                   Search
