@@ -106,6 +106,12 @@ export const useAuthStore = create<AuthStore>()(
       // Store tokens
       get().setTokens(accessToken, refreshToken)
 
+      // Store user data in localStorage for persistence
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('userData', JSON.stringify(user))
+        console.log('🔐 USER DATA STORED IN LOCALSTORAGE:', user)
+      }
+
       console.log('🔐 AUTH STATE SET:', get().isAuthenticated)
 
     } catch (error: any) {
@@ -125,7 +131,7 @@ export const useAuthStore = create<AuthStore>()(
     try {
       set({ isLoading: true, error: null, errorDetails: null })
 
-      console.log('🔐 REGISTER ATTEMPT:', data.email)
+      console.log('🔐 REGISTER ATTEMPT:', data.email, 'Name:', data.firstName, data.lastName)
 
       // Use local authentication service for persistent registration
       const response = await localAuthService.register(data)
@@ -136,7 +142,16 @@ export const useAuthStore = create<AuthStore>()(
         throw new Error(response.error?.message || 'Registration failed')
       }
 
-      console.log('🔐 REGISTER SUCCESS:', data.email)
+      console.log('🔐 REGISTER SUCCESS:', data.email, 'User:', response.data?.user)
+
+      // Store user data in localStorage for immediate access
+      if (response.data?.user) {
+        console.log('🔐 STORING USER DATA IN LOCALSTORAGE:', response.data.user)
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('userData', JSON.stringify(response.data.user))
+          console.log('🔐 USER DATA STORED SUCCESSFULLY')
+        }
+      }
 
       // For registration, we don't automatically log in the user
       // They need to log in separately
@@ -188,6 +203,7 @@ export const useAuthStore = create<AuthStore>()(
               localStorage.removeItem('accessToken')
               localStorage.removeItem('refreshToken')
               localStorage.removeItem('user')
+              localStorage.removeItem('userData')
             } catch (error) {
               }
           }
