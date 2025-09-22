@@ -34,6 +34,7 @@ export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [locationQuery, setLocationQuery] = useState('')
   const [showQuantumDashboard, setShowQuantumDashboard] = useState(false)
+  const [displayName, setDisplayName] = useState('User')
 
   // Debug authentication state
   useEffect(() => {
@@ -47,42 +48,79 @@ export default function DashboardPage() {
       console.log('  - user firstName:', user.firstName)
       console.log('  - user lastName:', user.lastName)
     }
+    
+    // Direct localStorage check
+    const storedUserData = localStorage.getItem('userData')
+    console.log('🚀 GOOGLE-STYLE: Direct localStorage userData:', storedUserData)
+    if (storedUserData) {
+      try {
+        const parsedUser = JSON.parse(storedUserData)
+        console.log('🚀 GOOGLE-STYLE: Parsed localStorage user:', parsedUser)
+        console.log('🚀 GOOGLE-STYLE: Parsed firstName:', parsedUser.firstName)
+        console.log('🚀 GOOGLE-STYLE: Parsed lastName:', parsedUser.lastName)
+      } catch (e) {
+        console.log('🚀 GOOGLE-STYLE: Error parsing localStorage userData:', e)
+      }
+    }
   }, [user, isAuthenticated, isLoading])
 
-  // Helper function to get display name
+  // Update display name when user data changes
+  useEffect(() => {
+    const newDisplayName = getDisplayName(user)
+    console.log('🚀 GOOGLE-STYLE: Updating display name to:', newDisplayName)
+    setDisplayName(newDisplayName)
+  }, [user])
+
+  // Helper function to get display name with localStorage fallback
   const getDisplayName = (user: any) => {
     console.log('🚀 GOOGLE-STYLE: getDisplayName called with user:', user)
     console.log('🚀 GOOGLE-STYLE: user type:', typeof user)
     console.log('🚀 GOOGLE-STYLE: user keys:', user ? Object.keys(user) : 'no user')
     
-    if (!user) {
-      console.log('🚀 GOOGLE-STYLE: No user data available')
+    // Try to get user data from localStorage as fallback
+    let actualUser = user
+    if (!user || !user.firstName) {
+      console.log('🚀 GOOGLE-STYLE: User data incomplete, checking localStorage...')
+      try {
+        const storedUserData = localStorage.getItem('userData')
+        if (storedUserData) {
+          const parsedUser = JSON.parse(storedUserData)
+          console.log('🚀 GOOGLE-STYLE: Using localStorage user data:', parsedUser)
+          actualUser = parsedUser
+        }
+      } catch (e) {
+        console.log('🚀 GOOGLE-STYLE: Error reading localStorage userData:', e)
+      }
+    }
+    
+    if (!actualUser) {
+      console.log('🚀 GOOGLE-STYLE: No user data available anywhere')
       return 'User'
     }
     
-    console.log('🚀 GOOGLE-STYLE: User data available:', user)
-    console.log('🚀 GOOGLE-STYLE: firstName:', user.firstName)
-    console.log('🚀 GOOGLE-STYLE: lastName:', user.lastName)
-    console.log('🚀 GOOGLE-STYLE: name:', user.name)
-    console.log('🚀 GOOGLE-STYLE: email:', user.email)
+    console.log('🚀 GOOGLE-STYLE: User data available:', actualUser)
+    console.log('🚀 GOOGLE-STYLE: firstName:', actualUser.firstName)
+    console.log('🚀 GOOGLE-STYLE: lastName:', actualUser.lastName)
+    console.log('🚀 GOOGLE-STYLE: name:', actualUser.name)
+    console.log('🚀 GOOGLE-STYLE: email:', actualUser.email)
     
     // Try different name combinations
-    if (user.firstName && user.lastName) {
-      const fullName = `${user.firstName} ${user.lastName}`
+    if (actualUser.firstName && actualUser.lastName) {
+      const fullName = `${actualUser.firstName} ${actualUser.lastName}`
       console.log('🚀 GOOGLE-STYLE: Using full name:', fullName)
       return fullName
     }
-    if (user.firstName) {
-      console.log('🚀 GOOGLE-STYLE: Using first name:', user.firstName)
-      return user.firstName
+    if (actualUser.firstName) {
+      console.log('🚀 GOOGLE-STYLE: Using first name:', actualUser.firstName)
+      return actualUser.firstName
     }
-    if (user.name) {
-      console.log('🚀 GOOGLE-STYLE: Using name field:', user.name)
-      return user.name
+    if (actualUser.name) {
+      console.log('🚀 GOOGLE-STYLE: Using name field:', actualUser.name)
+      return actualUser.name
     }
-    if (user.email) {
+    if (actualUser.email) {
       // Extract name from email if available
-      const emailName = user.email.split('@')[0]
+      const emailName = actualUser.email.split('@')[0]
       const capitalizedName = emailName.charAt(0).toUpperCase() + emailName.slice(1)
       console.log('🚀 GOOGLE-STYLE: Using email name:', capitalizedName)
       return capitalizedName
@@ -205,9 +243,9 @@ export default function DashboardPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">
-                  Welcome back, {getDisplayName(user)}!
-                </h1>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Welcome back, {displayName}!
+            </h1>
                 <p className="text-gray-600 mt-1">
                   Here's what's happening with your job search today.
                 </p>
