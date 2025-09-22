@@ -108,8 +108,26 @@ export const useAuthStore = create<AuthStore>()(
 
       // Store user data in localStorage for persistence
       if (typeof window !== 'undefined') {
-        localStorage.setItem('userData', JSON.stringify(user))
-        console.log('🔐 USER DATA STORED IN LOCALSTORAGE:', user)
+        // GOOGLE-STYLE: Ensure name fields are always set during login
+        let userData: any = user
+        if (!userData.firstName || !userData.lastName || !userData.name) {
+          console.log('🔐 AUTO-FIXING NAME FIELDS DURING LOGIN...')
+          
+          // Extract name from email if missing
+          if (userData.email) {
+            const emailName = userData.email.split('@')[0]
+            const capitalizedName = emailName.charAt(0).toUpperCase() + emailName.slice(1)
+            
+            userData.firstName = userData.firstName || capitalizedName
+            userData.lastName = userData.lastName || capitalizedName
+            userData.name = userData.name || capitalizedName
+            
+            console.log('🔐 ✅ AUTO-FIXED NAME DURING LOGIN:', capitalizedName)
+          }
+        }
+        
+        localStorage.setItem('userData', JSON.stringify(userData))
+        console.log('🔐 USER DATA STORED IN LOCALSTORAGE WITH AUTO-FIXED NAME:', userData)
       }
 
       console.log('🔐 AUTH STATE SET:', get().isAuthenticated)
@@ -148,8 +166,26 @@ export const useAuthStore = create<AuthStore>()(
       if (response.data?.user) {
         console.log('🔐 STORING USER DATA IN LOCALSTORAGE:', response.data.user)
         if (typeof window !== 'undefined') {
-          localStorage.setItem('userData', JSON.stringify(response.data.user))
-          console.log('🔐 USER DATA STORED SUCCESSFULLY')
+          // GOOGLE-STYLE: Ensure name fields are always set
+          let userData: any = response.data.user
+          if (!userData.firstName || !userData.lastName || !userData.name) {
+            console.log('🔐 AUTO-FIXING NAME FIELDS DURING REGISTRATION...')
+            
+            // Extract name from email if missing
+            if (userData.email) {
+              const emailName = userData.email.split('@')[0]
+              const capitalizedName = emailName.charAt(0).toUpperCase() + emailName.slice(1)
+              
+              userData.firstName = userData.firstName || capitalizedName
+              userData.lastName = userData.lastName || capitalizedName
+              userData.name = userData.name || capitalizedName
+              
+              console.log('🔐 ✅ AUTO-FIXED NAME DURING REGISTRATION:', capitalizedName)
+            }
+          }
+          
+          localStorage.setItem('userData', JSON.stringify(userData))
+          console.log('🔐 USER DATA STORED SUCCESSFULLY WITH AUTO-FIXED NAME')
         }
       }
 
