@@ -401,6 +401,8 @@ export function EnterpriseHeader() {
                         ? 'bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 shadow-sm'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                     }`}
+                    data-testid="dropdown-item"
+                    data-dropdown-name={item.name}
                     onMouseEnter={() => setActiveDropdown(item.name)}
                     onMouseLeave={() => setActiveDropdown(null)}
                     onClick={(e) => {
@@ -514,6 +516,7 @@ export function EnterpriseHeader() {
                     variant="ghost" 
                     size="sm" 
                     className="relative p-3 hover:bg-gray-100 rounded-xl transition-colors"
+                    data-testid="notification-button"
                     onClick={() => {
                       console.log('🔔 GOOGLE-STYLE: Notification button clicked, current state:', isNotificationsOpen)
                       setIsNotificationsOpen(!isNotificationsOpen)
