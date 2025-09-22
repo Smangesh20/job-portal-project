@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { SimpleDropdown } from '@/components/simple-dropdown'
 import { BulletproofDropdown } from '@/components/bulletproof-dropdown'
+import { ToggleFilterButtons } from '@/components/toggle-filter-buttons'
 import { 
   BuildingOfficeIcon,
   MapPinIcon,
@@ -22,11 +23,11 @@ export default function CompaniesPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedFilters, setSelectedFilters] = useState<string[]>([])
   
-  // Company dropdown filters
-  const [industryFilter, setIndustryFilter] = useState('all')
-  const [locationFilter, setLocationFilter] = useState('all')
-  const [sizeFilter, setSizeFilter] = useState('all')
-  const [ratingFilter, setRatingFilter] = useState('all')
+  // Company toggle button filters
+  const [selectedIndustries, setSelectedIndustries] = useState<string[]>([])
+  const [selectedLocations, setSelectedLocations] = useState<string[]>([])
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([])
+  const [selectedRatings, setSelectedRatings] = useState<string[]>([])
 
   const companies = [
     {
@@ -80,6 +81,46 @@ export default function CompaniesPage() {
   const companySizes = ['1-10 employees', '11-50 employees', '51-200 employees', '201-500 employees', '501-1000 employees', '1000+ employees']
   const ratings = ['4.5+ stars', '4.0+ stars', '3.5+ stars', '3.0+ stars']
 
+  // Toggle functions
+  const toggleIndustry = (industry: string) => {
+    setSelectedIndustries(prev => 
+      prev.includes(industry) 
+        ? prev.filter(ind => ind !== industry)
+        : [...prev, industry]
+    )
+  }
+
+  const toggleLocation = (location: string) => {
+    setSelectedLocations(prev => 
+      prev.includes(location) 
+        ? prev.filter(loc => loc !== location)
+        : [...prev, location]
+    )
+  }
+
+  const toggleSize = (size: string) => {
+    setSelectedSizes(prev => 
+      prev.includes(size) 
+        ? prev.filter(s => s !== size)
+        : [...prev, size]
+    )
+  }
+
+  const toggleRating = (rating: string) => {
+    setSelectedRatings(prev => 
+      prev.includes(rating) 
+        ? prev.filter(r => r !== rating)
+        : [...prev, rating]
+    )
+  }
+
+  const clearAllFilters = () => {
+    setSelectedIndustries([])
+    setSelectedLocations([])
+    setSelectedSizes([])
+    setSelectedRatings([])
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -117,76 +158,77 @@ export default function CompaniesPage() {
             </div>
           </div>
 
-          {/* Company Filter Dropdowns */}
+          {/* Company Toggle Button Filters */}
           <div className="mt-6 pt-6 border-t border-gray-200">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Filter Companies</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div>
-                <BulletproofDropdown
-                  label="Industry"
-                  options={['All Industries', ...industries]}
-                  value={industryFilter === 'all' ? 'All Industries' : industryFilter}
-                  onChange={(value) => setIndustryFilter(value === 'All Industries' ? 'all' : value)}
-                  placeholder="Select industry"
-                />
-              </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-6">Filter Companies</h3>
+            <div className="space-y-6">
+              <ToggleFilterButtons
+                label="Industry"
+                options={industries}
+                selectedValues={selectedIndustries}
+                onToggle={toggleIndustry}
+              />
               
-              <div>
-                <BulletproofDropdown
-                  label="Location"
-                  options={['All Locations', ...locations]}
-                  value={locationFilter === 'all' ? 'All Locations' : locationFilter}
-                  onChange={(value) => setLocationFilter(value === 'All Locations' ? 'all' : value)}
-                  placeholder="Select location"
-                />
-              </div>
+              <ToggleFilterButtons
+                label="Location"
+                options={locations}
+                selectedValues={selectedLocations}
+                onToggle={toggleLocation}
+              />
               
-              <div>
-                <BulletproofDropdown
-                  label="Company Size"
-                  options={['All Sizes', ...companySizes]}
-                  value={sizeFilter === 'all' ? 'All Sizes' : sizeFilter}
-                  onChange={(value) => setSizeFilter(value === 'All Sizes' ? 'all' : value)}
-                  placeholder="Select size"
-                />
-              </div>
+              <ToggleFilterButtons
+                label="Company Size"
+                options={companySizes}
+                selectedValues={selectedSizes}
+                onToggle={toggleSize}
+              />
               
-              <div>
-                <BulletproofDropdown
-                  label="Rating"
-                  options={['All Ratings', ...ratings]}
-                  value={ratingFilter === 'all' ? 'All Ratings' : ratingFilter}
-                  onChange={(value) => setRatingFilter(value === 'All Ratings' ? 'all' : value)}
-                  placeholder="Select rating"
-                />
-              </div>
+              <ToggleFilterButtons
+                label="Rating"
+                options={ratings}
+                selectedValues={selectedRatings}
+                onToggle={toggleRating}
+              />
             </div>
             
             {/* Filter Summary */}
-            {(industryFilter && industryFilter !== 'all') || (locationFilter && locationFilter !== 'all') || (sizeFilter && sizeFilter !== 'all') || (ratingFilter && ratingFilter !== 'all') ? (
-              <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                <p className="text-sm text-blue-800">
-                  <strong>Active Filters:</strong> 
-                  {industryFilter && industryFilter !== 'all' && ` Industry: ${industryFilter}`}
-                  {locationFilter && locationFilter !== 'all' && ` Location: ${locationFilter}`}
-                  {sizeFilter && sizeFilter !== 'all' && ` Size: ${sizeFilter}`}
-                  {ratingFilter && ratingFilter !== 'all' && ` Rating: ${ratingFilter}`}
+            {(selectedIndustries.length > 0 || selectedLocations.length > 0 || selectedSizes.length > 0 || selectedRatings.length > 0) && (
+              <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+                <p className="text-sm text-blue-800 mb-3">
+                  <strong>Active Filters:</strong>
                 </p>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {selectedIndustries.map(industry => (
+                    <Badge key={industry} variant="secondary" className="bg-blue-100 text-blue-800">
+                      Industry: {industry}
+                    </Badge>
+                  ))}
+                  {selectedLocations.map(location => (
+                    <Badge key={location} variant="secondary" className="bg-green-100 text-green-800">
+                      Location: {location}
+                    </Badge>
+                  ))}
+                  {selectedSizes.map(size => (
+                    <Badge key={size} variant="secondary" className="bg-purple-100 text-purple-800">
+                      Size: {size}
+                    </Badge>
+                  ))}
+                  {selectedRatings.map(rating => (
+                    <Badge key={rating} variant="secondary" className="bg-orange-100 text-orange-800">
+                      Rating: {rating}
+                    </Badge>
+                  ))}
+                </div>
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  onClick={() => {
-                    setIndustryFilter('all')
-                    setLocationFilter('all')
-                    setSizeFilter('all')
-                    setRatingFilter('all')
-                  }}
-                  className="mt-2"
+                  onClick={clearAllFilters}
+                  className="text-blue-600 hover:text-blue-700"
                 >
                   Clear All Filters
                 </Button>
               </div>
-            ) : null}
+            )}
           </div>
         </div>
 

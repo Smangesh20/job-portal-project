@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { TestSimpleDropdown } from '@/components/test-simple-dropdown'
 import { SimpleDropdown } from '@/components/simple-dropdown'
 import { BulletproofDropdown } from '@/components/bulletproof-dropdown'
+import { ToggleFilterButtons } from '@/components/toggle-filter-buttons'
 import { 
   BriefcaseIcon,
   BuildingOfficeIcon,
@@ -43,17 +44,57 @@ export default function DashboardPage() {
   const [showNameInput, setShowNameInput] = useState(false)
   const [customName, setCustomName] = useState('')
   
-  // Dashboard dropdown filters
-  const [jobTypeFilter, setJobTypeFilter] = useState('all')
-  const [locationFilter, setLocationFilter] = useState('all')
-  const [companyFilter, setCompanyFilter] = useState('all')
-  const [industryFilter, setIndustryFilter] = useState('all')
+  // Dashboard toggle button filters
+  const [selectedJobTypes, setSelectedJobTypes] = useState<string[]>([])
+  const [selectedLocations, setSelectedLocations] = useState<string[]>([])
+  const [selectedCompanies, setSelectedCompanies] = useState<string[]>([])
+  const [selectedIndustries, setSelectedIndustries] = useState<string[]>([])
   
-  // Dropdown data
+  // Filter data
   const jobTypes = ['Full-time', 'Part-time', 'Contract', 'Remote', 'Internship']
   const locations = ['San Francisco', 'New York', 'London', 'Remote', 'Hybrid', 'Seattle', 'Austin', 'Boston']
   const companies = ['Google', 'Microsoft', 'Apple', 'Amazon', 'Meta', 'Tesla', 'Netflix', 'Uber']
   const industries = ['Technology', 'Finance', 'Healthcare', 'Education', 'Retail', 'Manufacturing', 'Consulting']
+
+  // Toggle functions
+  const toggleJobType = (jobType: string) => {
+    setSelectedJobTypes(prev => 
+      prev.includes(jobType) 
+        ? prev.filter(type => type !== jobType)
+        : [...prev, jobType]
+    )
+  }
+
+  const toggleLocation = (location: string) => {
+    setSelectedLocations(prev => 
+      prev.includes(location) 
+        ? prev.filter(loc => loc !== location)
+        : [...prev, location]
+    )
+  }
+
+  const toggleCompany = (company: string) => {
+    setSelectedCompanies(prev => 
+      prev.includes(company) 
+        ? prev.filter(comp => comp !== company)
+        : [...prev, company]
+    )
+  }
+
+  const toggleIndustry = (industry: string) => {
+    setSelectedIndustries(prev => 
+      prev.includes(industry) 
+        ? prev.filter(ind => ind !== industry)
+        : [...prev, industry]
+    )
+  }
+
+  const clearAllFilters = () => {
+    setSelectedJobTypes([])
+    setSelectedLocations([])
+    setSelectedCompanies([])
+    setSelectedIndustries([])
+  }
 
   // Debug authentication state
   useEffect(() => {
@@ -653,76 +694,77 @@ This is the name you provided during registration!`)
                 </Button>
               </form>
               
-              {/* Dashboard Dropdown Filters */}
+              {/* Dashboard Toggle Button Filters */}
               <div className="mt-6 pt-6 border-t border-gray-200">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">Filter Options</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div>
-                    <BulletproofDropdown
-                      label="Job Type"
-                      options={['All Job Types', ...jobTypes]}
-                      value={jobTypeFilter === 'all' ? 'All Job Types' : jobTypeFilter}
-                      onChange={(value) => setJobTypeFilter(value === 'All Job Types' ? 'all' : value)}
-                      placeholder="Select job type"
-                    />
-                  </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-6">Filter Options</h3>
+                <div className="space-y-6">
+                  <ToggleFilterButtons
+                    label="Job Type"
+                    options={jobTypes}
+                    selectedValues={selectedJobTypes}
+                    onToggle={toggleJobType}
+                  />
                   
-                  <div>
-                    <BulletproofDropdown
-                      label="Location"
-                      options={['All Locations', ...locations]}
-                      value={locationFilter === 'all' ? 'All Locations' : locationFilter}
-                      onChange={(value) => setLocationFilter(value === 'All Locations' ? 'all' : value)}
-                      placeholder="Select location"
-                    />
-                  </div>
+                  <ToggleFilterButtons
+                    label="Location"
+                    options={locations}
+                    selectedValues={selectedLocations}
+                    onToggle={toggleLocation}
+                  />
                   
-                  <div>
-                    <BulletproofDropdown
-                      label="Company"
-                      options={['All Companies', ...companies]}
-                      value={companyFilter === 'all' ? 'All Companies' : companyFilter}
-                      onChange={(value) => setCompanyFilter(value === 'All Companies' ? 'all' : value)}
-                      placeholder="Select company"
-                    />
-                  </div>
+                  <ToggleFilterButtons
+                    label="Company"
+                    options={companies}
+                    selectedValues={selectedCompanies}
+                    onToggle={toggleCompany}
+                  />
                   
-                  <div>
-                    <BulletproofDropdown
-                      label="Industry"
-                      options={['All Industries', ...industries]}
-                      value={industryFilter === 'all' ? 'All Industries' : industryFilter}
-                      onChange={(value) => setIndustryFilter(value === 'All Industries' ? 'all' : value)}
-                      placeholder="Select industry"
-                    />
-                  </div>
+                  <ToggleFilterButtons
+                    label="Industry"
+                    options={industries}
+                    selectedValues={selectedIndustries}
+                    onToggle={toggleIndustry}
+                  />
                 </div>
                 
                 {/* Filter Summary */}
-                {(jobTypeFilter && jobTypeFilter !== 'all') || (locationFilter && locationFilter !== 'all') || (companyFilter && companyFilter !== 'all') || (industryFilter && industryFilter !== 'all') ? (
-                  <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                    <p className="text-sm text-blue-800">
-                      <strong>Active Filters:</strong> 
-                      {jobTypeFilter && jobTypeFilter !== 'all' && ` Job Type: ${jobTypeFilter}`}
-                      {locationFilter && locationFilter !== 'all' && ` Location: ${locationFilter}`}
-                      {companyFilter && companyFilter !== 'all' && ` Company: ${companyFilter}`}
-                      {industryFilter && industryFilter !== 'all' && ` Industry: ${industryFilter}`}
+                {(selectedJobTypes.length > 0 || selectedLocations.length > 0 || selectedCompanies.length > 0 || selectedIndustries.length > 0) && (
+                  <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+                    <p className="text-sm text-blue-800 mb-3">
+                      <strong>Active Filters:</strong>
                     </p>
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {selectedJobTypes.map(jobType => (
+                        <Badge key={jobType} variant="secondary" className="bg-blue-100 text-blue-800">
+                          Job: {jobType}
+                        </Badge>
+                      ))}
+                      {selectedLocations.map(location => (
+                        <Badge key={location} variant="secondary" className="bg-green-100 text-green-800">
+                          Location: {location}
+                        </Badge>
+                      ))}
+                      {selectedCompanies.map(company => (
+                        <Badge key={company} variant="secondary" className="bg-purple-100 text-purple-800">
+                          Company: {company}
+                        </Badge>
+                      ))}
+                      {selectedIndustries.map(industry => (
+                        <Badge key={industry} variant="secondary" className="bg-orange-100 text-orange-800">
+                          Industry: {industry}
+                        </Badge>
+                      ))}
+                    </div>
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      onClick={() => {
-                        setJobTypeFilter('all')
-                        setLocationFilter('all')
-                        setCompanyFilter('all')
-                        setIndustryFilter('all')
-                      }}
-                      className="mt-2"
+                      onClick={clearAllFilters}
+                      className="text-blue-600 hover:text-blue-700"
                     >
                       Clear All Filters
                     </Button>
                   </div>
-                ) : null}
+                )}
               </div>
             </CardContent>
           </Card>
