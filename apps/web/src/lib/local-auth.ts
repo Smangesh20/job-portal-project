@@ -53,8 +53,8 @@ export class LocalAuthService {
       const testUser: User = {
         id: 'test_user_123',
         email: 'test@example.com',
-        firstName: 'Test',
-        lastName: 'User',
+        firstName: 'John',
+        lastName: 'Doe',
         role: 'CANDIDATE',
         isVerified: true,
         isActive: true,
@@ -64,8 +64,42 @@ export class LocalAuthService {
       };
 
       this.users.set(testUser.id, testUser);
+      
+      // Create additional test users
+      const testUser2: User = {
+        id: 'test_user_456',
+        email: 'admin@askyacham.com',
+        firstName: 'Admin',
+        lastName: 'User',
+        role: 'ADMIN',
+        isVerified: true,
+        isActive: true,
+        passwordHash: this.hashPassword('admin123'),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      const testUser3: User = {
+        id: 'test_user_789',
+        email: 'employer@askyacham.com',
+        firstName: 'Sarah',
+        lastName: 'Johnson',
+        role: 'EMPLOYER',
+        isVerified: true,
+        isActive: true,
+        passwordHash: this.hashPassword('employer123'),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      this.users.set(testUser2.id, testUser2);
+      this.users.set(testUser3.id, testUser3);
+      
       localStorage.setItem('askyacham_users', JSON.stringify(Array.from(this.users.values())));
-      console.log('🚀 GOOGLE ULTIMATE: Test user created - test@example.com / password123');
+      console.log('🚀 GOOGLE ULTIMATE: Test users created:');
+      console.log('  - test@example.com / password123 (John Doe)');
+      console.log('  - admin@askyacham.com / admin123 (Admin User)');
+      console.log('  - employer@askyacham.com / employer123 (Sarah Johnson)');
     } catch (error) {
       console.error('❌ GOOGLE ULTIMATE ERROR creating test user:', error);
     }

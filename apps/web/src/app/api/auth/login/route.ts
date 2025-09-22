@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { LocalAuthService } from '@/lib/local-auth';
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,28 +34,35 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // For now, return success for testing
-    // TODO: Integrate with actual authentication system
     console.log('🔐 GOOGLE-STYLE: Login attempt for:', email);
     
-    // Simulate successful login
-    return NextResponse.json({
-      success: true,
-      message: 'Login successful',
-      data: {
-        user: {
-          id: 'user_123',
-          email: email,
-          firstName: 'User',
-          lastName: 'Account',
-          role: 'CANDIDATE',
-          isVerified: true,
-          isActive: true
+    // Use the actual authentication service
+    const authService = LocalAuthService.getInstance();
+    const authResult = await authService.login(email, password);
+    
+    if (authResult.success && authResult.data) {
+      console.log('🔐 GOOGLE-STYLE: Login successful for:', email, 'User:', authResult.data.user);
+      return NextResponse.json({
+        success: true,
+        message: 'Login successful',
+        data: {
+          user: authResult.data.user,
+          accessToken: authResult.data.accessToken,
+          refreshToken: authResult.data.refreshToken
+        }
+      });
+    } else {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: { 
+            code: 'INVALID_CREDENTIALS', 
+            message: 'Invalid email or password' 
+          } 
         },
-        accessToken: 'access_token_' + Math.random().toString(36).substr(2, 9),
-        refreshToken: 'refresh_token_' + Math.random().toString(36).substr(2, 9)
-      }
-    });
+        { status: 401 }
+      );
+    }
 
   } catch (error) {
     console.error('Login error:', error);
