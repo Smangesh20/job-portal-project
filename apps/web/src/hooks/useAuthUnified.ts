@@ -178,15 +178,14 @@ export function useAuthUnified() {
       const data = await response.json()
 
       if (response.ok && data.success) {
-        // Store tokens and user data
-        localStorage.setItem('accessToken', data.data.accessToken)
-        localStorage.setItem('refreshToken', data.data.refreshToken)
+        // Store user data (registration doesn't return tokens)
+        console.log('🚀 REGISTRATION: Storing user data from API response:', data.data.user)
         localStorage.setItem('userData', JSON.stringify(data.data.user || {}))
 
-        // Update state
+        // Update state (but don't set as authenticated since user needs to login)
         setAuthState({
           user: data.data.user,
-          isAuthenticated: true,
+          isAuthenticated: false, // User needs to login after registration
           isLoading: false,
           error: null
         })

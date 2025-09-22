@@ -336,12 +336,34 @@ export default function RegisterPage() {
     }
     
     try {
-      await register({
+      console.log('🚀 REGISTRATION: Starting registration for:', formData.email, 'Name:', formData.firstName, formData.lastName)
+      
+      const result = await register({
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
         password: formData.password
       })
+      
+      console.log('🚀 REGISTRATION: Registration result:', result)
+      
+      // FORCE SAVE USER DATA TO LOCALSTORAGE IMMEDIATELY
+      if (typeof window !== 'undefined') {
+        const userData = {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          name: `${formData.firstName} ${formData.lastName}`
+        }
+        
+        console.log('🚀 REGISTRATION: Force saving user data:', userData)
+        localStorage.setItem('userData', JSON.stringify(userData))
+        console.log('🚀 REGISTRATION: User data saved to localStorage')
+        
+        // Verify it was saved
+        const savedData = localStorage.getItem('userData')
+        console.log('🚀 REGISTRATION: Verified saved data:', savedData)
+      }
       
       // Show success modal with multiple approaches to ensure it works
       // Try immediate update
