@@ -1,8 +1,3 @@
-/**
- * Utility functions for extracting and formatting user names
- * This ensures consistent name display across the application
- */
-
 export interface UserData {
   firstName?: string;
   lastName?: string;
@@ -12,121 +7,64 @@ export interface UserData {
   avatar?: string;
 }
 
-/**
- * Extracts and formats a user's display name from various data sources
- * Priority: firstName + lastName > firstName > name > email-derived name
- */
-export function getUserDisplayName(userData?: UserData | null): string {
-  if (!userData) {
-    return 'User';
+export function getUserDisplayName(user: UserData | null | undefined): string {
+  if (!user) return 'User';
+  
+  // Try firstName + lastName first
+  if (user.firstName && user.lastName) {
+    return `${user.firstName} ${user.lastName}`;
   }
-
-  // Try firstName + lastName combination first
-  if (userData.firstName && userData.lastName) {
-    return `${userData.firstName} ${userData.lastName}`.trim();
-  }
-
+  
   // Try firstName only
-  if (userData.firstName) {
-    return userData.firstName.trim();
+  if (user.firstName) {
+    return user.firstName;
   }
-
+  
   // Try name field
-  if (userData.name) {
-    return userData.name.trim();
+  if (user.name) {
+    return user.name;
   }
-
-  // Try to derive name from email
-  if (userData.email) {
-    const emailName = userData.email.split('@')[0];
+  
+  // Try email-derived name
+  if (user.email) {
+    const emailName = user.email.split('@')[0];
     return emailName.charAt(0).toUpperCase() + emailName.slice(1);
   }
-
-  // Fallback
+  
   return 'User';
 }
 
-/**
- * Extracts user's first name only
- */
-export function getUserFirstName(userData?: UserData | null): string {
-  if (!userData) {
-    return 'User';
+export function getUserInitials(user: UserData | null | undefined): string {
+  if (!user) return 'U';
+  
+  // Try firstName + lastName
+  if (user.firstName && user.lastName) {
+    return `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
   }
-
-  if (userData.firstName) {
-    return userData.firstName.trim();
+  
+  // Try firstName only
+  if (user.firstName) {
+    return user.firstName.charAt(0).toUpperCase();
   }
-
-  if (userData.name) {
-    return userData.name.split(' ')[0].trim();
-  }
-
-  if (userData.email) {
-    const emailName = userData.email.split('@')[0];
-    return emailName.charAt(0).toUpperCase() + emailName.slice(1);
-  }
-
-  return 'User';
-}
-
-/**
- * Gets user initials for avatar display
- */
-export function getUserInitials(userData?: UserData | null): string {
-  if (!userData) {
-    return 'U';
-  }
-
-  if (userData.firstName && userData.lastName) {
-    return `${userData.firstName.charAt(0)}${userData.lastName.charAt(0)}`.toUpperCase();
-  }
-
-  if (userData.firstName) {
-    return userData.firstName.charAt(0).toUpperCase();
-  }
-
-  if (userData.name) {
-    const names = userData.name.split(' ');
+  
+  // Try name field
+  if (user.name) {
+    const names = user.name.split(' ');
     if (names.length >= 2) {
       return `${names[0].charAt(0)}${names[1].charAt(0)}`.toUpperCase();
     }
-    return names[0].charAt(0).toUpperCase();
+    return user.name.charAt(0).toUpperCase();
   }
-
-  if (userData.email) {
-    return userData.email.charAt(0).toUpperCase();
+  
+  // Try email
+  if (user.email) {
+    return user.email.charAt(0).toUpperCase();
   }
-
+  
   return 'U';
 }
 
-/**
- * Creates a personalized welcome message
- */
-export function getWelcomeMessage(userData?: UserData | null, timeOfDay?: 'morning' | 'afternoon' | 'evening'): string {
-  const name = getUserDisplayName(userData);
-  
-  if (!timeOfDay) {
-    const hour = new Date().getHours();
-    if (hour < 12) timeOfDay = 'morning';
-    else if (hour < 17) timeOfDay = 'afternoon';
-    else timeOfDay = 'evening';
-  }
-
-  const greetings = {
-    morning: 'Good morning',
-    afternoon: 'Good afternoon', 
-    evening: 'Good evening'
-  };
-
-  return `${greetings[timeOfDay]}, ${name}!`;
-}
-
-/**
- * Gets a simple welcome back message
- */
-export function getWelcomeBackMessage(userData?: UserData | null): string {
-  const name = getUserDisplayName(userData);
-  return `Welcome back, ${name}!`;
+export function getWelcomeBackMessage(user: UserData | null | undefined): string {
+  const displayName = getUserDisplayName(user);
+  return `Welcome back, ${displayName}!`;
 }

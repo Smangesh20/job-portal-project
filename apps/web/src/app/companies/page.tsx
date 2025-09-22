@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { SimpleDropdown } from '@/components/simple-dropdown'
+import { BulletproofDropdown } from '@/components/bulletproof-dropdown'
 import { 
   BuildingOfficeIcon,
   MapPinIcon,
@@ -121,7 +122,7 @@ export default function CompaniesPage() {
             <h3 className="text-lg font-medium text-gray-900 mb-4">Filter Companies</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div>
-                <SimpleDropdown
+                <BulletproofDropdown
                   label="Industry"
                   options={['All Industries', ...industries]}
                   value={industryFilter === 'all' ? 'All Industries' : industryFilter}
@@ -131,7 +132,7 @@ export default function CompaniesPage() {
               </div>
               
               <div>
-                <SimpleDropdown
+                <BulletproofDropdown
                   label="Location"
                   options={['All Locations', ...locations]}
                   value={locationFilter === 'all' ? 'All Locations' : locationFilter}
@@ -141,7 +142,7 @@ export default function CompaniesPage() {
               </div>
               
               <div>
-                <SimpleDropdown
+                <BulletproofDropdown
                   label="Company Size"
                   options={['All Sizes', ...companySizes]}
                   value={sizeFilter === 'all' ? 'All Sizes' : sizeFilter}
@@ -151,7 +152,7 @@ export default function CompaniesPage() {
               </div>
               
               <div>
-                <SimpleDropdown
+                <BulletproofDropdown
                   label="Rating"
                   options={['All Ratings', ...ratings]}
                   value={ratingFilter === 'all' ? 'All Ratings' : ratingFilter}

@@ -12,6 +12,7 @@ import { getWelcomeBackMessage } from '@/utils/user-name'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { TestSimpleDropdown } from '@/components/test-simple-dropdown'
 import { SimpleDropdown } from '@/components/simple-dropdown'
+import { BulletproofDropdown } from '@/components/bulletproof-dropdown'
 import { 
   BriefcaseIcon,
   BuildingOfficeIcon,
@@ -657,7 +658,7 @@ This is the name you provided during registration!`)
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Filter Options</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div>
-                    <SimpleDropdown
+                    <BulletproofDropdown
                       label="Job Type"
                       options={['All Job Types', ...jobTypes]}
                       value={jobTypeFilter === 'all' ? 'All Job Types' : jobTypeFilter}
@@ -667,7 +668,7 @@ This is the name you provided during registration!`)
                   </div>
                   
                   <div>
-                    <SimpleDropdown
+                    <BulletproofDropdown
                       label="Location"
                       options={['All Locations', ...locations]}
                       value={locationFilter === 'all' ? 'All Locations' : locationFilter}
@@ -677,7 +678,7 @@ This is the name you provided during registration!`)
                   </div>
                   
                   <div>
-                    <SimpleDropdown
+                    <BulletproofDropdown
                       label="Company"
                       options={['All Companies', ...companies]}
                       value={companyFilter === 'all' ? 'All Companies' : companyFilter}
@@ -687,7 +688,7 @@ This is the name you provided during registration!`)
                   </div>
                   
                   <div>
-                    <SimpleDropdown
+                    <BulletproofDropdown
                       label="Industry"
                       options={['All Industries', ...industries]}
                       value={industryFilter === 'all' ? 'All Industries' : industryFilter}
@@ -729,6 +730,15 @@ This is the name you provided during registration!`)
           {/* Test Dropdown */}
           <div className="mb-8">
             <TestSimpleDropdown />
+            <div className="mt-4">
+              <BulletproofDropdown
+                label="Test Bulletproof Dropdown"
+                options={['Option 1', 'Option 2', 'Option 3', 'Option 4']}
+                value=""
+                onChange={(value) => console.log('Bulletproof dropdown selected:', value)}
+                placeholder="Test dropdown - should work!"
+              />
+            </div>
           </div>
 
           {/* Quick Actions */}
