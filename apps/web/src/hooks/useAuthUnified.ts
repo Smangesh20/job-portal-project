@@ -12,6 +12,8 @@ interface User {
   role?: string
   isVerified?: boolean
   isActive?: boolean
+  profileImage?: string
+  avatar?: string
 }
 
 interface AuthState {
