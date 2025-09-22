@@ -651,6 +651,15 @@ export class LocalAuthService {
       this.sessions.set(sessionToken, session);
       localStorage.setItem('askyacham_sessions', JSON.stringify(Array.from(this.sessions.values())));
       
+      // SIMPLE: Ensure name is set from email if missing
+      if (!user.firstName || !user.lastName) {
+        const emailName = user.email.split('@')[0]
+        const capitalizedName = emailName.charAt(0).toUpperCase() + emailName.slice(1)
+        user.firstName = user.firstName || capitalizedName
+        user.lastName = user.lastName || capitalizedName
+        console.log('🚀 SIMPLE: Auto-set name from email:', capitalizedName)
+      }
+      
       console.log('🚀 GOOGLE ULTIMATE: Login successful for user:', user.email);
       console.log('🚀 GOOGLE ULTIMATE: User data being returned:', user);
       console.log('🚀 GOOGLE ULTIMATE: User firstName:', user.firstName);
@@ -694,12 +703,15 @@ export class LocalAuthService {
         };
       }
       
-      // GOOGLE ULTIMATE: Create new user
+      // GOOGLE ULTIMATE: Create new user with SIMPLE name handling
+      const emailName = userData.email.split('@')[0]
+      const capitalizedName = emailName.charAt(0).toUpperCase() + emailName.slice(1)
+      
       const newUser: User = {
         id: this.generateId(),
         email: userData.email.toLowerCase(), // Store email in lowercase
-        firstName: userData.firstName,
-        lastName: userData.lastName,
+        firstName: userData.firstName || capitalizedName, // Use provided name or email name
+        lastName: userData.lastName || capitalizedName, // Use provided name or email name
         role: 'CANDIDATE',
         isVerified: true, // Auto-verify for demo
         isActive: true,

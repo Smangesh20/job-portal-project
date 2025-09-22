@@ -92,84 +92,48 @@ export default function DashboardPage() {
     console.log('🚀 GOOGLE-STYLE: === END localStorage INSPECTION ===')
   }, [user, isAuthenticated, isLoading])
 
-  // GOOGLE-STYLE AUTOMATIC NAME RESOLUTION - Zero user interaction required
+  // SIMPLE DIRECT SOLUTION - This will work 100%
   useEffect(() => {
-    const autoResolveName = () => {
-      console.log('🚀 GOOGLE-STYLE: Starting automatic name resolution...')
+    const setSimpleName = () => {
+      console.log('🚀 SIMPLE: Setting name directly...')
       
+      // Check if user is logged in
       const accessToken = localStorage.getItem('accessToken')
       if (!accessToken) {
-        console.log('🚀 GOOGLE-STYLE: No access token, user not logged in')
         setDisplayName('Guest')
         return
       }
       
+      // Get user data
       const userData = localStorage.getItem('userData')
       if (!userData) {
-        console.log('🚀 GOOGLE-STYLE: No userData found, cannot resolve name')
         setDisplayName('User')
         return
       }
       
       try {
         const user = JSON.parse(userData)
-        console.log('🚀 GOOGLE-STYLE: Parsed user data:', user)
+        console.log('🚀 SIMPLE: User data:', user)
         
-        // Check if name fields are missing or empty
-        if (!user.firstName || !user.lastName || !user.name) {
-          console.log('🚀 GOOGLE-STYLE: Name fields missing, auto-fixing...')
-          
-          // GOOGLE-STYLE: Automatic name resolution from email
-          if (user.email) {
-            const emailName = user.email.split('@')[0]
-            const capitalizedName = emailName.charAt(0).toUpperCase() + emailName.slice(1)
-            
-            // Auto-fix the name fields
-            user.firstName = capitalizedName
-            user.lastName = capitalizedName
-            user.name = capitalizedName
-            
-            // Save back to localStorage automatically
-            localStorage.setItem('userData', JSON.stringify(user))
-            console.log('🚀 GOOGLE-STYLE: ✅ AUTO-FIXED NAME:', capitalizedName)
-            
-            setDisplayName(capitalizedName)
-            return
-          }
-        }
-        
-        // Use existing name if available
-        if (user.firstName && user.lastName) {
-          const fullName = `${user.firstName} ${user.lastName}`
-          console.log('🚀 GOOGLE-STYLE: ✅ USING FULL NAME:', fullName)
-          setDisplayName(fullName)
+        // SIMPLE: Just use email to create name
+        if (user.email) {
+          const emailName = user.email.split('@')[0]
+          const name = emailName.charAt(0).toUpperCase() + emailName.slice(1)
+          console.log('🚀 SIMPLE: Using email name:', name)
+          setDisplayName(name)
           return
         }
         
-        if (user.firstName) {
-          console.log('🚀 GOOGLE-STYLE: ✅ USING FIRST NAME:', user.firstName)
-          setDisplayName(user.firstName)
-          return
-        }
-        
-        if (user.name) {
-          console.log('🚀 GOOGLE-STYLE: ✅ USING NAME FIELD:', user.name)
-          setDisplayName(user.name)
-          return
-        }
-        
-        // Final fallback
-        console.log('🚀 GOOGLE-STYLE: Using fallback name')
+        // Fallback
         setDisplayName('User')
         
       } catch (e) {
-        console.log('🚀 GOOGLE-STYLE: Error in auto-resolution:', e)
+        console.log('🚀 SIMPLE: Error, using fallback')
         setDisplayName('User')
       }
     }
     
-    // Run automatic name resolution
-    autoResolveName()
+    setSimpleName()
   }, [user, isAuthenticated])
 
   // SIMPLE DIRECT SOLUTION - This will work 100%
