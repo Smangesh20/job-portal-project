@@ -24,7 +24,9 @@ import {
   Image,
   FileSpreadsheet,
   FileCode,
-  Loader2
+  Loader2,
+  Briefcase,
+  GraduationCap
 } from 'lucide-react'
 import { ResumeData } from '@/services/resume-parser'
 import { resumeParser } from '@/services/resume-parser'
