@@ -10,6 +10,8 @@ import { Badge } from '@/components/ui/badge'
 import { NotificationDropdown } from '@/components/NotificationDropdown'
 import { getWelcomeBackMessage } from '@/utils/user-name'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { TestSimpleDropdown } from '@/components/test-simple-dropdown'
+import { SimpleDropdown } from '@/components/simple-dropdown'
 import { 
   BriefcaseIcon,
   BuildingOfficeIcon,
@@ -655,71 +657,43 @@ This is the name you provided during registration!`)
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Filter Options</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Job Type</label>
-                    <Select value={jobTypeFilter} onValueChange={setJobTypeFilter}>
-                      <SelectTrigger className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                        <SelectValue placeholder="Select job type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Job Types</SelectItem>
-                        {jobTypes.map((type) => (
-                          <SelectItem key={type} value={type}>
-                            {type}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <SimpleDropdown
+                      label="Job Type"
+                      options={['All Job Types', ...jobTypes]}
+                      value={jobTypeFilter === 'all' ? 'All Job Types' : jobTypeFilter}
+                      onChange={(value) => setJobTypeFilter(value === 'All Job Types' ? 'all' : value)}
+                      placeholder="Select job type"
+                    />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
-                    <Select value={locationFilter} onValueChange={setLocationFilter}>
-                      <SelectTrigger className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                        <SelectValue placeholder="Select location" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Locations</SelectItem>
-                        {locations.map((location) => (
-                          <SelectItem key={location} value={location}>
-                            {location}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <SimpleDropdown
+                      label="Location"
+                      options={['All Locations', ...locations]}
+                      value={locationFilter === 'all' ? 'All Locations' : locationFilter}
+                      onChange={(value) => setLocationFilter(value === 'All Locations' ? 'all' : value)}
+                      placeholder="Select location"
+                    />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Company</label>
-                    <Select value={companyFilter} onValueChange={setCompanyFilter}>
-                      <SelectTrigger className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                        <SelectValue placeholder="Select company" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Companies</SelectItem>
-                        {companies.map((company) => (
-                          <SelectItem key={company} value={company}>
-                            {company}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <SimpleDropdown
+                      label="Company"
+                      options={['All Companies', ...companies]}
+                      value={companyFilter === 'all' ? 'All Companies' : companyFilter}
+                      onChange={(value) => setCompanyFilter(value === 'All Companies' ? 'all' : value)}
+                      placeholder="Select company"
+                    />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Industry</label>
-                    <Select value={industryFilter} onValueChange={setIndustryFilter}>
-                      <SelectTrigger className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                        <SelectValue placeholder="Select industry" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Industries</SelectItem>
-                        {industries.map((industry) => (
-                          <SelectItem key={industry} value={industry}>
-                            {industry}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <SimpleDropdown
+                      label="Industry"
+                      options={['All Industries', ...industries]}
+                      value={industryFilter === 'all' ? 'All Industries' : industryFilter}
+                      onChange={(value) => setIndustryFilter(value === 'All Industries' ? 'all' : value)}
+                      placeholder="Select industry"
+                    />
                   </div>
                 </div>
                 
@@ -751,6 +725,11 @@ This is the name you provided during registration!`)
               </div>
             </CardContent>
           </Card>
+
+          {/* Test Dropdown */}
+          <div className="mb-8">
+            <TestSimpleDropdown />
+          </div>
 
           {/* Quick Actions */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
