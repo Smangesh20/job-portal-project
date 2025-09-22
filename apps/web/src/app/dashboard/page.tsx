@@ -550,45 +550,12 @@ This is the name you provided during registration!`)
                      name: name,
                      email: 'user@example.com'
                    }))
+                   alert('Name set! Your name is now saved.')
                  }
                }}
-               className="text-xs bg-red-50 hover:bg-red-100 text-red-700 border-red-200"
+               className="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200"
              >
-               Set Name Now
-             </Button>
-             <Button
-               variant="outline"
-               size="sm"
-               onClick={() => {
-                 // Fix null data issue
-                 const email = prompt('Enter your email:')
-                 const firstName = prompt('Enter your first name:')
-                 const lastName = prompt('Enter your last name:')
-                 
-                 if (email && firstName && lastName) {
-                   const userData = {
-                     firstName: firstName,
-                     lastName: lastName,
-                     name: `${firstName} ${lastName}`,
-                     email: email
-                   }
-                   
-                   localStorage.setItem('userData', JSON.stringify(userData))
-                   setDisplayName(`${firstName} ${lastName}`)
-                   alert('Data fixed! Your name is now saved.')
-                 }
-               }}
-               className="text-xs bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
-             >
-               Fix Null Data
-             </Button>
-             <Button
-               variant="outline"
-               size="sm"
-               onClick={handleShowLocalStorage}
-               className="text-xs"
-             >
-               Show My Data
+               Set My Name
              </Button>
            </div>
             </div>
