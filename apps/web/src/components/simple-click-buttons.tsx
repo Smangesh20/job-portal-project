@@ -39,10 +39,6 @@ export function SimpleClickButtons({
                 focus:outline-none focus:ring-2 focus:ring-blue-500
                 active:scale-95
               `}
-              style={{
-                // Remove all hover effects
-                ':hover': 'none'
-              }}
             >
               {option}
             </button>
