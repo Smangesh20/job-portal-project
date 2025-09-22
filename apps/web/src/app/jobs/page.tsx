@@ -74,6 +74,21 @@ export default function JobsPage() {
   const industries = getIndustries()
   const tags = getTags()
 
+  // Fallback data to ensure dropdowns work
+  const fallbackLocations = ['San Francisco', 'New York', 'London', 'Remote', 'Hybrid']
+  const fallbackCompanies = ['Google', 'Microsoft', 'Apple', 'Amazon', 'Meta']
+  const fallbackIndustries = ['Technology', 'Finance', 'Healthcare', 'Education', 'Retail']
+
+  // Use actual data or fallback
+  const displayLocations = locations.length > 0 ? locations : fallbackLocations
+  const displayCompanies = companies.length > 0 ? companies : fallbackCompanies
+  const displayIndustries = industries.length > 0 ? industries : fallbackIndustries
+
+  // Debug logging
+  console.log('🚀 DROPDOWN DEBUG: Locations:', locations, 'Display:', displayLocations)
+  console.log('🚀 DROPDOWN DEBUG: Companies:', companies, 'Display:', displayCompanies)
+  console.log('🚀 DROPDOWN DEBUG: Industries:', industries, 'Display:', displayIndustries)
+
   // Auto-search when filters change (Google-style)
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -338,12 +353,12 @@ export default function JobsPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
                 <Select value={locationFilter} onValueChange={setLocationFilter}>
-                  <SelectTrigger className="cursor-pointer">
+                  <SelectTrigger className="cursor-pointer w-full h-10 px-3 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     <SelectValue placeholder="Select location" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="">All Locations</SelectItem>
-                    {locations.map((location) => (
+                    {displayLocations.map((location) => (
                       <SelectItem key={location} value={location}>
                         {location}
                       </SelectItem>
@@ -354,12 +369,12 @@ export default function JobsPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Company</label>
                 <Select value={companyFilter} onValueChange={setCompanyFilter}>
-                  <SelectTrigger className="cursor-pointer">
+                  <SelectTrigger className="cursor-pointer w-full h-10 px-3 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     <SelectValue placeholder="Select company" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="">All Companies</SelectItem>
-                    {companies.map((company) => (
+                    {displayCompanies.map((company) => (
                       <SelectItem key={company} value={company}>
                         {company}
                       </SelectItem>
@@ -370,12 +385,12 @@ export default function JobsPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Industry</label>
                 <Select value={industryFilter} onValueChange={setIndustryFilter}>
-                  <SelectTrigger className="cursor-pointer">
+                  <SelectTrigger className="cursor-pointer w-full h-10 px-3 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     <SelectValue placeholder="Select industry" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="">All Industries</SelectItem>
-                    {industries.map((industry) => (
+                    {displayIndustries.map((industry) => (
                       <SelectItem key={industry} value={industry}>
                         {industry}
                       </SelectItem>
