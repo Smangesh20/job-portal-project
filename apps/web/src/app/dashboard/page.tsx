@@ -35,6 +35,41 @@ export default function DashboardPage() {
   const [locationQuery, setLocationQuery] = useState('')
   const [showQuantumDashboard, setShowQuantumDashboard] = useState(false)
 
+  // Helper function to get display name
+  const getDisplayName = (user: any) => {
+    if (!user) {
+      console.log('🚀 GOOGLE-STYLE: No user data available')
+      return 'User'
+    }
+    
+    console.log('🚀 GOOGLE-STYLE: User data available:', user)
+    
+    // Try different name combinations
+    if (user.firstName && user.lastName) {
+      const fullName = `${user.firstName} ${user.lastName}`
+      console.log('🚀 GOOGLE-STYLE: Using full name:', fullName)
+      return fullName
+    }
+    if (user.firstName) {
+      console.log('🚀 GOOGLE-STYLE: Using first name:', user.firstName)
+      return user.firstName
+    }
+    if (user.name) {
+      console.log('🚀 GOOGLE-STYLE: Using name field:', user.name)
+      return user.name
+    }
+    if (user.email) {
+      // Extract name from email if available
+      const emailName = user.email.split('@')[0]
+      const capitalizedName = emailName.charAt(0).toUpperCase() + emailName.slice(1)
+      console.log('🚀 GOOGLE-STYLE: Using email name:', capitalizedName)
+      return capitalizedName
+    }
+    
+    console.log('🚀 GOOGLE-STYLE: Falling back to User')
+    return 'User'
+  }
+
   // Redirect if not authenticated
   if (!isLoading && !isAuthenticated) {
     console.log('🚀 GOOGLE-STYLE: Not authenticated, redirecting to login...')
@@ -149,7 +184,7 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-3xl font-bold text-gray-900">
-                  Welcome back, {user?.firstName || user?.name || 'User'}!
+                  Welcome back, {getDisplayName(user)}!
                 </h1>
                 <p className="text-gray-600 mt-1">
                   Here's what's happening with your job search today.

@@ -5,8 +5,7 @@ import Link from 'next/link'
 import { useRouter, usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useAuthUnified } from '@/hooks/useAuthUnified'
-import { useNotifications } from '@/contexts/NotificationContext'
+import { useAuth } from '@/hooks/useAuth'
 import { 
   Search,
   Bell,
@@ -125,53 +124,18 @@ export function EnterpriseHeader() {
   const [searchQuery, setSearchQuery] = useState('')
   const [isSearchFocused, setIsSearchFocused] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([])
-  const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null)
-  const { notifications, isNotificationsOpen, setIsNotificationsOpen, markAsRead, markAllAsRead, unreadCount } = useNotifications()
-
+  const [notifications, setNotifications] = useState([
+    { id: 1, title: 'New job match found', message: 'Software Engineer at Google', time: '2m ago', unread: true },
+    { id: 2, title: 'Application status update', message: 'Your application at Microsoft was reviewed', time: '1h ago', unread: true },
+    { id: 3, title: 'Profile completion', message: 'Complete your profile to get better matches', time: '3h ago', unread: false },
+  ])
+  
   const router = useRouter()
   const pathname = usePathname()
-  const { user, logout, isAuthenticated } = useAuthUnified()
-
-  // Debug logging
-  useEffect(() => {
-    console.log('🔔 GOOGLE-STYLE: Header state update:', {
-      isAuthenticated,
-      notificationsCount: notifications.length,
-      unreadCount: unreadCount,
-      activeDropdown,
-      isNotificationsOpen
-    })
-  }, [isAuthenticated, notifications, activeDropdown, isNotificationsOpen])
-
-
-  // Close dropdowns when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement
-      if (!target.closest('[data-dropdown-name]') && 
-          !target.closest('.dropdown-menu') && 
-          !target.closest('[data-testid="notification-button"]') &&
-          !target.closest('.notification-dropdown')) {
-        console.log('🖱️ GOOGLE-STYLE: Clicking outside dropdown, closing all')
-        setActiveDropdown(null)
-      }
-    }
-
-    document.addEventListener('click', handleClickOutside)
-    return () => document.removeEventListener('click', handleClickOutside)
-  }, [])
-
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (hoverTimeout) {
-        clearTimeout(hoverTimeout)
-      }
-    }
-  }, [hoverTimeout])
-
+  const { user, logout, isAuthenticated } = useAuth()
   const searchRef = useRef<HTMLInputElement>(null)
   const userMenuRef = useRef<HTMLDivElement>(null)
   const notificationRef = useRef<HTMLDivElement>(null)
@@ -374,7 +338,7 @@ export function EnterpriseHeader() {
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center space-x-1">
+            <nav className="hidden xl:flex items-center space-x-1">
               {navigation.map((item) => (
                 <div key={item.name} className="relative group">
                   <Link
@@ -384,43 +348,8 @@ export function EnterpriseHeader() {
                         ? 'bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 shadow-sm'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                     }`}
-                    data-testid="dropdown-item"
-                    data-dropdown-name={item.name}
-                    onMouseEnter={() => {
-                      if (item.children) {
-                        console.log('🖱️ GOOGLE-STYLE: Mouse enter:', item.name)
-                        // Only open on hover if no dropdown is currently active
-                        if (!activeDropdown) {
-                          setActiveDropdown(item.name)
-                        }
-                      }
-                    }}
-                    onMouseLeave={() => {
-                      if (item.children) {
-                        console.log('🖱️ GOOGLE-STYLE: Mouse leave:', item.name)
-                        // Clear any existing timeout
-                        if (hoverTimeout) {
-                          clearTimeout(hoverTimeout)
-                        }
-                        // Only close on mouse leave if this dropdown is active, with a delay
-                        if (activeDropdown === item.name) {
-                          const timeout = setTimeout(() => {
-                            setActiveDropdown(null)
-                          }, 300) // 300ms delay
-                          setHoverTimeout(timeout)
-                        }
-                      }
-                    }}
-                    onClick={(e) => {
-                      if (item.children) {
-                        e.preventDefault()
-                        e.stopPropagation()
-                        console.log('🖱️ GOOGLE-STYLE: Dropdown clicked:', item.name, 'current:', activeDropdown)
-                        const newActiveDropdown = activeDropdown === item.name ? null : item.name
-                        setActiveDropdown(newActiveDropdown)
-                        console.log('🖱️ GOOGLE-STYLE: Setting activeDropdown to:', newActiveDropdown)
-                      }
-                    }}
+                    onMouseEnter={() => setActiveDropdown(item.name)}
+                    onMouseLeave={() => setActiveDropdown(null)}
                   >
                     {item.icon}
                     <span>{item.name}</span>
@@ -440,22 +369,7 @@ export function EnterpriseHeader() {
                   
                   {/* Dropdown Menu */}
                   {item.children && activeDropdown === item.name && (
-                    <div 
-                      className="dropdown-menu absolute top-full left-0 mt-1 w-64 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50"
-                      onMouseEnter={() => {
-                        console.log('🖱️ GOOGLE-STYLE: Mouse enter dropdown menu:', item.name)
-                        // Clear any pending timeout when hovering over the dropdown
-                        if (hoverTimeout) {
-                          clearTimeout(hoverTimeout)
-                          setHoverTimeout(null)
-                        }
-                      }}
-                      onMouseLeave={() => {
-                        console.log('🖱️ GOOGLE-STYLE: Mouse leave dropdown menu:', item.name)
-                        // Close dropdown when leaving the menu
-                        setActiveDropdown(null)
-                      }}
-                    >
+                    <div className="absolute top-full left-0 mt-1 w-64 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50">
                       <div className="px-4 py-2 border-b border-gray-100">
                         <h3 className="font-semibold text-gray-900">{item.name}</h3>
                         <p className="text-xs text-gray-500">{item.description}</p>
@@ -533,49 +447,35 @@ export function EnterpriseHeader() {
                 </div>
               )}
 
-              {/* Notifications - Show for all users */}
-              <div className="relative hidden md:block" ref={notificationRef}>
+              {/* Notifications - Only show for authenticated users */}
+              {isAuthenticated && (
+                <div className="relative hidden md:block" ref={notificationRef}>
                   <Button 
                     variant="ghost" 
                     size="sm" 
                     className="relative p-3 hover:bg-gray-100 rounded-xl transition-colors"
-                    data-testid="notification-button"
-                    onClick={(e) => {
-                      e.preventDefault()
-                      e.stopPropagation()
-                      console.log('🔔 GOOGLE-STYLE: Notification button clicked, current state:', isNotificationsOpen)
-                      // Close any open dropdowns first
-                      setActiveDropdown(null)
-                      // Toggle notifications
-                      setIsNotificationsOpen(!isNotificationsOpen)
-                    }}
+                    onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
                   >
                     <Bell className="w-5 h-5" />
-                    {unreadCount > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-semibold">
-                        {unreadCount}
-                      </span>
-                    )}
+                    <span className="absolute -top-1 -right-1 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-semibold">
+                      {notifications.filter(n => n.unread).length}
+                    </span>
                   </Button>
                   
                   {/* Notifications Dropdown */}
                   {isNotificationsOpen && (
-                    <div className="notification-dropdown absolute top-full right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50">
+                    <div className="absolute top-full right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50">
                       <div className="px-4 py-3 border-b border-gray-100">
                         <h3 className="font-semibold text-gray-900">Notifications</h3>
-                        <p className="text-xs text-gray-500">{unreadCount} unread</p>
+                        <p className="text-xs text-gray-500">{notifications.filter(n => n.unread).length} unread</p>
                       </div>
                       <div className="max-h-80 overflow-y-auto">
                         {notifications.map((notification) => (
                           <div
                             key={notification.id}
-                            className={`px-4 py-3 hover:bg-gray-50 transition-colors cursor-pointer ${
+                            className={`px-4 py-3 hover:bg-gray-50 transition-colors ${
                               notification.unread ? 'bg-blue-50 border-l-4 border-blue-500' : ''
                             }`}
-                            onClick={() => {
-                              console.log('🔔 GOOGLE-STYLE: Notification item clicked:', notification.id)
-                              markAsRead(notification.id)
-                            }}
                           >
                             <div className="flex items-start space-x-3">
                               <div className={`w-2 h-2 rounded-full mt-2 ${
@@ -590,25 +490,15 @@ export function EnterpriseHeader() {
                           </div>
                         ))}
                       </div>
-                      <div className="px-4 py-2 border-t border-gray-100 space-y-2">
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="w-full text-purple-600 hover:text-purple-700"
-                          onClick={() => {
-                            console.log('🔔 GOOGLE-STYLE: Mark all as read button clicked')
-                            markAllAsRead()
-                          }}
-                        >
-                          Mark all as read
-                        </Button>
-                        <Button variant="ghost" size="sm" className="w-full text-gray-600 hover:text-gray-700">
+                      <div className="px-4 py-2 border-t border-gray-100">
+                        <Button variant="ghost" size="sm" className="w-full text-purple-600 hover:text-purple-700">
                           View all notifications
                         </Button>
                       </div>
                     </div>
                   )}
                 </div>
+              )}
 
               {/* User Menu - Dynamic based on auth status */}
               <div className="flex items-center space-x-2">
