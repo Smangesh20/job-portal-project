@@ -41,7 +41,8 @@ import {
   RefreshCw
 } from 'lucide-react'
 import { ResumeData } from '@/services/resume-parser'
-import { MatchResult, SearchResults } from '@/services/job-aggregator'
+import { SearchResults } from '@/services/job-aggregator'
+import { MatchResult } from '@/services/intelligent-matcher'
 
 interface ResumeAnalyticsDashboardProps {
   resumeData: ResumeData
