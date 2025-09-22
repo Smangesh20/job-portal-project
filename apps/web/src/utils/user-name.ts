@@ -8,6 +8,8 @@ export interface UserData {
   lastName?: string;
   name?: string;
   email?: string;
+  profileImage?: string;
+  avatar?: string;
 }
 
 /**

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useAuth } from '@/components/providers/auth-provider'
+import { useAuthUnified } from '@/hooks/useAuthUnified'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { getUserDisplayName, getUserInitials } from '@/utils/user-name'
@@ -133,7 +133,7 @@ const quantumFeatures = [
 ]
 
 export function EnterpriseDashboardLayout({ children }: EnterpriseDashboardLayoutProps) {
-  const { user, logout } = useAuth()
+  const { user, logout } = useAuthUnified()
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const handleLogout = async () => {
@@ -248,7 +248,7 @@ export function EnterpriseDashboardLayout({ children }: EnterpriseDashboardLayou
               {/* User Profile */}
               <div className="flex items-center space-x-3 p-3 rounded-xl bg-gradient-to-r from-slate-50 to-blue-50 border border-slate-200/60">
                 <Avatar className="h-10 w-10">
-                  <AvatarImage src={user?.profileImage} alt={displayName} />
+                  <AvatarImage src={user?.profileImage || user?.avatar} alt={displayName} />
                   <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-semibold">
                     {userInitials}
                   </AvatarFallback>
@@ -326,7 +326,7 @@ export function EnterpriseDashboardLayout({ children }: EnterpriseDashboardLayou
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="flex items-center space-x-2 p-2">
                       <Avatar className="h-8 w-8">
-                        <AvatarImage src={user?.profileImage} alt={displayName} />
+                        <AvatarImage src={user?.profileImage || user?.avatar} alt={displayName} />
                         <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white text-sm font-semibold">
                           {userInitials}
                         </AvatarFallback>

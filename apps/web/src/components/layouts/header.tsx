@@ -102,7 +102,7 @@ function Header() {
             {/* User Profile Dropdown */}
             <div className="flex items-center space-x-3">
               <Avatar className="h-8 w-8">
-                <AvatarImage src={user?.profileImage || undefined} alt={displayName} />
+                <AvatarImage src={user?.profileImage || user?.avatar || undefined} alt={displayName} />
                 <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm">
                   {userInitials}
                 </AvatarFallback>
