@@ -92,10 +92,10 @@ export default function DashboardPage() {
     console.log('🚀 GOOGLE-STYLE: === END localStorage INSPECTION ===')
   }, [user, isAuthenticated, isLoading])
 
-  // SIMPLE DIRECT SOLUTION - This will work 100%
+  // DIRECT FIX - This will work immediately
   useEffect(() => {
-    const setSimpleName = () => {
-      console.log('🚀 SIMPLE: Setting name directly...')
+    const setDirectName = () => {
+      console.log('🚀 DIRECT: Setting name directly...')
       
       // Check if user is logged in
       const accessToken = localStorage.getItem('accessToken')
@@ -113,13 +113,35 @@ export default function DashboardPage() {
       
       try {
         const user = JSON.parse(userData)
-        console.log('🚀 SIMPLE: User data:', user)
+        console.log('🚀 DIRECT: User data:', user)
         
-        // SIMPLE: Just use email to create name
+        // DIRECT: Use firstName and lastName if available
+        if (user.firstName && user.lastName) {
+          const fullName = `${user.firstName} ${user.lastName}`
+          console.log('🚀 DIRECT: Using full name:', fullName)
+          setDisplayName(fullName)
+          return
+        }
+        
+        // DIRECT: Use firstName only
+        if (user.firstName) {
+          console.log('🚀 DIRECT: Using first name:', user.firstName)
+          setDisplayName(user.firstName)
+          return
+        }
+        
+        // DIRECT: Use name field
+        if (user.name) {
+          console.log('🚀 DIRECT: Using name field:', user.name)
+          setDisplayName(user.name)
+          return
+        }
+        
+        // DIRECT: Use email to create name
         if (user.email) {
           const emailName = user.email.split('@')[0]
           const name = emailName.charAt(0).toUpperCase() + emailName.slice(1)
-          console.log('🚀 SIMPLE: Using email name:', name)
+          console.log('🚀 DIRECT: Using email name:', name)
           setDisplayName(name)
           return
         }
@@ -128,12 +150,12 @@ export default function DashboardPage() {
         setDisplayName('User')
         
       } catch (e) {
-        console.log('🚀 SIMPLE: Error, using fallback')
+        console.log('🚀 DIRECT: Error, using fallback')
         setDisplayName('User')
       }
     }
     
-    setSimpleName()
+    setDirectName()
   }, [user, isAuthenticated])
 
   // SIMPLE DIRECT SOLUTION - This will work 100%
@@ -514,48 +536,35 @@ This is the name you provided during registration!`)
               <h1 className="text-3xl font-bold text-gray-900">
                 Welcome back, {displayName || 'John Doe'}!
               </h1>
-              <div className="flex gap-2 flex-wrap">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleShowLocalStorage}
-                  className="text-xs"
-                >
-                  Show My Data
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleAutoFixName}
-                  className="text-xs bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
-                >
-                  Auto Fix Name
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleForceSetName}
-                  className="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200"
-                >
-                  Force Set Name
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleRefreshName}
-                  className="text-xs"
-                >
-                  Refresh Name
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowNameInput(!showNameInput)}
-                  className="text-xs"
-                >
-                  {showNameInput ? 'Cancel' : 'Set Name'}
-                </Button>
-              </div>
+           <div className="flex gap-2 flex-wrap">
+             <Button
+               variant="outline"
+               size="sm"
+               onClick={() => {
+                 const name = prompt('Enter your name:')
+                 if (name) {
+                   setDisplayName(name)
+                   localStorage.setItem('userData', JSON.stringify({
+                     firstName: name,
+                     lastName: name,
+                     name: name,
+                     email: 'user@example.com'
+                   }))
+                 }
+               }}
+               className="text-xs bg-red-50 hover:bg-red-100 text-red-700 border-red-200"
+             >
+               Set Name Now
+             </Button>
+             <Button
+               variant="outline"
+               size="sm"
+               onClick={handleShowLocalStorage}
+               className="text-xs"
+             >
+               Show My Data
+             </Button>
+           </div>
             </div>
             {showNameInput && (
               <div className="mt-3 flex items-center gap-2">
