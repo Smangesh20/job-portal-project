@@ -4,6 +4,14 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { 
   Bell, 
   Search, 
@@ -13,7 +21,9 @@ import {
   ChevronDown,
   Moon,
   Sun,
-  HelpCircle
+  HelpCircle,
+  Shield,
+  BarChart3
 } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useAuthUnified } from '@/hooks/useAuthUnified'
@@ -100,29 +110,59 @@ function Header() {
             </Button>
 
             {/* User Profile Dropdown */}
-            <div className="flex items-center space-x-3">
-              <Avatar className="h-8 w-8">
-                <AvatarImage src={user?.profileImage || user?.avatar || undefined} alt={displayName} />
-                <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm">
-                  {userInitials}
-                </AvatarFallback>
-              </Avatar>
-              <div className="hidden md:block">
-                <p className="text-sm font-medium text-gray-900 dark:text-white">
-                  {displayName}
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {userEmail}
-                </p>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="p-1"
-              >
-                <ChevronDown className="h-4 w-4" />
-              </Button>
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center space-x-3 p-2">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={user?.profileImage || user?.avatar || undefined} alt={displayName} />
+                    <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm">
+                      {userInitials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="hidden md:block text-left">
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                      {displayName}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {userEmail}
+                    </p>
+                  </div>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">{displayName}</p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {userEmail}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Profile</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <BarChart3 className="mr-2 h-4 w-4" />
+                  <span>Analytics</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>Settings</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Shield className="mr-2 h-4 w-4" />
+                  <span>Privacy</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>
