@@ -127,6 +127,7 @@ export function EnterpriseHeader() {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([])
+  const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null)
   const [notifications, setNotifications] = useState([
     { id: 1, title: 'Welcome to AskYaCham!', message: 'Discover your next career opportunity', time: '2m ago', unread: true },
     { id: 2, title: 'New job opportunities', message: '700+ jobs from 23 countries available', time: '1h ago', unread: true },
@@ -189,6 +190,15 @@ export function EnterpriseHeader() {
     document.addEventListener('click', handleClickOutside)
     return () => document.removeEventListener('click', handleClickOutside)
   }, [])
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (hoverTimeout) {
+        clearTimeout(hoverTimeout)
+      }
+    }
+  }, [hoverTimeout])
 
   // Mark notification as read
   const markAsRead = (notificationId: number) => {
@@ -424,13 +434,26 @@ export function EnterpriseHeader() {
                     onMouseEnter={() => {
                       if (item.children) {
                         console.log('🖱️ GOOGLE-STYLE: Mouse enter:', item.name)
-                        setActiveDropdown(item.name)
+                        // Only open on hover if no dropdown is currently active
+                        if (!activeDropdown) {
+                          setActiveDropdown(item.name)
+                        }
                       }
                     }}
                     onMouseLeave={() => {
                       if (item.children) {
                         console.log('🖱️ GOOGLE-STYLE: Mouse leave:', item.name)
-                        setActiveDropdown(null)
+                        // Clear any existing timeout
+                        if (hoverTimeout) {
+                          clearTimeout(hoverTimeout)
+                        }
+                        // Only close on mouse leave if this dropdown is active, with a delay
+                        if (activeDropdown === item.name) {
+                          const timeout = setTimeout(() => {
+                            setActiveDropdown(null)
+                          }, 300) // 300ms delay
+                          setHoverTimeout(timeout)
+                        }
                       }
                     }}
                     onClick={(e) => {
@@ -462,7 +485,22 @@ export function EnterpriseHeader() {
                   
                   {/* Dropdown Menu */}
                   {item.children && activeDropdown === item.name && (
-                    <div className="dropdown-menu absolute top-full left-0 mt-1 w-64 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50">
+                    <div 
+                      className="dropdown-menu absolute top-full left-0 mt-1 w-64 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50"
+                      onMouseEnter={() => {
+                        console.log('🖱️ GOOGLE-STYLE: Mouse enter dropdown menu:', item.name)
+                        // Clear any pending timeout when hovering over the dropdown
+                        if (hoverTimeout) {
+                          clearTimeout(hoverTimeout)
+                          setHoverTimeout(null)
+                        }
+                      }}
+                      onMouseLeave={() => {
+                        console.log('🖱️ GOOGLE-STYLE: Mouse leave dropdown menu:', item.name)
+                        // Close dropdown when leaving the menu
+                        setActiveDropdown(null)
+                      }}
+                    >
                       <div className="px-4 py-2 border-b border-gray-100">
                         <h3 className="font-semibold text-gray-900">{item.name}</h3>
                         <p className="text-xs text-gray-500">{item.description}</p>
@@ -551,6 +589,9 @@ export function EnterpriseHeader() {
                       e.preventDefault()
                       e.stopPropagation()
                       console.log('🔔 GOOGLE-STYLE: Notification button clicked, current state:', isNotificationsOpen)
+                      // Close any open dropdowns first
+                      setActiveDropdown(null)
+                      // Toggle notifications
                       setIsNotificationsOpen(!isNotificationsOpen)
                     }}
                   >
