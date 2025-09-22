@@ -100,7 +100,7 @@ const SuccessModal = ({ isOpen, onClose, onContinue }: {
                   onClick={onContinue}
                   className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
                 >
-                  Go to Dashboard
+                  Go to Home
                 </Button>
                 
                 <Button
@@ -337,6 +337,22 @@ export default function RegisterPage() {
     
     try {
       console.log('🚀 REGISTRATION: Starting registration for:', formData.email, 'Name:', formData.firstName, formData.lastName)
+      
+      // PREVENT DUPLICATE REGISTRATION - Check if user already exists
+      const existingUserData = localStorage.getItem('userData');
+      if (existingUserData) {
+        try {
+          const parsedUser = JSON.parse(existingUserData);
+          if (parsedUser.email && parsedUser.email.toLowerCase() === formData.email.toLowerCase()) {
+            console.log('❌ REGISTRATION: User already exists in localStorage for email:', formData.email);
+            toast.error('An account with this email already exists. Please use a different email or try logging in.');
+            setIsSubmitting(false);
+            return;
+          }
+        } catch (e) {
+          console.log('🚀 REGISTRATION: Error parsing localStorage userData:', e);
+        }
+      }
       
       const result = await register({
         firstName: formData.firstName,

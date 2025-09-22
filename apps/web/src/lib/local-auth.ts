@@ -694,13 +694,36 @@ export class LocalAuthService {
       const existingUser = Array.from(this.users.values()).find(u => u.email.toLowerCase() === userData.email.toLowerCase());
       if (existingUser) {
         console.log('❌ GOOGLE ULTIMATE: User already exists for email:', userData.email);
+        console.log('❌ GOOGLE ULTIMATE: Existing user details:', existingUser);
         return {
           success: false,
           error: {
             code: 'USER_EXISTS',
-            message: 'An account with this email already exists'
+            message: 'An account with this email already exists. Please use a different email or try logging in.'
           }
         };
+      }
+      
+      // GOOGLE ULTIMATE: Also check localStorage for existing users
+      if (typeof window !== 'undefined') {
+        const existingUserData = localStorage.getItem('userData');
+        if (existingUserData) {
+          try {
+            const parsedUser = JSON.parse(existingUserData);
+            if (parsedUser.email && parsedUser.email.toLowerCase() === userData.email.toLowerCase()) {
+              console.log('❌ GOOGLE ULTIMATE: User already exists in localStorage for email:', userData.email);
+              return {
+                success: false,
+                error: {
+                  code: 'USER_EXISTS',
+                  message: 'An account with this email already exists. Please use a different email or try logging in.'
+                }
+              };
+            }
+          } catch (e) {
+            console.log('🚀 GOOGLE ULTIMATE: Error parsing localStorage userData:', e);
+          }
+        }
       }
       
       // GOOGLE ULTIMATE: Create new user with SIMPLE name handling
