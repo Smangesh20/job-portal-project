@@ -240,11 +240,44 @@ export default function DashboardPage() {
       }
     }
     
-    // PRIORITY 4: Check if user is authenticated and use a generic but better name
+    // PRIORITY 4: Check if user is authenticated and try to extract name from any available data
     const accessToken = localStorage.getItem('accessToken')
     if (accessToken) {
-      console.log('🚀 GOOGLE-STYLE: User is authenticated, using generic name')
-      return 'Welcome Back'
+      console.log('🚀 GOOGLE-STYLE: User is authenticated, trying to extract name from any data')
+      
+      // Try to find name in any localStorage data
+      for (const key of allKeys) {
+        const value = localStorage.getItem(key)
+        if (value && typeof value === 'string') {
+          // Look for firstName pattern
+          const firstNameMatch = value.match(/"firstName":"([^"]+)"/)
+          if (firstNameMatch) {
+            const firstName = firstNameMatch[1]
+            console.log('🚀 GOOGLE-STYLE: Found firstName in', key, ':', firstName)
+            return firstName
+          }
+          
+          // Look for lastName pattern
+          const lastNameMatch = value.match(/"lastName":"([^"]+)"/)
+          if (lastNameMatch) {
+            const lastName = lastNameMatch[1]
+            console.log('🚀 GOOGLE-STYLE: Found lastName in', key, ':', lastName)
+            return lastName
+          }
+          
+          // Look for name pattern
+          const nameMatch = value.match(/"name":"([^"]+)"/)
+          if (nameMatch) {
+            const name = nameMatch[1]
+            console.log('🚀 GOOGLE-STYLE: Found name in', key, ':', name)
+            return name
+          }
+        }
+      }
+      
+      // If authenticated but no name found, use a better fallback
+      console.log('🚀 GOOGLE-STYLE: User is authenticated but no name found, using better fallback')
+      return 'User'
     }
     
     // PRIORITY 5: Use a better fallback than "User"
@@ -261,6 +294,14 @@ export default function DashboardPage() {
       // Store in localStorage for persistence
       localStorage.setItem('customDisplayName', customName.trim())
     }
+  }
+
+  // Function to refresh name detection
+  const handleRefreshName = () => {
+    console.log('🚀 GOOGLE-STYLE: Manually refreshing name detection...')
+    const newDisplayName = getDisplayName()
+    console.log('🚀 GOOGLE-STYLE: Refreshed display name:', newDisplayName)
+    setDisplayName(newDisplayName)
   }
 
   // Load custom name from localStorage on mount
@@ -389,14 +430,24 @@ export default function DashboardPage() {
               <h1 className="text-3xl font-bold text-gray-900">
                 Welcome back, {displayName || 'John Doe'}!
               </h1>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowNameInput(!showNameInput)}
-                className="text-xs"
-              >
-                {showNameInput ? 'Cancel' : 'Set Name'}
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleRefreshName}
+                  className="text-xs"
+                >
+                  Refresh Name
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowNameInput(!showNameInput)}
+                  className="text-xs"
+                >
+                  {showNameInput ? 'Cancel' : 'Set Name'}
+                </Button>
+              </div>
             </div>
             {showNameInput && (
               <div className="mt-3 flex items-center gap-2">
