@@ -29,7 +29,7 @@ import {
   Code,
   GraduationCap,
   Sparkles,
-  CpuChip,
+  Cpu,
   Rocket,
   Eye,
   ExternalLink,
@@ -476,7 +476,7 @@ export default function ResumeMatchingPage() {
             <Card className="border-purple-200">
               <CardHeader>
                 <CardTitle className="flex items-center text-purple-900">
-                  <CpuChip className="h-5 w-5 mr-2" />
+                  <Cpu className="h-5 w-5 mr-2" />
                   Quantum-Powered Insights
                 </CardTitle>
                 <CardDescription className="text-purple-700">
