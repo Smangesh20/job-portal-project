@@ -313,7 +313,7 @@ export default function DashboardPage() {
         
         // Show in alert for easy viewing
         alert(`Your account data:
-Email: ${user.email}
+Email: ${user.email || 'undefined'}
 First Name: ${user.firstName || 'NOT SET'}
 Last Name: ${user.lastName || 'NOT SET'}
 Name Field: ${user.name || 'NOT SET'}
@@ -555,6 +555,32 @@ This is the name you provided during registration!`)
                className="text-xs bg-red-50 hover:bg-red-100 text-red-700 border-red-200"
              >
                Set Name Now
+             </Button>
+             <Button
+               variant="outline"
+               size="sm"
+               onClick={() => {
+                 // Fix null data issue
+                 const email = prompt('Enter your email:')
+                 const firstName = prompt('Enter your first name:')
+                 const lastName = prompt('Enter your last name:')
+                 
+                 if (email && firstName && lastName) {
+                   const userData = {
+                     firstName: firstName,
+                     lastName: lastName,
+                     name: `${firstName} ${lastName}`,
+                     email: email
+                   }
+                   
+                   localStorage.setItem('userData', JSON.stringify(userData))
+                   setDisplayName(`${firstName} ${lastName}`)
+                   alert('Data fixed! Your name is now saved.')
+                 }
+               }}
+               className="text-xs bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
+             >
+               Fix Null Data
              </Button>
              <Button
                variant="outline"
