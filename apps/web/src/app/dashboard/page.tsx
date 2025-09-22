@@ -35,6 +35,8 @@ export default function DashboardPage() {
   const [locationQuery, setLocationQuery] = useState('')
   const [showQuantumDashboard, setShowQuantumDashboard] = useState(false)
   const [displayName, setDisplayName] = useState('User')
+  const [showNameInput, setShowNameInput] = useState(false)
+  const [customName, setCustomName] = useState('')
 
   // Debug authentication state
   useEffect(() => {
@@ -87,52 +89,61 @@ export default function DashboardPage() {
     setDisplayName(newDisplayName)
   }, [user, isAuthenticated])
 
-  // REAL ACCOUNT DATA SOLUTION - Uses your actual account information
+  // ULTIMATE ACCOUNT DATA SOLUTION - Will find your name no matter what
   const getDisplayName = () => {
-    console.log('🚀 GOOGLE-STYLE: Getting display name - REAL ACCOUNT VERSION')
+    console.log('🚀 GOOGLE-STYLE: Getting display name - ULTIMATE VERSION')
     
-    // Check if user is logged in by checking localStorage
-    const accessToken = localStorage.getItem('accessToken')
-    const userData = localStorage.getItem('userData')
+    // Check ALL possible localStorage keys for user data
+    const allKeys = Object.keys(localStorage)
+    console.log('🚀 GOOGLE-STYLE: All localStorage keys:', allKeys)
     
-    console.log('🚀 GOOGLE-STYLE: accessToken exists:', !!accessToken)
-    console.log('🚀 GOOGLE-STYLE: userData exists:', !!userData)
+    // Try multiple possible user data keys
+    const possibleUserKeys = ['userData', 'user', 'currentUser', 'authUser', 'profile']
+    let foundUserData = null
     
-    // PRIORITY 1: Use real user data from localStorage
-    if (accessToken && userData) {
-      try {
-        const user = JSON.parse(userData)
-        console.log('🚀 GOOGLE-STYLE: Parsed user data:', user)
-        console.log('🚀 GOOGLE-STYLE: User firstName:', user.firstName)
-        console.log('🚀 GOOGLE-STYLE: User lastName:', user.lastName)
-        console.log('🚀 GOOGLE-STYLE: User email:', user.email)
-        
-        // Try to get name from user data - THIS IS YOUR REAL ACCOUNT DATA
-        if (user.firstName && user.lastName) {
-          const fullName = `${user.firstName} ${user.lastName}`
-          console.log('🚀 GOOGLE-STYLE: Using REAL full name:', fullName)
-          return fullName
+    for (const key of possibleUserKeys) {
+      const data = localStorage.getItem(key)
+      if (data) {
+        console.log(`🚀 GOOGLE-STYLE: Found data in ${key}:`, data)
+        try {
+          const parsed = JSON.parse(data)
+          if (parsed && (parsed.firstName || parsed.name || parsed.email)) {
+            foundUserData = parsed
+            console.log(`🚀 GOOGLE-STYLE: Using data from ${key}:`, parsed)
+            break
+          }
+        } catch (e) {
+          console.log(`🚀 GOOGLE-STYLE: Error parsing ${key}:`, e)
         }
-        if (user.firstName) {
-          console.log('🚀 GOOGLE-STYLE: Using REAL first name:', user.firstName)
-          return user.firstName
-        }
-        if (user.name) {
-          console.log('🚀 GOOGLE-STYLE: Using REAL name field:', user.name)
-          return user.name
-        }
-        if (user.email) {
-          const emailName = user.email.split('@')[0]
-          const capitalizedName = emailName.charAt(0).toUpperCase() + emailName.slice(1)
-          console.log('🚀 GOOGLE-STYLE: Using REAL email name:', capitalizedName)
-          return capitalizedName
-        }
-      } catch (e) {
-        console.log('🚀 GOOGLE-STYLE: Error parsing user data:', e)
       }
     }
     
-    // PRIORITY 2: Check authentication context user data
+    // PRIORITY 1: Use found user data
+    if (foundUserData) {
+      console.log('🚀 GOOGLE-STYLE: Found user data:', foundUserData)
+      
+      if (foundUserData.firstName && foundUserData.lastName) {
+        const fullName = `${foundUserData.firstName} ${foundUserData.lastName}`
+        console.log('🚀 GOOGLE-STYLE: Using full name:', fullName)
+        return fullName
+      }
+      if (foundUserData.firstName) {
+        console.log('🚀 GOOGLE-STYLE: Using first name:', foundUserData.firstName)
+        return foundUserData.firstName
+      }
+      if (foundUserData.name) {
+        console.log('🚀 GOOGLE-STYLE: Using name field:', foundUserData.name)
+        return foundUserData.name
+      }
+      if (foundUserData.email) {
+        const emailName = foundUserData.email.split('@')[0]
+        const capitalizedName = emailName.charAt(0).toUpperCase() + emailName.slice(1)
+        console.log('🚀 GOOGLE-STYLE: Using email name:', capitalizedName)
+        return capitalizedName
+      }
+    }
+    
+    // PRIORITY 2: Check authentication context
     if (user) {
       console.log('🚀 GOOGLE-STYLE: Using auth context user:', user)
       if (user.firstName && user.lastName) {
@@ -152,19 +163,49 @@ export default function DashboardPage() {
       }
     }
     
-    // PRIORITY 3: Check if we can determine from stored email
-    const storedEmail = localStorage.getItem('userEmail')
-    if (storedEmail) {
-      const emailName = storedEmail.split('@')[0]
-      const capitalizedName = emailName.charAt(0).toUpperCase() + emailName.slice(1)
-      console.log('🚀 GOOGLE-STYLE: Using stored email name:', capitalizedName)
-      return capitalizedName
+    // PRIORITY 3: Check for any email in localStorage
+    for (const key of allKeys) {
+      const value = localStorage.getItem(key)
+      if (value && value.includes('@') && value.includes('.')) {
+        console.log(`🚀 GOOGLE-STYLE: Found email in ${key}:`, value)
+        const emailName = value.split('@')[0]
+        const capitalizedName = emailName.charAt(0).toUpperCase() + emailName.slice(1)
+        console.log('🚀 GOOGLE-STYLE: Using email name:', capitalizedName)
+        return capitalizedName
+      }
     }
     
-    // ONLY use hardcoded fallbacks as absolute last resort
-    console.log('🚀 GOOGLE-STYLE: No real account data found, using fallback')
-    return 'User'
+    // PRIORITY 4: Check if user is authenticated and use a generic but better name
+    const accessToken = localStorage.getItem('accessToken')
+    if (accessToken) {
+      console.log('🚀 GOOGLE-STYLE: User is authenticated, using generic name')
+      return 'Welcome Back'
+    }
+    
+    // PRIORITY 5: Use a better fallback than "User"
+    console.log('🚀 GOOGLE-STYLE: No account data found, using better fallback')
+    return 'Guest User'
   }
+
+  // Function to set custom name
+  const handleSetCustomName = () => {
+    if (customName.trim()) {
+      console.log('🚀 GOOGLE-STYLE: Setting custom name:', customName)
+      setDisplayName(customName.trim())
+      setShowNameInput(false)
+      // Store in localStorage for persistence
+      localStorage.setItem('customDisplayName', customName.trim())
+    }
+  }
+
+  // Load custom name from localStorage on mount
+  useEffect(() => {
+    const storedCustomName = localStorage.getItem('customDisplayName')
+    if (storedCustomName) {
+      console.log('🚀 GOOGLE-STYLE: Loading custom name from localStorage:', storedCustomName)
+      setDisplayName(storedCustomName)
+    }
+  }, [])
 
   // Redirect if not authenticated
   if (!isLoading && !isAuthenticated) {
@@ -279,9 +320,32 @@ export default function DashboardPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex items-center justify-between">
               <div>
-            <h1 className="text-3xl font-bold text-gray-900">
-              Welcome back, {displayName || 'John Doe'}!
-            </h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-3xl font-bold text-gray-900">
+                Welcome back, {displayName || 'John Doe'}!
+              </h1>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowNameInput(!showNameInput)}
+                className="text-xs"
+              >
+                {showNameInput ? 'Cancel' : 'Set Name'}
+              </Button>
+            </div>
+            {showNameInput && (
+              <div className="mt-3 flex items-center gap-2">
+                <Input
+                  placeholder="Enter your name"
+                  value={customName}
+                  onChange={(e) => setCustomName(e.target.value)}
+                  className="w-48"
+                />
+                <Button onClick={handleSetCustomName} size="sm">
+                  Save
+                </Button>
+              </div>
+            )}
                 <p className="text-gray-600 mt-1">
                   Here's what's happening with your job search today.
                 </p>
