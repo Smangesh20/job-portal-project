@@ -100,6 +100,9 @@ export class LocalAuthService {
       console.log('  - test@example.com / password123 (John Doe)');
       console.log('  - admin@askyacham.com / admin123 (Admin User)');
       console.log('  - employer@askyacham.com / employer123 (Sarah Johnson)');
+      
+      // Debug: Log all users
+      console.log('🚀 GOOGLE ULTIMATE: All users in system:', Array.from(this.users.values()));
     } catch (error) {
       console.error('❌ GOOGLE ULTIMATE ERROR creating test user:', error);
     }
@@ -649,6 +652,9 @@ export class LocalAuthService {
       localStorage.setItem('askyacham_sessions', JSON.stringify(Array.from(this.sessions.values())));
       
       console.log('🚀 GOOGLE ULTIMATE: Login successful for user:', user.email);
+      console.log('🚀 GOOGLE ULTIMATE: User data being returned:', user);
+      console.log('🚀 GOOGLE ULTIMATE: User firstName:', user.firstName);
+      console.log('🚀 GOOGLE ULTIMATE: User lastName:', user.lastName);
       return {
         success: true,
         data: {

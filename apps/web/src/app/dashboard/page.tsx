@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuthUnified } from '@/hooks/useAuthUnified'
 import { Button } from '@/components/ui/button'
@@ -35,14 +35,36 @@ export default function DashboardPage() {
   const [locationQuery, setLocationQuery] = useState('')
   const [showQuantumDashboard, setShowQuantumDashboard] = useState(false)
 
+  // Debug authentication state
+  useEffect(() => {
+    console.log('🚀 GOOGLE-STYLE: Dashboard auth state changed:')
+    console.log('  - isAuthenticated:', isAuthenticated)
+    console.log('  - isLoading:', isLoading)
+    console.log('  - user:', user)
+    console.log('  - user type:', typeof user)
+    if (user) {
+      console.log('  - user keys:', Object.keys(user))
+      console.log('  - user firstName:', user.firstName)
+      console.log('  - user lastName:', user.lastName)
+    }
+  }, [user, isAuthenticated, isLoading])
+
   // Helper function to get display name
   const getDisplayName = (user: any) => {
+    console.log('🚀 GOOGLE-STYLE: getDisplayName called with user:', user)
+    console.log('🚀 GOOGLE-STYLE: user type:', typeof user)
+    console.log('🚀 GOOGLE-STYLE: user keys:', user ? Object.keys(user) : 'no user')
+    
     if (!user) {
       console.log('🚀 GOOGLE-STYLE: No user data available')
       return 'User'
     }
     
     console.log('🚀 GOOGLE-STYLE: User data available:', user)
+    console.log('🚀 GOOGLE-STYLE: firstName:', user.firstName)
+    console.log('🚀 GOOGLE-STYLE: lastName:', user.lastName)
+    console.log('🚀 GOOGLE-STYLE: name:', user.name)
+    console.log('🚀 GOOGLE-STYLE: email:', user.email)
     
     // Try different name combinations
     if (user.firstName && user.lastName) {
