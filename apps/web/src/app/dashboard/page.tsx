@@ -72,9 +72,19 @@ export default function DashboardPage() {
         console.log('🚀 GOOGLE-STYLE: Parsed email:', parsedUser.email)
         console.log('🚀 GOOGLE-STYLE: Parsed name:', parsedUser.name)
         console.log('🚀 GOOGLE-STYLE: All parsed user keys:', Object.keys(parsedUser))
+        
+        // Check if this is the real user data from registration
+        if (parsedUser.firstName && parsedUser.lastName) {
+          console.log('🚀 GOOGLE-STYLE: ✅ REAL USER DATA FOUND!')
+          console.log('🚀 GOOGLE-STYLE: Full name should be:', `${parsedUser.firstName} ${parsedUser.lastName}`)
+        } else {
+          console.log('🚀 GOOGLE-STYLE: ❌ User data missing firstName or lastName')
+        }
       } catch (e) {
         console.log('🚀 GOOGLE-STYLE: Error parsing localStorage userData:', e)
       }
+    } else {
+      console.log('🚀 GOOGLE-STYLE: ❌ No userData found in localStorage')
     }
     
     // Check all localStorage keys

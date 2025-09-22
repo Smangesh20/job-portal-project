@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { LocalAuthService } from '@/lib/local-auth';
 
 export async function POST(request: NextRequest) {
   try {
@@ -47,28 +48,40 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // For now, return success for testing
-    // TODO: Integrate with actual authentication system
-    console.log('🔐 GOOGLE-STYLE: Registration attempt for:', email);
+    console.log('🔐 GOOGLE-STYLE: Registration attempt for:', email, 'Name:', firstName, lastName);
     
-    // Simulate successful registration
-    return NextResponse.json({
-      success: true,
-      message: 'Registration successful',
-      data: {
-        user: {
-          id: 'user_' + Math.random().toString(36).substr(2, 9),
-          email: email,
-          firstName: firstName,
-          lastName: lastName,
-          role: 'CANDIDATE',
-          isVerified: true,
-          isActive: true
-        },
-        accessToken: 'access_token_' + Math.random().toString(36).substr(2, 9),
-        refreshToken: 'refresh_token_' + Math.random().toString(36).substr(2, 9)
-      }
+    // Use the actual authentication service to register the user
+    const authService = LocalAuthService.getInstance();
+    const registerResult = await authService.register({
+      email,
+      password,
+      firstName,
+      lastName
     });
+    
+    if (registerResult.success && registerResult.data) {
+      console.log('🔐 GOOGLE-STYLE: Registration successful for:', email, 'User:', registerResult.data.user);
+      return NextResponse.json({
+        success: true,
+        message: 'Registration successful',
+        data: {
+          user: registerResult.data.user,
+          accessToken: registerResult.data.accessToken,
+          refreshToken: registerResult.data.refreshToken
+        }
+      });
+    } else {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: { 
+            code: 'REGISTRATION_FAILED', 
+            message: registerResult.error?.message || 'Registration failed' 
+          } 
+        },
+        { status: 400 }
+      );
+    }
 
   } catch (error) {
     console.error('Registration error:', error);
