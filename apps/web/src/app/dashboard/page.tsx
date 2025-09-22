@@ -288,6 +288,87 @@ This is the name you provided during registration!`)
     console.log('🚀 GOOGLE-STYLE: === END LOCALSTORAGE INSPECTION ===')
   }
 
+  // Function to force set a name directly
+  const handleForceSetName = () => {
+    const name = prompt('Enter your name:')
+    if (name && name.trim()) {
+      console.log('🚀 GOOGLE-STYLE: Force setting name:', name)
+      
+      // Get current userData or create new
+      const userData = localStorage.getItem('userData')
+      let user: any = {}
+      
+      if (userData) {
+        try {
+          user = JSON.parse(userData)
+        } catch (e) {
+          console.log('🚀 GOOGLE-STYLE: Error parsing userData, creating new user object')
+        }
+      }
+      
+      // Set the name in multiple fields
+      user.firstName = name.trim()
+      user.lastName = name.trim()
+      user.name = name.trim()
+      
+      // Save back to localStorage
+      localStorage.setItem('userData', JSON.stringify(user))
+      console.log('🚀 GOOGLE-STYLE: Name force set in localStorage:', user)
+      
+      // Update display immediately
+      setDisplayName(name.trim())
+      
+      alert(`Name set successfully! Your name is now: ${name.trim()}`)
+    }
+  }
+
+  // Function to auto-fix name issues
+  const handleAutoFixName = () => {
+    console.log('🚀 GOOGLE-STYLE: Auto-fixing name issues...')
+    
+    const userData = localStorage.getItem('userData')
+    if (userData) {
+      try {
+        const user = JSON.parse(userData)
+        console.log('🚀 GOOGLE-STYLE: Current user data:', user)
+        
+        // Check if name fields are missing or empty
+        if (!user.firstName || !user.lastName || !user.name) {
+          console.log('🚀 GOOGLE-STYLE: Name fields are missing, auto-fixing...')
+          
+          // Try to extract name from email
+          if (user.email) {
+            const emailName = user.email.split('@')[0]
+            const capitalizedName = emailName.charAt(0).toUpperCase() + emailName.slice(1)
+            
+            // Set the name
+            user.firstName = capitalizedName
+            user.lastName = capitalizedName
+            user.name = capitalizedName
+            
+            // Save back to localStorage
+            localStorage.setItem('userData', JSON.stringify(user))
+            console.log('🚀 GOOGLE-STYLE: Auto-fixed name from email:', capitalizedName)
+            
+            // Update display
+            setDisplayName(capitalizedName)
+            
+            alert(`Auto-fixed! Your name is now: ${capitalizedName}`)
+          } else {
+            alert('No email found to extract name from. Please use "Force Set Name" button.')
+          }
+        } else {
+          alert('Name fields are already set. No auto-fix needed.')
+        }
+      } catch (e) {
+        console.log('🚀 GOOGLE-STYLE: Error in auto-fix:', e)
+        alert('Error in auto-fix. Please use "Force Set Name" button.')
+      }
+    } else {
+      alert('No user data found. Please use "Force Set Name" button.')
+    }
+  }
+
   // Load custom name from localStorage on mount
   useEffect(() => {
     const storedCustomName = localStorage.getItem('customDisplayName')
@@ -414,7 +495,7 @@ This is the name you provided during registration!`)
               <h1 className="text-3xl font-bold text-gray-900">
                 Welcome back, {displayName || 'John Doe'}!
               </h1>
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap">
                 <Button
                   variant="outline"
                   size="sm"
@@ -422,6 +503,22 @@ This is the name you provided during registration!`)
                   className="text-xs"
                 >
                   Show My Data
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleAutoFixName}
+                  className="text-xs bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
+                >
+                  Auto Fix Name
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleForceSetName}
+                  className="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200"
+                >
+                  Force Set Name
                 </Button>
                 <Button
                   variant="outline"
