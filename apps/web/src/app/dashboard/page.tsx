@@ -137,23 +137,27 @@ export default function DashboardPage() {
       try {
         const user = JSON.parse(userData)
         console.log('🚀 GOOGLE-STYLE: Parsed user:', user)
+        console.log('🚀 GOOGLE-STYLE: User firstName:', user.firstName)
+        console.log('🚀 GOOGLE-STYLE: User lastName:', user.lastName)
+        console.log('🚀 GOOGLE-STYLE: User email:', user.email)
+        console.log('🚀 GOOGLE-STYLE: User name field:', user.name)
         
         // Check for firstName and lastName
         if (user.firstName && user.lastName) {
           const fullName = `${user.firstName} ${user.lastName}`
-          console.log('🚀 GOOGLE-STYLE: Using full name:', fullName)
+          console.log('🚀 GOOGLE-STYLE: ✅ FOUND FULL NAME:', fullName)
           return fullName
         }
         
         // Check for firstName only
         if (user.firstName) {
-          console.log('🚀 GOOGLE-STYLE: Using first name:', user.firstName)
+          console.log('🚀 GOOGLE-STYLE: ✅ FOUND FIRST NAME:', user.firstName)
           return user.firstName
         }
         
         // Check for name field
         if (user.name) {
-          console.log('🚀 GOOGLE-STYLE: Using name field:', user.name)
+          console.log('🚀 GOOGLE-STYLE: ✅ FOUND NAME FIELD:', user.name)
           return user.name
         }
         
@@ -161,12 +165,16 @@ export default function DashboardPage() {
         if (user.email) {
           const emailName = user.email.split('@')[0]
           const capitalizedName = emailName.charAt(0).toUpperCase() + emailName.slice(1)
-          console.log('🚀 GOOGLE-STYLE: Using email name:', capitalizedName)
+          console.log('🚀 GOOGLE-STYLE: ✅ FOUND EMAIL NAME:', capitalizedName)
           return capitalizedName
         }
+        
+        console.log('🚀 GOOGLE-STYLE: ❌ NO NAME FOUND IN USER DATA')
       } catch (e) {
         console.log('🚀 GOOGLE-STYLE: Error parsing userData:', e)
       }
+    } else {
+      console.log('🚀 GOOGLE-STYLE: ❌ NO USER DATA FOUND IN LOCALSTORAGE')
     }
     
     // If no userData found, check auth context
@@ -174,23 +182,23 @@ export default function DashboardPage() {
       console.log('🚀 GOOGLE-STYLE: Using auth context user:', user)
       if (user.firstName && user.lastName) {
         const fullName = `${user.firstName} ${user.lastName}`
-        console.log('🚀 GOOGLE-STYLE: Using auth context full name:', fullName)
+        console.log('🚀 GOOGLE-STYLE: ✅ FOUND AUTH CONTEXT FULL NAME:', fullName)
         return fullName
       }
       if (user.firstName) {
-        console.log('🚀 GOOGLE-STYLE: Using auth context first name:', user.firstName)
+        console.log('🚀 GOOGLE-STYLE: ✅ FOUND AUTH CONTEXT FIRST NAME:', user.firstName)
         return user.firstName
       }
       if (user.email) {
         const emailName = user.email.split('@')[0]
         const capitalizedName = emailName.charAt(0).toUpperCase() + emailName.slice(1)
-        console.log('🚀 GOOGLE-STYLE: Using auth context email name:', capitalizedName)
+        console.log('🚀 GOOGLE-STYLE: ✅ FOUND AUTH CONTEXT EMAIL NAME:', capitalizedName)
         return capitalizedName
       }
     }
     
     // If still no name found, use a simple fallback
-    console.log('🚀 GOOGLE-STYLE: No name found, using simple fallback')
+    console.log('🚀 GOOGLE-STYLE: ❌ NO NAME FOUND ANYWHERE, using simple fallback')
     return 'User'
   }
 
@@ -243,6 +251,41 @@ export default function DashboardPage() {
       setShowNameInput(false)
       setCustomName('')
     }
+  }
+
+  // Function to show what's in localStorage
+  const handleShowLocalStorage = () => {
+    console.log('🚀 GOOGLE-STYLE: === LOCALSTORAGE INSPECTION ===')
+    console.log('🚀 GOOGLE-STYLE: accessToken:', localStorage.getItem('accessToken'))
+    console.log('🚀 GOOGLE-STYLE: refreshToken:', localStorage.getItem('refreshToken'))
+    console.log('🚀 GOOGLE-STYLE: userData:', localStorage.getItem('userData'))
+    
+    const userData = localStorage.getItem('userData')
+    if (userData) {
+      try {
+        const user = JSON.parse(userData)
+        console.log('🚀 GOOGLE-STYLE: Parsed userData:', user)
+        console.log('🚀 GOOGLE-STYLE: firstName:', user.firstName)
+        console.log('🚀 GOOGLE-STYLE: lastName:', user.lastName)
+        console.log('🚀 GOOGLE-STYLE: email:', user.email)
+        console.log('🚀 GOOGLE-STYLE: name field:', user.name)
+        
+        // Show in alert for easy viewing
+        alert(`Your account data:
+Email: ${user.email}
+First Name: ${user.firstName || 'NOT SET'}
+Last Name: ${user.lastName || 'NOT SET'}
+Name Field: ${user.name || 'NOT SET'}
+
+This is the name you provided during registration!`)
+      } catch (e) {
+        console.log('🚀 GOOGLE-STYLE: Error parsing userData:', e)
+        alert('Error parsing user data. Check console for details.')
+      }
+    } else {
+      alert('No user data found in localStorage!')
+    }
+    console.log('🚀 GOOGLE-STYLE: === END LOCALSTORAGE INSPECTION ===')
   }
 
   // Load custom name from localStorage on mount
@@ -372,6 +415,14 @@ export default function DashboardPage() {
                 Welcome back, {displayName || 'John Doe'}!
               </h1>
               <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleShowLocalStorage}
+                  className="text-xs"
+                >
+                  Show My Data
+                </Button>
                 <Button
                   variant="outline"
                   size="sm"
