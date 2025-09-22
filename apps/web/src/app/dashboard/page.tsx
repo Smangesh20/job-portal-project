@@ -14,6 +14,7 @@ import { TestSimpleDropdown } from '@/components/test-simple-dropdown'
 import { SimpleDropdown } from '@/components/simple-dropdown'
 import { BulletproofDropdown } from '@/components/bulletproof-dropdown'
 import { ToggleFilterButtons } from '@/components/toggle-filter-buttons'
+import { SimpleClickButtons } from '@/components/simple-click-buttons'
 import { 
   BriefcaseIcon,
   BuildingOfficeIcon,
@@ -698,28 +699,28 @@ This is the name you provided during registration!`)
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <h3 className="text-lg font-medium text-gray-900 mb-6">Filter Options</h3>
                 <div className="space-y-6">
-                  <ToggleFilterButtons
+                  <SimpleClickButtons
                     label="Job Type"
                     options={jobTypes}
                     selectedValues={selectedJobTypes}
                     onToggle={toggleJobType}
                   />
                   
-                  <ToggleFilterButtons
+                  <SimpleClickButtons
                     label="Location"
                     options={locations}
                     selectedValues={selectedLocations}
                     onToggle={toggleLocation}
                   />
                   
-                  <ToggleFilterButtons
+                  <SimpleClickButtons
                     label="Company"
                     options={companies}
                     selectedValues={selectedCompanies}
                     onToggle={toggleCompany}
                   />
                   
-                  <ToggleFilterButtons
+                  <SimpleClickButtons
                     label="Industry"
                     options={industries}
                     selectedValues={selectedIndustries}
@@ -769,17 +770,13 @@ This is the name you provided during registration!`)
             </CardContent>
           </Card>
 
-          {/* Test Dropdown */}
-          <div className="mb-8">
-            <TestSimpleDropdown />
-            <div className="mt-4">
-              <BulletproofDropdown
-                label="Test Bulletproof Dropdown"
-                options={['Option 1', 'Option 2', 'Option 3', 'Option 4']}
-                value=""
-                onChange={(value) => console.log('Bulletproof dropdown selected:', value)}
-                placeholder="Test dropdown - should work!"
-              />
+          {/* Debug Info */}
+          <div className="mb-8 p-4 bg-gray-100 rounded-lg">
+            <h3 className="text-lg font-semibold mb-2">Debug Information</h3>
+            <div className="space-y-2 text-sm">
+              <p><strong>User Data:</strong> {JSON.stringify(user, null, 2)}</p>
+              <p><strong>Welcome Message:</strong> {getWelcomeBackMessage(user)}</p>
+              <p><strong>Display Name:</strong> {user ? (user.firstName || user.name || user.email || 'No name found') : 'No user'}</p>
             </div>
           </div>
 
