@@ -61,11 +61,23 @@ export async function POST(request: NextRequest) {
     
     if (registerResult.success && registerResult.data) {
       console.log('🔐 GOOGLE-STYLE: Registration successful for:', email, 'User:', registerResult.data.user);
+      
+      // ENSURE USER DATA IS COMPLETE
+      const userData = {
+        ...registerResult.data.user,
+        firstName: registerResult.data.user.firstName || firstName,
+        lastName: registerResult.data.user.lastName || lastName,
+        email: registerResult.data.user.email || email,
+        name: `${registerResult.data.user.firstName || firstName} ${registerResult.data.user.lastName || lastName}`
+      }
+      
+      console.log('🔐 GOOGLE-STYLE: Complete user data:', userData);
+      
       return NextResponse.json({
         success: true,
         message: 'Registration successful',
         data: {
-          user: registerResult.data.user,
+          user: userData,
           accessToken: registerResult.data.accessToken,
           refreshToken: registerResult.data.refreshToken
         }

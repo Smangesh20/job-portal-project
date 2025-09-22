@@ -347,22 +347,32 @@ export default function RegisterPage() {
       
       console.log('🚀 REGISTRATION: Registration result:', result)
       
-      // FORCE SAVE USER DATA TO LOCALSTORAGE IMMEDIATELY
+      // AUTOMATICALLY SAVE USER DATA TO LOCALSTORAGE - PROFESSIONAL WAY
       if (typeof window !== 'undefined') {
         const userData = {
           firstName: formData.firstName,
           lastName: formData.lastName,
           email: formData.email,
-          name: `${formData.firstName} ${formData.lastName}`
+          name: `${formData.firstName} ${formData.lastName}`,
+          id: Date.now().toString(), // Add ID for completeness
+          role: 'CANDIDATE',
+          isVerified: true,
+          isActive: true,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
         }
         
-        console.log('🚀 REGISTRATION: Force saving user data:', userData)
+        console.log('🚀 REGISTRATION: Automatically saving user data:', userData)
         localStorage.setItem('userData', JSON.stringify(userData))
-        console.log('🚀 REGISTRATION: User data saved to localStorage')
+        console.log('🚀 REGISTRATION: User data automatically saved to localStorage')
         
         // Verify it was saved
         const savedData = localStorage.getItem('userData')
         console.log('🚀 REGISTRATION: Verified saved data:', savedData)
+        
+        // Also save to sessionStorage as backup
+        sessionStorage.setItem('userData', JSON.stringify(userData))
+        console.log('🚀 REGISTRATION: User data also saved to sessionStorage as backup')
       }
       
       // Show success modal with multiple approaches to ensure it works

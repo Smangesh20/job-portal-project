@@ -180,11 +180,23 @@ export function useAuthUnified() {
       if (response.ok && data.success) {
         // Store user data (registration doesn't return tokens)
         console.log('🚀 REGISTRATION: Storing user data from API response:', data.data.user)
-        localStorage.setItem('userData', JSON.stringify(data.data.user || {}))
+        
+        // ENSURE DATA IS COMPLETE BEFORE SAVING
+        const completeUserData = {
+          firstName: data.data.user.firstName || userData.firstName,
+          lastName: data.data.user.lastName || userData.lastName,
+          email: data.data.user.email || userData.email,
+          name: `${data.data.user.firstName || userData.firstName} ${data.data.user.lastName || userData.lastName}`,
+          ...data.data.user
+        }
+        
+        console.log('🚀 REGISTRATION: Complete user data being saved:', completeUserData)
+        localStorage.setItem('userData', JSON.stringify(completeUserData))
+        console.log('🚀 REGISTRATION: User data saved to localStorage successfully')
 
         // Update state (but don't set as authenticated since user needs to login)
         setAuthState({
-          user: data.data.user,
+          user: completeUserData,
           isAuthenticated: false, // User needs to login after registration
           isLoading: false,
           error: null
