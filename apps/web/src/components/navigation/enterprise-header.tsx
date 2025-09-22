@@ -177,7 +177,10 @@ export function EnterpriseHeader() {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement
-      if (!target.closest('[data-dropdown-name]') && !target.closest('.dropdown-menu')) {
+      if (!target.closest('[data-dropdown-name]') && 
+          !target.closest('.dropdown-menu') && 
+          !target.closest('[data-testid="notification-button"]') &&
+          !target.closest('.notification-dropdown')) {
         console.log('🖱️ GOOGLE-STYLE: Clicking outside dropdown, closing all')
         setActiveDropdown(null)
       }
@@ -544,7 +547,9 @@ export function EnterpriseHeader() {
                     size="sm" 
                     className="relative p-3 hover:bg-gray-100 rounded-xl transition-colors"
                     data-testid="notification-button"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
                       console.log('🔔 GOOGLE-STYLE: Notification button clicked, current state:', isNotificationsOpen)
                       setIsNotificationsOpen(!isNotificationsOpen)
                     }}
@@ -559,7 +564,7 @@ export function EnterpriseHeader() {
                   
                   {/* Notifications Dropdown */}
                   {isNotificationsOpen && (
-                    <div className="absolute top-full right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50">
+                    <div className="notification-dropdown absolute top-full right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50">
                       <div className="px-4 py-3 border-b border-gray-100">
                         <h3 className="font-semibold text-gray-900">Notifications</h3>
                         <p className="text-xs text-gray-500">{notifications.filter(n => n.unread).length} unread</p>
