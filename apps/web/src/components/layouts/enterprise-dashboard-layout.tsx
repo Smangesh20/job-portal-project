@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useAuth } from '@/components/providers/auth-provider'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { getUserDisplayName, getUserInitials } from '@/utils/user-name'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -144,14 +145,8 @@ export function EnterpriseDashboardLayout({ children }: EnterpriseDashboardLayou
     }
   }
 
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map(word => word[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2)
-  }
+  const displayName = getUserDisplayName(user)
+  const userInitials = getUserInitials(user)
 
   return (
     <div className="min-h-screen w-full flex" style={{backgroundColor: '#f8fafc', background: 'linear-gradient(135deg, #f8fafc 0%, #e0f2fe 50%, #e0e7ff 100%)'}}>
@@ -253,14 +248,14 @@ export function EnterpriseDashboardLayout({ children }: EnterpriseDashboardLayou
               {/* User Profile */}
               <div className="flex items-center space-x-3 p-3 rounded-xl bg-gradient-to-r from-slate-50 to-blue-50 border border-slate-200/60">
                 <Avatar className="h-10 w-10">
-                  <AvatarImage src={user?.avatar} alt={user?.name} />
+                  <AvatarImage src={user?.profileImage} alt={displayName} />
                   <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-semibold">
-                    {user?.name ? getInitials(user.name) : 'U'}
+                    {userInitials}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-slate-900 truncate">
-                    {user?.name || 'User'}
+                    {displayName}
                   </p>
                   <p className="text-xs text-slate-500 truncate">
                     {user?.email || 'user@example.com'}
@@ -297,7 +292,7 @@ export function EnterpriseDashboardLayout({ children }: EnterpriseDashboardLayou
                 </button>
                 <div className="hidden lg:block">
                   <h2 className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
-                    Welcome back, {user?.name?.split(' ')[0] || 'User'}!
+                    Welcome back, {displayName}!
                   </h2>
                   <p className="text-sm text-slate-500">
                     Ready to find your next opportunity?
@@ -331,14 +326,14 @@ export function EnterpriseDashboardLayout({ children }: EnterpriseDashboardLayou
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="flex items-center space-x-2 p-2">
                       <Avatar className="h-8 w-8">
-                        <AvatarImage src={user?.avatar} alt={user?.name} />
+                        <AvatarImage src={user?.profileImage} alt={displayName} />
                         <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white text-sm font-semibold">
-                          {user?.name ? getInitials(user.name) : 'U'}
+                          {userInitials}
                         </AvatarFallback>
                       </Avatar>
                       <div className="hidden md:block text-left">
                         <p className="text-sm font-medium text-slate-900">
-                          {user?.name || 'User'}
+                          {displayName}
                         </p>
                         <p className="text-xs text-slate-500">
                           {user?.role || 'user'}

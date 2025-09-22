@@ -16,17 +16,17 @@ import {
   HelpCircle
 } from 'lucide-react'
 import { useTheme } from 'next-themes'
+import { useAuthUnified } from '@/hooks/useAuthUnified'
+import { getUserDisplayName, getUserInitials } from '@/utils/user-name'
 
 function Header() {
   const [notifications] = useState(3)
   const { theme, setTheme } = useTheme()
+  const { user } = useAuthUnified()
   
-  const user = {
-    name: 'John Doe',
-    email: 'john@example.com',
-    avatar: null, // Use default avatar
-    initials: 'JD'
-  }
+  const displayName = getUserDisplayName(user)
+  const userInitials = getUserInitials(user)
+  const userEmail = user?.email || 'user@example.com'
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark')
@@ -102,17 +102,17 @@ function Header() {
             {/* User Profile Dropdown */}
             <div className="flex items-center space-x-3">
               <Avatar className="h-8 w-8">
-                <AvatarImage src={user.avatar || undefined} alt={user.name} />
+                <AvatarImage src={user?.profileImage || undefined} alt={displayName} />
                 <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm">
-                  {user.initials}
+                  {userInitials}
                 </AvatarFallback>
               </Avatar>
               <div className="hidden md:block">
                 <p className="text-sm font-medium text-gray-900 dark:text-white">
-                  {user.name}
+                  {displayName}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {user.email}
+                  {userEmail}
                 </p>
               </div>
               <Button

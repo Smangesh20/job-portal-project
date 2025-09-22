@@ -10,6 +10,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ProtectedPage } from '@/components/auth/google-auth-guard'
+import { useAuthUnified } from '@/hooks/useAuthUnified'
+import { getWelcomeBackMessage } from '@/utils/user-name'
 import { 
   User, 
   Settings, 
@@ -35,6 +37,7 @@ import {
 export default function DashboardOverviewPage() {
   const [activeTab, setActiveTab] = useState('overview')
   const router = useRouter()
+  const { user } = useAuthUnified()
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab)
@@ -144,10 +147,10 @@ export default function DashboardOverviewPage() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 mb-6">
             <div className="flex-1 min-w-0">
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white truncate">
-                Dashboard
+                {getWelcomeBackMessage(user)}
               </h1>
               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1 sm:mt-2">
-                Welcome back! Here's what's happening with your job search.
+                Here's what's happening with your job search.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">

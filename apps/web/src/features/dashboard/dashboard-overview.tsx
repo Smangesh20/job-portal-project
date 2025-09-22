@@ -14,6 +14,8 @@ import {
   Clock,
   AlertCircle
 } from 'lucide-react'
+import { useAuthUnified } from '@/hooks/useAuthUnified'
+import { getWelcomeBackMessage } from '@/utils/user-name'
 
 const overviewData = {
   profileCompletion: 85,
@@ -55,12 +57,14 @@ const overviewData = {
 }
 
 export function DashboardOverview() {
+  const { user } = useAuthUnified()
+  
   return (
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-2xl">Welcome back!</CardTitle>
+            <CardTitle className="text-2xl">{getWelcomeBackMessage(user)}</CardTitle>
             <CardDescription>
               Here's what's happening with your job search
             </CardDescription>

@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { NotificationDropdown } from '@/components/NotificationDropdown'
+import { getWelcomeBackMessage } from '@/utils/user-name'
 import { 
   BriefcaseIcon,
   BuildingOfficeIcon,
@@ -92,10 +93,10 @@ export default function DashboardPage() {
     console.log('🚀 GOOGLE-STYLE: === END localStorage INSPECTION ===')
   }, [user, isAuthenticated, isLoading])
 
-  // DIRECT FIX - This will work immediately
+  // AUTOMATIC NAME DETECTION - Like Google
   useEffect(() => {
-    const setDirectName = () => {
-      console.log('🚀 DIRECT: Setting name directly...')
+    const autoDetectName = () => {
+      console.log('🚀 AUTO: Automatically detecting user name...')
       
       // Check if user is logged in
       const accessToken = localStorage.getItem('accessToken')
@@ -104,58 +105,86 @@ export default function DashboardPage() {
         return
       }
       
-      // Get user data
+      // Get user data from localStorage
       const userData = localStorage.getItem('userData')
-      if (!userData) {
-        setDisplayName('User')
-        return
+      if (userData) {
+        try {
+          const user = JSON.parse(userData)
+          console.log('🚀 AUTO: Found user data:', user)
+          
+          // AUTO: Use firstName and lastName if available
+          if (user.firstName && user.lastName) {
+            const fullName = `${user.firstName} ${user.lastName}`
+            console.log('🚀 AUTO: Using full name:', fullName)
+            setDisplayName(fullName)
+            return
+          }
+          
+          // AUTO: Use firstName only
+          if (user.firstName) {
+            console.log('🚀 AUTO: Using first name:', user.firstName)
+            setDisplayName(user.firstName)
+            return
+          }
+          
+          // AUTO: Use name field
+          if (user.name) {
+            console.log('🚀 AUTO: Using name field:', user.name)
+            setDisplayName(user.name)
+            return
+          }
+          
+          // AUTO: Use email to create name
+          if (user.email) {
+            const emailName = user.email.split('@')[0]
+            const name = emailName.charAt(0).toUpperCase() + emailName.slice(1)
+            console.log('🚀 AUTO: Using email name:', name)
+            setDisplayName(name)
+            return
+          }
+        } catch (e) {
+          console.log('🚀 AUTO: Error parsing userData:', e)
+        }
       }
       
-      try {
-        const user = JSON.parse(userData)
-        console.log('🚀 DIRECT: User data:', user)
-        
-        // DIRECT: Use firstName and lastName if available
+      // AUTO: Check auth context
+      if (user) {
+        console.log('🚀 AUTO: Using auth context user:', user)
         if (user.firstName && user.lastName) {
           const fullName = `${user.firstName} ${user.lastName}`
-          console.log('🚀 DIRECT: Using full name:', fullName)
+          console.log('🚀 AUTO: Using auth full name:', fullName)
           setDisplayName(fullName)
           return
         }
-        
-        // DIRECT: Use firstName only
         if (user.firstName) {
-          console.log('🚀 DIRECT: Using first name:', user.firstName)
+          console.log('🚀 AUTO: Using auth first name:', user.firstName)
           setDisplayName(user.firstName)
           return
         }
-        
-        // DIRECT: Use name field
-        if (user.name) {
-          console.log('🚀 DIRECT: Using name field:', user.name)
-          setDisplayName(user.name)
-          return
-        }
-        
-        // DIRECT: Use email to create name
         if (user.email) {
           const emailName = user.email.split('@')[0]
           const name = emailName.charAt(0).toUpperCase() + emailName.slice(1)
-          console.log('🚀 DIRECT: Using email name:', name)
+          console.log('🚀 AUTO: Using auth email name:', name)
           setDisplayName(name)
           return
         }
-        
-        // Fallback
-        setDisplayName('User')
-        
-      } catch (e) {
-        console.log('🚀 DIRECT: Error, using fallback')
-        setDisplayName('User')
       }
+      
+      // AUTO: Final fallback - use email from localStorage
+      const email = localStorage.getItem('userEmail')
+      if (email) {
+        const emailName = email.split('@')[0]
+        const name = emailName.charAt(0).toUpperCase() + emailName.slice(1)
+        console.log('🚀 AUTO: Using localStorage email name:', name)
+        setDisplayName(name)
+        return
+      }
+      
+      // Last resort
+      setDisplayName('User')
     }
     
-    setDirectName()
+    autoDetectName()
   }, [user, isAuthenticated])
 
   // SIMPLE DIRECT SOLUTION - This will work 100%
@@ -534,30 +563,8 @@ This is the name you provided during registration!`)
               <div>
             <div className="flex items-center gap-3">
               <h1 className="text-3xl font-bold text-gray-900">
-                Welcome back, {displayName || 'John Doe'}!
+                {getWelcomeBackMessage(user)}
               </h1>
-           <div className="flex gap-2 flex-wrap">
-             <Button
-               variant="outline"
-               size="sm"
-               onClick={() => {
-                 const name = prompt('Enter your name:')
-                 if (name) {
-                   setDisplayName(name)
-                   localStorage.setItem('userData', JSON.stringify({
-                     firstName: name,
-                     lastName: name,
-                     name: name,
-                     email: 'user@example.com'
-                   }))
-                   alert('Name set! Your name is now saved.')
-                 }
-               }}
-               className="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200"
-             >
-               Set My Name
-             </Button>
-           </div>
             </div>
             {showNameInput && (
               <div className="mt-3 flex items-center gap-2">
