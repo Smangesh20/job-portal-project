@@ -338,14 +338,25 @@ export default function RegisterPage() {
     try {
       console.log('🚀 REGISTRATION: Starting registration for:', formData.email, 'Name:', formData.firstName, formData.lastName)
       
-      // PREVENT DUPLICATE REGISTRATION - Check if user already exists
+      // HANDLE EXISTING USER - Load existing data instead of preventing registration
       const existingUserData = localStorage.getItem('userData');
       if (existingUserData) {
         try {
           const parsedUser = JSON.parse(existingUserData);
           if (parsedUser.email && parsedUser.email.toLowerCase() === formData.email.toLowerCase()) {
-            console.log('❌ REGISTRATION: User already exists in localStorage for email:', formData.email);
-            toast.error('An account with this email already exists. Please use a different email or try logging in.');
+            console.log('🚀 REGISTRATION: User already exists, loading existing data:', parsedUser);
+            
+            // Show success modal with existing user data
+            setShowSuccessModal(true)
+            setForceRender(prev => prev + 1)
+            forceShowModal()
+            
+            // Clear saved form data
+            if (typeof window !== 'undefined') {
+              localStorage.removeItem('ask_ya_cham_register_email')
+              sessionStorage.removeItem('ask_ya_cham_register_form')
+            }
+            
             setIsSubmitting(false);
             return;
           }

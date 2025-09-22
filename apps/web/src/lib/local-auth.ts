@@ -704,19 +704,21 @@ export class LocalAuthService {
         };
       }
       
-      // GOOGLE ULTIMATE: Also check localStorage for existing users
+      // GOOGLE ULTIMATE: Check localStorage for existing users and return existing data
       if (typeof window !== 'undefined') {
         const existingUserData = localStorage.getItem('userData');
         if (existingUserData) {
           try {
             const parsedUser = JSON.parse(existingUserData);
             if (parsedUser.email && parsedUser.email.toLowerCase() === userData.email.toLowerCase()) {
-              console.log('❌ GOOGLE ULTIMATE: User already exists in localStorage for email:', userData.email);
+              console.log('🚀 GOOGLE ULTIMATE: User already exists in localStorage, returning existing data:', parsedUser);
               return {
-                success: false,
-                error: {
-                  code: 'USER_EXISTS',
-                  message: 'An account with this email already exists. Please use a different email or try logging in.'
+                success: true,
+                message: 'User already exists, returning existing data',
+                data: {
+                  user: parsedUser,
+                  accessToken: '',
+                  refreshToken: ''
                 }
               };
             }
