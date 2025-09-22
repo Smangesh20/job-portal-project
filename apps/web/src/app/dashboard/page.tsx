@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { NotificationDropdown } from '@/components/NotificationDropdown'
 import { getWelcomeBackMessage } from '@/utils/user-name'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { 
   BriefcaseIcon,
   BuildingOfficeIcon,
@@ -38,6 +39,18 @@ export default function DashboardPage() {
   const [displayName, setDisplayName] = useState('User')
   const [showNameInput, setShowNameInput] = useState(false)
   const [customName, setCustomName] = useState('')
+  
+  // Dashboard dropdown filters
+  const [jobTypeFilter, setJobTypeFilter] = useState('')
+  const [locationFilter, setLocationFilter] = useState('')
+  const [companyFilter, setCompanyFilter] = useState('')
+  const [industryFilter, setIndustryFilter] = useState('')
+  
+  // Dropdown data
+  const jobTypes = ['Full-time', 'Part-time', 'Contract', 'Remote', 'Internship']
+  const locations = ['San Francisco', 'New York', 'London', 'Remote', 'Hybrid', 'Seattle', 'Austin', 'Boston']
+  const companies = ['Google', 'Microsoft', 'Apple', 'Amazon', 'Meta', 'Tesla', 'Netflix', 'Uber']
+  const industries = ['Technology', 'Finance', 'Healthcare', 'Education', 'Retail', 'Manufacturing', 'Consulting']
 
   // Debug authentication state
   useEffect(() => {
@@ -636,6 +649,106 @@ This is the name you provided during registration!`)
                   Search
                 </Button>
               </form>
+              
+              {/* Dashboard Dropdown Filters */}
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Filter Options</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Job Type</label>
+                    <Select value={jobTypeFilter} onValueChange={setJobTypeFilter}>
+                      <SelectTrigger className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <SelectValue placeholder="Select job type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">All Job Types</SelectItem>
+                        {jobTypes.map((type) => (
+                          <SelectItem key={type} value={type}>
+                            {type}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                    <Select value={locationFilter} onValueChange={setLocationFilter}>
+                      <SelectTrigger className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <SelectValue placeholder="Select location" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">All Locations</SelectItem>
+                        {locations.map((location) => (
+                          <SelectItem key={location} value={location}>
+                            {location}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Company</label>
+                    <Select value={companyFilter} onValueChange={setCompanyFilter}>
+                      <SelectTrigger className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <SelectValue placeholder="Select company" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">All Companies</SelectItem>
+                        {companies.map((company) => (
+                          <SelectItem key={company} value={company}>
+                            {company}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Industry</label>
+                    <Select value={industryFilter} onValueChange={setIndustryFilter}>
+                      <SelectTrigger className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <SelectValue placeholder="Select industry" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">All Industries</SelectItem>
+                        {industries.map((industry) => (
+                          <SelectItem key={industry} value={industry}>
+                            {industry}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                
+                {/* Filter Summary */}
+                {(jobTypeFilter || locationFilter || companyFilter || industryFilter) && (
+                  <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                    <p className="text-sm text-blue-800">
+                      <strong>Active Filters:</strong> 
+                      {jobTypeFilter && ` Job Type: ${jobTypeFilter}`}
+                      {locationFilter && ` Location: ${locationFilter}`}
+                      {companyFilter && ` Company: ${companyFilter}`}
+                      {industryFilter && ` Industry: ${industryFilter}`}
+                    </p>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => {
+                        setJobTypeFilter('')
+                        setLocationFilter('')
+                        setCompanyFilter('')
+                        setIndustryFilter('')
+                      }}
+                      className="mt-2"
+                    >
+                      Clear All Filters
+                    </Button>
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
 

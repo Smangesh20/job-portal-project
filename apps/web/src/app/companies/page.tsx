@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { 
   BuildingOfficeIcon,
   MapPinIcon,
@@ -18,6 +19,12 @@ import {
 export default function CompaniesPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedFilters, setSelectedFilters] = useState<string[]>([])
+  
+  // Company dropdown filters
+  const [industryFilter, setIndustryFilter] = useState('')
+  const [locationFilter, setLocationFilter] = useState('')
+  const [sizeFilter, setSizeFilter] = useState('')
+  const [ratingFilter, setRatingFilter] = useState('')
 
   const companies = [
     {
@@ -67,6 +74,9 @@ export default function CompaniesPage() {
   ]
 
   const industries = ['Technology', 'Artificial Intelligence', 'Financial Services', 'Clean Energy', 'Healthcare', 'E-commerce']
+  const locations = ['San Francisco, CA', 'Seattle, WA', 'New York, NY', 'Austin, TX', 'Boston, MA', 'Remote', 'Hybrid']
+  const companySizes = ['1-10 employees', '11-50 employees', '51-200 employees', '201-500 employees', '501-1000 employees', '1000+ employees']
+  const ratings = ['4.5+ stars', '4.0+ stars', '3.5+ stars', '3.0+ stars']
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -105,24 +115,104 @@ export default function CompaniesPage() {
             </div>
           </div>
 
-          {/* Industry Filters */}
-          <div className="mt-4 flex flex-wrap gap-2">
-            {industries.map((industry) => (
-              <Badge
-                key={industry}
-                variant={selectedFilters.includes(industry) ? "default" : "outline"}
-                className="cursor-pointer hover:bg-blue-100"
-                onClick={() => {
-                  if (selectedFilters.includes(industry)) {
-                    setSelectedFilters(selectedFilters.filter(f => f !== industry))
-                  } else {
-                    setSelectedFilters([...selectedFilters, industry])
-                  }
-                }}
-              >
-                {industry}
-              </Badge>
-            ))}
+          {/* Company Filter Dropdowns */}
+          <div className="mt-6 pt-6 border-t border-gray-200">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">Filter Companies</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Industry</label>
+                <Select value={industryFilter} onValueChange={setIndustryFilter}>
+                  <SelectTrigger className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <SelectValue placeholder="Select industry" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All Industries</SelectItem>
+                    {industries.map((industry) => (
+                      <SelectItem key={industry} value={industry}>
+                        {industry}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                <Select value={locationFilter} onValueChange={setLocationFilter}>
+                  <SelectTrigger className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <SelectValue placeholder="Select location" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All Locations</SelectItem>
+                    {locations.map((location) => (
+                      <SelectItem key={location} value={location}>
+                        {location}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Company Size</label>
+                <Select value={sizeFilter} onValueChange={setSizeFilter}>
+                  <SelectTrigger className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <SelectValue placeholder="Select size" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All Sizes</SelectItem>
+                    {companySizes.map((size) => (
+                      <SelectItem key={size} value={size}>
+                        {size}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+                <Select value={ratingFilter} onValueChange={setRatingFilter}>
+                  <SelectTrigger className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <SelectValue placeholder="Select rating" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All Ratings</SelectItem>
+                    {ratings.map((rating) => (
+                      <SelectItem key={rating} value={rating}>
+                        {rating}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
+            {/* Filter Summary */}
+            {(industryFilter || locationFilter || sizeFilter || ratingFilter) && (
+              <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                <p className="text-sm text-blue-800">
+                  <strong>Active Filters:</strong> 
+                  {industryFilter && ` Industry: ${industryFilter}`}
+                  {locationFilter && ` Location: ${locationFilter}`}
+                  {sizeFilter && ` Size: ${sizeFilter}`}
+                  {ratingFilter && ` Rating: ${ratingFilter}`}
+                </p>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => {
+                    setIndustryFilter('')
+                    setLocationFilter('')
+                    setSizeFilter('')
+                    setRatingFilter('')
+                  }}
+                  className="mt-2"
+                >
+                  Clear All Filters
+                </Button>
+              </div>
+            )}
           </div>
         </div>
 
