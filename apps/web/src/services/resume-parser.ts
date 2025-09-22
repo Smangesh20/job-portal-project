@@ -112,6 +112,8 @@ export interface SalaryRange {
   period: 'hourly' | 'monthly' | 'yearly';
 }
 
+export type SkillCategory = 'technical' | 'soft' | 'language' | 'certification' | 'industry_specific';
+
 export class ResumeParser {
   private nlpModel: any;
   private skillDatabase: Map<string, SkillCategory>;
