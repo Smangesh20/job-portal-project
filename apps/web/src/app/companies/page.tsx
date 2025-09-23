@@ -12,6 +12,7 @@ import { ToggleFilterButtons } from '@/components/toggle-filter-buttons'
 import { SimpleClickButtons } from '@/components/simple-click-buttons'
 import { BasicHtmlButtons } from '@/components/basic-html-buttons'
 import { PlainTextLinks } from '@/components/plain-text-links'
+import { UltraSimpleLinks } from '@/components/ultra-simple-links'
 import { 
   BuildingOfficeIcon,
   MapPinIcon,
@@ -165,28 +166,28 @@ export default function CompaniesPage() {
           <div className="mt-6 pt-6 border-t border-gray-200">
             <h3 className="text-lg font-medium text-gray-900 mb-6">Filter Companies</h3>
             <div className="space-y-6">
-              <PlainTextLinks
+              <UltraSimpleLinks
                 label="Industry"
                 options={industries}
                 selectedValues={selectedIndustries}
                 onToggle={toggleIndustry}
               />
               
-              <PlainTextLinks
+              <UltraSimpleLinks
                 label="Location"
                 options={locations}
                 selectedValues={selectedLocations}
                 onToggle={toggleLocation}
               />
               
-              <PlainTextLinks
+              <UltraSimpleLinks
                 label="Company Size"
                 options={companySizes}
                 selectedValues={selectedSizes}
                 onToggle={toggleSize}
               />
               
-              <PlainTextLinks
+              <UltraSimpleLinks
                 label="Rating"
                 options={ratings}
                 selectedValues={selectedRatings}

@@ -17,6 +17,7 @@ import { ToggleFilterButtons } from '@/components/toggle-filter-buttons'
 import { SimpleClickButtons } from '@/components/simple-click-buttons'
 import { BasicHtmlButtons } from '@/components/basic-html-buttons'
 import { PlainTextLinks } from '@/components/plain-text-links'
+import { UltraSimpleLinks } from '@/components/ultra-simple-links'
 import { 
   BriefcaseIcon,
   BuildingOfficeIcon,
@@ -701,28 +702,28 @@ This is the name you provided during registration!`)
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <h3 className="text-lg font-medium text-gray-900 mb-6">Filter Options</h3>
                 <div className="space-y-6">
-                  <PlainTextLinks
+                  <UltraSimpleLinks
                     label="Job Type"
                     options={jobTypes}
                     selectedValues={selectedJobTypes}
                     onToggle={toggleJobType}
                   />
                   
-                  <PlainTextLinks
+                  <UltraSimpleLinks
                     label="Location"
                     options={locations}
                     selectedValues={selectedLocations}
                     onToggle={toggleLocation}
                   />
                   
-                  <PlainTextLinks
+                  <UltraSimpleLinks
                     label="Company"
                     options={companies}
                     selectedValues={selectedCompanies}
                     onToggle={toggleCompany}
                   />
                   
-                  <PlainTextLinks
+                  <UltraSimpleLinks
                     label="Industry"
                     options={industries}
                     selectedValues={selectedIndustries}
@@ -816,6 +817,10 @@ This is the name you provided during registration!`)
                 >
                   Set Name
                 </button>
+              </div>
+              <div className="mt-2 text-sm text-gray-600">
+                <p><strong>Current Welcome:</strong> {getWelcomeBackMessage(user)}</p>
+                <p><strong>User Name:</strong> {user ? (user.firstName || user.name || user.email || 'No name found') : 'No user'}</p>
               </div>
             </div>
           </div>
