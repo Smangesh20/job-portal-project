@@ -1,6 +1,6 @@
 {
   "name": "ask-ya-cham-quantum-platform",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "World's Most Advanced Quantum-Powered Job Matching Platform",
   "main": "api/index.js",
   "scripts": {

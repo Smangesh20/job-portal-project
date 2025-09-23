@@ -1,6 +1,6 @@
 {
   "name": "@ask-ya-cham/web",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Ask Ya Cham Web Application",
   "private": true,
   "scripts": {
