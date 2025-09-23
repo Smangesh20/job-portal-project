@@ -24,7 +24,9 @@ import {
   Star,
   Shield,
   ChevronDown,
-  Plus
+  Plus,
+  Clock,
+  Building2
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -65,7 +67,7 @@ export function EnterpriseNavigation({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [openDropdowns, setOpenDropdowns] = useState<Set<string>>(new Set())
 
-  // PROFESSIONAL: Navigation structure
+  // PROFESSIONAL: Navigation structure with dropdowns
   const navigation: NavigationItem[] = [
     {
       name: 'Dashboard',
@@ -78,14 +80,39 @@ export function EnterpriseNavigation({
       href: '/jobs',
       icon: Briefcase,
       badge: '12',
-      current: pathname.startsWith('/jobs')
+      current: pathname.startsWith('/jobs'),
+      children: [
+        { name: 'All Jobs', href: '/jobs', icon: Briefcase },
+        { name: 'Recommended', href: '/jobs/recommended', icon: Star },
+        { name: 'Recent', href: '/jobs/recent', icon: Clock },
+        { name: 'Bookmarked', href: '/jobs/bookmarked', icon: Bookmark }
+      ]
+    },
+    {
+      name: 'Companies',
+      href: '/companies',
+      icon: Building2,
+      badge: '5',
+      current: pathname.startsWith('/companies'),
+      children: [
+        { name: 'All Companies', href: '/companies', icon: Building2 },
+        { name: 'Following', href: '/companies/following', icon: Star },
+        { name: 'Top Rated', href: '/companies/top-rated', icon: TrendingUp },
+        { name: 'Hiring Now', href: '/companies/hiring', icon: Plus }
+      ]
     },
     {
       name: 'Applications',
       href: '/applications',
       icon: FileText,
       badge: '8',
-      current: pathname.startsWith('/applications')
+      current: pathname.startsWith('/applications'),
+      children: [
+        { name: 'All Applications', href: '/applications', icon: FileText },
+        { name: 'Pending', href: '/applications/pending', icon: Clock },
+        { name: 'Interviewed', href: '/applications/interviewed', icon: Calendar },
+        { name: 'Rejected', href: '/applications/rejected', icon: X }
+      ]
     },
     {
       name: 'Messages',
@@ -234,7 +261,7 @@ export function EnterpriseNavigation({
           </button>
           
           {isDropdownOpen && (
-            <div className="mt-1 space-y-1">
+            <div className="mt-1 space-y-1 ml-2 border-l-2 border-gray-200 dark:border-gray-600 pl-4">
               {item.children!.map(child => renderNavigationItem(child, level + 1))}
             </div>
           )}
@@ -513,3 +540,4 @@ export function EnterpriseBreadcrumb({
     </nav>
   )
 }
+

@@ -7,6 +7,15 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { EnterpriseWelcome } from '@/components/professional/enterprise-welcome'
 import { 
   BriefcaseIcon,
   BuildingOfficeIcon,
@@ -23,7 +32,9 @@ import {
   FlagIcon,
   CheckCircleIcon,
   CpuChipIcon,
-  BoltIcon
+  BoltIcon,
+  ChevronDownIcon,
+  FilterIcon
 } from '@heroicons/react/24/outline'
 
 export default function DashboardPage() {
@@ -179,17 +190,17 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* SIMPLE DASHBOARD HEADER */}
+      {/* PROFESSIONAL DASHBOARD HEADER */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                Welcome back, {displayName}!
-              </h1>
-              <p className="text-gray-600 mt-1">
-                Here's what's happening with your job search today.
-              </p>
+            <div className="flex-1">
+              <EnterpriseWelcome 
+                user={user}
+                variant="default"
+                showEditButton={true}
+                onNameUpdate={(name) => setDisplayName(name)}
+              />
             </div>
             <div className="flex items-center space-x-4">
               <Button size="sm" onClick={() => router.push('/profile')}>
@@ -209,10 +220,13 @@ export default function DashboardPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* SIMPLE SEARCH SECTION */}
+        {/* PROFESSIONAL SEARCH SECTION */}
         <Card className="mb-8">
           <CardContent className="p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Job Search</h2>
+            <div className="flex items-center space-x-2 mb-4">
+              <FilterIcon className="h-5 w-5 text-blue-600" />
+              <h2 className="text-xl font-semibold text-gray-900">Advanced Job Search</h2>
+            </div>
             <form onSubmit={handleSearch} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="relative">
@@ -237,57 +251,99 @@ export default function DashboardPage() {
                 </div>
               </div>
               
-              {/* SIMPLE FILTER BUTTONS - NO DROPDOWNS */}
-              <div className="space-y-4">
+              {/* PROFESSIONAL DROPDOWN FILTERS */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Job Type Dropdown */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Job Type</label>
-                  <div className="flex flex-wrap gap-2">
-                    {jobTypes.map((type) => (
-                      <Button
-                        key={type}
-                        type="button"
-                        variant={selectedJobType === type ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setSelectedJobType(selectedJobType === type ? '' : type)}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button 
+                        variant="outline" 
+                        className="w-full justify-between"
                       >
-                        {type}
+                        {selectedJobType || "Select job type"}
+                        <ChevronDownIcon className="ml-2 h-4 w-4" />
                       </Button>
-                    ))}
-                  </div>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-full">
+                      <DropdownMenuLabel>Job Types</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => setSelectedJobType('')}>
+                        All Types
+                      </DropdownMenuItem>
+                      {jobTypes.map((type) => (
+                        <DropdownMenuItem 
+                          key={type}
+                          onClick={() => setSelectedJobType(type)}
+                        >
+                          {type}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
 
+                {/* Location Dropdown */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
-                  <div className="flex flex-wrap gap-2">
-                    {locations.map((location) => (
-                      <Button
-                        key={location}
-                        type="button"
-                        variant={selectedLocation === location ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setSelectedLocation(selectedLocation === location ? '' : location)}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button 
+                        variant="outline" 
+                        className="w-full justify-between"
                       >
-                        {location}
+                        {selectedLocation || "Select location"}
+                        <ChevronDownIcon className="ml-2 h-4 w-4" />
                       </Button>
-                    ))}
-                  </div>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-full">
+                      <DropdownMenuLabel>Locations</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => setSelectedLocation('')}>
+                        All Locations
+                      </DropdownMenuItem>
+                      {locations.map((location) => (
+                        <DropdownMenuItem 
+                          key={location}
+                          onClick={() => setSelectedLocation(location)}
+                        >
+                          {location}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
 
+                {/* Company Dropdown */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Company</label>
-                  <div className="flex flex-wrap gap-2">
-                    {companies.map((company) => (
-                      <Button
-                        key={company}
-                        type="button"
-                        variant={selectedCompany === company ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setSelectedCompany(selectedCompany === company ? '' : company)}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button 
+                        variant="outline" 
+                        className="w-full justify-between"
                       >
-                        {company}
+                        {selectedCompany || "Select company"}
+                        <ChevronDownIcon className="ml-2 h-4 w-4" />
                       </Button>
-                    ))}
-                  </div>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-full">
+                      <DropdownMenuLabel>Companies</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => setSelectedCompany('')}>
+                        All Companies
+                      </DropdownMenuItem>
+                      {companies.map((company) => (
+                        <DropdownMenuItem 
+                          key={company}
+                          onClick={() => setSelectedCompany(company)}
+                        >
+                          {company}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </div>
 
