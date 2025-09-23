@@ -8,11 +8,11 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { NotificationDropdown } from '@/components/NotificationDropdown'
-import { getBulletproofWelcomeMessage } from '@/utils/bulletproof-welcome'
+import { getUltimateWelcomeMessage } from '@/utils/ultimate-welcome'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { BulletproofDropdown, BulletproofSingleDropdown } from '@/components/bulletproof-dropdown-system'
+import { UltimateDropdown, UltimateSingleDropdown } from '@/components/ultimate-dropdown'
 import { NameSetter } from '@/components/name-setter'
-import { BulletproofTest } from '@/components/bulletproof-test'
+import { UltimateTest } from '@/components/ultimate-test'
 import { TestSimpleDropdown } from '@/components/test-simple-dropdown'
 import { SimpleDropdown } from '@/components/simple-dropdown'
 import { ToggleFilterButtons } from '@/components/toggle-filter-buttons'
@@ -626,7 +626,7 @@ This is the name you provided during registration!`)
               <div>
             <div className="flex items-center gap-3">
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                {getBulletproofWelcomeMessage(user)}
+                {getUltimateWelcomeMessage(user)}
               </h1>
             </div>
             {showNameInput && (
@@ -704,7 +704,7 @@ This is the name you provided during registration!`)
               <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
                 <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-6">Filter Options</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <BulletproofDropdown
+                  <UltimateDropdown
                     label="Job Type"
                     options={jobTypes}
                     selectedValues={selectedJobTypes}
@@ -713,7 +713,7 @@ This is the name you provided during registration!`)
                     multiple={true}
                   />
                   
-                  <BulletproofDropdown
+                  <UltimateDropdown
                     label="Location"
                     options={locations}
                     selectedValues={selectedLocations}
@@ -722,7 +722,7 @@ This is the name you provided during registration!`)
                     multiple={true}
                   />
                   
-                  <BulletproofDropdown
+                  <UltimateDropdown
                     label="Company"
                     options={companies}
                     selectedValues={selectedCompanies}
@@ -731,7 +731,7 @@ This is the name you provided during registration!`)
                     multiple={true}
                   />
                   
-                  <BulletproofDropdown
+                  <UltimateDropdown
                     label="Industry"
                     options={industries}
                     selectedValues={selectedIndustries}
@@ -783,9 +783,9 @@ This is the name you provided during registration!`)
             </CardContent>
           </Card>
 
-          {/* BULLETPROOF Test */}
+          {/* ULTIMATE Test */}
           <div className="mb-8">
-            <BulletproofTest />
+            <UltimateTest />
           </div>
 
           {/* Debug Info */}
@@ -793,7 +793,7 @@ This is the name you provided during registration!`)
             <h3 className="text-lg font-semibold mb-2">Debug Information</h3>
             <div className="space-y-2 text-sm">
               <p><strong>User Data:</strong> {JSON.stringify(user, null, 2)}</p>
-              <p><strong>Welcome Message:</strong> {getBulletproofWelcomeMessage(user)}</p>
+              <p><strong>Welcome Message:</strong> {getUltimateWelcomeMessage(user)}</p>
               <p><strong>Display Name:</strong> {user ? (user.firstName || user.name || user.email || 'No name found') : 'No user'}</p>
               <p><strong>LocalStorage UserData:</strong> {typeof window !== 'undefined' ? localStorage.getItem('userData') : 'Server side'}</p>
               <p><strong>LocalStorage AccessToken:</strong> {typeof window !== 'undefined' ? localStorage.getItem('accessToken') : 'Server side'}</p>
@@ -834,7 +834,7 @@ This is the name you provided during registration!`)
                 </button>
               </div>
               <div className="mt-2 text-sm text-gray-600">
-                <p><strong>Current Welcome:</strong> {getBulletproofWelcomeMessage(user)}</p>
+                <p><strong>Current Welcome:</strong> {getUltimateWelcomeMessage(user)}</p>
                 <p><strong>User Name:</strong> {user ? (user.firstName || user.name || user.email || 'No name found') : 'No user'}</p>
               </div>
             </div>
@@ -964,7 +964,7 @@ This is the name you provided during registration!`)
             <div className="space-y-6">
               {/* Name Setter */}
               <NameSetter 
-                currentName={getBulletproofWelcomeMessage(user).replace('Welcome back, ', '').replace('!', '')}
+                currentName={getUltimateWelcomeMessage(user).replace('Welcome back, ', '').replace('!', '')}
                 onNameSet={(name) => {
                   // Refresh the page to update the welcome message
                   window.location.reload()
