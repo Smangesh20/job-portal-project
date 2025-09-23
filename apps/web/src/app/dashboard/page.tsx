@@ -4,55 +4,19 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuthUnified } from '@/hooks/useAuthUnified'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { EnterpriseWelcome } from '@/components/professional/enterprise-welcome'
 import { 
   BriefcaseIcon,
   BuildingOfficeIcon,
-  ChartBarIcon,
-  UserGroupIcon,
-  MagnifyingGlassIcon,
-  StarIcon,
-  ClockIcon,
-  MapPinIcon,
-  HeartIcon,
-  ArrowRightIcon,
-  SparklesIcon,
-  ArrowTrendingUpIcon,
   FlagIcon,
-  CheckCircleIcon,
-  CpuChipIcon,
-  BoltIcon,
-  ChevronDownIcon,
-  FunnelIcon
+  SparklesIcon
 } from '@heroicons/react/24/outline'
 
 export default function DashboardPage() {
   const router = useRouter()
   const { user, isAuthenticated, isLoading, logout } = useAuthUnified()
-  const [searchQuery, setSearchQuery] = useState('')
-  const [locationQuery, setLocationQuery] = useState('')
   const [displayName, setDisplayName] = useState('User')
-
-  // SIMPLE FILTER STATES - NO COMPLEX DROPDOWNS
-  const [selectedJobType, setSelectedJobType] = useState('')
-  const [selectedLocation, setSelectedLocation] = useState('')
-  const [selectedCompany, setSelectedCompany] = useState('')
-
-  // SIMPLE DATA - NO COMPLEX ARRAYS
-  const jobTypes = ['Full-time', 'Part-time', 'Contract', 'Remote', 'Internship']
-  const locations = ['San Francisco', 'New York', 'London', 'Remote', 'Hybrid']
-  const companies = ['Google', 'Microsoft', 'Apple', 'Amazon', 'Meta']
 
   // SIMPLE NAME DETECTION - BULLETPROOF
   useEffect(() => {
@@ -109,17 +73,6 @@ export default function DashboardPage() {
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
       </div>
     )
-  }
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    const params = new URLSearchParams()
-    if (searchQuery.trim()) params.set('search', searchQuery.trim())
-    if (locationQuery.trim()) params.set('location', locationQuery.trim())
-    if (selectedJobType) params.set('type', selectedJobType)
-    if (selectedLocation) params.set('location_filter', selectedLocation)
-    if (selectedCompany) params.set('company', selectedCompany)
-    router.push(`/jobs?${params.toString()}`)
   }
 
   // SIMPLE QUICK ACTIONS
@@ -190,7 +143,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      {/* DASHBOARD OVERVIEW - ALL SEARCH OPTIONS IN SIDEBAR */}
+      {/* DASHBOARD OVERVIEW - SIDEBAR HAS ALL OPTIONS */}
       <div className="text-center py-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-4">
           🎯 Welcome to Your Professional Dashboard
@@ -209,141 +162,89 @@ export default function DashboardPage() {
         </div>
       </div>
 
-        {/* SIMPLE QUICK ACTIONS */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {quickActions.map((action) => (
-            <Card 
-              key={action.title} 
-              className="hover:shadow-md transition-shadow cursor-pointer" 
-              onClick={() => router.push(action.href)}
-            >
-              <CardContent className="p-6">
-                <div className={`w-12 h-12 bg-${action.color}-100 rounded-lg flex items-center justify-center mb-4`}>
-                  <action.icon className={`w-6 h-6 text-${action.color}-600`} />
+      {/* SIMPLE QUICK ACTIONS */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {quickActions.map((action) => (
+          <Card 
+            key={action.title}
+            className="hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => router.push(action.href)}
+          >
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-4">
+                <div className={`p-3 rounded-lg bg-${action.color}-100`}>
+                  <action.icon className={`h-6 w-6 text-${action.color}-600`} />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{action.title}</h3>
-                <p className="text-gray-600 text-sm">{action.description}</p>
-                <ArrowRightIcon className="w-4 h-4 text-gray-400 mt-2" />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900">{action.title}</h3>
+                  <p className="text-sm text-gray-600">{action.description}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
-        {/* SIMPLE RECENT JOBS */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <ArrowTrendingUpIcon className="w-5 h-5 mr-2 text-green-600" />
-                  Your Latest Job Matches
-                </CardTitle>
-                <CardDescription>
-                  Jobs matched to your profile with high compatibility scores
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {recentJobs.map((job) => (
-                    <div key={job.id} className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h4 className="text-lg font-semibold text-gray-900 mb-1">{job.title}</h4>
-                          <p className="text-gray-600 mb-2">{job.company}</p>
-                          <div className="flex items-center space-x-4 text-sm text-gray-500">
-                            <div className="flex items-center">
-                              <MapPinIcon className="w-4 h-4 mr-1" />
-                              {job.location}
-                            </div>
-                            <div className="flex items-center">
-                              <ClockIcon className="w-4 h-4 mr-1" />
-                              {job.posted}
-                            </div>
-                          </div>
-                          <div className="flex items-center mt-3">
-                            <Badge variant="secondary" className="mr-2">{job.type}</Badge>
-                            <span className="text-sm text-gray-600">{job.salary}</span>
-                          </div>
-                        </div>
-                        <div className="flex flex-col items-end space-y-2">
-                          <Badge className="bg-green-100 text-green-800">
-                            {job.match}% Match
-                          </Badge>
-                          <div className="flex space-x-2">
-                            <Button size="sm" variant="outline">
-                              <HeartIcon className="w-4 h-4" />
-                            </Button>
-                            <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                              Apply
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+      {/* RECENT JOBS */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Job Opportunities</CardTitle>
+          <CardDescription>Jobs that match your profile</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {recentJobs.map((job) => (
+              <div key={job.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
+                <div className="flex-1">
+                  <h4 className="font-semibold text-gray-900">{job.title}</h4>
+                  <p className="text-sm text-gray-600">{job.company} • {job.location}</p>
+                  <div className="flex items-center space-x-4 mt-2">
+                    <Badge variant="secondary">{job.type}</Badge>
+                    <span className="text-sm text-gray-500">{job.salary}</span>
+                    <span className="text-sm text-gray-500">{job.posted}</span>
+                  </div>
                 </div>
-                <div className="mt-6 text-center">
-                  <Button variant="outline" onClick={() => router.push('/jobs')}>
-                    View All Jobs
+                <div className="flex items-center space-x-2">
+                  <Badge className="bg-green-100 text-green-800">
+                    {job.match}% match
+                  </Badge>
+                  <Button size="sm" variant="outline">
+                    Apply
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            ))}
           </div>
+        </CardContent>
+      </Card>
 
-          {/* SIMPLE SIDEBAR */}
-          <div className="space-y-6">
-            {/* SIMPLE NAME DISPLAY */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Your Profile</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
-                      {displayName.charAt(0).toUpperCase()}
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-900">{displayName}</p>
-                      <p className="text-sm text-gray-500">{user?.email || 'user@example.com'}</p>
-                    </div>
-                  </div>
-                  <Button size="sm" className="w-full" onClick={() => router.push('/profile')}>
-                    Complete Profile
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* SIMPLE ACTIVITY SUMMARY */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">This Week</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Applications</span>
-                    <span className="text-sm font-semibold">12</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Profile Views</span>
-                    <span className="text-sm font-semibold">28</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Job Matches</span>
-                    <span className="text-sm font-semibold">8</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Interviews</span>
-                    <span className="text-sm font-semibold">3</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+      {/* STATS */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card>
+          <CardContent className="p-6">
+            <div className="text-center">
+              <h3 className="text-2xl font-bold text-blue-600">12</h3>
+              <p className="text-gray-600">Jobs Applied</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-6">
+            <div className="text-center">
+              <h3 className="text-2xl font-bold text-green-600">8</h3>
+              <p className="text-gray-600">Interviews</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-6">
+            <div className="text-center">
+              <h3 className="text-2xl font-bold text-purple-600">3</h3>
+              <p className="text-gray-600">Offers</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }
