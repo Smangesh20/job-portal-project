@@ -60,8 +60,8 @@ export default function JobsPage() {
       search: searchQuery,
       location: locationFilter,
       company: companyFilter,
-      industry: industryFilter,
-      jobType: jobTypeFilter
+      industry: industryFilter ? [industryFilter] : undefined,
+      type: jobTypeFilter ? [jobTypeFilter] : undefined
     })
   }, [searchQuery, locationFilter, companyFilter, industryFilter, jobTypeFilter])
 
@@ -71,8 +71,8 @@ export default function JobsPage() {
       search: searchQuery,
       location: locationFilter,
       company: companyFilter,
-      industry: industryFilter,
-      jobType: jobTypeFilter
+      industry: industryFilter ? [industryFilter] : undefined,
+      type: jobTypeFilter ? [jobTypeFilter] : undefined
     })
   }
 
@@ -320,7 +320,7 @@ export default function JobsPage() {
                             </div>
                             <div className="flex items-center">
                               <ClockIcon className="w-4 h-4 mr-1" />
-                              {job.postedAt}
+                              {job.posted}
                             </div>
                             <div className="flex items-center">
                               <UsersIcon className="w-4 h-4 mr-1" />
@@ -329,14 +329,14 @@ export default function JobsPage() {
                           </div>
                           <p className="text-gray-700 mb-4 line-clamp-2">{job.description}</p>
                           <div className="flex flex-wrap gap-2">
-                            {job.skills.slice(0, 4).map((skill) => (
-                              <Badge key={skill} variant="secondary">
-                                {skill}
+                            {job.tags.slice(0, 4).map((tag) => (
+                              <Badge key={tag} variant="secondary">
+                                {tag}
                               </Badge>
                             ))}
-                            {job.skills.length > 4 && (
+                            {job.tags.length > 4 && (
                               <Badge variant="outline">
-                                +{job.skills.length - 4} more
+                                +{job.tags.length - 4} more
                               </Badge>
                             )}
                           </div>
@@ -346,7 +346,7 @@ export default function JobsPage() {
                     <div className="flex flex-col items-end space-y-3">
                       <div className="text-right">
                         <p className="text-lg font-semibold text-gray-900">{job.salary}</p>
-                        <p className="text-sm text-gray-500">{job.experience}</p>
+                        <p className="text-sm text-gray-500">{job.experienceLevel}</p>
                       </div>
                       <div className="flex space-x-2">
                         <Button
