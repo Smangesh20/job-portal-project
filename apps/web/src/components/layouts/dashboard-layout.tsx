@@ -1,7 +1,7 @@
 'use client'
 
 import { ReactNode } from 'react'
-import { SimpleSidebar } from '@/components/layouts/simple-sidebar'
+import { VerticalSidebar } from '@/components/layouts/vertical-sidebar'
 import Header from '@/components/layouts/header'
 import { Breadcrumb } from '@/components/layouts/breadcrumb'
 
@@ -13,7 +13,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Sidebar - Mobile Optimized */}
-      <SimpleSidebar />
+      <VerticalSidebar />
       
       {/* Main Content - Mobile Optimized */}
       <div className="lg:pl-80">
