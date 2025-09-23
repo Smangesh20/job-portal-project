@@ -5,9 +5,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { EnterpriseDropdown } from '@/components/professional/enterprise-dropdown'
-import { EnterpriseToggleButtons } from '@/components/professional/enterprise-toggle-buttons'
 import { useJobs } from '@/hooks/useJobs'
 import { Job } from '@/lib/jobs-service'
 import { 
@@ -28,10 +25,10 @@ import {
 
 export default function JobsPage() {
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([])
   const [locationFilter, setLocationFilter] = useState('')
   const [companyFilter, setCompanyFilter] = useState('')
   const [industryFilter, setIndustryFilter] = useState('')
+  const [jobTypeFilter, setJobTypeFilter] = useState('')
   const [showFilters, setShowFilters] = useState(false)
   const [applyingJobs, setApplyingJobs] = useState<Set<string>>(new Set())
   const [savingJobs, setSavingJobs] = useState<Set<string>>(new Set())
@@ -48,542 +45,362 @@ export default function JobsPage() {
     saveJob,
     getLocations,
     getCompanies,
-    getIndustries,
-    getTags,
-    getWorldStats,
-    getIndianJobs,
-    getGlobalJobs,
-    clearError
+    getIndustries
   } = useJobs()
 
-  const [worldStats, setWorldStats] = useState<any>(null)
-  const [indianJobs, setIndianJobs] = useState<Job[]>([])
-  const [globalJobs, setGlobalJobs] = useState<Job[]>([])
+  // SIMPLE FILTER OPTIONS - NO COMPLEX DROPDOWNS
+  const locations = ['San Francisco', 'New York', 'London', 'Remote', 'Hybrid', 'Seattle', 'Boston', 'Austin']
+  const companies = ['Google', 'Microsoft', 'Apple', 'Amazon', 'Meta', 'Netflix', 'Uber', 'Airbnb']
+  const industries = ['Technology', 'Finance', 'Healthcare', 'E-commerce', 'Education', 'Manufacturing', 'Consulting']
+  const jobTypes = ['Full-time', 'Part-time', 'Contract', 'Remote', 'Internship', 'Freelance']
 
   useEffect(() => {
-    // Load world data statistics
-    const stats = getWorldStats()
-    setWorldStats(stats)
-    
-    // Load Indian and global jobs
-    setIndianJobs(getIndianJobs())
-    setGlobalJobs(getGlobalJobs())
-  }, [getWorldStats, getIndianJobs, getGlobalJobs])
-
-  const jobTypes = ['Full-time', 'Part-time', 'Contract', 'Remote', 'Internship']
-  const locations = getLocations()
-  const companies = getCompanies()
-  const industries = getIndustries()
-  const tags = getTags()
-
-  // Fallback data to ensure dropdowns work
-  const fallbackLocations = ['San Francisco', 'New York', 'London', 'Remote', 'Hybrid']
-  const fallbackCompanies = ['Google', 'Microsoft', 'Apple', 'Amazon', 'Meta']
-  const fallbackIndustries = ['Technology', 'Finance', 'Healthcare', 'Education', 'Retail']
-
-  // Use actual data or fallback
-  const displayLocations = locations.length > 0 ? locations : fallbackLocations
-  const displayCompanies = companies.length > 0 ? companies : fallbackCompanies
-  const displayIndustries = industries.length > 0 ? industries : fallbackIndustries
-
-  // Debug logging
-  console.log('🚀 DROPDOWN DEBUG: Locations:', locations, 'Display:', displayLocations)
-  console.log('🚀 DROPDOWN DEBUG: Companies:', companies, 'Display:', displayCompanies)
-  console.log('🚀 DROPDOWN DEBUG: Industries:', industries, 'Display:', displayIndustries)
-
-  // Auto-search when filters change (Google-style)
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (searchQuery || locationFilter || companyFilter || industryFilter || selectedFilters.length > 0) {
-        handleSearch()
-      }
-    }, 500) // Debounce search
-
-    return () => clearTimeout(timeoutId)
-  }, [searchQuery, locationFilter, companyFilter, industryFilter, selectedFilters])
-
-  // Handle search
-  const handleSearch = async () => {
-    const filters = {
-      search: searchQuery,
+    // Load initial jobs
+    searchJobs(searchQuery, {
       location: locationFilter,
       company: companyFilter,
-      industry: industryFilter ? [industryFilter] : undefined,
-      type: selectedFilters.length > 0 ? selectedFilters : undefined
-    }
-    console.log('🚀 GOOGLE-STYLE: Searching with filters:', filters)
-    await searchJobs(filters)
+      industry: industryFilter,
+      jobType: jobTypeFilter
+    })
+  }, [searchQuery, locationFilter, companyFilter, industryFilter, jobTypeFilter])
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    searchJobs(searchQuery, {
+      location: locationFilter,
+      company: companyFilter,
+      industry: industryFilter,
+      jobType: jobTypeFilter
+    })
   }
 
-  // Handle filter toggle
-  const toggleFilter = (type: string) => {
-    if (selectedFilters.includes(type)) {
-      setSelectedFilters(selectedFilters.filter(f => f !== type))
-    } else {
-      setSelectedFilters([...selectedFilters, type])
-    }
-  }
-
-  // Clear all filters
-  const clearFilters = () => {
-    setSearchQuery('')
-    setLocationFilter('')
-    setCompanyFilter('')
-    setIndustryFilter('')
-    setSelectedFilters([])
-    console.log('🚀 GOOGLE-STYLE: Cleared all filters')
-  }
-
-  // Handle apply for job
-  const handleApplyForJob = async (job: Job) => {
-    setApplyingJobs(prev => new Set(prev).add(job.id))
+  const handleApply = async (jobId: string) => {
+    setApplyingJobs(prev => new Set([...prev, jobId]))
     try {
-      const success = await applyForJob(job.id)
-      if (success) {
-        // Show success message
-        console.log('🚀 ENTERPRISE: Successfully applied for job:', job.title)
-      } else {
-        console.error('🚀 ENTERPRISE: Failed to apply for job:', job.title)
-      }
+      await applyForJob(jobId)
     } catch (error) {
-      console.error('🚀 ENTERPRISE: Error applying for job:', error)
+      console.error('Failed to apply for job:', error)
     } finally {
       setApplyingJobs(prev => {
         const newSet = new Set(prev)
-        newSet.delete(job.id)
+        newSet.delete(jobId)
         return newSet
       })
     }
   }
 
-  // Handle save job
-  const handleSaveJob = async (job: Job) => {
-    setSavingJobs(prev => new Set(prev).add(job.id))
+  const handleSave = async (jobId: string) => {
+    setSavingJobs(prev => new Set([...prev, jobId]))
     try {
-      const success = await saveJob(job.id)
-      if (success) {
-        console.log('🚀 ENTERPRISE: Job saved:', job.title)
-      } else {
-        console.error('🚀 ENTERPRISE: Failed to save job:', job.title)
-      }
+      await saveJob(jobId)
     } catch (error) {
-      console.error('🚀 ENTERPRISE: Error saving job:', error)
+      console.error('Failed to save job:', error)
     } finally {
       setSavingJobs(prev => {
         const newSet = new Set(prev)
-        newSet.delete(job.id)
+        newSet.delete(jobId)
         return newSet
       })
     }
   }
 
-  // Handle load more
-  const handleLoadMore = async () => {
-    await loadMoreJobs()
+  const clearAllFilters = () => {
+    setLocationFilter('')
+    setCompanyFilter('')
+    setIndustryFilter('')
+    setJobTypeFilter('')
+    setSearchQuery('')
   }
 
-  // Clear error when user starts typing
-  useEffect(() => {
-    if (error) {
-      const timer = setTimeout(() => clearError(), 5000)
-      return () => clearTimeout(timer)
-    }
-  }, [error, clearError])
+  const hasActiveFilters = locationFilter || companyFilter || industryFilter || jobTypeFilter || searchQuery
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
+        {/* HEADER */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">Job Opportunities</h1>
           <p className="text-lg text-gray-600">
-            Discover your next career opportunity with our quantum-powered matching
+            Discover {total.toLocaleString()} job opportunities tailored to your skills
           </p>
-          {total > 0 && (
-            <p className="text-sm text-gray-500 mt-2">
-              Showing {jobs.length} of {total} jobs
-            </p>
-          )}
         </div>
 
-        {/* World Data Statistics */}
-        {worldStats && (
-          <div className="mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
-              <CardContent className="p-6">
-                <div className="flex items-center">
-                  <div className="p-2 bg-blue-100 rounded-lg">
-                    <BriefcaseIcon className="h-6 w-6 text-blue-600" />
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-blue-600">Total Jobs</p>
-                    <p className="text-2xl font-bold text-blue-900">{worldStats.totalJobs.toLocaleString()}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
-              <CardContent className="p-6">
-                <div className="flex items-center">
-                  <div className="p-2 bg-green-100 rounded-lg">
-                    <BuildingOfficeIcon className="h-6 w-6 text-green-600" />
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-green-600">Companies</p>
-                    <p className="text-2xl font-bold text-green-900">{worldStats.totalCompanies.toLocaleString()}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-r from-orange-50 to-amber-50 border-orange-200">
-              <CardContent className="p-6">
-                <div className="flex items-center">
-                  <div className="p-2 bg-orange-100 rounded-lg">
-                    <MapPinIcon className="h-6 w-6 text-orange-600" />
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-orange-600">Countries</p>
-                    <p className="text-2xl font-bold text-orange-900">{worldStats.countries}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-r from-purple-50 to-violet-50 border-purple-200">
-              <CardContent className="p-6">
-                <div className="flex items-center">
-                  <div className="p-2 bg-purple-100 rounded-lg">
-                    <StarIcon className="h-6 w-6 text-purple-600" />
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-purple-600">Indian Jobs</p>
-                    <p className="text-2xl font-bold text-purple-900">{worldStats.indianJobs.toLocaleString()}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* Error Message */}
-        {error && (
-          <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
-            <div className="flex">
-              <ExclamationTriangleIcon className="h-5 w-5 text-red-400" />
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800">Connection Issue</h3>
-                <p className="text-sm text-red-700 mt-1">{error}</p>
-                <div className="mt-3 flex gap-2">
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    onClick={() => window.location.reload()}
-                  >
-                    Refresh Page
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    onClick={clearError}
-                  >
-                    Try Again
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Search and Filters */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <div className="flex flex-col lg:flex-row gap-4">
-            <div className="flex-1">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* SIMPLE SEARCH AND FILTERS */}
+        <Card className="mb-8">
+          <CardContent className="p-6">
+            <div className="flex flex-col lg:flex-row gap-4 mb-6">
+              <div className="flex-1">
                 <div className="relative">
                   <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <Input
                     placeholder="Search jobs, companies, or keywords..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                    className="pl-10"
-                  />
-                </div>
-                <div className="relative">
-                  <MapPinIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <Input
-                    placeholder="Location (e.g., San Francisco, Remote)"
-                    value={locationFilter}
-                    onChange={(e) => setLocationFilter(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                     className="pl-10"
                   />
                 </div>
               </div>
-            </div>
-            <div className="flex gap-2">
               <Button 
                 variant="outline" 
-                className="flex items-center gap-2"
                 onClick={() => setShowFilters(!showFilters)}
+                className="flex items-center gap-2"
               >
                 <FunnelIcon className="w-4 h-4" />
                 Filters
-              </Button>
-              <Button 
-                variant="outline" 
-                className="flex items-center gap-2"
-                onClick={clearFilters}
-              >
-                Clear
-              </Button>
-              <Button 
-                className="bg-blue-600 hover:bg-blue-700"
-                onClick={handleSearch}
-                disabled={isLoading}
-              >
-                {isLoading ? 'Searching...' : 'Search'}
+                {hasActiveFilters && (
+                  <Badge variant="secondary" className="ml-2">
+                    Active
+                  </Badge>
+                )}
               </Button>
             </div>
-          </div>
 
-          {/* Advanced Filters */}
-          {showFilters && (
-            <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
-                <Select value={locationFilter} onValueChange={setLocationFilter}>
-                  <SelectTrigger className="cursor-pointer w-full h-10 px-3 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <SelectValue placeholder="Select location" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">All Locations</SelectItem>
-                    {displayLocations.map((location) => (
-                      <SelectItem key={location} value={location}>
+            {/* SIMPLE FILTER BUTTONS - NO DROPDOWNS */}
+            {showFilters && (
+              <div className="space-y-6 border-t pt-6">
+                {/* Location Filter */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">Location</label>
+                  <div className="flex flex-wrap gap-2">
+                    {locations.map((location) => (
+                      <Button
+                        key={location}
+                        type="button"
+                        variant={locationFilter === location ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setLocationFilter(locationFilter === location ? '' : location)}
+                      >
                         {location}
-                      </SelectItem>
+                      </Button>
                     ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Company</label>
-                <Select value={companyFilter} onValueChange={setCompanyFilter}>
-                  <SelectTrigger className="cursor-pointer w-full h-10 px-3 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <SelectValue placeholder="Select company" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">All Companies</SelectItem>
-                    {displayCompanies.map((company) => (
-                      <SelectItem key={company} value={company}>
+                  </div>
+                </div>
+
+                {/* Company Filter */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">Company</label>
+                  <div className="flex flex-wrap gap-2">
+                    {companies.map((company) => (
+                      <Button
+                        key={company}
+                        type="button"
+                        variant={companyFilter === company ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setCompanyFilter(companyFilter === company ? '' : company)}
+                      >
                         {company}
-                      </SelectItem>
+                      </Button>
                     ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Industry</label>
-                <Select value={industryFilter} onValueChange={setIndustryFilter}>
-                  <SelectTrigger className="cursor-pointer w-full h-10 px-3 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <SelectValue placeholder="Select industry" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">All Industries</SelectItem>
-                    {displayIndustries.map((industry) => (
-                      <SelectItem key={industry} value={industry}>
+                  </div>
+                </div>
+
+                {/* Industry Filter */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">Industry</label>
+                  <div className="flex flex-wrap gap-2">
+                    {industries.map((industry) => (
+                      <Button
+                        key={industry}
+                        type="button"
+                        variant={industryFilter === industry ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setIndustryFilter(industryFilter === industry ? '' : industry)}
+                      >
                         {industry}
-                      </SelectItem>
+                      </Button>
                     ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          )}
+                  </div>
+                </div>
 
-          {/* Job Type Filters */}
-          <div className="mt-4 flex flex-wrap gap-2">
-            {jobTypes.map((type) => (
-              <Badge
-                key={type}
-                variant={selectedFilters.includes(type) ? "default" : "outline"}
-                className="cursor-pointer hover:bg-blue-100"
-                onClick={() => toggleFilter(type)}
-              >
-                {type}
-              </Badge>
-            ))}
-          </div>
-        </div>
+                {/* Job Type Filter */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">Job Type</label>
+                  <div className="flex flex-wrap gap-2">
+                    {jobTypes.map((type) => (
+                      <Button
+                        key={type}
+                        type="button"
+                        variant={jobTypeFilter === type ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setJobTypeFilter(jobTypeFilter === type ? '' : type)}
+                      >
+                        {type}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
 
-        {/* Loading State */}
-        {isLoading && jobs.length === 0 && (
-          <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-sm text-gray-600">Loading jobs...</p>
-          </div>
-        )}
-
-        {/* Jobs List */}
-        <div className="space-y-4">
-          {jobs.map((job) => (
-            <Card key={job.id} className={`hover:shadow-lg transition-shadow ${job.isNew ? 'ring-2 ring-green-200' : ''} ${job.isUpdated ? 'ring-2 ring-blue-200' : ''}`}>
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start space-x-4 flex-1">
-                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <BuildingOfficeIcon className="w-6 h-6 text-white" />
+                {/* Active Filters Display */}
+                {hasActiveFilters && (
+                  <div className="p-3 bg-blue-50 rounded-lg">
+                    <p className="text-sm text-blue-800 mb-2">
+                      <strong>Active Filters:</strong>
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {locationFilter && (
+                        <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                          Location: {locationFilter}
+                        </Badge>
+                      )}
+                      {companyFilter && (
+                        <Badge variant="secondary" className="bg-green-100 text-green-800">
+                          Company: {companyFilter}
+                        </Badge>
+                      )}
+                      {industryFilter && (
+                        <Badge variant="secondary" className="bg-purple-100 text-purple-800">
+                          Industry: {industryFilter}
+                        </Badge>
+                      )}
+                      {jobTypeFilter && (
+                        <Badge variant="secondary" className="bg-orange-100 text-orange-800">
+                          Type: {jobTypeFilter}
+                        </Badge>
+                      )}
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={clearAllFilters}
+                        className="text-blue-600 hover:text-blue-700"
+                      >
+                        Clear All
+                      </Button>
                     </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* JOBS LIST */}
+        {isLoading && jobs.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading jobs...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-12">
+            <ExclamationTriangleIcon className="w-16 h-16 text-red-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Error loading jobs</h3>
+            <p className="text-gray-600 mb-4">{error}</p>
+            <Button onClick={() => window.location.reload()}>
+              Try Again
+            </Button>
+          </div>
+        ) : jobs.length === 0 ? (
+          <div className="text-center py-12">
+            <BriefcaseIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No jobs found</h3>
+            <p className="text-gray-600 mb-4">Try adjusting your search criteria or filters</p>
+            <Button variant="outline" onClick={clearAllFilters}>
+              Clear All Filters
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {jobs.map((job: Job) => (
+              <Card key={job.id} className="hover:shadow-md transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center space-x-2">
-                          <h3 className="text-lg font-semibold text-gray-900">{job.title}</h3>
-                          {job.isNew && (
-                            <Badge variant="default" className="bg-green-100 text-green-800 text-xs">
-                              NEW
-                            </Badge>
-                          )}
-                          {job.isUpdated && (
-                            <Badge variant="default" className="bg-blue-100 text-blue-800 text-xs">
-                              UPDATED
-                            </Badge>
-                          )}
-                          {job.isUrgent && (
-                            <Badge variant="destructive" className="text-xs">
-                              URGENT
-                            </Badge>
-                          )}
+                      <div className="flex items-start gap-4 mb-4">
+                        <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">
+                          {job.company.charAt(0)}
                         </div>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className={`${job.saved ? 'text-red-500' : 'text-gray-400'} hover:text-red-500`}
-                          onClick={() => handleSaveJob(job)}
+                        <div className="flex-1">
+                          <h3 className="text-xl font-semibold text-gray-900 mb-1">{job.title}</h3>
+                          <p className="text-gray-600 mb-2">{job.company}</p>
+                          <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
+                            <div className="flex items-center">
+                              <MapPinIcon className="w-4 h-4 mr-1" />
+                              {job.location}
+                            </div>
+                            <div className="flex items-center">
+                              <ClockIcon className="w-4 h-4 mr-1" />
+                              {job.postedAt}
+                            </div>
+                            <div className="flex items-center">
+                              <UsersIcon className="w-4 h-4 mr-1" />
+                              {job.type}
+                            </div>
+                          </div>
+                          <p className="text-gray-700 mb-4 line-clamp-2">{job.description}</p>
+                          <div className="flex flex-wrap gap-2">
+                            {job.skills.slice(0, 4).map((skill) => (
+                              <Badge key={skill} variant="secondary">
+                                {skill}
+                              </Badge>
+                            ))}
+                            {job.skills.length > 4 && (
+                              <Badge variant="outline">
+                                +{job.skills.length - 4} more
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end space-y-3">
+                      <div className="text-right">
+                        <p className="text-lg font-semibold text-gray-900">{job.salary}</p>
+                        <p className="text-sm text-gray-500">{job.experience}</p>
+                      </div>
+                      <div className="flex space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleSave(job.id)}
                           disabled={savingJobs.has(job.id)}
                         >
-                          <HeartIcon className={`w-4 h-4 ${job.saved ? 'fill-current' : ''}`} />
-                        </Button>
-                      </div>
-                      <div className="flex items-center space-x-4 text-sm text-gray-600 mb-2">
-                        <span className="font-medium">{job.company}</span>
-                        <div className="flex items-center">
-                          <StarIcon className="w-4 h-4 text-yellow-400 fill-current mr-1" />
-                          {job.rating}
-                        </div>
-                        <div className="flex items-center text-xs text-gray-500">
-                          <EyeIcon className="w-3 h-3 mr-1" />
-                          {job.views} views
-                        </div>
-                        <div className="flex items-center text-xs text-gray-500">
-                          <UsersIcon className="w-3 h-3 mr-1" />
-                          {job.applications} applications
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-4 text-sm text-gray-600 mb-3">
-                        <div className="flex items-center">
-                          <MapPinIcon className="w-4 h-4 mr-1" />
-                          {job.location}
-                        </div>
-                        <div className="flex items-center">
-                          <BriefcaseIcon className="w-4 h-4 mr-1" />
-                          {job.type}
-                        </div>
-                        <div className="flex items-center">
-                          <ClockIcon className="w-4 h-4 mr-1" />
-                          {job.posted}
-                        </div>
-                        {job.isRemote && (
-                          <Badge variant="outline" className="text-xs">
-                            Remote
-                          </Badge>
-                        )}
-                      </div>
-                      <p className="text-gray-700 mb-3 line-clamp-2">{job.description}</p>
-                      <div className="flex items-center justify-between">
-                        <div className="flex flex-wrap gap-2">
-                          {job.tags.map((tag) => (
-                            <Badge key={tag} variant="secondary" className="text-xs">
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <span className="text-sm font-semibold text-green-600">{job.salary}</span>
-                          {job.applied ? (
-                            <div className="flex items-center text-green-600 text-sm">
-                              <CheckCircleIcon className="w-4 h-4 mr-1" />
-                              Applied
-                            </div>
+                          {savingJobs.has(job.id) ? (
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
                           ) : (
-                            <Button 
-                              size="sm" 
-                              className="bg-blue-600 hover:bg-blue-700"
-                              onClick={() => handleApplyForJob(job)}
-                              disabled={applyingJobs.has(job.id)}
-                            >
-                              {applyingJobs.has(job.id) ? 'Applying...' : 'Apply Now'}
-                            </Button>
+                            <HeartIcon className="w-4 h-4" />
                           )}
-                          {job.applicationUrl && (
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              onClick={() => window.open(job.applicationUrl, '_blank')}
-                            >
-                              <ArrowTopRightOnSquareIcon className="w-4 h-4 mr-1" />
-                              External
-                            </Button>
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={() => handleApply(job.id)}
+                          disabled={applyingJobs.has(job.id)}
+                          className="bg-blue-600 hover:bg-blue-700"
+                        >
+                          {applyingJobs.has(job.id) ? (
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                          ) : (
+                            <>
+                              <CheckCircleIcon className="w-4 h-4 mr-1" />
+                              Apply
+                            </>
                           )}
-                        </div>
+                        </Button>
                       </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                </CardContent>
+              </Card>
+            ))}
 
-        {/* No Jobs Found */}
-        {!isLoading && jobs.length === 0 && (
-          <div className="text-center py-12">
-            <BriefcaseIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No jobs found</h3>
-            <p className="text-gray-600 mb-4">Try adjusting your search criteria or filters</p>
-            <Button 
-              variant="outline" 
-              onClick={() => {
-                setSearchQuery('')
-                setLocationFilter('')
-                setSelectedFilters([])
-                handleSearch()
-              }}
-            >
-              Clear Filters
-            </Button>
-          </div>
-        )}
-
-        {/* Load More */}
-        {hasMore && (
-          <div className="text-center mt-8">
-            <Button 
-              variant="outline" 
-              size="lg"
-              onClick={handleLoadMore}
-              disabled={isLoading}
-            >
-              {isLoading ? 'Loading...' : 'Load More Jobs'}
-            </Button>
-          </div>
-        )}
-
-        {/* End of Results */}
-        {!hasMore && jobs.length > 0 && (
-          <div className="text-center mt-8">
-            <p className="text-sm text-gray-500">You've reached the end of the results</p>
+            {/* LOAD MORE BUTTON */}
+            {hasMore && (
+              <div className="text-center py-8">
+                <Button
+                  variant="outline"
+                  onClick={loadMoreJobs}
+                  disabled={isLoading}
+                  className="px-8"
+                >
+                  {isLoading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600 mr-2"></div>
+                      Loading...
+                    </>
+                  ) : (
+                    'Load More Jobs'
+                  )}
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </div>
