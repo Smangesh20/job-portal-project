@@ -8,8 +8,11 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { NotificationDropdown } from '@/components/NotificationDropdown'
-import { getWelcomeBackMessage } from '@/utils/user-name'
+import { getWelcomeBackMessage, getPersonalizedWelcomeMessage } from '@/utils/user-name'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { ProfessionalDropdown } from '@/components/professional-dropdown'
+import { NameSetter } from '@/components/name-setter'
+import { DropdownTest } from '@/components/dropdown-test'
 import { TestSimpleDropdown } from '@/components/test-simple-dropdown'
 import { SimpleDropdown } from '@/components/simple-dropdown'
 import { BulletproofDropdown } from '@/components/bulletproof-dropdown'
@@ -623,8 +626,8 @@ This is the name you provided during registration!`)
             <div className="flex items-center justify-between">
               <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-bold text-gray-900">
-                {getWelcomeBackMessage(user)}
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                {getPersonalizedWelcomeMessage(user)}
               </h1>
             </div>
             {showNameInput && (
@@ -698,36 +701,44 @@ This is the name you provided during registration!`)
                 </Button>
               </form>
               
-              {/* Dashboard Toggle Button Filters */}
-              <div className="mt-6 pt-6 border-t border-gray-200">
-                <h3 className="text-lg font-medium text-gray-900 mb-6">Filter Options</h3>
-                <div className="space-y-6">
-                  <UltraSimpleLinks
+              {/* Professional Filter Dropdowns */}
+              <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-6">Filter Options</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <ProfessionalDropdown
                     label="Job Type"
                     options={jobTypes}
                     selectedValues={selectedJobTypes}
                     onToggle={toggleJobType}
+                    placeholder="Select job types"
+                    multiple={true}
                   />
                   
-                  <UltraSimpleLinks
+                  <ProfessionalDropdown
                     label="Location"
                     options={locations}
                     selectedValues={selectedLocations}
                     onToggle={toggleLocation}
+                    placeholder="Select locations"
+                    multiple={true}
                   />
                   
-                  <UltraSimpleLinks
+                  <ProfessionalDropdown
                     label="Company"
                     options={companies}
                     selectedValues={selectedCompanies}
                     onToggle={toggleCompany}
+                    placeholder="Select companies"
+                    multiple={true}
                   />
                   
-                  <UltraSimpleLinks
+                  <ProfessionalDropdown
                     label="Industry"
                     options={industries}
                     selectedValues={selectedIndustries}
                     onToggle={toggleIndustry}
+                    placeholder="Select industries"
+                    multiple={true}
                   />
                 </div>
                 
@@ -772,6 +783,11 @@ This is the name you provided during registration!`)
               </div>
             </CardContent>
           </Card>
+
+          {/* Dropdown Test */}
+          <div className="mb-8">
+            <DropdownTest />
+          </div>
 
           {/* Debug Info */}
           <div className="mb-8 p-4 bg-gray-100 rounded-lg">
@@ -947,6 +963,15 @@ This is the name you provided during registration!`)
 
             {/* Sidebar */}
             <div className="space-y-6">
+              {/* Name Setter */}
+              <NameSetter 
+                currentName={getPersonalizedWelcomeMessage(user).replace('Welcome back, ', '').replace('!', '')}
+                onNameSet={(name) => {
+                  // Refresh the page to update the welcome message
+                  window.location.reload()
+                }}
+              />
+              
               {/* Profile Completion */}
               <Card>
                 <CardHeader>

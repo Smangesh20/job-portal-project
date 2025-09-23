@@ -27,7 +27,7 @@ import {
 } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useAuthUnified } from '@/hooks/useAuthUnified'
-import { getUserDisplayName, getUserInitials } from '@/utils/user-name'
+import { getUserDisplayName, getUserInitials, getPersonalizedWelcomeMessage } from '@/utils/user-name'
 
 function Header() {
   const [notifications] = useState(3)

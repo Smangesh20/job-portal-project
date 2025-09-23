@@ -66,5 +66,52 @@ export function getUserInitials(user: UserData | null | undefined): string {
 
 export function getWelcomeBackMessage(user: UserData | null | undefined): string {
   const displayName = getUserDisplayName(user);
-  return `Welcome back, ${displayName}!`;
+  
+  // If we have a proper name (not just "User"), use it
+  if (displayName && displayName !== 'User' && displayName !== 'Guest') {
+    return `Welcome back, ${displayName}!`;
+  }
+  
+  // Fallback to a more generic but still professional message
+  return `Welcome back!`;
+}
+
+export function getPersonalizedWelcomeMessage(user: UserData | null | undefined): string {
+  const displayName = getUserDisplayName(user);
+  
+  // Try to get the best possible name
+  if (displayName && displayName !== 'User' && displayName !== 'Guest') {
+    // Check if it's a full name (has space)
+    if (displayName.includes(' ')) {
+      const firstName = displayName.split(' ')[0];
+      return `Welcome back, ${firstName}!`;
+    }
+    return `Welcome back, ${displayName}!`;
+  }
+  
+  // Try to get name from localStorage as fallback
+  if (typeof window !== 'undefined') {
+    try {
+      const userData = localStorage.getItem('userData');
+      if (userData) {
+        const parsedUser = JSON.parse(userData);
+        if (parsedUser.firstName) {
+          return `Welcome back, ${parsedUser.firstName}!`;
+        }
+        if (parsedUser.name) {
+          return `Welcome back, ${parsedUser.name}!`;
+        }
+        if (parsedUser.email) {
+          const emailName = parsedUser.email.split('@')[0];
+          const capitalizedName = emailName.charAt(0).toUpperCase() + emailName.slice(1);
+          return `Welcome back, ${capitalizedName}!`;
+        }
+      }
+    } catch (e) {
+      console.log('Error parsing userData for welcome message:', e);
+    }
+  }
+  
+  // Final fallback
+  return `Welcome back!`;
 }
