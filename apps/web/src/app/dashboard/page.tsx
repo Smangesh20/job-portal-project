@@ -220,139 +220,26 @@ export default function DashboardPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* PROFESSIONAL SEARCH SECTION */}
-        <Card className="mb-8">
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-2 mb-4">
-              <FunnelIcon className="h-5 w-5 text-blue-600" />
-              <h2 className="text-xl font-semibold text-gray-900">Advanced Job Search</h2>
-            </div>
-            <form onSubmit={handleSearch} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="relative">
-                  <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <Input
-                    type="text"
-                    placeholder="Search jobs, companies, or keywords..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-                <div className="relative">
-                  <MapPinIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <Input
-                    type="text"
-                    placeholder="Location (e.g., San Francisco, Remote)"
-                    value={locationQuery}
-                    onChange={(e) => setLocationQuery(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-              
-              {/* PROFESSIONAL DROPDOWN FILTERS */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Job Type Dropdown */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Job Type</label>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button 
-                        variant="outline" 
-                        className="w-full justify-between"
-                      >
-                        {selectedJobType || "Select job type"}
-                        <ChevronDownIcon className="ml-2 h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-full">
-                      <DropdownMenuLabel>Job Types</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => setSelectedJobType('')}>
-                        All Types
-                      </DropdownMenuItem>
-                      {jobTypes.map((type) => (
-                        <DropdownMenuItem 
-                          key={type}
-                          onClick={() => setSelectedJobType(type)}
-                        >
-                          {type}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-
-                {/* Location Dropdown */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button 
-                        variant="outline" 
-                        className="w-full justify-between"
-                      >
-                        {selectedLocation || "Select location"}
-                        <ChevronDownIcon className="ml-2 h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-full">
-                      <DropdownMenuLabel>Locations</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => setSelectedLocation('')}>
-                        All Locations
-                      </DropdownMenuItem>
-                      {locations.map((location) => (
-                        <DropdownMenuItem 
-                          key={location}
-                          onClick={() => setSelectedLocation(location)}
-                        >
-                          {location}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-
-                {/* Company Dropdown */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Company</label>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button 
-                        variant="outline" 
-                        className="w-full justify-between"
-                      >
-                        {selectedCompany || "Select company"}
-                        <ChevronDownIcon className="ml-2 h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-full">
-                      <DropdownMenuLabel>Companies</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => setSelectedCompany('')}>
-                        All Companies
-                      </DropdownMenuItem>
-                      {companies.map((company) => (
-                        <DropdownMenuItem 
-                          key={company}
-                          onClick={() => setSelectedCompany(company)}
-                        >
-                          {company}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </div>
-
-              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
-                Search Jobs
+        {/* DASHBOARD OVERVIEW - ALL SEARCH OPTIONS MOVED TO SIDEBAR */}
+        <div className="mb-8">
+          <div className="text-center py-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              🎯 All Search & Filter Options Moved to Sidebar
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Use the sidebar on the left to search jobs, filter by type, location, and company. 
+              All navigation options are now conveniently located in the sidebar for easy access.
+            </p>
+            <div className="flex justify-center space-x-4">
+              <Button onClick={() => router.push('/jobs')} className="bg-blue-600 hover:bg-blue-700">
+                Browse All Jobs
               </Button>
-            </form>
-          </CardContent>
-        </Card>
+              <Button variant="outline" onClick={() => router.push('/companies')}>
+                Explore Companies
+              </Button>
+            </div>
+          </div>
+        </div>
 
         {/* SIMPLE QUICK ACTIONS */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
