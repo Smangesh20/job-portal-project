@@ -793,7 +793,7 @@ This is the name you provided during registration!`)
             <h3 className="text-lg font-semibold mb-2">Debug Information</h3>
             <div className="space-y-2 text-sm">
               <p><strong>User Data:</strong> {JSON.stringify(user, null, 2)}</p>
-              <p><strong>Welcome Message:</strong> {getWelcomeBackMessage(user)}</p>
+              <p><strong>Welcome Message:</strong> {getBulletproofWelcomeMessage(user)}</p>
               <p><strong>Display Name:</strong> {user ? (user.firstName || user.name || user.email || 'No name found') : 'No user'}</p>
               <p><strong>LocalStorage UserData:</strong> {typeof window !== 'undefined' ? localStorage.getItem('userData') : 'Server side'}</p>
               <p><strong>LocalStorage AccessToken:</strong> {typeof window !== 'undefined' ? localStorage.getItem('accessToken') : 'Server side'}</p>
@@ -834,7 +834,7 @@ This is the name you provided during registration!`)
                 </button>
               </div>
               <div className="mt-2 text-sm text-gray-600">
-                <p><strong>Current Welcome:</strong> {getWelcomeBackMessage(user)}</p>
+                <p><strong>Current Welcome:</strong> {getBulletproofWelcomeMessage(user)}</p>
                 <p><strong>User Name:</strong> {user ? (user.firstName || user.name || user.email || 'No name found') : 'No user'}</p>
               </div>
             </div>
