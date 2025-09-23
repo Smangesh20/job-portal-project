@@ -1,7 +1,7 @@
 'use client'
 
 import { ReactNode } from 'react'
-import { EnhancedSidebar } from '@/components/layouts/enhanced-sidebar'
+import { SimpleSidebar } from '@/components/layouts/simple-sidebar'
 import Header from '@/components/layouts/header'
 import { Breadcrumb } from '@/components/layouts/breadcrumb'
 
@@ -13,7 +13,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Sidebar - Mobile Optimized */}
-      <EnhancedSidebar />
+      <SimpleSidebar />
       
       {/* Main Content - Mobile Optimized */}
       <div className="lg:pl-80">
