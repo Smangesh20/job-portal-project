@@ -189,57 +189,25 @@ export default function DashboardPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* PROFESSIONAL DASHBOARD HEADER */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <EnterpriseWelcome 
-                user={user}
-                variant="default"
-                showEditButton={true}
-                onNameUpdate={(name) => setDisplayName(name)}
-              />
-            </div>
-            <div className="flex items-center space-x-4">
-              <Button size="sm" onClick={() => router.push('/profile')}>
-                View Profile
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={logout}
-                className="text-red-600 hover:text-red-700 hover:bg-red-50"
-              >
-                Logout
-              </Button>
-            </div>
-          </div>
+    <div className="space-y-8">
+      {/* DASHBOARD OVERVIEW - ALL SEARCH OPTIONS IN SIDEBAR */}
+      <div className="text-center py-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+          🎯 Welcome to Your Professional Dashboard
+        </h1>
+        <p className="text-gray-600 mb-6">
+          Use the sidebar on the left to search jobs, filter by type, location, and company. 
+          All navigation options are now conveniently located in the sidebar for easy access.
+        </p>
+        <div className="flex justify-center space-x-4">
+          <Button onClick={() => router.push('/jobs')} className="bg-blue-600 hover:bg-blue-700">
+            Browse All Jobs
+          </Button>
+          <Button variant="outline" onClick={() => router.push('/companies')}>
+            Explore Companies
+          </Button>
         </div>
       </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* DASHBOARD OVERVIEW - ALL SEARCH OPTIONS MOVED TO SIDEBAR */}
-        <div className="mb-8">
-          <div className="text-center py-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              🎯 All Search & Filter Options Moved to Sidebar
-            </h2>
-            <p className="text-gray-600 mb-6">
-              Use the sidebar on the left to search jobs, filter by type, location, and company. 
-              All navigation options are now conveniently located in the sidebar for easy access.
-            </p>
-            <div className="flex justify-center space-x-4">
-              <Button onClick={() => router.push('/jobs')} className="bg-blue-600 hover:bg-blue-700">
-                Browse All Jobs
-              </Button>
-              <Button variant="outline" onClick={() => router.push('/companies')}>
-                Explore Companies
-              </Button>
-            </div>
-          </div>
-        </div>
 
         {/* SIMPLE QUICK ACTIONS */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -376,7 +344,6 @@ export default function DashboardPage() {
             </Card>
           </div>
         </div>
-      </div>
     </div>
   )
 }
