@@ -201,3 +201,4 @@ export function getBulletproofUserInitials(user: UserData | null | undefined): s
   return userName.charAt(0).toUpperCase()
 }
 
+
