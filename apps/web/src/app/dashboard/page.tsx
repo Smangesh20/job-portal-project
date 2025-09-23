@@ -8,11 +8,11 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { NotificationDropdown } from '@/components/NotificationDropdown'
-import { getWelcomeBackMessage, getPersonalizedWelcomeMessage } from '@/utils/user-name'
+import { getBulletproofWelcomeMessage } from '@/utils/bulletproof-welcome'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { ProfessionalDropdown } from '@/components/professional-dropdown'
+import { BulletproofDropdown, BulletproofSingleDropdown } from '@/components/bulletproof-dropdown-system'
 import { NameSetter } from '@/components/name-setter'
-import { DropdownTest } from '@/components/dropdown-test'
+import { BulletproofTest } from '@/components/bulletproof-test'
 import { TestSimpleDropdown } from '@/components/test-simple-dropdown'
 import { SimpleDropdown } from '@/components/simple-dropdown'
 import { BulletproofDropdown } from '@/components/bulletproof-dropdown'
@@ -627,7 +627,7 @@ This is the name you provided during registration!`)
               <div>
             <div className="flex items-center gap-3">
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                {getPersonalizedWelcomeMessage(user)}
+                {getBulletproofWelcomeMessage(user)}
               </h1>
             </div>
             {showNameInput && (
@@ -705,7 +705,7 @@ This is the name you provided during registration!`)
               <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
                 <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-6">Filter Options</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <ProfessionalDropdown
+                  <BulletproofDropdown
                     label="Job Type"
                     options={jobTypes}
                     selectedValues={selectedJobTypes}
@@ -714,7 +714,7 @@ This is the name you provided during registration!`)
                     multiple={true}
                   />
                   
-                  <ProfessionalDropdown
+                  <BulletproofDropdown
                     label="Location"
                     options={locations}
                     selectedValues={selectedLocations}
@@ -723,7 +723,7 @@ This is the name you provided during registration!`)
                     multiple={true}
                   />
                   
-                  <ProfessionalDropdown
+                  <BulletproofDropdown
                     label="Company"
                     options={companies}
                     selectedValues={selectedCompanies}
@@ -732,7 +732,7 @@ This is the name you provided during registration!`)
                     multiple={true}
                   />
                   
-                  <ProfessionalDropdown
+                  <BulletproofDropdown
                     label="Industry"
                     options={industries}
                     selectedValues={selectedIndustries}
@@ -784,9 +784,9 @@ This is the name you provided during registration!`)
             </CardContent>
           </Card>
 
-          {/* Dropdown Test */}
+          {/* BULLETPROOF Test */}
           <div className="mb-8">
-            <DropdownTest />
+            <BulletproofTest />
           </div>
 
           {/* Debug Info */}
@@ -965,7 +965,7 @@ This is the name you provided during registration!`)
             <div className="space-y-6">
               {/* Name Setter */}
               <NameSetter 
-                currentName={getPersonalizedWelcomeMessage(user).replace('Welcome back, ', '').replace('!', '')}
+                currentName={getBulletproofWelcomeMessage(user).replace('Welcome back, ', '').replace('!', '')}
                 onNameSet={(name) => {
                   // Refresh the page to update the welcome message
                   window.location.reload()
