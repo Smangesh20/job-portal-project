@@ -8,12 +8,12 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { NotificationDropdown } from '@/components/NotificationDropdown'
-import { getUnsolvableWelcomeMessage } from '@/utils/unsolvable-welcome'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { EnterpriseDropdown } from '@/components/professional/enterprise-dropdown'
 import { EnterpriseToggleButtons } from '@/components/professional/enterprise-toggle-buttons'
 import { EnterpriseWelcome } from '@/components/professional/enterprise-welcome'
 import { QuickNameSetter } from '@/components/professional/enterprise-welcome'
+import { EnterpriseTest } from '@/components/professional/enterprise-test'
 import { 
   BriefcaseIcon,
   BuildingOfficeIcon,
@@ -794,9 +794,9 @@ This is the name you provided during registration!`)
             </CardContent>
           </Card>
 
-          {/* UNSOLVABLE Test */}
+          {/* Professional Components Test */}
           <div className="mb-8">
-            <UnsolvableTest />
+            <EnterpriseTest />
           </div>
 
           {/* Debug Info */}
@@ -804,7 +804,7 @@ This is the name you provided during registration!`)
             <h3 className="text-lg font-semibold mb-2">Debug Information</h3>
             <div className="space-y-2 text-sm">
               <p><strong>User Data:</strong> {JSON.stringify(user, null, 2)}</p>
-              <p><strong>Welcome Message:</strong> {getUnsolvableWelcomeMessage(user)}</p>
+              <p><strong>Welcome Message:</strong> Welcome back, {displayName}!</p>
               <p><strong>Display Name:</strong> {user ? (user.firstName || user.name || user.email || 'No name found') : 'No user'}</p>
               <p><strong>LocalStorage UserData:</strong> {typeof window !== 'undefined' ? localStorage.getItem('userData') : 'Server side'}</p>
               <p><strong>LocalStorage AccessToken:</strong> {typeof window !== 'undefined' ? localStorage.getItem('accessToken') : 'Server side'}</p>
@@ -845,7 +845,7 @@ This is the name you provided during registration!`)
                 </button>
               </div>
               <div className="mt-2 text-sm text-gray-600">
-                <p><strong>Current Welcome:</strong> {getUnsolvableWelcomeMessage(user)}</p>
+                <p><strong>Current Welcome:</strong> Welcome back, {displayName}!</p>
                 <p><strong>User Name:</strong> {user ? (user.firstName || user.name || user.email || 'No name found') : 'No user'}</p>
               </div>
             </div>
