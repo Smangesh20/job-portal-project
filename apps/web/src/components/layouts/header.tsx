@@ -27,15 +27,13 @@ import {
 } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useAuthUnified } from '@/hooks/useAuthUnified'
-import { getUnsolvableUserName, getUnsolvableUserInitials } from '@/utils/unsolvable-welcome'
+import { EnterpriseWelcome } from '@/components/professional/enterprise-welcome'
 
 function Header() {
   const [notifications] = useState(3)
   const { theme, setTheme } = useTheme()
   const { user } = useAuthUnified()
   
-  const displayName = getUnsolvableUserName(user)
-  const userInitials = getUnsolvableUserInitials(user)
   const userEmail = user?.email || 'user@example.com'
 
   const toggleTheme = () => {
@@ -109,19 +107,19 @@ function Header() {
               <Settings className="h-5 w-5" />
             </Button>
 
-            {/* User Profile Dropdown */}
+            {/* Professional User Profile Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center space-x-3 p-2">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={user?.profileImage || user?.avatar || undefined} alt={displayName} />
+                    <AvatarImage src={user?.profileImage || user?.avatar || undefined} alt={user?.firstName || user?.name || 'User'} />
                     <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm">
-                      {userInitials}
+                      {(user?.firstName || user?.name || 'U').charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div className="hidden md:block text-left">
                     <p className="text-sm font-medium text-gray-900 dark:text-white">
-                      {displayName}
+                      {user?.firstName || user?.name || 'User'}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
                       {userEmail}
@@ -133,7 +131,7 @@ function Header() {
               <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">{displayName}</p>
+                    <p className="text-sm font-medium leading-none">{user?.firstName || user?.name || 'User'}</p>
                     <p className="text-xs leading-none text-muted-foreground">
                       {userEmail}
                     </p>

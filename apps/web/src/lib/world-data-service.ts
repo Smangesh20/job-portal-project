@@ -671,3 +671,6 @@ class WorldDataService {
 
 // Export singleton instance
 export const worldDataService = new WorldDataService();
+
+
+

@@ -6,13 +6,8 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { SimpleDropdown } from '@/components/simple-dropdown'
-import { BulletproofDropdown } from '@/components/bulletproof-dropdown'
-import { ToggleFilterButtons } from '@/components/toggle-filter-buttons'
-import { SimpleClickButtons } from '@/components/simple-click-buttons'
-import { BasicHtmlButtons } from '@/components/basic-html-buttons'
-import { PlainTextLinks } from '@/components/plain-text-links'
-import { UltraSimpleLinks } from '@/components/ultra-simple-links'
+import { EnterpriseDropdown } from '@/components/professional/enterprise-dropdown'
+import { EnterpriseToggleButtons } from '@/components/professional/enterprise-toggle-buttons'
 import { 
   BuildingOfficeIcon,
   MapPinIcon,
@@ -166,32 +161,52 @@ export default function CompaniesPage() {
           <div className="mt-6 pt-6 border-t border-gray-200">
             <h3 className="text-lg font-medium text-gray-900 mb-6">Filter Companies</h3>
             <div className="space-y-6">
-              <UltraSimpleLinks
+              <EnterpriseToggleButtons
                 label="Industry"
                 options={industries}
                 selectedValues={selectedIndustries}
                 onToggle={toggleIndustry}
+                variant="default"
+                color="blue"
+                showClearButton={true}
+                showCount={true}
+                maxSelections={5}
               />
               
-              <UltraSimpleLinks
+              <EnterpriseToggleButtons
                 label="Location"
                 options={locations}
                 selectedValues={selectedLocations}
                 onToggle={toggleLocation}
+                variant="default"
+                color="green"
+                showClearButton={true}
+                showCount={true}
+                maxSelections={5}
               />
               
-              <UltraSimpleLinks
+              <EnterpriseToggleButtons
                 label="Company Size"
                 options={companySizes}
                 selectedValues={selectedSizes}
                 onToggle={toggleSize}
+                variant="default"
+                color="purple"
+                showClearButton={true}
+                showCount={true}
+                maxSelections={5}
               />
               
-              <UltraSimpleLinks
+              <EnterpriseToggleButtons
                 label="Rating"
                 options={ratings}
                 selectedValues={selectedRatings}
                 onToggle={toggleRating}
+                variant="default"
+                color="orange"
+                showClearButton={true}
+                showCount={true}
+                maxSelections={5}
               />
             </div>
             

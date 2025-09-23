@@ -254,3 +254,4 @@ export function autoDetectAndSetUserName(): string {
     return 'User'
   }
 }
+

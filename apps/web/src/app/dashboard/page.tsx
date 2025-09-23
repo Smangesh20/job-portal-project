@@ -10,16 +10,10 @@ import { Badge } from '@/components/ui/badge'
 import { NotificationDropdown } from '@/components/NotificationDropdown'
 import { getUnsolvableWelcomeMessage } from '@/utils/unsolvable-welcome'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { UnsolvableDropdown, UnsolvableSingleDropdown } from '@/components/unsolvable-dropdown'
-import { NameSetter } from '@/components/name-setter'
-import { UnsolvableTest } from '@/components/unsolvable-test'
-import { TestSimpleDropdown } from '@/components/test-simple-dropdown'
-import { SimpleDropdown } from '@/components/simple-dropdown'
-import { ToggleFilterButtons } from '@/components/toggle-filter-buttons'
-import { SimpleClickButtons } from '@/components/simple-click-buttons'
-import { BasicHtmlButtons } from '@/components/basic-html-buttons'
-import { PlainTextLinks } from '@/components/plain-text-links'
-import { UltraSimpleLinks } from '@/components/ultra-simple-links'
+import { EnterpriseDropdown } from '@/components/professional/enterprise-dropdown'
+import { EnterpriseToggleButtons } from '@/components/professional/enterprise-toggle-buttons'
+import { EnterpriseWelcome } from '@/components/professional/enterprise-welcome'
+import { QuickNameSetter } from '@/components/professional/enterprise-welcome'
 import { 
   BriefcaseIcon,
   BuildingOfficeIcon,
@@ -624,11 +618,16 @@ This is the name you provided during registration!`)
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex items-center justify-between">
               <div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                {getUnsolvableWelcomeMessage(user)}
-              </h1>
-            </div>
+            <EnterpriseWelcome
+              user={user}
+              variant="large"
+              showEditButton={true}
+              onNameUpdate={(name) => {
+                console.log('🏢 Dashboard: Name updated to:', name)
+                // Force refresh to update all components
+                window.location.reload()
+              }}
+            />
             {showNameInput && (
               <div className="mt-3 flex items-center gap-2">
                 <Input
@@ -700,44 +699,56 @@ This is the name you provided during registration!`)
                 </Button>
               </form>
               
-              {/* Professional Filter Dropdowns */}
+              {/* Professional Filter Toggle Buttons - Google Style */}
               <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
                 <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-6">Filter Options</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <UnsolvableDropdown
+                <div className="space-y-6">
+                  <EnterpriseToggleButtons
                     label="Job Type"
                     options={jobTypes}
                     selectedValues={selectedJobTypes}
                     onToggle={toggleJobType}
-                    placeholder="Select job types"
-                    multiple={true}
+                    variant="default"
+                    color="blue"
+                    showClearButton={true}
+                    showCount={true}
+                    maxSelections={5}
                   />
                   
-                  <UnsolvableDropdown
+                  <EnterpriseToggleButtons
                     label="Location"
                     options={locations}
                     selectedValues={selectedLocations}
                     onToggle={toggleLocation}
-                    placeholder="Select locations"
-                    multiple={true}
+                    variant="default"
+                    color="green"
+                    showClearButton={true}
+                    showCount={true}
+                    maxSelections={5}
                   />
                   
-                  <UnsolvableDropdown
+                  <EnterpriseToggleButtons
                     label="Company"
                     options={companies}
                     selectedValues={selectedCompanies}
                     onToggle={toggleCompany}
-                    placeholder="Select companies"
-                    multiple={true}
+                    variant="default"
+                    color="purple"
+                    showClearButton={true}
+                    showCount={true}
+                    maxSelections={5}
                   />
                   
-                  <UnsolvableDropdown
+                  <EnterpriseToggleButtons
                     label="Industry"
                     options={industries}
                     selectedValues={selectedIndustries}
                     onToggle={toggleIndustry}
-                    placeholder="Select industries"
-                    multiple={true}
+                    variant="default"
+                    color="orange"
+                    showClearButton={true}
+                    showCount={true}
+                    maxSelections={5}
                   />
                 </div>
                 
@@ -962,11 +973,12 @@ This is the name you provided during registration!`)
 
             {/* Sidebar */}
             <div className="space-y-6">
-              {/* Name Setter */}
-              <NameSetter 
-                currentName={getUnsolvableWelcomeMessage(user).replace('Welcome back, ', '').replace('!', '')}
+              {/* Quick Name Setter */}
+              <QuickNameSetter 
+                currentName={displayName}
                 onNameSet={(name) => {
-                  // Refresh the page to update the welcome message
+                  console.log('🏢 Quick Name Setter: Name set to:', name)
+                  // Force refresh to update all components
                   window.location.reload()
                 }}
               />
