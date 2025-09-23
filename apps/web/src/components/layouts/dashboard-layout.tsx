@@ -1,8 +1,8 @@
 'use client'
 
 import { ReactNode } from 'react'
-import { ComprehensiveSidebar } from '@/components/layouts/comprehensive-sidebar'
-import CleanHeader from '@/components/layouts/clean-header'
+import { CleanSidebar } from '@/components/layouts/clean-sidebar'
+import MinimalHeader from '@/components/layouts/minimal-header'
 import { Breadcrumb } from '@/components/layouts/breadcrumb'
 
 interface DashboardLayoutProps {
@@ -13,12 +13,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Sidebar - Mobile Optimized */}
-      <ComprehensiveSidebar />
+      <CleanSidebar />
       
-      {/* Main Content - Mobile Optimized */}
+      {/* Main Content - Perfect Alignment */}
       <div className="lg:pl-80">
-        {/* Clean Header - Only Essential Elements */}
-        <CleanHeader />
+        {/* Minimal Header - Perfect Alignment */}
+        <MinimalHeader />
         
         {/* Breadcrumb - Mobile Optimized */}
         <Breadcrumb />
