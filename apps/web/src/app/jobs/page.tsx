@@ -56,7 +56,8 @@ export default function JobsPage() {
 
   useEffect(() => {
     // Load initial jobs
-    searchJobs(searchQuery, {
+    searchJobs({
+      search: searchQuery,
       location: locationFilter,
       company: companyFilter,
       industry: industryFilter,
@@ -66,7 +67,8 @@ export default function JobsPage() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
-    searchJobs(searchQuery, {
+    searchJobs({
+      search: searchQuery,
       location: locationFilter,
       company: companyFilter,
       industry: industryFilter,
