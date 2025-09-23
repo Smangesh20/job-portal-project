@@ -27,15 +27,15 @@ import {
 } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useAuthUnified } from '@/hooks/useAuthUnified'
-import { getUltimateUserName, getUltimateUserInitials } from '@/utils/ultimate-welcome'
+import { getUnsolvableUserName, getUnsolvableUserInitials } from '@/utils/unsolvable-welcome'
 
 function Header() {
   const [notifications] = useState(3)
   const { theme, setTheme } = useTheme()
   const { user } = useAuthUnified()
   
-  const displayName = getUltimateUserName(user)
-  const userInitials = getUltimateUserInitials(user)
+  const displayName = getUnsolvableUserName(user)
+  const userInitials = getUnsolvableUserInitials(user)
   const userEmail = user?.email || 'user@example.com'
 
   const toggleTheme = () => {
