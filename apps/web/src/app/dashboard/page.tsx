@@ -34,7 +34,7 @@ import {
   CpuChipIcon,
   BoltIcon,
   ChevronDownIcon,
-  FilterIcon
+  FunnelIcon
 } from '@heroicons/react/24/outline'
 
 export default function DashboardPage() {
@@ -224,7 +224,7 @@ export default function DashboardPage() {
         <Card className="mb-8">
           <CardContent className="p-6">
             <div className="flex items-center space-x-2 mb-4">
-              <FilterIcon className="h-5 w-5 text-blue-600" />
+              <FunnelIcon className="h-5 w-5 text-blue-600" />
               <h2 className="text-xl font-semibold text-gray-900">Advanced Job Search</h2>
             </div>
             <form onSubmit={handleSearch} className="space-y-4">
