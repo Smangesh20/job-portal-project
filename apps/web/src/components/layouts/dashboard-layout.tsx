@@ -1,7 +1,7 @@
 'use client'
 
 import { ReactNode } from 'react'
-import { CleanSidebar } from '@/components/layouts/clean-sidebar'
+import { GoogleSidebar } from '@/components/layouts/google-sidebar'
 import MinimalHeader from '@/components/layouts/minimal-header'
 
 interface DashboardLayoutProps {
@@ -13,7 +13,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
       {/* Sidebar - Google Style Layout */}
       <div className="hidden lg:block w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 shadow-lg">
-        <CleanSidebar />
+        <GoogleSidebar />
       </div>
       
       {/* Main Content Area - Google Style */}

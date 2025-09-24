@@ -6,6 +6,7 @@ import { AuthProvider } from '@/components/providers/auth-provider'
 import { NotificationProvider } from '@/contexts/NotificationContext'
 import { BulletproofErrorBoundary } from '@/components/professional/bulletproof-error-boundary'
 import { GoogleErrorHandler, OfflineFallback, ServiceStatus } from '@/components/professional/google-error-handler'
+import { GoogleConnectionHandler, GoogleConnectionStatus } from '@/components/professional/google-connection-handler'
 import { GoogleNetworkHandler } from '@/components/providers/google-error-boundary'
 import { GlobalErrorBoundary } from '@/components/error-boundary/global-error-boundary'
 import { initializeErrorPrevention } from '@/lib/error-prevention'
@@ -361,10 +362,12 @@ export default function RootLayout({
             <GoogleNetworkHandler>
               <AuthProvider>
                 <NotificationProvider>
-                  <OfflineFallback />
-                  {children}
-                  <GoogleErrorHandler />
-                  <ServiceStatus />
+                        <OfflineFallback />
+                        <GoogleConnectionStatus />
+                        {children}
+                        <GoogleErrorHandler />
+                        <GoogleConnectionHandler />
+                        <ServiceStatus />
                 </NotificationProvider>
               </AuthProvider>
             </GoogleNetworkHandler>
