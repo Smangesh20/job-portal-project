@@ -116,7 +116,7 @@ export function CleanSidebar() {
       </div>
 
       {/* CLEAN SIDEBAR - NO WELCOME, NO SEARCH, ONLY NAVIGATION */}
-      <div className={`fixed inset-y-0 left-0 z-40 w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto ${
+      <div className={`fixed inset-y-0 left-0 z-40 w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto shadow-lg ${
         isMobileMenuOpen ? 'translate-x-0' : 'lg:translate-x-0 -translate-x-full'
       } transition-transform duration-300 ease-in-out`}>
         <div className="flex flex-col h-full">
@@ -199,3 +199,4 @@ export function CleanSidebar() {
     </>
   )
 }
+

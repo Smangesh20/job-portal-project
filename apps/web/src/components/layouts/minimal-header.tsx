@@ -128,13 +128,13 @@ function MinimalHeader() {
   }
 
   return (
-    <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 h-16">
+    <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 h-16 shadow-sm">
       <div className="px-6 h-full">
         <div className="flex items-center justify-between h-full">
           {/* Left side - Welcome Message with Perfect Alignment */}
           <div className="flex items-center">
             <div>
-              <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
+              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
                 Welcome back, {getUserDisplayName()}!
               </h1>
               <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -144,7 +144,7 @@ function MinimalHeader() {
           </div>
 
           {/* Right side - ONLY Essential Elements, Perfect Spacing */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-3">
             {/* Notifications */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

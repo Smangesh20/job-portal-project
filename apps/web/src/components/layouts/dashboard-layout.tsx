@@ -23,9 +23,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         {/* Breadcrumb - Mobile Optimized */}
         <Breadcrumb />
         
-        {/* Page Content - Mobile Optimized, Perfect Spacing */}
-        <main className="p-4 sm:p-6 lg:p-8">
-          <div className="max-w-7xl mx-auto">
+        {/* Page Content - Professional Spacing and Layout */}
+        <main className="p-6 lg:p-8">
+          <div className="max-w-7xl mx-auto space-y-8">
             {children}
           </div>
         </main>

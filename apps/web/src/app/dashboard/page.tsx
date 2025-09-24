@@ -10,7 +10,10 @@ import {
   BriefcaseIcon,
   BuildingOfficeIcon,
   FlagIcon,
-  SparklesIcon
+  SparklesIcon,
+  ArrowRightIcon,
+  CheckCircleIcon,
+  StarIcon
 } from '@heroicons/react/24/outline'
 
 export default function DashboardPage() {
@@ -75,7 +78,6 @@ export default function DashboardPage() {
     )
   }
 
-  // SIMPLE QUICK ACTIONS
   const quickActions = [
     {
       title: 'Browse Jobs',
@@ -107,7 +109,6 @@ export default function DashboardPage() {
     }
   ]
 
-  // SIMPLE RECENT JOBS
   const recentJobs = [
     {
       id: 1,
@@ -143,108 +144,106 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      {/* DASHBOARD OVERVIEW - SIDEBAR HAS ALL OPTIONS */}
-      <div className="text-center py-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+      {/* DASHBOARD OVERVIEW - PROFESSIONAL HEADER */}
+      <div className="text-center py-12 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl border border-gray-200 dark:border-gray-700">
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
           🎯 Welcome to Your Professional Dashboard
         </h1>
-        <p className="text-gray-600 mb-6">
+        <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
           Use the sidebar on the left to search jobs, filter by type, location, and company. 
           All navigation options are now conveniently located in the sidebar for easy access.
         </p>
         <div className="flex justify-center space-x-4">
-          <Button onClick={() => router.push('/jobs')} className="bg-blue-600 hover:bg-blue-700">
+          <Button onClick={() => router.push('/jobs')} className="bg-blue-600 hover:bg-blue-700 px-8 py-3 text-lg">
             Browse All Jobs
           </Button>
-          <Button variant="outline" onClick={() => router.push('/companies')}>
+          <Button variant="outline" onClick={() => router.push('/companies')} className="px-8 py-3 text-lg">
             Explore Companies
           </Button>
         </div>
       </div>
 
-      {/* SIMPLE QUICK ACTIONS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      {/* QUICK ACTIONS GRID */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {quickActions.map((action) => (
-          <Card 
-            key={action.title}
-            className="hover:shadow-lg transition-shadow cursor-pointer"
-            onClick={() => router.push(action.href)}
-          >
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-4">
-                <div className={`p-3 rounded-lg bg-${action.color}-100`}>
-                  <action.icon className={`h-6 w-6 text-${action.color}-600`} />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">{action.title}</h3>
-                  <p className="text-sm text-gray-600">{action.description}</p>
-                </div>
-              </div>
+          <Card key={action.title} className="hover:shadow-lg transition-shadow duration-200 cursor-pointer" onClick={() => router.push(action.href)}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">{action.title}</CardTitle>
+              <action.icon className={`h-5 w-5 text-${action.color}-600`} />
+            </CardHeader>
+            <CardContent>
+              <p className="text-xs text-muted-foreground">{action.description}</p>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      {/* RECENT JOBS */}
+      {/* RECENT JOB OPPORTUNITIES */}
       <Card>
         <CardHeader>
           <CardTitle>Recent Job Opportunities</CardTitle>
           <CardDescription>Jobs that match your profile</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {recentJobs.map((job) => (
-              <div key={job.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
-                <div className="flex-1">
-                  <h4 className="font-semibold text-gray-900">{job.title}</h4>
-                  <p className="text-sm text-gray-600">{job.company} • {job.location}</p>
-                  <div className="flex items-center space-x-4 mt-2">
-                    <Badge variant="secondary">{job.type}</Badge>
-                    <span className="text-sm text-gray-500">{job.salary}</span>
-                    <span className="text-sm text-gray-500">{job.posted}</span>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Badge className="bg-green-100 text-green-800">
-                    {job.match}% match
-                  </Badge>
-                  <Button size="sm" variant="outline">
-                    Apply
-                  </Button>
+        <CardContent className="space-y-4">
+          {recentJobs.map((job) => (
+            <div key={job.id} className="flex items-center justify-between border-b pb-3 last:border-b-0 last:pb-0">
+              <div>
+                <h3 className="text-base font-semibold text-gray-900">{job.title}</h3>
+                <p className="text-sm text-gray-600">{job.company} - {job.location}</p>
+                <div className="flex items-center space-x-2 text-xs text-gray-500 mt-1">
+                  <Badge variant="secondary">{job.type}</Badge>
+                  <span>{job.posted}</span>
                 </div>
               </div>
-            ))}
-          </div>
+              <div className="text-right">
+                <p className="text-base font-semibold text-gray-900">{job.salary}</p>
+                <Badge className="bg-green-100 text-green-800 mt-1">{job.match}% Match</Badge>
+              </div>
+            </div>
+          ))}
         </CardContent>
       </Card>
 
-      {/* STATS */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
-          <CardContent className="p-6">
-            <div className="text-center">
-              <h3 className="text-2xl font-bold text-blue-600">12</h3>
-              <p className="text-gray-600">Jobs Applied</p>
+      {/* CAREER PROGRESS */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Your Career Progress</CardTitle>
+          <CardDescription>Overview of your job search activities</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="flex flex-col items-center justify-center p-4 bg-blue-50 rounded-lg">
+              <BriefcaseIcon className="h-8 w-8 text-blue-600 mb-2" />
+              <p className="text-2xl font-bold text-blue-800">124</p>
+              <p className="text-sm text-blue-600">Jobs Viewed</p>
             </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-6">
-            <div className="text-center">
-              <h3 className="text-2xl font-bold text-green-600">8</h3>
-              <p className="text-gray-600">Interviews</p>
+            <div className="flex flex-col items-center justify-center p-4 bg-green-50 rounded-lg">
+              <CheckCircleIcon className="h-8 w-8 text-green-600 mb-2" />
+              <p className="text-2xl font-bold text-green-800">18</p>
+              <p className="text-sm text-green-600">Applications Sent</p>
             </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-6">
-            <div className="text-center">
-              <h3 className="text-2xl font-bold text-purple-600">3</h3>
-              <p className="text-gray-600">Offers</p>
+            <div className="flex flex-col items-center justify-center p-4 bg-purple-50 rounded-lg">
+              <StarIcon className="h-8 w-8 text-purple-600 mb-2" />
+              <p className="text-2xl font-bold text-purple-800">6</p>
+              <p className="text-sm text-purple-600">Jobs Saved</p>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+          <div className="space-y-2">
+            <div className="flex justify-between">
+              <span className="text-sm text-gray-600">Profile Views</span>
+              <span className="text-sm font-semibold">28</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-sm text-gray-600">Job Matches</span>
+              <span className="text-sm font-semibold">8</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-sm text-gray-600">Interviews</span>
+              <span className="text-sm font-semibold">3</span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
