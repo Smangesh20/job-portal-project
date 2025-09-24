@@ -102,12 +102,12 @@ export default function NetworkingPage() {
             }
           ],
           events: [
-            {
-              id: 1,
+  {
+    id: 1,
               title: 'Tech Networking Mixer',
               date: '2024-12-28',
               time: '6:00 PM',
-              location: 'San Francisco, CA',
+    location: 'San Francisco, CA',
               attendees: 150,
               type: 'Networking',
               description: 'Connect with tech professionals and industry leaders',
@@ -151,9 +151,9 @@ export default function NetworkingPage() {
               reason: 'Mutual connections with 5 people in your network',
               mutualConnections: 5,
               avatar: '/avatars/david.jpg'
-            },
-            {
-              id: 2,
+  },
+  {
+    id: 2,
               name: 'Emily Rodriguez',
               title: 'Product Designer',
               company: 'Netflix',
@@ -249,7 +249,7 @@ export default function NetworkingPage() {
             />
           </div>
         </div>
-      </div>
+                  </div>
 
       {/* Networking Stats */}
       <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
@@ -313,7 +313,7 @@ export default function NetworkingPage() {
             <p className="text-xs text-muted-foreground">This month</p>
           </CardContent>
         </Card>
-      </div>
+                      </div>
 
       {/* Connections */}
       <Card>
@@ -329,8 +329,8 @@ export default function NetworkingPage() {
                 <UserPlus className="h-4 w-4 mr-2" />
                 Find People
               </Button>
-            </div>
-          </div>
+                      </div>
+                    </div>
         </CardHeader>
         <CardContent className="space-y-4">
           {networkingData?.connections.map((connection: any) => (
@@ -346,7 +346,7 @@ export default function NetworkingPage() {
                     connection.status === 'Online' ? 'bg-green-500' : 
                     connection.status === 'Away' ? 'bg-yellow-500' : 'bg-gray-400'
                   }`}></div>
-                </div>
+                  </div>
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                     {connection.name}
@@ -367,15 +367,15 @@ export default function NetworkingPage() {
                     <Badge variant="outline">
                       {connection.mutualConnections} mutual
                     </Badge>
-                  </div>
+                </div>
                   <div className="flex items-center space-x-1 mt-2">
                     {connection.skills.slice(0, 3).map((skill: string, index: number) => (
                       <Badge key={index} variant="secondary" className="text-xs">
                         {skill}
                       </Badge>
-                    ))}
-                  </div>
-                </div>
+            ))}
+          </div>
+        </div>
               </div>
               
               <div className="flex items-center space-x-4">
