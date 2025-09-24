@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuthUnified } from '@/hooks/useAuthUnified'
 import { Button } from '@/components/ui/button'
@@ -53,7 +53,7 @@ export default function DashboardPage() {
   const companies = ['Google', 'Microsoft', 'Apple', 'Amazon', 'Meta']
 
   // GOOGLE-STYLE USERNAME DISPLAY - PROFESSIONAL AND CLEAN
-  const getUserDisplayName = () => {
+  const getUserDisplayName = useCallback(() => {
     // Check auth user object first (most reliable)
     if (user?.firstName && user?.lastName) {
       return `${user.firstName} ${user.lastName}`
@@ -96,12 +96,12 @@ export default function DashboardPage() {
 
     // Return default name
     return 'User'
-  }
+  }, [user])
 
   // Update display name when user changes
   useEffect(() => {
     setDisplayName(getUserDisplayName())
-  }, [user])
+  }, [user, getUserDisplayName])
 
   // Redirect if not authenticated
   if (!isLoading && !isAuthenticated) {
