@@ -47,11 +47,16 @@ export function GoogleErrorHandler() {
 
     try {
       const start = Date.now()
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 5000)
+      
       const response = await fetch('/api/health', { 
         method: 'GET',
         cache: 'no-cache',
-        signal: AbortSignal.timeout(5000) // 5 second timeout
+        signal: controller.signal
       })
+      
+      clearTimeout(timeoutId)
       
       const duration = Date.now() - start
       

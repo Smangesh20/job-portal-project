@@ -273,7 +273,7 @@ export const useBulletproofErrorHandler = () => {
 }
 
 // Bulletproof wrapper for async operations
-export const bulletproofAsync = async function<T>(
+export async function bulletproofAsync<T>(
   operation: () => Promise<T>,
   fallback: T,
   maxRetries: number = 3
