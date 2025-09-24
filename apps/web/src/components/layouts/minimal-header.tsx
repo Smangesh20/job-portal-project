@@ -149,19 +149,63 @@ function MinimalHeader() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Theme Toggle */}
-            <Button variant="ghost" size="sm" onClick={toggleTheme} className="h-9 w-9 p-0">
-              {theme === 'dark' ? (
-                <Sun className="h-5 w-5" />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )}
-            </Button>
+                  {/* Theme Toggle - Google Style */}
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={toggleTheme} 
+                    className="h-9 w-9 p-0 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                  >
+                    {theme === 'dark' ? (
+                      <Sun className="h-5 w-5" />
+                    ) : (
+                      <Moon className="h-5 w-5" />
+                    )}
+                  </Button>
 
-            {/* Help */}
-            <Button variant="ghost" size="sm" className="h-9 w-9 p-0">
-              <HelpCircle className="h-5 w-5" />
-            </Button>
+                  {/* Help - Google Style */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-9 w-9 p-0 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        title="Help and support"
+                      >
+                        <HelpCircle className="h-5 w-5" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-80">
+                      <DropdownMenuLabel>Help & Support</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => window.open('/help', '_blank')}>
+                        <div className="flex flex-col">
+                          <span className="font-medium">Help Center</span>
+                          <span className="text-sm text-gray-500">Get help with using the platform</span>
+                        </div>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => window.open('/contact', '_blank')}>
+                        <div className="flex flex-col">
+                          <span className="font-medium">Contact Support</span>
+                          <span className="text-sm text-gray-500">Get in touch with our team</span>
+                        </div>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => window.open('/faq', '_blank')}>
+                        <div className="flex flex-col">
+                          <span className="font-medium">FAQ</span>
+                          <span className="text-sm text-gray-500">Frequently asked questions</span>
+                        </div>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => window.open('/feedback', '_blank')}>
+                        <div className="flex flex-col">
+                          <span className="font-medium">Send Feedback</span>
+                          <span className="text-sm text-gray-500">Help us improve the platform</span>
+                        </div>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
 
             {/* User Profile Dropdown */}
             <DropdownMenu>

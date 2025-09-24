@@ -1,205 +1,266 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useState } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { 
-  QuestionMarkCircleIcon,
-  EnvelopeIcon,
-  PhoneIcon,
-  ChatBubbleLeftRightIcon,
-  DocumentTextIcon,
-  VideoCameraIcon,
-  BookOpenIcon,
-  LightBulbIcon
-} from '@heroicons/react/24/outline'
+  Search, 
+  HelpCircle, 
+  MessageSquare, 
+  Mail, 
+  Phone, 
+  BookOpen, 
+  Video, 
+  FileText,
+  Users,
+  Settings,
+  Shield,
+  Zap,
+  Star,
+  ChevronRight
+} from 'lucide-react'
 
+// GOOGLE-STYLE HELP PAGE
 export default function HelpPage() {
-  const [isClient, setIsClient] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
 
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
-
-  if (!isClient) {
-    return null
-  }
+  const helpCategories = [
+    {
+      title: 'Getting Started',
+      description: 'Learn the basics of using our platform',
+      icon: BookOpen,
+      articles: [
+        'How to create your profile',
+        'Setting up job alerts',
+        'Understanding job matches',
+        'First steps guide'
+      ]
+    },
+    {
+      title: 'Job Search',
+      description: 'Find and apply to jobs effectively',
+      icon: Search,
+      articles: [
+        'Advanced search filters',
+        'Saving and organizing jobs',
+        'Application tracking',
+        'Interview scheduling'
+      ]
+    },
+    {
+      title: 'Profile & Settings',
+      description: 'Manage your account and preferences',
+      icon: Settings,
+      articles: [
+        'Updating your profile',
+        'Privacy settings',
+        'Notification preferences',
+        'Account security'
+      ]
+    },
+    {
+      title: 'AI Features',
+      description: 'Make the most of our AI-powered tools',
+      icon: Zap,
+      articles: [
+        'AI job matching',
+        'Resume optimization',
+        'Interview preparation',
+        'Career insights'
+      ]
+    }
+  ]
 
   const faqs = [
     {
-      question: "How does Ask Ya Cham's quantum job matching work?",
-      answer: "Our platform uses advanced quantum computing algorithms to analyze your skills, preferences, and career goals, then matches you with the most suitable job opportunities from our extensive database."
+      question: 'How do I create a professional profile?',
+      answer: 'Go to your Profile section and fill in all the required information including your skills, experience, and education. Upload a professional photo and resume for better visibility.'
     },
     {
-      question: "Is my personal information secure?",
-      answer: "Yes, we use enterprise-grade encryption and follow strict data protection protocols. Your information is never shared without your explicit consent."
+      question: 'How does the AI job matching work?',
+      answer: 'Our AI analyzes your profile, skills, and preferences to match you with relevant job opportunities. The more complete your profile, the better the matches.'
     },
     {
-      question: "How do I update my profile?",
-      answer: "You can update your profile anytime by going to the Profile section in your dashboard. Make sure to keep your skills and experience current for better job matches."
+      question: 'Can I track my job applications?',
+      answer: 'Yes! All your applications are tracked in the Applications section where you can see the status, interview schedules, and updates from employers.'
     },
     {
-      question: "Can I apply for jobs directly through the platform?",
-      answer: "Yes! You can apply for jobs directly through our platform. We'll track your applications and provide updates on their status."
+      question: 'How do I schedule interviews?',
+      answer: 'When an employer is interested, you\'ll receive a notification. You can then schedule interviews directly through the platform or coordinate with the employer.'
     },
     {
-      question: "What if I can't find a job that matches my skills?",
-      answer: "Our AI continuously learns and updates job recommendations. You can also use our advanced search filters to find specific opportunities or contact our support team for personalized assistance."
-    }
-  ]
-
-  const supportOptions = [
-    {
-      title: "Email Support",
-      description: "Get help via email within 24 hours",
-      icon: EnvelopeIcon,
-      contact: "info@askyacham.com",
-      action: "Send Email"
-    },
-    {
-      title: "Phone Support",
-      description: "Speak with our support team",
-      icon: PhoneIcon,
-      contact: "+1-800-ASK-YACHAM",
-      action: "Call Now"
-    },
-    {
-      title: "Live Chat",
-      description: "Chat with us in real-time",
-      icon: ChatBubbleLeftRightIcon,
-      contact: "Available 24/7",
-      action: "Start Chat"
-    },
-    {
-      title: "Video Call",
-      description: "Schedule a video consultation",
-      icon: VideoCameraIcon,
-      contact: "Book appointment",
-      action: "Schedule"
-    }
-  ]
-
-  const resources = [
-    {
-      title: "Getting Started Guide",
-      description: "Learn how to create an effective profile and find your first job",
-      icon: BookOpenIcon,
-      href: "/guides/getting-started"
-    },
-    {
-      title: "Job Search Tips",
-      description: "Expert advice on optimizing your job search strategy",
-      icon: LightBulbIcon,
-      href: "/guides/job-search-tips"
-    },
-    {
-      title: "Resume Builder",
-      description: "Create a professional resume with our AI-powered builder",
-      icon: DocumentTextIcon,
-      href: "/tools/resume-builder"
+      question: 'Is my data secure?',
+      answer: 'Absolutely. We use enterprise-grade security measures to protect your personal information and ensure your data is safe and private.'
     }
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-green-50 to-emerald-100">
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
-          <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl flex items-center justify-center">
-              <QuestionMarkCircleIcon className="h-8 w-8 text-white" />
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="text-center py-12 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl border border-gray-200 dark:border-gray-700">
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          🆘 Help & Support
+        </h1>
+        <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+          Get help with using our platform and find answers to common questions.
+        </p>
+        
+        {/* Search */}
+        <div className="max-w-md mx-auto">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <Input
+              type="text"
+              placeholder="Search help articles..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 pr-4 py-3 text-lg"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+          <CardHeader className="text-center">
+            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <MessageSquare className="h-6 w-6 text-blue-600" />
+            </div>
+            <CardTitle className="text-lg">Live Chat</CardTitle>
+            <CardDescription>Get instant help from our support team</CardDescription>
+          </CardHeader>
+          <CardContent className="text-center">
+            <Button className="w-full bg-blue-600 hover:bg-blue-700">
+              Start Chat
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+          <CardHeader className="text-center">
+            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Mail className="h-6 w-6 text-green-600" />
+            </div>
+            <CardTitle className="text-lg">Email Support</CardTitle>
+            <CardDescription>Send us a detailed message</CardDescription>
+          </CardHeader>
+          <CardContent className="text-center">
+            <Button variant="outline" className="w-full">
+              Send Email
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+          <CardHeader className="text-center">
+            <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Video className="h-6 w-6 text-purple-600" />
+            </div>
+            <CardTitle className="text-lg">Video Call</CardTitle>
+            <CardDescription>Schedule a one-on-one session</CardDescription>
+          </CardHeader>
+          <CardContent className="text-center">
+            <Button variant="outline" className="w-full">
+              Schedule Call
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Help Categories */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {helpCategories.map((category, index) => (
+          <Card key={index} className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <category.icon className="h-5 w-5 text-blue-600" />
+                </div>
+                <div>
+                  <CardTitle className="text-lg">{category.title}</CardTitle>
+                  <CardDescription>{category.description}</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {category.articles.map((article, articleIndex) => (
+                  <div key={articleIndex} className="flex items-center justify-between p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded cursor-pointer">
+                    <span className="text-sm text-gray-700 dark:text-gray-300">{article}</span>
+                    <ChevronRight className="h-4 w-4 text-gray-400" />
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* FAQ Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <HelpCircle className="h-6 w-6" />
+            <span>Frequently Asked Questions</span>
+          </CardTitle>
+          <CardDescription>Quick answers to common questions</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {faqs.map((faq, index) => (
+            <div key={index} className="border-b border-gray-200 dark:border-gray-700 pb-4 last:border-b-0 last:pb-0">
+              <h4 className="font-medium text-gray-900 dark:text-white mb-2">
+                {faq.question}
+              </h4>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {faq.answer}
+              </p>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      {/* Contact Information */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Users className="h-6 w-6" />
+            <span>Contact Information</span>
+          </CardTitle>
+          <CardDescription>Get in touch with our support team</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="text-center">
+              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Mail className="h-6 w-6 text-blue-600" />
+              </div>
+              <h4 className="font-medium text-gray-900 dark:text-white mb-1">Email</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-400">support@askyacham.com</p>
+              <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">Response within 24 hours</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Phone className="h-6 w-6 text-green-600" />
+              </div>
+              <h4 className="font-medium text-gray-900 dark:text-white mb-1">Phone</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-400">+1 (555) 123-4567</p>
+              <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">Mon-Fri 9AM-6PM EST</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <MessageSquare className="h-6 w-6 text-purple-600" />
+              </div>
+              <h4 className="font-medium text-gray-900 dark:text-white mb-1">Live Chat</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Available 24/7</p>
+              <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">Instant responses</p>
             </div>
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Help Center</h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Find answers to your questions and get the support you need
-          </p>
-        </motion.div>
-
-        {/* Support Options */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mb-12"
-        >
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Get Support</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {supportOptions.map((option, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow duration-200">
-                <CardHeader className="text-center">
-                  <div className="flex justify-center mb-4">
-                    <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                      <option.icon className="h-6 w-6 text-green-600" />
-                    </div>
-                  </div>
-                  <CardTitle className="text-lg">{option.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="text-center">
-                  <p className="text-gray-600 mb-4">{option.description}</p>
-                  <p className="text-sm font-medium text-gray-900 mb-4">{option.contact}</p>
-                  <Button className="w-full">
-                    {option.action}
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* FAQ Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="mb-12"
-        >
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Frequently Asked Questions</h2>
-          <div className="space-y-4">
-            {faqs.map((faq, index) => (
-              <Card key={index} className="hover:shadow-md transition-shadow duration-200">
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">{faq.question}</h3>
-                  <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Resources */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-        >
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Helpful Resources</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {resources.map((resource, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow duration-200 cursor-pointer">
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <resource.icon className="h-5 w-5 text-blue-600" />
-                    </div>
-                    <CardTitle className="text-lg">{resource.title}</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">{resource.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </motion.div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
-
