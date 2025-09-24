@@ -11,20 +11,22 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Sidebar - Mobile Optimized */}
-      <CleanSidebar />
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
+      {/* Sidebar - Google Style Layout */}
+      <div className="hidden lg:block w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 shadow-lg">
+        <CleanSidebar />
+      </div>
       
-      {/* Main Content - Perfect Alignment with Fixed Header */}
-      <div className="lg:pl-80">
-        {/* Minimal Header - Perfect Alignment, Fixed Height */}
+      {/* Main Content Area - Google Style */}
+      <div className="flex-1 flex flex-col min-h-screen">
+        {/* Header - Google Style */}
         <MinimalHeader />
         
-        {/* Breadcrumb - Mobile Optimized */}
+        {/* Breadcrumb - Google Style */}
         <Breadcrumb />
         
-        {/* Page Content - Professional Spacing and Layout */}
-        <main className="p-6 lg:p-8">
+        {/* Page Content - Google Style */}
+        <main className="flex-1 p-6 lg:p-8">
           <div className="max-w-7xl mx-auto space-y-8">
             {children}
           </div>
