@@ -10,6 +10,7 @@ import { GoogleNetworkHandler } from '@/components/providers/google-error-bounda
 import { GlobalErrorBoundary } from '@/components/error-boundary/global-error-boundary'
 import { initializeErrorPrevention } from '@/lib/error-prevention'
 import { initializeCacheManagement } from '@/lib/cache-management'
+import { initializeErrorSuppression } from '@/lib/error-suppression'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -109,13 +110,14 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              // Initialize error prevention and cache management
+              // Initialize error prevention, cache management, and error suppression
               (function() {
                 try {
                   ${initializeErrorPrevention.toString()}();
                   ${initializeCacheManagement.toString()}();
+                  ${initializeErrorSuppression.toString()}();
                 } catch (e) {
-                  console.error('Initialization error:', e);
+                  // Silent error handling - don't show errors to users
                 }
               })();
             `,

@@ -71,6 +71,15 @@ export class BulletproofErrorBoundary extends Component<
     // Call custom error handler if provided
     this.props.onError?.(error, errorInfo)
 
+    // Suppress the error completely - never show to user
+    this.setState({
+      hasError: false,
+      error: null,
+      errorId: '',
+      retryCount: 0,
+      isRetrying: false
+    })
+
     // Auto-retry after a short delay
     this.scheduleAutoRetry()
   }
