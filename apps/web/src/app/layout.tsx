@@ -4,6 +4,7 @@ import './globals.css'
 // import { EnterpriseHeader } from '@/components/navigation/enterprise-header' // Removed - using clean headers in individual layouts
 import { AuthProvider } from '@/components/providers/auth-provider'
 import { NotificationProvider } from '@/contexts/NotificationContext'
+import { BulletproofErrorBoundary } from '@/components/professional/bulletproof-error-boundary'
 import { GoogleErrorHandler, OfflineFallback, ServiceStatus } from '@/components/professional/google-error-handler'
 import { GoogleNetworkHandler } from '@/components/providers/google-error-boundary'
 import { GlobalErrorBoundary } from '@/components/error-boundary/global-error-boundary'
@@ -91,18 +92,20 @@ export default function RootLayout({
         <meta httpEquiv="Expires" content="0" />
       </head>
       <body className={inter.className}>
-        <GlobalErrorBoundary>
-          <GoogleNetworkHandler>
-            <AuthProvider>
-              <NotificationProvider>
-                <OfflineFallback />
-                {children}
-                <GoogleErrorHandler />
-                <ServiceStatus />
-              </NotificationProvider>
-            </AuthProvider>
-          </GoogleNetworkHandler>
-        </GlobalErrorBoundary>
+        <BulletproofErrorBoundary>
+          <GlobalErrorBoundary>
+            <GoogleNetworkHandler>
+              <AuthProvider>
+                <NotificationProvider>
+                  <OfflineFallback />
+                  {children}
+                  <GoogleErrorHandler />
+                  <ServiceStatus />
+                </NotificationProvider>
+              </AuthProvider>
+            </GoogleNetworkHandler>
+          </GlobalErrorBoundary>
+        </BulletproofErrorBoundary>
         <script
           dangerouslySetInnerHTML={{
             __html: `
