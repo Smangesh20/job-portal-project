@@ -102,8 +102,26 @@ function MinimalHeader() {
         return storedName
       }
       
+      // Try to get name from localStorage userData
+      try {
+        const userData = localStorage.getItem('userData')
+        if (userData) {
+          const parsedUser = JSON.parse(userData)
+          if (parsedUser.firstName) {
+            console.log('✅ Using localStorage firstName:', parsedUser.firstName)
+            return parsedUser.firstName
+          }
+          if (parsedUser.name) {
+            console.log('✅ Using localStorage name:', parsedUser.name)
+            return parsedUser.name
+          }
+        }
+      } catch (e) {
+        console.log('❌ Error parsing localStorage userData:', e)
+      }
+      
       // Set a default username for testing if none exists
-      const defaultName = 'John'
+      const defaultName = 'User'
       localStorage.setItem('displayName', defaultName)
       console.log('✅ Set default displayName:', defaultName)
       return defaultName
@@ -135,7 +153,7 @@ function MinimalHeader() {
           <div className="flex items-center">
             <div>
               <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
-                Welcome back, {getUserDisplayName()}!
+                Welcome back, {getUserDisplayName()}
               </h1>
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 Ready to find your next opportunity?
