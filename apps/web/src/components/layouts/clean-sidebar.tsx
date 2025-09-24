@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useAuthUnified } from '@/hooks/useAuthUnified'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -34,13 +34,18 @@ import {
   FileCheck,
   UserCheck,
   GraduationCap,
-  BrainCircuit
+  BrainCircuit,
+  Network,
+  Search,
+  Shield,
+  Clock
 } from 'lucide-react'
 
 // CLEAN SIDEBAR - GOOGLE STYLE LAYOUT
 export function CleanSidebar() {
   const { user, logout } = useAuthUnified()
   const router = useRouter()
+  const pathname = usePathname()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const handleLogout = async () => {
@@ -53,30 +58,67 @@ export function CleanSidebar() {
   }
 
   const navigationItems = [
-    { name: 'Dashboard', href: '/dashboard', icon: Home, current: true },
+    { name: 'Dashboard', href: '/dashboard', icon: Home, current: pathname === '/dashboard' },
     {
-      name: 'Jobs', href: '/jobs', icon: Briefcase, badge: '12',
+      name: 'Jobs', href: '/jobs', icon: Briefcase, badge: '12', current: pathname.startsWith('/jobs'),
       children: [
         { name: 'All Jobs', href: '/jobs', icon: Briefcase },
-        { name: 'Applied Jobs', href: '/jobs/applied', icon: FileText, badge: '8' },
+        { name: 'Applied Jobs', href: '/jobs/applied', icon: FileCheck, badge: '8' },
         { name: 'Saved Jobs', href: '/jobs/saved', icon: Bookmark, badge: '5' },
         { name: 'Recommended', href: '/jobs/recommended', icon: Star, badge: '10' }
       ]
     },
     {
-      name: 'Companies', href: '/companies', icon: Building2, badge: '50',
+      name: 'Companies', href: '/companies', icon: Building2, badge: '50', current: pathname.startsWith('/companies'),
       children: [
         { name: 'All Companies', href: '/companies', icon: Building2 },
         { name: 'Top Companies', href: '/companies/top', icon: TrendingUp, badge: '25' },
-        { name: 'Startups', href: '/companies/startups', icon: Users, badge: '15' },
+        { name: 'Startups', href: '/companies/startups', icon: Rocket, badge: '15' },
         { name: 'Fortune 500', href: '/companies/fortune-500', icon: BarChart3, badge: '10' }
       ]
     },
-    { name: 'Resume Builder', href: '/career-tools/resume', icon: FileText, badge: 'New' },
-    { name: 'Interview Prep', href: '/career-tools/interview', icon: Calendar, badge: 'New' },
-    { name: 'Skills Assessment', href: '/career-tools/skills', icon: Target, badge: 'New' },
-    { name: 'Career Path', href: '/career-tools/path', icon: Users, badge: 'New' },
-    { name: 'AI Insights', href: '/ai-insights', icon: Brain, badge: 'New' }
+    {
+      name: 'Applications', href: '/applications', icon: FileText, badge: '8', current: pathname.startsWith('/applications'),
+      children: [
+        { name: 'All Applications', href: '/applications', icon: FileText },
+        { name: 'Pending', href: '/applications/pending', icon: Clock },
+        { name: 'Interviewed', href: '/applications/interviewed', icon: Calendar },
+        { name: 'Rejected', href: '/applications/rejected', icon: X }
+      ]
+    },
+    { name: 'Messages', href: '/messages', icon: MessageSquare, badge: '3', current: pathname.startsWith('/messages') },
+    { name: 'Interviews', href: '/interviews', icon: Calendar, current: pathname.startsWith('/interviews') },
+    {
+      name: 'AI & Insights', href: '/ai-insights', icon: BrainCircuit, badge: 'NEW', current: pathname.startsWith('/ai-insights'),
+      children: [
+        { name: 'AI Insights', href: '/ai-insights', icon: Brain },
+        { name: 'Quantum Matching', href: '/quantum-matching', icon: Zap },
+        { name: 'Resume Matching', href: '/resume-matching', icon: Lightbulb }
+      ]
+    },
+    {
+      name: 'Career Tools', href: '/career-tools', icon: Award, current: pathname.startsWith('/career-tools'),
+      children: [
+        { name: 'Resume Builder', href: '/career-tools/resume', icon: FileText, badge: 'New' },
+        { name: 'Interview Prep', href: '/career-tools/interview', icon: Calendar, badge: 'New' },
+        { name: 'Skills Assessment', href: '/career-tools/skills', icon: Target, badge: 'New' },
+        { name: 'Career Path', href: '/career-tools/path', icon: Users, badge: 'New' }
+      ]
+    },
+    {
+      name: 'Resources', href: '/resources', icon: BookOpen, current: pathname.startsWith('/resources'),
+      children: [
+        { name: 'Learning', href: '/learning', icon: GraduationCap },
+        { name: 'Networking', href: '/networking', icon: Network },
+        { name: 'Research', href: '/research', icon: Search },
+        { name: 'Innovation', href: '/innovation', icon: Lightbulb }
+      ]
+    },
+    { name: 'Analytics', href: '/analytics', icon: BarChart3, current: pathname.startsWith('/analytics') },
+    { name: 'Profile', href: '/profile', icon: User, current: pathname.startsWith('/profile') },
+    { name: 'Settings', href: '/settings', icon: Settings, current: pathname.startsWith('/settings') },
+    { name: 'Help', href: '/help', icon: HelpCircle, current: pathname.startsWith('/help') },
+    { name: 'Privacy', href: '/privacy', icon: Shield, current: pathname.startsWith('/privacy') }
   ]
 
   return (
