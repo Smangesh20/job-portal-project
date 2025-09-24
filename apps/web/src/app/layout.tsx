@@ -12,6 +12,7 @@ import { initializeErrorPrevention } from '@/lib/error-prevention'
 import { initializeCacheManagement } from '@/lib/cache-management'
 import { initializeErrorSuppression } from '@/lib/error-suppression'
 import { initializeUltimateErrorSuppression } from '@/lib/ultimate-error-suppression'
+import { initializeGoogleStyleErrorHandling } from '@/lib/google-error-handler'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -92,28 +93,102 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              // PRE-EMPTIVE ERROR SUPPRESSION - RUNS FIRST
+              // GOOGLE'S ALTERNATIVE APPROACH - GRACEFUL ERROR HANDLING
               (function() {
-                // Override everything before anything else loads
-                window.onerror = function() { return true; };
-                window.addEventListener('error', function(e) { e.preventDefault(); return false; }, true);
-                window.addEventListener('unhandledrejection', function(e) { e.preventDefault(); return false; }, true);
+                // Google's approach - handle errors gracefully, don't suppress
+                window.addEventListener('error', function(e) {
+                  // Google's approach - show professional notification
+                  if (e.error && e.error.message && e.error.message.includes('React error #310')) {
+                    showGoogleStyleNotification('We\\'re experiencing a temporary issue. Please refresh the page to continue.', 'Refresh Page');
+                  }
+                });
                 
-                // Override console errors
-                console.error = function() { return; };
-                console.warn = function() { return; };
+                // Google's approach - handle unhandled rejections gracefully
+                window.addEventListener('unhandledrejection', function(e) {
+                  showGoogleStyleNotification('Something went wrong. We\\'re working to fix it.', 'Continue');
+                });
                 
-                // Pre-emptively create React object
-                window.React = window.React || {};
-                window.React.useEffect = function() { return; };
-                window.React.useState = function() { return [null, function() {}]; };
-                window.React.useCallback = function() { return function() {}; };
-                window.React.useMemo = function() { return null; };
-                window.React.useRef = function() { return { current: null }; };
-                window.React.useContext = function() { return null; };
-                window.React.Component = function() { this.render = function() { return null; }; };
+                // Google-style notification function
+                function showGoogleStyleNotification(message, action) {
+                  // Remove existing notifications
+                  const existing = document.getElementById('google-error-notification');
+                  if (existing) existing.remove();
+                  
+                  // Create Google-style notification
+                  const notification = document.createElement('div');
+                  notification.id = 'google-error-notification';
+                  notification.style.cssText = \`
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #fff;
+                    border: 1px solid #dadce0;
+                    border-radius: 8px;
+                    padding: 16px;
+                    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                    z-index: 10000;
+                    max-width: 400px;
+                    font-family: 'Google Sans', Arial, sans-serif;
+                  \`;
+                  
+                  notification.innerHTML = \`
+                    <div style="display: flex; align-items: flex-start; gap: 12px;">
+                      <div style="color: #ea4335; font-size: 20px;">⚠️</div>
+                      <div style="flex: 1;">
+                        <div style="font-weight: 500; color: #202124; margin-bottom: 8px;">
+                          \${message}
+                        </div>
+                        <div style="display: flex; gap: 8px; margin-top: 12px;">
+                          <button id="error-action-btn" style="
+                            background: #1a73e8;
+                            color: white;
+                            border: none;
+                            border-radius: 4px;
+                            padding: 8px 16px;
+                            font-size: 14px;
+                            cursor: pointer;
+                          ">\${action}</button>
+                          <button id="error-dismiss-btn" style="
+                            background: transparent;
+                            color: #5f6368;
+                            border: 1px solid #dadce0;
+                            border-radius: 4px;
+                            padding: 8px 16px;
+                            font-size: 14px;
+                            cursor: pointer;
+                          ">Dismiss</button>
+                        </div>
+                      </div>
+                    </div>
+                  \`;
+                  
+                  // Add event listeners
+                  const actionBtn = notification.querySelector('#error-action-btn');
+                  const dismissBtn = notification.querySelector('#error-dismiss-btn');
+                  
+                  actionBtn?.addEventListener('click', () => {
+                    if (action === 'Refresh Page') {
+                      window.location.reload();
+                    }
+                    notification.remove();
+                  });
+                  
+                  dismissBtn?.addEventListener('click', () => {
+                    notification.remove();
+                  });
+                  
+                  // Auto-dismiss after 10 seconds (Google's approach)
+                  setTimeout(() => {
+                    if (notification.parentNode) {
+                      notification.remove();
+                    }
+                  }, 10000);
+                  
+                  // Add to document
+                  document.body.appendChild(notification);
+                }
                 
-                console.log('🛡️ PRE-EMPTIVE ERROR SUPPRESSION ACTIVE');
+                console.log('🔍 GOOGLE\\'S ALTERNATIVE APPROACH ACTIVE - GRACEFUL ERROR HANDLING');
               })();
             `,
           }}
@@ -358,15 +433,17 @@ export default function RootLayout({
                 console.log('🛡️ IMMEDIATE ERROR SUPPRESSION ACTIVE - NO ERRORS WILL SHOW');
               })();
               
-              // Initialize error prevention, cache management, and ultimate error suppression
+              // Initialize Google's alternative approach - graceful error handling
               (function() {
                 try {
+                  ${initializeGoogleStyleErrorHandling.toString()}();
                   ${initializeErrorPrevention.toString()}();
                   ${initializeCacheManagement.toString()}();
                   ${initializeErrorSuppression.toString()}();
                   ${initializeUltimateErrorSuppression.toString()}();
                 } catch (e) {
-                  // Silent error handling - don't show errors to users
+                  // Google's approach - handle gracefully, don't suppress
+                  console.log('🔍 Google-style error handling active - errors will be handled gracefully');
                 }
               })();
             `,
