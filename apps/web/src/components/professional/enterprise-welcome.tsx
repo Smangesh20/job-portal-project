@@ -147,7 +147,7 @@ export function EnterpriseWelcome({
     const detectedName = detectUserName()
     setDisplayName(detectedName)
     setIsLoading(false)
-  }, [user, detectUserName])
+  }, [user])
 
   // PROFESSIONAL: Save name to multiple locations
   const saveUserName = useCallback((name: string) => {
@@ -466,4 +466,5 @@ export function QuickNameSetter({
     </div>
   )
 }
+
 
