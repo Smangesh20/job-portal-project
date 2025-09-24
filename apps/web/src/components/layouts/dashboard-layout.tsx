@@ -3,7 +3,6 @@
 import { ReactNode } from 'react'
 import { CleanSidebar } from '@/components/layouts/clean-sidebar'
 import MinimalHeader from '@/components/layouts/minimal-header'
-import { Breadcrumb } from '@/components/layouts/breadcrumb'
 
 interface DashboardLayoutProps {
   children: ReactNode
@@ -21,9 +20,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       <div className="flex-1 flex flex-col min-h-screen">
         {/* Header - Google Style */}
         <MinimalHeader />
-        
-        {/* Breadcrumb - Google Style */}
-        <Breadcrumb />
         
         {/* Page Content - Google Style */}
         <main className="flex-1 p-6 lg:p-8">

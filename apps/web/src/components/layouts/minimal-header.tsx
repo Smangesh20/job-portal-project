@@ -128,7 +128,7 @@ function MinimalHeader() {
   }
 
   return (
-    <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 h-16 shadow-sm">
+    <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 h-16 shadow-sm relative z-10">
       <div className="px-6 h-full">
         <div className="flex items-center justify-between h-full">
           {/* Left side - Welcome Message with Perfect Alignment */}
