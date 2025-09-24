@@ -7,26 +7,43 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { 
   Search, 
+  BookOpen, 
+  FileText, 
   TrendingUp, 
-  Building2, 
-  Users, 
-  DollarSign, 
-  MapPin, 
-  Calendar,
-  Star,
+  Star, 
+  Award, 
+  Filter,
   Bookmark,
   Share,
   Download,
-  Filter,
+  Eye,
+  Calendar,
+  Users,
+  Globe,
+  Target,
+  CheckCircle,
+  Clock,
   BarChart3,
   PieChart,
   LineChart,
-  Target,
-  Award,
+  Activity,
+  Brain,
   Lightbulb,
-  Globe,
-  FileText,
-  ExternalLink
+  Zap,
+  Database,
+  Cpu,
+  Network,
+  Shield,
+  Lock,
+  Unlock,
+  ExternalLink,
+  Copy,
+  Edit,
+  Trash2,
+  Plus,
+  Minus,
+  Maximize,
+  Minimize
 } from 'lucide-react'
 
 // GOOGLE-STYLE RESEARCH PAGE - REAL-TIME DATA
@@ -41,88 +58,140 @@ export default function ResearchPage() {
       try {
         // Simulate real-time research data like Google
         const mockResearchData = {
-          marketTrends: [
+          research: [
             {
-              title: 'Remote Work Revolution',
-              description: 'The shift to remote work is accelerating across all industries',
-              trend: 'up',
-              change: 23.5,
-              category: 'Work Culture',
-              impact: 'high'
+              id: 1,
+              title: 'AI-Powered Job Matching: A Comprehensive Study',
+              authors: ['Dr. Sarah Johnson', 'Prof. Mike Chen', 'Dr. Lisa Wang'],
+              institution: 'Stanford University',
+              publishedDate: '2024-12-15',
+              category: 'Artificial Intelligence',
+              type: 'Research Paper',
+              status: 'Published',
+              impact: 'High',
+              citations: 45,
+              downloads: 1200,
+              abstract: 'This study explores the effectiveness of AI-powered job matching algorithms in improving recruitment outcomes and candidate satisfaction.',
+              keywords: ['AI', 'Job Matching', 'Recruitment', 'Machine Learning'],
+              doi: '10.1000/ai-job-matching-2024',
+              journal: 'Journal of AI in Recruitment',
+              volume: '15',
+              issue: '3',
+              pages: '45-67',
+              funding: 'NSF Grant #1234567',
+              methodology: 'Quantitative Analysis',
+              sampleSize: 10000,
+              duration: '18 months',
+              results: '98% accuracy in job matching',
+              implications: 'Significant improvement in recruitment efficiency',
+              limitations: 'Limited to tech industry',
+              futureWork: 'Expand to other industries',
+              isOpenAccess: true,
+              isPeerReviewed: true,
+              isBookmarked: true,
+              isDownloaded: false
             },
             {
-              title: 'AI Skills Demand',
-              description: 'Artificial Intelligence skills are becoming essential in tech roles',
-              trend: 'up',
-              change: 45.2,
-              category: 'Technology',
-              impact: 'high'
+              id: 2,
+              title: 'Remote Work Impact on Employee Productivity',
+              authors: ['Dr. Emily Rodriguez', 'Prof. David Smith'],
+              institution: 'MIT',
+              publishedDate: '2024-12-10',
+              category: 'Work Psychology',
+              type: 'Case Study',
+              status: 'Published',
+              impact: 'Medium',
+              citations: 23,
+              downloads: 890,
+              abstract: 'An analysis of remote work patterns and their correlation with employee productivity metrics across different industries.',
+              keywords: ['Remote Work', 'Productivity', 'Employee Engagement', 'Work-Life Balance'],
+              doi: '10.1000/remote-work-productivity-2024',
+              journal: 'Work Psychology Quarterly',
+              volume: '12',
+              issue: '4',
+              pages: '123-145',
+              funding: 'Corporate Partnership',
+              methodology: 'Mixed Methods',
+              sampleSize: 5000,
+              duration: '12 months',
+              results: '15% increase in productivity',
+              implications: 'Remote work policies need optimization',
+              limitations: 'Self-reported data',
+              futureWork: 'Longitudinal study',
+              isOpenAccess: false,
+              isPeerReviewed: true,
+              isBookmarked: false,
+              isDownloaded: true
             },
             {
-              title: 'Green Jobs Growth',
-              description: 'Sustainability roles are growing rapidly in the job market',
-              trend: 'up',
-              change: 18.7,
-              category: 'Sustainability',
-              impact: 'medium'
+              id: 3,
+              title: 'Blockchain in HR: Security and Transparency',
+              authors: ['Dr. Alex Thompson', 'Prof. Maria Garcia'],
+              institution: 'Berkeley University',
+              publishedDate: '2024-12-05',
+              category: 'Blockchain Technology',
+              type: 'Technical Report',
+              status: 'Under Review',
+              impact: 'High',
+              citations: 8,
+              downloads: 450,
+              abstract: 'Exploring blockchain applications in human resources for secure and transparent employee data management.',
+              keywords: ['Blockchain', 'HR', 'Security', 'Transparency', 'Data Privacy'],
+              doi: '10.1000/blockchain-hr-2024',
+              journal: 'Blockchain Technology Review',
+              volume: '8',
+              issue: '2',
+              pages: '78-95',
+              funding: 'Industry Grant',
+              methodology: 'Technical Analysis',
+              sampleSize: 1000,
+              duration: '8 months',
+              results: '99.9% data integrity',
+              implications: 'Revolutionary HR data management',
+              limitations: 'Implementation complexity',
+              futureWork: 'Pilot implementation',
+              isOpenAccess: true,
+              isPeerReviewed: false,
+              isBookmarked: true,
+              isDownloaded: false
             }
           ],
-          salaryInsights: [
+          trends: [
             {
-              role: 'Software Engineer',
-              averageSalary: '$95,000',
-              range: '$75,000 - $130,000',
-              growth: 12.3,
-              demand: 'high'
+              name: 'AI in Recruitment',
+              growth: 45.2,
+              description: 'Artificial Intelligence applications in recruitment processes',
+              trend: 'up',
+              papers: 156,
+              citations: 2340
             },
             {
-              role: 'Product Manager',
-              averageSalary: '$110,000',
-              range: '$85,000 - $150,000',
-              growth: 8.7,
-              demand: 'high'
+              name: 'Remote Work Studies',
+              growth: 38.7,
+              description: 'Research on remote work patterns and productivity',
+              trend: 'up',
+              papers: 89,
+              citations: 1890
             },
             {
-              role: 'Data Scientist',
-              averageSalary: '$105,000',
-              range: '$80,000 - $140,000',
-              growth: 15.2,
-              demand: 'very high'
+              name: 'Blockchain HR',
+              growth: 32.1,
+              description: 'Blockchain technology in human resources',
+              trend: 'up',
+              papers: 45,
+              citations: 890
             }
           ],
-          companyInsights: [
-            {
-              name: 'Google',
-              industry: 'Technology',
-              growth: 8.5,
-              employeeCount: '190,000+',
-              culture: 'Innovation-focused',
-              benefits: 'Excellent'
-            },
-            {
-              name: 'Microsoft',
-              industry: 'Technology',
-              growth: 6.2,
-              employeeCount: '220,000+',
-              culture: 'Collaborative',
-              benefits: 'Excellent'
-            },
-            {
-              name: 'Apple',
-              industry: 'Technology',
-              growth: 7.8,
-              employeeCount: '160,000+',
-              culture: 'Design-driven',
-              benefits: 'Excellent'
-            }
-          ],
-          skillDemand: [
-            { skill: 'React', demand: 95, trend: 'up' },
-            { skill: 'Python', demand: 88, trend: 'up' },
-            { skill: 'AWS', demand: 82, trend: 'up' },
-            { skill: 'Machine Learning', demand: 78, trend: 'up' },
-            { skill: 'TypeScript', demand: 75, trend: 'up' }
-          ]
+          stats: {
+            totalPapers: 1247,
+            myPapers: 8,
+            bookmarkedPapers: 45,
+            downloadedPapers: 23,
+            citations: 156,
+            hIndex: 12,
+            researchAreas: 5,
+            collaborations: 15
+          }
         }
         
         setResearchData(mockResearchData)
@@ -141,22 +210,27 @@ export default function ResearchPage() {
     return () => clearInterval(interval)
   }, [])
 
-  const getTrendIcon = (trend: string) => {
-    return trend === 'up' ? (
-      <TrendingUp className="h-4 w-4 text-green-500" />
-    ) : (
-      <TrendingUp className="h-4 w-4 text-red-500 rotate-180" />
-    )
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'Published':
+        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+      case 'Under Review':
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+      case 'Draft':
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+    }
   }
 
-  const getDemandColor = (demand: string) => {
-    switch (demand) {
-      case 'very high':
+  const getImpactColor = (impact: string) => {
+    switch (impact) {
+      case 'High':
         return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-      case 'high':
-        return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200'
-      case 'medium':
+      case 'Medium':
         return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+      case 'Low':
+        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
       default:
         return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
     }
@@ -175,10 +249,10 @@ export default function ResearchPage() {
       {/* Header */}
       <div className="text-center py-12 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl border border-gray-200 dark:border-gray-700">
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-          🔍 Market Research
+          🔬 Research Hub
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-          Real-time insights into job market trends, salary data, and industry analysis.
+          Access cutting-edge research, academic papers, and industry insights in recruitment and career development.
         </p>
         
         {/* Search */}
@@ -187,7 +261,7 @@ export default function ResearchPage() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
             <Input
               type="text"
-              placeholder="Search research topics..."
+              placeholder="Search research papers..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 pr-4 py-3 text-lg"
@@ -196,170 +270,276 @@ export default function ResearchPage() {
         </div>
       </div>
 
-      {/* Market Trends */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <TrendingUp className="h-6 w-6" />
-            <span>Market Trends</span>
-          </CardTitle>
-          <CardDescription>Real-time analysis of job market trends</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {researchData?.marketTrends.map((trend: any, index: number) => (
-            <div key={index} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
-                  {getTrendIcon(trend.trend)}
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                      {trend.title}
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {trend.description}
-                    </p>
-                    <div className="flex items-center space-x-2 mt-1">
-                      <Badge variant="outline">{trend.category}</Badge>
-                      <Badge className={getDemandColor(trend.impact)}>
-                        {trend.impact} impact
-                      </Badge>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="text-right">
-                <div className="flex items-center space-x-1">
-                  {getTrendIcon(trend.trend)}
-                  <span className="text-lg font-bold text-green-600">
-                    +{trend.change}%
-                  </span>
-                </div>
-                <p className="text-sm text-gray-500 dark:text-gray-500">
-                  Growth rate
-                </p>
-              </div>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-
-      {/* Salary Insights */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Research Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-8 gap-6">
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <DollarSign className="h-6 w-6" />
-              <span>Salary Insights</span>
-            </CardTitle>
-            <CardDescription>Current salary data by role</CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Papers</CardTitle>
+            <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent className="space-y-4">
-            {researchData?.salaryInsights.map((salary: any, index: number) => (
-              <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                <div>
-                  <h4 className="font-medium text-gray-900 dark:text-white">{salary.role}</h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Range: {salary.range}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <div className="text-lg font-bold text-gray-900 dark:text-white">
-                    {salary.averageSalary}
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <TrendingUp className="h-3 w-3 text-green-500" />
-                    <span className="text-sm text-green-600">+{salary.growth}%</span>
-                  </div>
-                  <Badge className={getDemandColor(salary.demand)}>
-                    {salary.demand} demand
-                  </Badge>
-                </div>
-              </div>
-            ))}
+          <CardContent>
+            <div className="text-2xl font-bold">{researchData?.stats.totalPapers}</div>
+            <p className="text-xs text-muted-foreground">Available</p>
           </CardContent>
         </Card>
-
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Building2 className="h-6 w-6" />
-              <span>Company Insights</span>
-            </CardTitle>
-            <CardDescription>Top companies and their growth</CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">My Papers</CardTitle>
+            <BookOpen className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent className="space-y-4">
-            {researchData?.companyInsights.map((company: any, index: number) => (
-              <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                <div>
-                  <h4 className="font-medium text-gray-900 dark:text-white">{company.name}</h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {company.industry} • {company.employeeCount} employees
-                  </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-500">
-                    Culture: {company.culture}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <div className="flex items-center space-x-1">
-                    <TrendingUp className="h-4 w-4 text-green-500" />
-                    <span className="text-lg font-bold text-green-600">+{company.growth}%</span>
-                  </div>
-                  <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                    {company.benefits} benefits
-                  </Badge>
-                </div>
-              </div>
-            ))}
+          <CardContent>
+            <div className="text-2xl font-bold">{researchData?.stats.myPapers}</div>
+            <p className="text-xs text-muted-foreground">Published</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Bookmarked</CardTitle>
+            <Bookmark className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{researchData?.stats.bookmarkedPapers}</div>
+            <p className="text-xs text-muted-foreground">Saved</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Downloads</CardTitle>
+            <Download className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{researchData?.stats.downloadedPapers}</div>
+            <p className="text-xs text-muted-foreground">This month</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Citations</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{researchData?.stats.citations}</div>
+            <p className="text-xs text-muted-foreground">Total</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">H-Index</CardTitle>
+            <Award className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{researchData?.stats.hIndex}</div>
+            <p className="text-xs text-muted-foreground">Impact</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Research Areas</CardTitle>
+            <Target className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{researchData?.stats.researchAreas}</div>
+            <p className="text-xs text-muted-foreground">Active</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Collaborations</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{researchData?.stats.collaborations}</div>
+            <p className="text-xs text-muted-foreground">Active</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Skill Demand Analysis */}
+      {/* Research Papers */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Target className="h-6 w-6" />
-            <span>Skill Demand Analysis</span>
-          </CardTitle>
-          <CardDescription>Most in-demand skills in the current market</CardDescription>
+          <div className="flex items-center justify-between">
+            <CardTitle>Research Papers</CardTitle>
+            <div className="flex items-center space-x-2">
+              <Button variant="outline" size="sm">
+                <Filter className="h-4 w-4 mr-2" />
+                Filter
+              </Button>
+              <Button size="sm">
+                <Plus className="h-4 w-4 mr-2" />
+                New Paper
+              </Button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          {researchData?.skillDemand.map((skill: any, index: number) => (
-            <div key={index} className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <span className="text-sm font-medium">{skill.skill}</span>
-                {getTrendIcon(skill.trend)}
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-32 bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-blue-600 h-2 rounded-full" 
-                    style={{ width: `${skill.demand}%` }}
-                  ></div>
+          {researchData?.research.map((paper: any) => (
+            <div key={paper.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+              <div className="flex items-center space-x-4">
+                <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                  <FileText className="h-8 w-8 text-white" />
                 </div>
-                <span className="text-sm text-gray-600 dark:text-gray-400 w-12 text-right">
-                  {skill.demand}%
-                </span>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    {paper.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    by {paper.authors.join(', ')} • {paper.institution}
+                  </p>
+                  <p className="text-sm text-gray-500 dark:text-gray-500">
+                    {paper.abstract}
+                  </p>
+                  <div className="flex items-center space-x-2 mt-2">
+                    <Badge className={getStatusColor(paper.status)}>
+                      {paper.status}
+                    </Badge>
+                    <Badge className={getImpactColor(paper.impact)}>
+                      {paper.impact} Impact
+                    </Badge>
+                    <Badge variant="outline">
+                      {paper.category}
+                    </Badge>
+                    <Badge variant="outline">
+                      {paper.type}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center space-x-1 mt-2">
+                    {paper.keywords.slice(0, 4).map((keyword: string, index: number) => (
+                      <Badge key={index} variant="secondary" className="text-xs">
+                        {keyword}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-4">
+                <div className="text-right text-sm text-gray-600 dark:text-gray-400">
+                  <div className="flex items-center space-x-2">
+                    <Calendar className="h-4 w-4" />
+                    <span>{paper.publishedDate}</span>
+                  </div>
+                  <div className="flex items-center space-x-2 mt-1">
+                    <TrendingUp className="h-4 w-4" />
+                    <span>{paper.citations} citations</span>
+                  </div>
+                  <div className="flex items-center space-x-2 mt-1">
+                    <Download className="h-4 w-4" />
+                    <span>{paper.downloads} downloads</span>
+                  </div>
+                  <div className="flex items-center space-x-2 mt-1">
+                    <Users className="h-4 w-4" />
+                    <span>{paper.sampleSize} participants</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-2">
+                  <Button size="sm">
+                    <Eye className="h-4 w-4 mr-2" />
+                    View
+                  </Button>
+                  
+                  <Button variant="outline" size="sm">
+                    <Download className="h-4 w-4" />
+                  </Button>
+                  
+                  <Button variant="outline" size="sm">
+                    <Bookmark className="h-4 w-4" />
+                  </Button>
+                  
+                  <Button variant="outline" size="sm">
+                    <Share className="h-4 w-4" />
+                  </Button>
+                  
+                  <Button variant="outline" size="sm">
+                    <ExternalLink className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </div>
           ))}
         </CardContent>
       </Card>
 
-      {/* Research Tools */}
+      {/* Research Trends and Tools */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <TrendingUp className="h-6 w-6" />
+              <span>Research Trends</span>
+            </CardTitle>
+            <CardDescription>Current trends in recruitment research</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {researchData?.trends.map((trend: any, index: number) => (
+              <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                <div>
+                  <h4 className="font-medium text-gray-900 dark:text-white">{trend.name}</h4>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{trend.description}</p>
+                  <div className="flex items-center space-x-2 mt-2">
+                    <Badge variant="outline">{trend.papers} papers</Badge>
+                    <Badge variant="outline">{trend.citations} citations</Badge>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="flex items-center space-x-1">
+                    <TrendingUp className="h-4 w-4 text-green-500" />
+                    <span className="text-lg font-bold text-green-600">+{trend.growth}%</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Brain className="h-6 w-6" />
+              <span>Research Tools</span>
+            </CardTitle>
+            <CardDescription>Tools for research and analysis</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-3 border rounded-lg text-center hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer">
+                <BarChart3 className="h-8 w-8 mx-auto mb-2 text-blue-600" />
+                <h4 className="font-medium text-sm">Data Analysis</h4>
+                <p className="text-xs text-gray-500">Statistical analysis tools</p>
+              </div>
+              <div className="p-3 border rounded-lg text-center hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer">
+                <Database className="h-8 w-8 mx-auto mb-2 text-green-600" />
+                <h4 className="font-medium text-sm">Data Collection</h4>
+                <p className="text-xs text-gray-500">Survey and data tools</p>
+              </div>
+              <div className="p-3 border rounded-lg text-center hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer">
+                <Network className="h-8 w-8 mx-auto mb-2 text-purple-600" />
+                <h4 className="font-medium text-sm">Collaboration</h4>
+                <p className="text-xs text-gray-500">Team collaboration tools</p>
+              </div>
+              <div className="p-3 border rounded-lg text-center hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer">
+                <Shield className="h-8 w-8 mx-auto mb-2 text-red-600" />
+                <h4 className="font-medium text-sm">Ethics Review</h4>
+                <p className="text-xs text-gray-500">Research ethics tools</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Research Resources */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="hover:shadow-lg transition-shadow cursor-pointer">
           <CardHeader className="text-center">
             <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <BarChart3 className="h-6 w-6 text-blue-600" />
+              <BookOpen className="h-6 w-6 text-blue-600" />
             </div>
-            <CardTitle className="text-lg">Salary Calculator</CardTitle>
-            <CardDescription>Calculate your worth in the market</CardDescription>
+            <CardTitle className="text-lg">Research Library</CardTitle>
+            <CardDescription>Access to academic databases</CardDescription>
           </CardHeader>
           <CardContent className="text-center">
             <Button className="w-full bg-blue-600 hover:bg-blue-700">
-              Calculate Salary
+              Access Library
             </Button>
           </CardContent>
         </Card>
@@ -367,15 +547,14 @@ export default function ResearchPage() {
         <Card className="hover:shadow-lg transition-shadow cursor-pointer">
           <CardHeader className="text-center">
             <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <TrendingUp className="h-6 w-6 text-green-600" />
+              <Users className="h-6 w-6 text-green-600" />
             </div>
-            <CardTitle className="text-lg">Market Report</CardTitle>
-            <CardDescription>Download detailed market analysis</CardDescription>
+            <CardTitle className="text-lg">Research Network</CardTitle>
+            <CardDescription>Connect with researchers</CardDescription>
           </CardHeader>
           <CardContent className="text-center">
             <Button variant="outline" className="w-full">
-              <Download className="h-4 w-4 mr-2" />
-              Download Report
+              Join Network
             </Button>
           </CardContent>
         </Card>
@@ -383,14 +562,14 @@ export default function ResearchPage() {
         <Card className="hover:shadow-lg transition-shadow cursor-pointer">
           <CardHeader className="text-center">
             <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Lightbulb className="h-6 w-6 text-purple-600" />
+              <Award className="h-6 w-6 text-purple-600" />
             </div>
-            <CardTitle className="text-lg">Career Insights</CardTitle>
-            <CardDescription>Get personalized career recommendations</CardDescription>
+            <CardTitle className="text-lg">Research Grants</CardTitle>
+            <CardDescription>Funding opportunities</CardDescription>
           </CardHeader>
           <CardContent className="text-center">
             <Button variant="outline" className="w-full">
-              Get Insights
+              View Grants
             </Button>
           </CardContent>
         </Card>
