@@ -12,14 +12,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { 
-  Bell, 
+import {
+  Bell,
   Settings,
   User,
   LogOut,
   Moon,
   Sun,
-  HelpCircle
+  HelpCircle,
+  BarChart3
 } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useAuthUnified } from '@/hooks/useAuthUnified'
@@ -79,7 +80,9 @@ function MinimalHeader() {
   }
 
   const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark')
+    const newTheme = theme === 'dark' ? 'light' : 'dark'
+    setTheme(newTheme)
+    console.log('🌙 Theme toggled to:', newTheme)
   }
 
   const handleLogout = async () => {
@@ -110,44 +113,58 @@ function MinimalHeader() {
 
           {/* Right side - ONLY Essential Elements, Perfect Spacing */}
           <div className="flex items-center space-x-3">
-            {/* Notifications */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="relative h-9 w-9 p-0">
-                  <Bell className="h-5 w-5" />
-                  {notifications > 0 && (
-                    <Badge 
-                      variant="destructive" 
-                      className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center p-0 text-xs"
-                    >
-                      {notifications}
-                    </Badge>
-                  )}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-80">
-                <DropdownMenuLabel>Notifications</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <div className="flex flex-col">
-                    <span className="font-medium">New job match</span>
-                    <span className="text-sm text-gray-500">Senior Developer at TechCorp</span>
-                  </div>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <div className="flex flex-col">
-                    <span className="font-medium">Application update</span>
-                    <span className="text-sm text-gray-500">Your application is under review</span>
-                  </div>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <div className="flex flex-col">
-                    <span className="font-medium">Interview scheduled</span>
-                    <span className="text-sm text-gray-500">Tomorrow at 2:00 PM</span>
-                  </div>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  {/* Notifications - Google Style */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="relative h-9 w-9 p-0 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        title="Notifications"
+                      >
+                        <Bell className="h-5 w-5" />
+                        {notifications > 0 && (
+                          <Badge
+                            variant="destructive"
+                            className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center p-0 text-xs"
+                          >
+                            {notifications}
+                          </Badge>
+                        )}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-80">
+                      <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem className="cursor-pointer" onClick={() => console.log('📧 New job match clicked')}>
+                        <div className="flex flex-col">
+                          <span className="font-medium">New job match</span>
+                          <span className="text-sm text-gray-500">Senior Developer at Google - 98% match</span>
+                          <span className="text-xs text-gray-400">2 hours ago</span>
+                        </div>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="cursor-pointer" onClick={() => console.log('📋 Application update clicked')}>
+                        <div className="flex flex-col">
+                          <span className="font-medium">Application update</span>
+                          <span className="text-sm text-gray-500">Your application at Microsoft is under review</span>
+                          <span className="text-xs text-gray-400">4 hours ago</span>
+                        </div>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="cursor-pointer" onClick={() => console.log('📅 Interview scheduled clicked')}>
+                        <div className="flex flex-col">
+                          <span className="font-medium">Interview scheduled</span>
+                          <span className="text-sm text-gray-500">Apple interview tomorrow at 2:00 PM</span>
+                          <span className="text-xs text-gray-400">1 day ago</span>
+                        </div>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem className="cursor-pointer" onClick={() => console.log('🔔 View all notifications clicked')}>
+                        <div className="text-center w-full">
+                          <span className="text-sm text-blue-600 dark:text-blue-400">View all notifications</span>
+                        </div>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
 
                   {/* Theme Toggle - Google Style */}
                   <Button 
@@ -207,43 +224,75 @@ function MinimalHeader() {
                     </DropdownMenuContent>
                   </DropdownMenu>
 
-            {/* User Profile Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-9 w-9 p-0 rounded-full">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={user?.profileImage || user?.avatar || ''} alt={getUserDisplayName()} />
-                    <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm">
-                      {getUserDisplayName().charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
-                <DropdownMenuLabel className="font-normal">
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">{getUserDisplayName()}</p>
-                    <p className="text-xs leading-none text-muted-foreground">
-                      {user?.email || 'user@example.com'}
-                    </p>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => router.push('/profile')}>
-                  <User className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => router.push('/settings')}>
-                  <Settings className="mr-2 h-4 w-4" />
-                  <span>Settings</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="text-red-600">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  {/* User Profile Dropdown - Google Style */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        className="relative h-9 w-9 p-0 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                        title="User menu"
+                      >
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={user?.profileImage || user?.avatar || ''} alt={getUserDisplayName()} />
+                          <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm">
+                            {getUserDisplayName().charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56" align="end" forceMount>
+                      <DropdownMenuLabel className="font-normal">
+                        <div className="flex flex-col space-y-1">
+                          <p className="text-sm font-medium leading-none">{getUserDisplayName()}</p>
+                          <p className="text-xs leading-none text-muted-foreground">
+                            {user?.email || 'user@example.com'}
+                          </p>
+                        </div>
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem 
+                        className="cursor-pointer" 
+                        onClick={() => {
+                          console.log('👤 Profile clicked')
+                          router.push('/profile')
+                        }}
+                      >
+                        <User className="mr-2 h-4 w-4" />
+                        <span>Profile</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        className="cursor-pointer" 
+                        onClick={() => {
+                          console.log('⚙️ Settings clicked')
+                          router.push('/settings')
+                        }}
+                      >
+                        <Settings className="mr-2 h-4 w-4" />
+                        <span>Settings</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        className="cursor-pointer" 
+                        onClick={() => {
+                          console.log('📊 Analytics clicked')
+                          router.push('/analytics')
+                        }}
+                      >
+                        <BarChart3 className="mr-2 h-4 w-4" />
+                        <span>Analytics</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem 
+                        className="cursor-pointer text-red-600" 
+                        onClick={() => {
+                          console.log('🚪 Logout clicked')
+                          handleLogout()
+                        }}
+                      >
+                        <LogOut className="mr-2 h-4 w-4" />
+                        <span>Log out</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
           </div>
         </div>
       </div>
