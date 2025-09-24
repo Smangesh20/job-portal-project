@@ -113,7 +113,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
       setSocket(null)
       setIsConnected(false)
     }
-  }, [isAuthenticated, user])
+  }, [isAuthenticated])
 
   const emit = (event: string, data: any) => {
     if (socket && isConnected) {

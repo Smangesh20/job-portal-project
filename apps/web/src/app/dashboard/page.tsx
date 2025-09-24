@@ -4,64 +4,103 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuthUnified } from '@/hooks/useAuthUnified'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { 
   BriefcaseIcon,
   BuildingOfficeIcon,
-  FlagIcon,
-  SparklesIcon,
+  ChartBarIcon,
+  UserGroupIcon,
+  MagnifyingGlassIcon,
+  StarIcon,
+  ClockIcon,
+  MapPinIcon,
+  HeartIcon,
   ArrowRightIcon,
+  SparklesIcon,
+  ArrowTrendingUpIcon,
+  FlagIcon,
   CheckCircleIcon,
-  StarIcon
+  CpuChipIcon,
+  BoltIcon,
+  ChevronDownIcon
 } from '@heroicons/react/24/outline'
 
 export default function DashboardPage() {
   const router = useRouter()
   const { user, isAuthenticated, isLoading, logout } = useAuthUnified()
+  const [searchQuery, setSearchQuery] = useState('')
+  const [locationQuery, setLocationQuery] = useState('')
   const [displayName, setDisplayName] = useState('User')
 
-  // SIMPLE NAME DETECTION - BULLETPROOF
-  useEffect(() => {
-    // Check localStorage first
+  // SIMPLE FILTER STATES - NO COMPLEX DROPDOWNS
+  const [selectedJobType, setSelectedJobType] = useState('')
+  const [selectedLocation, setSelectedLocation] = useState('')
+  const [selectedCompany, setSelectedCompany] = useState('')
+
+  // SIMPLE DATA - NO COMPLEX ARRAYS
+  const jobTypes = ['Full-time', 'Part-time', 'Contract', 'Remote', 'Internship']
+  const locations = ['San Francisco', 'New York', 'London', 'Remote', 'Hybrid']
+  const companies = ['Google', 'Microsoft', 'Apple', 'Amazon', 'Meta']
+
+  // GOOGLE-STYLE USERNAME DISPLAY - PROFESSIONAL AND CLEAN
+  const getUserDisplayName = () => {
+    // Check auth user object first (most reliable)
+    if (user?.firstName && user?.lastName) {
+      return `${user.firstName} ${user.lastName}`
+    }
+    if (user?.firstName) {
+      return user.firstName
+    }
+    if (user?.name) {
+      return user.name
+    }
+    if (user?.email) {
+      const emailName = user.email.split('@')[0]
+      return emailName.charAt(0).toUpperCase() + emailName.slice(1)
+    }
+
+    // Check localStorage for stored user data
     if (typeof window !== 'undefined') {
-      const userData = localStorage.getItem('userData')
-      if (userData) {
-        try {
+      try {
+        const userData = localStorage.getItem('userData')
+        if (userData) {
           const parsedUser = JSON.parse(userData)
+          if (parsedUser.firstName && parsedUser.lastName) {
+            return `${parsedUser.firstName} ${parsedUser.lastName}`
+          }
           if (parsedUser.firstName) {
-            setDisplayName(parsedUser.firstName)
-            return
+            return parsedUser.firstName
           }
           if (parsedUser.name) {
-            setDisplayName(parsedUser.name)
-            return
+            return parsedUser.name
           }
-        } catch (e) {
-          console.log('Error parsing user data:', e)
+          if (parsedUser.email) {
+            const emailName = parsedUser.email.split('@')[0]
+            return emailName.charAt(0).toUpperCase() + emailName.slice(1)
+          }
         }
+      } catch (e) {
+        // Silent error handling
       }
     }
 
-    // Check auth user
-    if (user) {
-      if (user.firstName) {
-        setDisplayName(user.firstName)
-        return
-      }
-      if (user.name) {
-        setDisplayName(user.name)
-        return
-      }
-      if (user.email) {
-        const emailName = user.email.split('@')[0]
-        setDisplayName(emailName.charAt(0).toUpperCase() + emailName.slice(1))
-        return
-      }
-    }
+    // Return default name
+    return 'User'
+  }
 
-    // Final fallback
-    setDisplayName('User')
+  // Update display name when user changes
+  useEffect(() => {
+    setDisplayName(getUserDisplayName())
   }, [user])
 
   // Redirect if not authenticated
@@ -78,6 +117,18 @@ export default function DashboardPage() {
     )
   }
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    const params = new URLSearchParams()
+    if (searchQuery.trim()) params.set('search', searchQuery.trim())
+    if (locationQuery.trim()) params.set('location', locationQuery.trim())
+    if (selectedJobType) params.set('type', selectedJobType)
+    if (selectedLocation) params.set('location_filter', selectedLocation)
+    if (selectedCompany) params.set('company', selectedCompany)
+    router.push(`/jobs?${params.toString()}`)
+  }
+
+  // SIMPLE QUICK ACTIONS
   const quickActions = [
     {
       title: 'Browse Jobs',
@@ -109,6 +160,7 @@ export default function DashboardPage() {
     }
   ]
 
+  // SIMPLE RECENT JOBS
   const recentJobs = [
     {
       id: 1,
@@ -143,107 +195,286 @@ export default function DashboardPage() {
   ]
 
   return (
-    <div className="space-y-8">
-      {/* DASHBOARD OVERVIEW - PROFESSIONAL HEADER */}
-      <div className="text-center py-12 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl border border-gray-200 dark:border-gray-700">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-          🎯 Welcome to Your Professional Dashboard
-        </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-          Use the sidebar on the left to search jobs, filter by type, location, and company. 
-          All navigation options are now conveniently located in the sidebar for easy access.
-        </p>
-        <div className="flex justify-center space-x-4">
-          <Button onClick={() => router.push('/jobs')} className="bg-blue-600 hover:bg-blue-700 px-8 py-3 text-lg">
-            Browse All Jobs
-          </Button>
-          <Button variant="outline" onClick={() => router.push('/companies')} className="px-8 py-3 text-lg">
-            Explore Companies
-          </Button>
+    <div className="min-h-screen bg-gray-50">
+      {/* SIMPLE DASHBOARD HEADER */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                Welcome back, {displayName}!
+              </h1>
+              <p className="text-gray-600 mt-1">
+                Here's what's happening with your job search today.
+              </p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Button size="sm" onClick={() => router.push('/profile')}>
+                View Profile
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={logout}
+                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+              >
+                Logout
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* QUICK ACTIONS GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {quickActions.map((action) => (
-          <Card key={action.title} className="hover:shadow-lg transition-shadow duration-200 cursor-pointer" onClick={() => router.push(action.href)}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{action.title}</CardTitle>
-              <action.icon className={`h-5 w-5 text-${action.color}-600`} />
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-muted-foreground">{action.description}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* RECENT JOB OPPORTUNITIES */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Job Opportunities</CardTitle>
-          <CardDescription>Jobs that match your profile</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {recentJobs.map((job) => (
-            <div key={job.id} className="flex items-center justify-between border-b pb-3 last:border-b-0 last:pb-0">
-              <div>
-                <h3 className="text-base font-semibold text-gray-900">{job.title}</h3>
-                <p className="text-sm text-gray-600">{job.company} - {job.location}</p>
-                <div className="flex items-center space-x-2 text-xs text-gray-500 mt-1">
-                  <Badge variant="secondary">{job.type}</Badge>
-                  <span>{job.posted}</span>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* SIMPLE SEARCH SECTION */}
+        <Card className="mb-8">
+          <CardContent className="p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Job Search</h2>
+            <form onSubmit={handleSearch} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="relative">
+                  <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Input
+                    type="text"
+                    placeholder="Search jobs, companies, or keywords..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+                <div className="relative">
+                  <MapPinIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Input
+                    type="text"
+                    placeholder="Location (e.g., San Francisco, Remote)"
+                    value={locationQuery}
+                    onChange={(e) => setLocationQuery(e.target.value)}
+                    className="pl-10"
+                  />
                 </div>
               </div>
-              <div className="text-right">
-                <p className="text-base font-semibold text-gray-900">{job.salary}</p>
-                <Badge className="bg-green-100 text-green-800 mt-1">{job.match}% Match</Badge>
-              </div>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
+              
+              {/* SIMPLE FILTER BUTTONS - NO DROPDOWNS */}
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Job Type</label>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" className="w-full justify-between">
+                        {selectedJobType || "Select Job Type"}
+                        <ChevronDownIcon className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-full">
+                      <DropdownMenuLabel>Job Types</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      {jobTypes.map((type) => (
+                        <DropdownMenuItem
+                          key={type}
+                          onClick={() => setSelectedJobType(type)}
+                          className={selectedJobType === type ? "bg-blue-50 dark:bg-blue-900/20" : ""}
+                        >
+                          {type}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
 
-      {/* CAREER PROGRESS */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Your Career Progress</CardTitle>
-          <CardDescription>Overview of your job search activities</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="flex flex-col items-center justify-center p-4 bg-blue-50 rounded-lg">
-              <BriefcaseIcon className="h-8 w-8 text-blue-600 mb-2" />
-              <p className="text-2xl font-bold text-blue-800">124</p>
-              <p className="text-sm text-blue-600">Jobs Viewed</p>
-            </div>
-            <div className="flex flex-col items-center justify-center p-4 bg-green-50 rounded-lg">
-              <CheckCircleIcon className="h-8 w-8 text-green-600 mb-2" />
-              <p className="text-2xl font-bold text-green-800">18</p>
-              <p className="text-sm text-green-600">Applications Sent</p>
-            </div>
-            <div className="flex flex-col items-center justify-center p-4 bg-purple-50 rounded-lg">
-              <StarIcon className="h-8 w-8 text-purple-600 mb-2" />
-              <p className="text-2xl font-bold text-purple-800">6</p>
-              <p className="text-sm text-purple-600">Jobs Saved</p>
-            </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" className="w-full justify-between">
+                        {selectedLocation || "Select Location"}
+                        <ChevronDownIcon className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-full">
+                      <DropdownMenuLabel>Locations</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      {locations.map((location) => (
+                        <DropdownMenuItem
+                          key={location}
+                          onClick={() => setSelectedLocation(location)}
+                          className={selectedLocation === location ? "bg-blue-50 dark:bg-blue-900/20" : ""}
+                        >
+                          {location}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Company</label>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" className="w-full justify-between">
+                        {selectedCompany || "Select Company"}
+                        <ChevronDownIcon className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-full">
+                      <DropdownMenuLabel>Companies</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      {companies.map((company) => (
+                        <DropdownMenuItem
+                          key={company}
+                          onClick={() => setSelectedCompany(company)}
+                          className={selectedCompany === company ? "bg-blue-50 dark:bg-blue-900/20" : ""}
+                        >
+                          {company}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
+
+              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
+                Search Jobs
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        {/* SIMPLE QUICK ACTIONS */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {quickActions.map((action) => (
+            <Card 
+              key={action.title} 
+              className="hover:shadow-md transition-shadow cursor-pointer" 
+              onClick={() => router.push(action.href)}
+            >
+              <CardContent className="p-6">
+                <div className={`w-12 h-12 bg-${action.color}-100 rounded-lg flex items-center justify-center mb-4`}>
+                  <action.icon className={`w-6 h-6 text-${action.color}-600`} />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{action.title}</h3>
+                <p className="text-gray-600 text-sm">{action.description}</p>
+                <ArrowRightIcon className="w-4 h-4 text-gray-400 mt-2" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* SIMPLE RECENT JOBS */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <ArrowTrendingUpIcon className="w-5 h-5 mr-2 text-green-600" />
+                  Your Latest Job Matches
+                </CardTitle>
+                <CardDescription>
+                  Jobs matched to your profile with high compatibility scores
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {recentJobs.map((job) => (
+                    <div key={job.id} className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h4 className="text-lg font-semibold text-gray-900 mb-1">{job.title}</h4>
+                          <p className="text-gray-600 mb-2">{job.company}</p>
+                          <div className="flex items-center space-x-4 text-sm text-gray-500">
+                            <div className="flex items-center">
+                              <MapPinIcon className="w-4 h-4 mr-1" />
+                              {job.location}
+                            </div>
+                            <div className="flex items-center">
+                              <ClockIcon className="w-4 h-4 mr-1" />
+                              {job.posted}
+                            </div>
+                          </div>
+                          <div className="flex items-center mt-3">
+                            <Badge variant="secondary" className="mr-2">{job.type}</Badge>
+                            <span className="text-sm text-gray-600">{job.salary}</span>
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-end space-y-2">
+                          <Badge className="bg-green-100 text-green-800">
+                            {job.match}% Match
+                          </Badge>
+                          <div className="flex space-x-2">
+                            <Button size="sm" variant="outline">
+                              <HeartIcon className="w-4 h-4" />
+                            </Button>
+                            <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                              Apply
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-6 text-center">
+                  <Button variant="outline" onClick={() => router.push('/jobs')}>
+                    View All Jobs
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <span className="text-sm text-gray-600">Profile Views</span>
-              <span className="text-sm font-semibold">28</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-sm text-gray-600">Job Matches</span>
-              <span className="text-sm font-semibold">8</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-sm text-gray-600">Interviews</span>
-              <span className="text-sm font-semibold">3</span>
-            </div>
+
+          {/* SIMPLE SIDEBAR */}
+          <div className="space-y-6">
+            {/* SIMPLE NAME DISPLAY */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Your Profile</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
+                      {displayName.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">{displayName}</p>
+                      <p className="text-sm text-gray-500">{user?.email || 'user@example.com'}</p>
+                    </div>
+                  </div>
+                  <Button size="sm" className="w-full" onClick={() => router.push('/profile')}>
+                    Complete Profile
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* SIMPLE ACTIVITY SUMMARY */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">This Week</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Applications</span>
+                    <span className="text-sm font-semibold">12</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Profile Views</span>
+                    <span className="text-sm font-semibold">28</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Job Matches</span>
+                    <span className="text-sm font-semibold">8</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Interviews</span>
+                    <span className="text-sm font-semibold">3</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }
