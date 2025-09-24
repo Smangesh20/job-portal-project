@@ -97,6 +97,203 @@ const healthCheck = (req: Request, res: Response) => {
 // Authentication routes
 const authRoutes = express.Router();
 
+// Test email routes
+const testEmailRoutes = express.Router();
+
+// Test SendGrid connection
+testEmailRoutes.get('/connection', async (req: Request, res: Response) => {
+  try {
+    logger.info('🧪 TESTING: SendGrid connection');
+    
+    const { GoogleStyleEmailService } = require('./services/google-style-email-service');
+    const googleStyleEmailService = new GoogleStyleEmailService();
+    
+    const isConnected = await googleStyleEmailService.testConnection();
+    
+    if (isConnected) {
+      res.json({
+        success: true,
+        message: '✅ SendGrid connection successful',
+        data: {
+          status: 'connected',
+          timestamp: new Date().toISOString(),
+          provider: 'SendGrid'
+        }
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        error: {
+          code: 'CONNECTION_FAILED',
+          message: 'SendGrid connection failed'
+        }
+      });
+    }
+  } catch (error) {
+    logger.error('❌ CONNECTION TEST ERROR:', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'CONNECTION_ERROR',
+        message: 'Error testing SendGrid connection',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      }
+    });
+  }
+});
+
+// Test SendGrid email sending
+testEmailRoutes.post('/sendgrid', async (req: Request, res: Response) => {
+  try {
+    const { email, type = 'password-reset' } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'MISSING_EMAIL',
+          message: 'Email address is required for testing'
+        }
+      });
+    }
+
+    logger.info(`🧪 TESTING: SendGrid email to ${email} (type: ${type})`);
+
+    const { GoogleStyleEmailService } = require('./services/google-style-email-service');
+    const googleStyleEmailService = new GoogleStyleEmailService();
+
+    switch (type) {
+      case 'password-reset':
+        await googleStyleEmailService.sendPasswordResetEmail(
+          email, 
+          'Test User', 
+          'test-token-12345'
+        );
+        break;
+      
+      case 'welcome':
+        await googleStyleEmailService.sendWelcomeEmail(
+          email, 
+          'Test User'
+        );
+        break;
+      
+      case 'verification':
+        await googleStyleEmailService.sendEmailVerificationEmail(
+          email, 
+          'Test User', 
+          'test-verification-token-12345'
+        );
+        break;
+      
+      default:
+        return res.status(400).json({
+          success: false,
+          error: {
+            code: 'INVALID_TYPE',
+            message: 'Invalid email type. Use: password-reset, welcome, or verification'
+          }
+        });
+    }
+
+    res.json({
+      success: true,
+      message: `✅ ${type} email sent successfully to ${email}`,
+      data: {
+        email,
+        type,
+        timestamp: new Date().toISOString(),
+        status: 'sent'
+      }
+    });
+
+  } catch (error) {
+    logger.error('❌ TEST EMAIL ERROR:', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'EMAIL_SEND_FAILED',
+        message: 'Failed to send test email',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      }
+    });
+  }
+});
+
+// Forgot password endpoint
+authRoutes.post('/forgot-password', async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'MISSING_EMAIL',
+          message: 'Email address is required'
+        }
+      });
+    }
+
+    logger.info(`🔐 FORGOT PASSWORD: Request for ${email}`);
+
+    // Check if user exists
+    const user = await database.findUserByEmail(email);
+    
+    if (!user) {
+      // Don't reveal if email exists or not for security
+      return res.json({
+        success: true,
+        message: 'If the email exists, a password reset link has been sent to your email address.',
+        data: {
+          instructions: 'Please check your email and follow the instructions to reset your password. The link will expire in 1 hour.',
+          securityNote: 'For security reasons, we do not reveal whether an email address is registered with our system.'
+        }
+      });
+    }
+
+    // Generate reset token
+    const resetToken = `reset_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    // Store reset token in database (in production, use Redis with expiration)
+    await database.updateUser(user.id, { 
+      resetToken,
+      resetTokenExpiry: new Date(Date.now() + 60 * 60 * 1000) // 1 hour
+    });
+
+    // Send Google-style password reset email
+    const { GoogleStyleEmailService } = require('./services/google-style-email-service');
+    const googleStyleEmailService = new GoogleStyleEmailService();
+    
+    await googleStyleEmailService.sendPasswordResetEmail(
+      user.email, 
+      user.firstName, 
+      resetToken
+    );
+
+    logger.info(`✅ PASSWORD RESET EMAIL SENT: ${user.email}`);
+
+    res.json({
+      success: true,
+      message: 'Password reset link has been sent to your email address.',
+      data: {
+        instructions: 'Please check your email and follow the instructions to reset your password. The link will expire in 1 hour.',
+        securityNote: 'If you don\'t see the email, check your spam folder.'
+      }
+    });
+
+  } catch (error) {
+    logger.error('❌ FORGOT PASSWORD ERROR:', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'PASSWORD_RESET_FAILED',
+        message: 'Failed to process password reset request'
+      }
+    });
+  }
+});
+
 // Register endpoint
 authRoutes.post('/register', async (req: Request, res: Response) => {
   try {
@@ -413,6 +610,7 @@ class Application {
 
     // API routes
     this.app.use('/api/auth', authRoutes);
+    this.app.use('/api/test-email', testEmailRoutes);
 
     // 404 handler
     this.app.use('*', (req: Request, res: Response) => {

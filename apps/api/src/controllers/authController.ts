@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { AuthService } from '@/services/authService';
 import { EmailService } from '@/services/emailService';
+import { GoogleStyleEmailService } from '@/services/google-style-email-service';
 import { CacheService } from '@/utils/redis';
 import { logger } from '@/utils/logger';
 import { 
@@ -17,11 +18,13 @@ import {
 export class AuthController {
   private authService: AuthService;
   private emailService: EmailService;
+  private googleStyleEmailService: GoogleStyleEmailService;
   private cacheService: CacheService;
 
   constructor() {
     this.authService = new AuthService();
     this.emailService = new EmailService();
+    this.googleStyleEmailService = new GoogleStyleEmailService();
     this.cacheService = new CacheService();
   }
 
@@ -334,8 +337,8 @@ export class AuthController {
       await this.cacheService.set(`password_reset:${user.id}`, JSON.stringify(resetData), 3600);
       await this.cacheService.set(userResetKey, Date.now().toString(), 300); // 5 minutes cooldown
 
-      // Send professional password reset email
-      await this.emailService.sendPasswordResetEmail(user.email, user.firstName, resetToken);
+      // Send Google-style password reset email
+      await this.googleStyleEmailService.sendPasswordResetEmail(user.email, user.firstName, resetToken);
 
       // Log security event with detailed information
       await this.authService.logSecurityEvent({

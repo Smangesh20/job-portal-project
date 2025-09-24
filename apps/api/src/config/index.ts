@@ -69,9 +69,9 @@ export const config = {
     credentials: true,
   },
 
-  // Email configuration
+  // Email configuration - GOOGLE-STYLE SETUP
   email: {
-    provider: process.env.EMAIL_PROVIDER || 'smtp', // 'smtp' or 'sendgrid'
+    provider: process.env.EMAIL_PROVIDER || 'sendgrid', // 'smtp' or 'sendgrid'
     host: process.env.SMTP_HOST || 'smtp.gmail.com',
     port: parseInt(process.env.SMTP_PORT || '587', 10),
     secure: process.env.SMTP_SECURE === 'true',
@@ -79,10 +79,11 @@ export const config = {
       user: process.env.SMTP_USER || 'askyacham@gmail.com',
       pass: process.env.SMTP_PASS || '',
     },
-    from: process.env.FROM_EMAIL || 'info@askyacham.com',
+    from: process.env.FROM_EMAIL || 'noreply@askyacham.com',
     sendgrid: {
       apiKey: process.env.SENDGRID_API_KEY || '',
     },
+    frontendUrl: process.env.FRONTEND_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://www.askyacham.com',
   },
 
   // SMS configuration
