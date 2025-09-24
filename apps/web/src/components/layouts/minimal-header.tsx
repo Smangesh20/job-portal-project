@@ -36,7 +36,27 @@ function MinimalHeader() {
   const getUserDisplayName = () => {
     console.log('🔍 DEBUG: User object:', user)
     
-    // Check localStorage first for any stored user data
+    // Check auth user object first (most reliable)
+    if (user?.firstName && user?.lastName) {
+      console.log('✅ Using auth firstName + lastName')
+      return `${user.firstName} ${user.lastName}`
+    }
+    if (user?.firstName) {
+      console.log('✅ Using auth firstName')
+      return user.firstName
+    }
+    if (user?.name) {
+      console.log('✅ Using auth name')
+      return user.name
+    }
+    if (user?.email) {
+      const emailName = user.email.split('@')[0]
+      console.log('✅ Using auth email name:', emailName)
+      return emailName.charAt(0).toUpperCase() + emailName.slice(1)
+    }
+    
+    
+    // Check localStorage for any stored user data
     if (typeof window !== 'undefined') {
       try {
         const userData = localStorage.getItem('userData')
@@ -67,37 +87,11 @@ function MinimalHeader() {
       }
     }
     
-    // Check auth user object
-    if (user?.firstName && user?.lastName) {
-      console.log('✅ Using auth firstName + lastName')
-      return `${user.firstName} ${user.lastName}`
-    }
-    if (user?.firstName) {
-      console.log('✅ Using auth firstName')
-      return user.firstName
-    }
-    if (user?.name) {
-      console.log('✅ Using auth name')
-      return user.name
-    }
-    if (user?.email) {
-      const emailName = user.email.split('@')[0]
-      console.log('✅ Using auth email name:', emailName)
-      return emailName.charAt(0).toUpperCase() + emailName.slice(1)
-    }
-    
-    // Try to set a default username from email if available
-    if (user?.email) {
-      const emailName = user.email.split('@')[0]
-      console.log('✅ Using email as fallback:', emailName)
-      return emailName.charAt(0).toUpperCase() + emailName.slice(1)
-    }
-    
     // For testing purposes, try to get a name from localStorage or set a default
     if (typeof window !== 'undefined') {
-      // Check if there's a stored username
+      // Check if there's a stored username (but not 'User')
       const storedName = localStorage.getItem('displayName')
-      if (storedName) {
+      if (storedName && storedName !== 'User') {
         console.log('✅ Using stored displayName:', storedName)
         return storedName
       }
@@ -120,11 +114,12 @@ function MinimalHeader() {
         console.log('❌ Error parsing localStorage userData:', e)
       }
       
-      // Set a default username for testing if none exists
-      const defaultName = 'User'
-      localStorage.setItem('displayName', defaultName)
-      console.log('✅ Set default displayName:', defaultName)
-      return defaultName
+      // Set a realistic username for testing if none exists
+      const testNames = ['Alex', 'Sarah', 'Michael', 'Emma', 'David', 'Lisa', 'John', 'Maria']
+      const randomName = testNames[Math.floor(Math.random() * testNames.length)]
+      localStorage.setItem('displayName', randomName)
+      console.log('✅ Set test displayName:', randomName)
+      return randomName
     }
     
     console.log('❌ No user data found, using fallback')
