@@ -76,6 +76,10 @@ export async function POST(request: NextRequest) {
       },
       content: [
         {
+          type: 'text/plain',
+          value: `Hi ${displayName},\n\nWe received a request to reset your password for your Ask Ya Cham account.\n\nClick this link to reset your password: ${resetUrl}\n\nThis link will expire in 1 hour. If you didn't request this password reset, please ignore this email.\n\nBest regards,\nThe Ask Ya Cham Team`
+        },
+        {
           type: 'text/html',
           value: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -100,10 +104,6 @@ export async function POST(request: NextRequest) {
               </div>
             </div>
           `
-        },
-        {
-          type: 'text/plain',
-          value: `Hi ${displayName},\n\nWe received a request to reset your password for your Ask Ya Cham account.\n\nClick this link to reset your password: ${resetUrl}\n\nThis link will expire in 1 hour. If you didn't request this password reset, please ignore this email.\n\nBest regards,\nThe Ask Ya Cham Team`
         }
       ]
     };
