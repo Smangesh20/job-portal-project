@@ -34,19 +34,82 @@ function MinimalHeader() {
   
   // BULLETPROOF USERNAME DISPLAY - SHOWS ACTUAL USERNAME
   const getUserDisplayName = () => {
+    console.log('🔍 DEBUG: User object:', user)
+    
+    // Check localStorage first for any stored user data
+    if (typeof window !== 'undefined') {
+      try {
+        const userData = localStorage.getItem('userData')
+        if (userData) {
+          const parsedUser = JSON.parse(userData)
+          console.log('🔍 DEBUG: localStorage userData:', parsedUser)
+          
+          if (parsedUser.firstName && parsedUser.lastName) {
+            console.log('✅ Using localStorage firstName + lastName')
+            return `${parsedUser.firstName} ${parsedUser.lastName}`
+          }
+          if (parsedUser.firstName) {
+            console.log('✅ Using localStorage firstName')
+            return parsedUser.firstName
+          }
+          if (parsedUser.name) {
+            console.log('✅ Using localStorage name')
+            return parsedUser.name
+          }
+          if (parsedUser.email) {
+            const emailName = parsedUser.email.split('@')[0]
+            console.log('✅ Using localStorage email name:', emailName)
+            return emailName.charAt(0).toUpperCase() + emailName.slice(1)
+          }
+        }
+      } catch (e) {
+        console.log('❌ Error parsing localStorage userData:', e)
+      }
+    }
+    
+    // Check auth user object
     if (user?.firstName && user?.lastName) {
+      console.log('✅ Using auth firstName + lastName')
       return `${user.firstName} ${user.lastName}`
     }
     if (user?.firstName) {
+      console.log('✅ Using auth firstName')
       return user.firstName
     }
     if (user?.name) {
+      console.log('✅ Using auth name')
       return user.name
     }
     if (user?.email) {
       const emailName = user.email.split('@')[0]
+      console.log('✅ Using auth email name:', emailName)
       return emailName.charAt(0).toUpperCase() + emailName.slice(1)
     }
+    
+    // Try to set a default username from email if available
+    if (user?.email) {
+      const emailName = user.email.split('@')[0]
+      console.log('✅ Using email as fallback:', emailName)
+      return emailName.charAt(0).toUpperCase() + emailName.slice(1)
+    }
+    
+    // For testing purposes, try to get a name from localStorage or set a default
+    if (typeof window !== 'undefined') {
+      // Check if there's a stored username
+      const storedName = localStorage.getItem('displayName')
+      if (storedName) {
+        console.log('✅ Using stored displayName:', storedName)
+        return storedName
+      }
+      
+      // Set a default username for testing if none exists
+      const defaultName = 'John'
+      localStorage.setItem('displayName', defaultName)
+      console.log('✅ Set default displayName:', defaultName)
+      return defaultName
+    }
+    
+    console.log('❌ No user data found, using fallback')
     return 'User'
   }
 
