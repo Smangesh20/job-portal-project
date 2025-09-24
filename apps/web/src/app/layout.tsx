@@ -3,8 +3,10 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 // import { EnterpriseHeader } from '@/components/navigation/enterprise-header' // Removed - using clean headers in individual layouts
 import { AuthProvider } from '@/components/providers/auth-provider'
+import { ThemeProvider } from '@/components/providers/theme-provider'
 import { NotificationProvider } from '@/contexts/NotificationContext'
 import { BulletproofErrorBoundary } from '@/components/professional/bulletproof-error-boundary'
+import { GoogleErrorBoundary } from '@/components/professional/google-error-boundary'
 import { SimpleErrorHandler } from '@/components/error/SimpleErrorHandler'
 import { initializeErrorPrevention } from '@/lib/error-prevention'
 import { initializeCacheManagement } from '@/lib/cache-management'
@@ -354,14 +356,23 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className}>
-        <BulletproofErrorBoundary>
-          <AuthProvider>
-            <NotificationProvider>
-              {children}
-              <SimpleErrorHandler />
-            </NotificationProvider>
-          </AuthProvider>
-        </BulletproofErrorBoundary>
+        <GoogleErrorBoundary>
+          <BulletproofErrorBoundary>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <AuthProvider>
+                <NotificationProvider>
+                  {children}
+                  <SimpleErrorHandler />
+                </NotificationProvider>
+              </AuthProvider>
+            </ThemeProvider>
+          </BulletproofErrorBoundary>
+        </GoogleErrorBoundary>
         <script
           dangerouslySetInnerHTML={{
             __html: `
