@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { EnterpriseHeader } from '@/components/navigation/enterprise-header'
+// import { EnterpriseHeader } from '@/components/navigation/enterprise-header' // Removed - using clean headers in individual layouts
 import { AuthProvider } from '@/components/providers/auth-provider'
 import { NotificationProvider } from '@/contexts/NotificationContext'
 import { ConnectionStatus, ConnectionBanner } from '@/components/ui/connection-status'
@@ -96,7 +96,6 @@ export default function RootLayout({
             <AuthProvider>
               <NotificationProvider>
                 <ConnectionBanner />
-                <EnterpriseHeader />
                 {children}
                 <ConnectionStatus />
               </NotificationProvider>
