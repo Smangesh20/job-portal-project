@@ -1,19 +1,23 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-// Simplified error handling
-interface AppError {
-  message: string
-  code?: string
-  status?: number
-}
+// Google-style API client with robust error handling
+import { apiClient as googleApiClient, handleApiError } from './google-api-client'
+import { mockAPI } from './mock-api'
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 
-const handleApiError = (error: any): AppError => {
-  return {
-    message: error.message || 'API Error',
-    code: error.code,
-    status: error.status
+// API Configuration
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
+const USE_MOCK_API = true; // Always use mock API to prevent network errors
+
+// Google-style API wrapper with fallback to mock data
+const safeApiCall = async <T>(apiCall: () => Promise<T>, fallbackData: T): Promise<T> => {
+  try {
+    return await apiCall()
+  } catch (error) {
+    console.log('🔄 API call failed, using fallback data:', error)
+    return fallbackData
   }
 }
 
+// Retry operation with exponential backoff
 const retryOperation = async (operation: () => Promise<any>, maxRetries: number = 3): Promise<any> => {
   for (let i = 0; i < maxRetries; i++) {
     try {
@@ -24,11 +28,6 @@ const retryOperation = async (operation: () => Promise<any>, maxRetries: number 
     }
   }
 }
-import { mockAPI } from './mock-api';
-
-// API Configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
-const USE_MOCK_API = true; // Always use mock API to prevent network errors
 
 // Create axios instance
 const apiClient: AxiosInstance = axios.create({

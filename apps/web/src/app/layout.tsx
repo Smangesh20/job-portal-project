@@ -4,7 +4,7 @@ import './globals.css'
 // import { EnterpriseHeader } from '@/components/navigation/enterprise-header' // Removed - using clean headers in individual layouts
 import { AuthProvider } from '@/components/providers/auth-provider'
 import { NotificationProvider } from '@/contexts/NotificationContext'
-import { ConnectionStatus, ConnectionBanner } from '@/components/ui/connection-status'
+import { GoogleErrorHandler, OfflineFallback, ServiceStatus } from '@/components/professional/google-error-handler'
 import { GoogleNetworkHandler } from '@/components/providers/google-error-boundary'
 import { GlobalErrorBoundary } from '@/components/error-boundary/global-error-boundary'
 import { initializeErrorPrevention } from '@/lib/error-prevention'
@@ -95,9 +95,10 @@ export default function RootLayout({
           <GoogleNetworkHandler>
             <AuthProvider>
               <NotificationProvider>
-                <ConnectionBanner />
+                <OfflineFallback />
                 {children}
-                <ConnectionStatus />
+                <GoogleErrorHandler />
+                <ServiceStatus />
               </NotificationProvider>
             </AuthProvider>
           </GoogleNetworkHandler>
