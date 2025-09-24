@@ -35,10 +35,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check SendGrid configuration
+    // Check SendGrid configuration with Google-style fallbacks
     const sendGridApiKey = process.env.SENDGRID_API_KEY;
     const fromEmail = process.env.FROM_EMAIL || 'noreply@askyacham.com';
     const frontendUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.askyacham.com';
+
+    console.log('📧 SendGrid Config Check:');
+    console.log(`   API Key: ${sendGridApiKey ? 'Configured ✅' : 'Not Configured ❌'}`);
+    console.log(`   From Email: ${fromEmail}`);
+    console.log(`   Frontend URL: ${frontendUrl}`);
 
     if (!sendGridApiKey) {
       console.error('❌ SENDGRID_API_KEY not configured');
@@ -64,16 +69,34 @@ export async function POST(request: NextRequest) {
     // Create reset URL
     const resetUrl = `${frontendUrl}/auth/reset-password?token=${resetToken}`;
     
-    // Simple email data
+    // Google-style bulletproof email data with verified sender
     const emailData = {
       personalizations: [{
         to: [{ email: email }],
-        subject: 'Reset your password - Ask Ya Cham'
+        subject: 'Reset your password - Ask Ya Cham',
+        // Add tracking and delivery optimization like Google
+        custom_args: {
+          source: 'forgot-password',
+          timestamp: Date.now().toString()
+        }
       }],
       from: { 
-        email: fromEmail,
-        name: 'Ask Ya Cham'
+        email: fromEmail, // Use configured sender
+        name: 'Ask Ya Cham Team'
       },
+      // Add reply-to for better deliverability
+      reply_to: {
+        email: 'support@askyacham.com',
+        name: 'Ask Ya Cham Support'
+      },
+      // Add tracking and analytics like Google
+      tracking_settings: {
+        click_tracking: { enable: true },
+        open_tracking: { enable: true },
+        subscription_tracking: { enable: false }
+      },
+      // Add categories for better deliverability
+      categories: ['password-reset', 'security', 'authentication'],
       content: [
         {
           type: 'text/plain',
@@ -108,24 +131,49 @@ export async function POST(request: NextRequest) {
       ]
     };
 
-    // Send email via SendGrid
+    // Send email via SendGrid with Google-style retry logic
     console.log(`📧 Sending password reset email to: ${email}`);
     
-    const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${sendGridApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(emailData)
-    });
+    let response;
+    let retryCount = 0;
+    const maxRetries = 3;
 
-    console.log(`📡 SendGrid Response Status: ${response.status}`);
+    while (retryCount < maxRetries) {
+      try {
+        response = await fetch('https://api.sendgrid.com/v3/mail/send', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${sendGridApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(emailData)
+        });
 
-    if (!response.ok) {
-      const errorData = await response.text();
-      console.error(`❌ SendGrid API error: ${response.status} - ${errorData}`);
-      throw new Error(`SendGrid API error: ${response.status} - ${errorData}`);
+        console.log(`📡 SendGrid Response Status: ${response.status}`);
+
+        if (response.ok) {
+          break; // Success, exit retry loop
+        } else {
+          const errorData = await response.text();
+          console.error(`❌ SendGrid API error (attempt ${retryCount + 1}): ${response.status} - ${errorData}`);
+          
+          if (retryCount < maxRetries - 1) {
+            console.log(`🔄 Retrying in ${(retryCount + 1) * 2} seconds...`);
+            await new Promise(resolve => setTimeout(resolve, (retryCount + 1) * 2000));
+            retryCount++;
+          } else {
+            throw new Error(`SendGrid API error: ${response.status} - ${errorData}`);
+          }
+        }
+      } catch (error) {
+        if (retryCount < maxRetries - 1) {
+          console.log(`🔄 Network error, retrying in ${(retryCount + 1) * 2} seconds...`);
+          await new Promise(resolve => setTimeout(resolve, (retryCount + 1) * 2000));
+          retryCount++;
+        } else {
+          throw error;
+        }
+      }
     }
 
     const messageId = response.headers.get('x-message-id');
