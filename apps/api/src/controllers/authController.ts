@@ -337,8 +337,8 @@ export class AuthController {
       await this.cacheService.set(`password_reset:${user.id}`, JSON.stringify(resetData), 3600);
       await this.cacheService.set(userResetKey, Date.now().toString(), 300); // 5 minutes cooldown
 
-      // Send Google-style password reset email
-      await this.googleStyleEmailService.sendPasswordResetEmail(user.email, user.firstName, resetToken);
+      // Send Google-style password reset email with enhanced tracking
+      await this.emailService.sendPasswordResetEmail(user.email, user.firstName, resetToken, user.id);
 
       // Log security event with detailed information
       await this.authService.logSecurityEvent({
