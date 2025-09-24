@@ -5,10 +5,7 @@ import './globals.css'
 import { AuthProvider } from '@/components/providers/auth-provider'
 import { NotificationProvider } from '@/contexts/NotificationContext'
 import { BulletproofErrorBoundary } from '@/components/professional/bulletproof-error-boundary'
-import { GoogleErrorHandler, OfflineFallback, ServiceStatus } from '@/components/professional/google-error-handler'
-import { GoogleConnectionHandler, GoogleConnectionStatus } from '@/components/professional/google-connection-handler'
-import { GoogleNetworkHandler } from '@/components/providers/google-error-boundary'
-import { GlobalErrorBoundary } from '@/components/error-boundary/global-error-boundary'
+import { SimpleErrorHandler } from '@/components/error/SimpleErrorHandler'
 import { initializeErrorPrevention } from '@/lib/error-prevention'
 import { initializeCacheManagement } from '@/lib/cache-management'
 import { initializeErrorSuppression } from '@/lib/error-suppression'
@@ -358,20 +355,12 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <BulletproofErrorBoundary>
-          <GlobalErrorBoundary>
-            <GoogleNetworkHandler>
-              <AuthProvider>
-                <NotificationProvider>
-                        <OfflineFallback />
-                        <GoogleConnectionStatus />
-                        {children}
-                        <GoogleErrorHandler />
-                        <GoogleConnectionHandler />
-                        <ServiceStatus />
-                </NotificationProvider>
-              </AuthProvider>
-            </GoogleNetworkHandler>
-          </GlobalErrorBoundary>
+          <AuthProvider>
+            <NotificationProvider>
+              {children}
+              <SimpleErrorHandler />
+            </NotificationProvider>
+          </AuthProvider>
         </BulletproofErrorBoundary>
         <script
           dangerouslySetInnerHTML={{
