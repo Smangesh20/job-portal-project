@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "ask-ya-cham-quantum-platform-v3",
+  "name": "ask-ya-cham-quantum-platform",
   "buildCommand": "cd apps/web && npm run build",
   "installCommand": "cd apps/web && npm install",
   "outputDirectory": "apps/web/.next",

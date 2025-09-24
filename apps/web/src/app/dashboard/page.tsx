@@ -1,20 +1,12 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuthUnified } from '@/hooks/useAuthUnified'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { 
   BriefcaseIcon,
   BuildingOfficeIcon,
@@ -31,8 +23,7 @@ import {
   FlagIcon,
   CheckCircleIcon,
   CpuChipIcon,
-  BoltIcon,
-  ChevronDownIcon
+  BoltIcon
 } from '@heroicons/react/24/outline'
 
 export default function DashboardPage() {
@@ -52,56 +43,48 @@ export default function DashboardPage() {
   const locations = ['San Francisco', 'New York', 'London', 'Remote', 'Hybrid']
   const companies = ['Google', 'Microsoft', 'Apple', 'Amazon', 'Meta']
 
-  // GOOGLE-STYLE USERNAME DISPLAY - PROFESSIONAL AND CLEAN
-  const getUserDisplayName = useCallback(() => {
-    // Check auth user object first (most reliable)
-    if (user?.firstName && user?.lastName) {
-      return `${user.firstName} ${user.lastName}`
-    }
-    if (user?.firstName) {
-      return user.firstName
-    }
-    if (user?.name) {
-      return user.name
-    }
-    if (user?.email) {
-      const emailName = user.email.split('@')[0]
-      return emailName.charAt(0).toUpperCase() + emailName.slice(1)
-    }
-
-    // Check localStorage for stored user data
+  // SIMPLE NAME DETECTION - BULLETPROOF
+  useEffect(() => {
+    // Check localStorage first
     if (typeof window !== 'undefined') {
-      try {
-        const userData = localStorage.getItem('userData')
-        if (userData) {
+      const userData = localStorage.getItem('userData')
+      if (userData) {
+        try {
           const parsedUser = JSON.parse(userData)
-          if (parsedUser.firstName && parsedUser.lastName) {
-            return `${parsedUser.firstName} ${parsedUser.lastName}`
-          }
           if (parsedUser.firstName) {
-            return parsedUser.firstName
+            setDisplayName(parsedUser.firstName)
+            return
           }
           if (parsedUser.name) {
-            return parsedUser.name
+            setDisplayName(parsedUser.name)
+            return
           }
-          if (parsedUser.email) {
-            const emailName = parsedUser.email.split('@')[0]
-            return emailName.charAt(0).toUpperCase() + emailName.slice(1)
-          }
+        } catch (e) {
+          console.log('Error parsing user data:', e)
         }
-      } catch (e) {
-        // Silent error handling
       }
     }
 
-    // Return default name
-    return 'User'
-  }, [user])
+    // Check auth user
+    if (user) {
+      if (user.firstName) {
+        setDisplayName(user.firstName)
+        return
+      }
+      if (user.name) {
+        setDisplayName(user.name)
+        return
+      }
+      if (user.email) {
+        const emailName = user.email.split('@')[0]
+        setDisplayName(emailName.charAt(0).toUpperCase() + emailName.slice(1))
+        return
+      }
+    }
 
-  // Update display name when user changes
-  useEffect(() => {
-    setDisplayName(getUserDisplayName())
-  }, [user, getUserDisplayName])
+    // Final fallback
+    setDisplayName('User')
+  }, [user])
 
   // Redirect if not authenticated
   if (!isLoading && !isAuthenticated) {
@@ -258,77 +241,53 @@ export default function DashboardPage() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Job Type</label>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline" className="w-full justify-between">
-                        {selectedJobType || "Select Job Type"}
-                        <ChevronDownIcon className="h-4 w-4" />
+                  <div className="flex flex-wrap gap-2">
+                    {jobTypes.map((type) => (
+                      <Button
+                        key={type}
+                        type="button"
+                        variant={selectedJobType === type ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setSelectedJobType(selectedJobType === type ? '' : type)}
+                      >
+                        {type}
                       </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-full">
-                      <DropdownMenuLabel>Job Types</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      {jobTypes.map((type) => (
-                        <DropdownMenuItem
-                          key={type}
-                          onClick={() => setSelectedJobType(type)}
-                          className={selectedJobType === type ? "bg-blue-50 dark:bg-blue-900/20" : ""}
-                        >
-                          {type}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                    ))}
+                  </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline" className="w-full justify-between">
-                        {selectedLocation || "Select Location"}
-                        <ChevronDownIcon className="h-4 w-4" />
+                  <div className="flex flex-wrap gap-2">
+                    {locations.map((location) => (
+                      <Button
+                        key={location}
+                        type="button"
+                        variant={selectedLocation === location ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setSelectedLocation(selectedLocation === location ? '' : location)}
+                      >
+                        {location}
                       </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-full">
-                      <DropdownMenuLabel>Locations</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      {locations.map((location) => (
-                        <DropdownMenuItem
-                          key={location}
-                          onClick={() => setSelectedLocation(location)}
-                          className={selectedLocation === location ? "bg-blue-50 dark:bg-blue-900/20" : ""}
-                        >
-                          {location}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                    ))}
+                  </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Company</label>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline" className="w-full justify-between">
-                        {selectedCompany || "Select Company"}
-                        <ChevronDownIcon className="h-4 w-4" />
+                  <div className="flex flex-wrap gap-2">
+                    {companies.map((company) => (
+                      <Button
+                        key={company}
+                        type="button"
+                        variant={selectedCompany === company ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setSelectedCompany(selectedCompany === company ? '' : company)}
+                      >
+                        {company}
                       </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-full">
-                      <DropdownMenuLabel>Companies</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      {companies.map((company) => (
-                        <DropdownMenuItem
-                          key={company}
-                          onClick={() => setSelectedCompany(company)}
-                          className={selectedCompany === company ? "bg-blue-50 dark:bg-blue-900/20" : ""}
-                        >
-                          {company}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                    ))}
+                  </div>
                 </div>
               </div>
 
