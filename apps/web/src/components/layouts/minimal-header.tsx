@@ -23,18 +23,30 @@ import {
 } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useAuthUnified } from '@/hooks/useAuthUnified'
+import { useRouter } from 'next/navigation'
 
-// MINIMAL HEADER - ONLY ESSENTIAL ELEMENTS, PERFECT ALIGNMENT
+// ULTRA MINIMAL HEADER - PERFECT ALIGNMENT, NO NAVIGATION DUPLICATION
 function MinimalHeader() {
   const [notifications] = useState(3)
   const { theme, setTheme } = useTheme()
   const { user, logout } = useAuthUnified()
+  const router = useRouter()
   
-  // Get user display name - BULLETPROOF
+  // BULLETPROOF USERNAME DISPLAY - SHOWS ACTUAL USERNAME
   const getUserDisplayName = () => {
-    if (user?.firstName) return user.firstName
-    if (user?.name) return user.name
-    if (user?.email) return user.email.split('@')[0]
+    if (user?.firstName && user?.lastName) {
+      return `${user.firstName} ${user.lastName}`
+    }
+    if (user?.firstName) {
+      return user.firstName
+    }
+    if (user?.name) {
+      return user.name
+    }
+    if (user?.email) {
+      const emailName = user.email.split('@')[0]
+      return emailName.charAt(0).toUpperCase() + emailName.slice(1)
+    }
     return 'User'
   }
 
@@ -46,36 +58,39 @@ function MinimalHeader() {
     try {
       console.log('🏢 Professional logout initiated')
       await logout()
+      router.push('/auth/login')
     } catch (error) {
       console.error('Logout error:', error)
     }
   }
 
   return (
-    <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-      <div className="px-6 py-4">
-        <div className="flex items-center justify-between">
-          {/* Left side - Welcome Message */}
-          <div className="flex-1">
-            <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
-              Welcome back, {getUserDisplayName()}!
-            </h1>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Ready to find your next opportunity?
-            </p>
+    <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 h-16">
+      <div className="px-6 h-full">
+        <div className="flex items-center justify-between h-full">
+          {/* Left side - Welcome Message with Perfect Alignment */}
+          <div className="flex items-center">
+            <div>
+              <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
+                Welcome back, {getUserDisplayName()}!
+              </h1>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Ready to find your next opportunity?
+              </p>
+            </div>
           </div>
 
-          {/* Right side - Only Essential Elements */}
-          <div className="flex items-center space-x-4">
+          {/* Right side - ONLY Essential Elements, Perfect Spacing */}
+          <div className="flex items-center space-x-2">
             {/* Notifications */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="relative">
+                <Button variant="ghost" size="sm" className="relative h-9 w-9 p-0">
                   <Bell className="h-5 w-5" />
                   {notifications > 0 && (
                     <Badge 
                       variant="destructive" 
-                      className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                      className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center p-0 text-xs"
                     >
                       {notifications}
                     </Badge>
@@ -107,7 +122,7 @@ function MinimalHeader() {
             </DropdownMenu>
 
             {/* Theme Toggle */}
-            <Button variant="ghost" size="sm" onClick={toggleTheme}>
+            <Button variant="ghost" size="sm" onClick={toggleTheme} className="h-9 w-9 p-0">
               {theme === 'dark' ? (
                 <Sun className="h-5 w-5" />
               ) : (
@@ -116,17 +131,17 @@ function MinimalHeader() {
             </Button>
 
             {/* Help */}
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" className="h-9 w-9 p-0">
               <HelpCircle className="h-5 w-5" />
             </Button>
 
             {/* User Profile Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                <Button variant="ghost" className="relative h-9 w-9 p-0 rounded-full">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={user?.profileImage || ''} alt={getUserDisplayName()} />
-                    <AvatarFallback>
+                    <AvatarImage src={user?.profileImage || user?.avatar || ''} alt={getUserDisplayName()} />
+                    <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm">
                       {getUserDisplayName().charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
@@ -142,11 +157,11 @@ function MinimalHeader() {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push('/profile')}>
                   <User className="mr-2 h-4 w-4" />
                   <span>Profile</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push('/settings')}>
                   <Settings className="mr-2 h-4 w-4" />
                   <span>Settings</span>
                 </DropdownMenuItem>
@@ -165,3 +180,4 @@ function MinimalHeader() {
 }
 
 export default MinimalHeader
+
