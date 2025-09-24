@@ -6,7 +6,6 @@ import { AuthProvider } from '@/components/providers/auth-provider'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { NotificationProvider } from '@/contexts/NotificationContext'
 import { BulletproofErrorBoundary } from '@/components/professional/bulletproof-error-boundary'
-import { GoogleErrorBoundary } from '@/components/professional/google-error-boundary'
 import { SimpleErrorHandler } from '@/components/error/SimpleErrorHandler'
 import { initializeErrorPrevention } from '@/lib/error-prevention'
 import { initializeCacheManagement } from '@/lib/cache-management'
@@ -356,23 +355,21 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className}>
-        <GoogleErrorBoundary>
-          <BulletproofErrorBoundary>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <AuthProvider>
-                <NotificationProvider>
-                  {children}
-                  <SimpleErrorHandler />
-                </NotificationProvider>
-              </AuthProvider>
-            </ThemeProvider>
-          </BulletproofErrorBoundary>
-        </GoogleErrorBoundary>
+        <BulletproofErrorBoundary>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <AuthProvider>
+              <NotificationProvider>
+                {children}
+                <SimpleErrorHandler />
+              </NotificationProvider>
+            </AuthProvider>
+          </ThemeProvider>
+        </BulletproofErrorBoundary>
         <script
           dangerouslySetInnerHTML={{
             __html: `
