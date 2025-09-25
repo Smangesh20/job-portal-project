@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { securitySystem } from '@/lib/security-system'
 
-// 🚀 RESET PASSWORD ENDPOINT
+// 🚀 VERIFY RESET CODE ENDPOINT
 export async function POST(request: NextRequest) {
   try {
-    const { email, code, newPassword } = await request.json()
+    const { email, code } = await request.json()
     const ip = request.ip || 'unknown'
 
     // 🚀 SECURITY VALIDATION
@@ -16,10 +16,10 @@ export async function POST(request: NextRequest) {
     }
 
     // 🚀 INPUT VALIDATION
-    if (!email || !code || !newPassword) {
+    if (!email || !code) {
       return NextResponse.json({
         success: false,
-        error: 'Email, verification code, and new password are required'
+        error: 'Email and verification code are required'
       }, { status: 400 })
     }
 
@@ -27,22 +27,9 @@ export async function POST(request: NextRequest) {
     const sanitizedEmail = securitySystem.sanitizeInput(email)
     const sanitizedCode = securitySystem.sanitizeInput(code)
 
-    // 🚀 VALIDATE PASSWORD
-    const passwordValidation = securitySystem.validatePassword(newPassword)
-    if (!passwordValidation.valid) {
-      return NextResponse.json({
-        success: false,
-        error: 'Password does not meet requirements',
-        details: passwordValidation.errors
-      }, { status: 400 })
-    }
-
     // 🚀 CHECK RESET CODE STORE
     if (!global.resetCodes) {
-      return NextResponse.json({
-        success: false,
-        error: 'No reset code found for this email'
-      }, { status: 400 })
+      global.resetCodes = new Map()
     }
 
     const storedData = global.resetCodes.get(sanitizedEmail.toLowerCase())
@@ -63,68 +50,41 @@ export async function POST(request: NextRequest) {
       }, { status: 400 })
     }
 
-    // 🚀 CHECK VERIFICATION
-    if (!storedData.verified) {
+    // 🚀 CHECK ATTEMPTS
+    if (storedData.attempts >= 3) {
+      global.resetCodes.delete(sanitizedEmail.toLowerCase())
       return NextResponse.json({
         success: false,
-        error: 'Reset code has not been verified. Please verify the code first.'
+        error: 'Too many failed attempts. Please request a new reset code.'
       }, { status: 400 })
     }
 
     // 🚀 VERIFY CODE
     if (storedData.code !== sanitizedCode) {
+      storedData.attempts += 1
       return NextResponse.json({
         success: false,
         error: 'Invalid verification code'
       }, { status: 400 })
     }
 
-    // 🚀 HASH NEW PASSWORD
-    const { hash, salt } = securitySystem.hashPassword(newPassword)
+    // 🚀 SUCCESS - MARK AS VERIFIED
+    storedData.verified = true
+    storedData.verifiedAt = Date.now()
 
-    // 🚀 UPDATE USER PASSWORD (In production, update in database)
-    if (!global.users) {
-      global.users = new Map()
-    }
-    
-    const user = global.users.get(sanitizedEmail.toLowerCase())
-    if (user) {
-      user.passwordHash = hash
-      user.passwordSalt = salt
-      user.updatedAt = new Date().toISOString()
-      user.lastPasswordChange = new Date().toISOString()
-    }
-
-    // 🚀 CLEAN UP RESET CODE
-    global.resetCodes.delete(sanitizedEmail.toLowerCase())
-
-    // 🚀 LOG SECURITY EVENT
-    securitySystem.logSecurityEvent({
-      type: 'password',
-      severity: 'medium',
-      ip,
-      userAgent: request.headers.get('user-agent') || 'unknown',
-      details: { 
-        email: sanitizedEmail,
-        action: 'password_reset_completed',
-        timestamp: new Date().toISOString()
-      },
-      blocked: false
-    })
-
-    console.log(`🚀 Password reset successfully for ${sanitizedEmail}`)
+    console.log(`🚀 Reset code verified successfully for ${sanitizedEmail}`)
 
     return NextResponse.json({
       success: true,
-      message: 'Password has been reset successfully',
+      message: 'Reset code verified successfully',
       data: {
         email: sanitizedEmail,
-        timestamp: new Date().toISOString()
+        verified: true
       }
     })
 
   } catch (error) {
-    console.error('❌ Password reset error:', error)
+    console.error('❌ Reset code verification error:', error)
     return NextResponse.json({
       success: false,
       error: 'Internal server error'
@@ -142,5 +102,4 @@ declare global {
     verified?: boolean
     verifiedAt?: number
   }>
-  var users: Map<string, any>
 }
