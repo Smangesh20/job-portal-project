@@ -1,5 +1,7 @@
-// 🚀 SIMPLE EMAIL SERVICE - Works without external dependencies
-// This service provides email functionality for development and testing
+// 🚀 REAL-TIME EMAIL SERVICE - Sends actual emails
+// This service sends real emails using SendGrid
+
+import sgMail from '@sendgrid/mail'
 
 export interface SimpleEmailRequest {
   to: string
@@ -26,16 +28,49 @@ export class SimpleEmailService {
     status: string
   }> = []
 
-  // 🚀 SEND EMAIL (Mock implementation for development)
+  // 🚀 SEND EMAIL (Real SendGrid implementation)
   async sendEmail(request: SimpleEmailRequest): Promise<SimpleEmailResponse> {
     try {
-      console.log('🚀 SIMPLE EMAIL SERVICE - Sending email:')
+      console.log('🚀 REAL-TIME EMAIL SERVICE - Sending email:')
       console.log('📧 To:', request.to)
       console.log('📝 Subject:', request.subject)
-      console.log('📄 Content:', request.text || 'HTML content')
       
-      // 🚀 STORE EMAIL IN MEMORY (for testing)
-      const emailId = `email_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      // 🚀 CONFIGURE SENDGRID
+      const sendGridApiKey = process.env.SENDGRID_API_KEY
+      const fromEmail = process.env.FROM_EMAIL || 'info@askyacham.com'
+      
+      if (!sendGridApiKey) {
+        console.error('🚨 SENDGRID_API_KEY not found in environment variables')
+        return {
+          success: false,
+          error: 'SendGrid API key not configured'
+        }
+      }
+
+      // 🚀 SETUP SENDGRID
+      sgMail.setApiKey(sendGridApiKey)
+
+      // 🚀 SEND REAL EMAIL
+      const msg = {
+        to: request.to,
+        from: {
+          email: fromEmail,
+          name: 'Ask Ya Cham'
+        },
+        subject: request.subject,
+        html: request.html,
+        text: request.text || request.html.replace(/<[^>]*>/g, ''),
+      }
+
+      console.log('🚀 Sending real email via SendGrid...')
+      const response = await sgMail.send(msg)
+      
+      console.log('📧 REAL EMAIL SENT SUCCESSFULLY!')
+      console.log('📧 SendGrid Response:', response[0].statusCode)
+      console.log('📧 Message ID:', response[0].headers['x-message-id'])
+      
+      // 🚀 STORE EMAIL IN MEMORY
+      const emailId = response[0].headers['x-message-id'] || `email_${Date.now()}`
       this.sentEmails.push({
         id: emailId,
         to: request.to,
@@ -46,36 +81,13 @@ export class SimpleEmailService {
         status: 'sent'
       })
 
-      // 🚀 ALWAYS LOG TO CONSOLE FOR DEBUGGING
-      console.log('📧 EMAIL SENT SUCCESSFULLY!')
-      console.log('📧 Email ID:', emailId)
-      console.log('📧 To:', request.to)
-      console.log('📧 Subject:', request.subject)
-      console.log('📧 Content Preview:', request.html.substring(0, 200) + '...')
-      console.log('📧 Full HTML:', request.html)
-      
-      // 🚀 EXTRACT OTP FROM HTML FOR EASY TESTING
-      const otpMatch = request.html.match(/>(\d{6})</)
-      if (otpMatch) {
-        console.log('🔑 OTP CODE FOR TESTING:', otpMatch[1])
-        console.log('🔑 Copy this code to test OTP verification')
-      }
-
-      // 🚀 IN PRODUCTION: Use actual email service
-      if (process.env.NODE_ENV === 'production' && process.env.SENDGRID_API_KEY) {
-        // Here you would integrate with SendGrid, AWS SES, or other email service
-        console.log('🚀 PRODUCTION: Would send email via SendGrid/SES')
-      } else {
-        console.log('🚀 DEVELOPMENT: Email logged to console for testing')
-      }
-
       return {
         success: true,
         messageId: emailId
       }
 
     } catch (error) {
-      console.error('🚨 Email sending failed:', error)
+      console.error('🚨 Real email sending failed:', error)
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'

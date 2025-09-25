@@ -189,6 +189,8 @@ export const EnterpriseAuthSystem: React.FC = () => {
   // 🚀 SOCIAL LOGIN
   const handleSocialLogin = useCallback(async () => {
     try {
+      console.log('🚀 Initiating Google Sign-In...')
+      
       // Google OAuth implementation
       const response = await fetch('/api/auth/google', {
         method: 'POST',
@@ -197,11 +199,25 @@ export const EnterpriseAuthSystem: React.FC = () => {
       })
       
       const data = await response.json()
+      console.log('🚀 Google Sign-In response:', data)
+      
       if (data.success) {
-        await socialLogin('google', data.data)
-        setCurrentStep('success')
+        if (data.data.demoMode) {
+          // 🚀 DEMO MODE - Direct success
+          toast.success('Google Sign-In successful! (Demo Mode)')
+          setCurrentStep('success')
+        } else if (data.data.authUrl) {
+          // 🚀 REAL OAUTH - Redirect to Google
+          window.location.href = data.data.authUrl
+        } else {
+          await socialLogin('google', data.data)
+          setCurrentStep('success')
+        }
+      } else {
+        toast.error(data.error || 'Google Sign-In failed')
       }
     } catch (error: any) {
+      console.error('🚨 Social login error:', error)
       toast.error('Social login failed. Please try again.')
     }
   }, [socialLogin])
