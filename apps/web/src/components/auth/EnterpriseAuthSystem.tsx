@@ -204,22 +204,29 @@ export const EnterpriseAuthSystem: React.FC = () => {
 
   // 🚀 METHOD SELECTION
   const handleMethodSelect = useCallback((method: AuthMethod['id']) => {
+    console.log('🚀 METHOD SELECTED:', method)
     setAuthMethod(method)
     clearError()
     
     switch (method) {
       case 'otp':
+        console.log('🚀 Switching to OTP method')
         setCurrentStep('email')
         break
       case 'password':
+        console.log('🚀 Switching to password method')
         setCurrentStep('email')
         break
       case 'social':
+        console.log('🚀 Switching to social method - calling handleSocialLogin')
         handleSocialLogin()
         break
       case 'mfa':
+        console.log('🚀 Switching to MFA method')
         setCurrentStep('email')
         break
+      default:
+        console.log('🚀 Unknown method:', method)
     }
   }, [clearError, handleSocialLogin])
 
@@ -372,7 +379,12 @@ export const EnterpriseAuthSystem: React.FC = () => {
               className={`cursor-pointer transition-all duration-200 hover:shadow-lg ${
                 method.recommended ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:border-gray-300'
               }`}
-              onClick={() => handleMethodSelect(method.id)}
+              onClick={(e) => {
+                console.log('🚀 CARD CLICKED:', method.id)
+                e.preventDefault()
+                e.stopPropagation()
+                handleMethodSelect(method.id)
+              }}
             >
               <CardContent className="p-6">
                 <div className="flex items-center gap-4">
