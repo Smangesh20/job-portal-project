@@ -79,8 +79,8 @@ export const EnterpriseAuthSystem: React.FC = () => {
   const authSteps: Record<AuthStep['id'], AuthStep> = {
     method: {
       id: 'method',
-      title: 'Choose Your Sign-In Method',
-      description: 'Select the most convenient way to access your account'
+      title: isRegisterMode ? 'Choose Your Sign-Up Method' : 'Choose Your Sign-In Method',
+      description: isRegisterMode ? 'Select the most convenient way to create your account' : 'Select the most convenient way to access your account'
     },
     email: {
       id: 'email',
@@ -400,26 +400,47 @@ export const EnterpriseAuthSystem: React.FC = () => {
       </div>
 
       <div className="text-center">
-        <p className="text-gray-600">
-          Don't have an account?{' '}
-          <button
-            onClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              console.log('🚀 Sign up here clicked - switching to register mode')
-              console.log('🚀 Current isRegisterMode:', isRegisterMode)
-              setIsRegisterMode(true)
-              setCurrentStep('method') // Reset to method selection
-              setAuthMethod(null) // Clear selected method
-              clearError() // Clear any errors
-              console.log('🚀 After setting isRegisterMode to true')
-            }}
-            className="text-blue-600 hover:text-blue-800 font-semibold underline"
-            type="button"
-          >
-            Sign up here
-          </button>
-        </p>
+        {!isRegisterMode ? (
+          <p className="text-gray-600">
+            Don't have an account?{' '}
+            <button
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                console.log('🚀 Sign up here clicked - switching to register mode')
+                console.log('🚀 Current isRegisterMode:', isRegisterMode)
+                setIsRegisterMode(true)
+                setAuthMethod(null) // Clear selected method
+                clearError() // Clear any errors
+                console.log('🚀 After setting isRegisterMode to true')
+              }}
+              className="text-blue-600 hover:text-blue-800 font-semibold underline cursor-pointer"
+              type="button"
+            >
+              Sign up here
+            </button>
+          </p>
+        ) : (
+          <p className="text-gray-600">
+            Already have an account?{' '}
+            <button
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                console.log('🚀 Sign in here clicked - switching to login mode')
+                console.log('🚀 Current isRegisterMode:', isRegisterMode)
+                setIsRegisterMode(false)
+                setAuthMethod(null) // Clear selected method
+                clearError() // Clear any errors
+                console.log('🚀 After setting isRegisterMode to false')
+              }}
+              className="text-blue-600 hover:text-blue-800 font-semibold underline cursor-pointer"
+              type="button"
+            >
+              Sign in here
+            </button>
+          </p>
+        )}
       </div>
     </motion.div>
   )
@@ -842,6 +863,15 @@ export const EnterpriseAuthSystem: React.FC = () => {
       <div className="w-full max-w-md">
         <Card className="border-0 shadow-2xl bg-white/80 backdrop-blur-sm">
           <CardContent className="p-8">
+            {/* 🚀 MODE INDICATOR */}
+            {isRegisterMode && (
+              <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                  <span className="text-blue-800 font-medium text-sm">Register Mode</span>
+                </div>
+              </div>
+            )}
             <AnimatePresence mode="wait">
               {currentStep === 'method' && (
                 <motion.div
