@@ -20,14 +20,14 @@ export default function TestEmailDebug() {
         setStatus(prev => prev + `SendGrid Status: ${data.data.sendGridStatus}\n`)
         setStatus(prev => prev + `API Key: ${data.data.apiKeyConfigured ? 'CONFIGURED' : 'MISSING'}\n`)
         setStatus(prev => prev + `From Email: ${data.data.fromEmail}\n`)
-        setStatus(prev => prev + `Account: ${data.data.accountData.username}\n`)
-        setStatus(prev => prev + `Plan: ${data.data.accountData.plan}\n\n`)
+        setStatus(prev => prev + `Account: ${data.data.accountData?.username || 'N/A'}\n`)
+        setStatus(prev => prev + `Plan: ${data.data.accountData?.plan || 'N/A'}\n\n`)
         
         setStatus(prev => prev + '🔧 TROUBLESHOOTING STEPS:\n')
-        setStatus(prev => prev + `1. ${data.data.troubleshooting.checkSpamFolder}\n`)
-        setStatus(prev => prev + `2. ${data.data.troubleshooting.checkPromotionsTab}\n`)
-        setStatus(prev => prev + `3. ${data.data.troubleshooting.waitForDelivery}\n`)
-        setStatus(prev => prev + `4. ${data.data.troubleshooting.checkSendGridDashboard}\n\n`)
+        setStatus(prev => prev + `1. ${data.data.troubleshooting?.checkSpamFolder || 'Check spam folder'}\n`)
+        setStatus(prev => prev + `2. ${data.data.troubleshooting?.checkPromotionsTab || 'Check promotions tab'}\n`)
+        setStatus(prev => prev + `3. ${data.data.troubleshooting?.waitForDelivery || 'Wait for delivery'}\n`)
+        setStatus(prev => prev + `4. ${data.data.troubleshooting?.checkSendGridDashboard || 'Check SendGrid dashboard'}\n\n`)
         
         setStatus(prev => prev + '📧 EMAIL IS BEING SENT SUCCESSFULLY!\n')
         setStatus(prev => prev + 'Check your SPAM folder and Promotions tab!\n')
@@ -104,7 +104,7 @@ export default function TestEmailDebug() {
       if (statusData.success) {
         setStatus(prev => prev + '✅ Email Service: ACTIVE\n')
         setStatus(prev => prev + `   - SendGrid Status: ${statusData.data.sendGridStatus}\n`)
-        setStatus(prev => prev + `   - Account: ${statusData.data.accountData.username}\n`)
+        setStatus(prev => prev + `   - Account: ${statusData.data.accountData?.username || 'N/A'}\n`)
       } else {
         setStatus(prev => prev + '❌ Email Service: ISSUE\n')
         setStatus(prev => prev + `   - Error: ${statusData.error}\n`)
