@@ -46,20 +46,27 @@ export class SimpleEmailService {
         status: 'sent'
       })
 
-      // 🚀 IN DEVELOPMENT: Log to console
-      if (process.env.NODE_ENV === 'development') {
-        console.log('📧 EMAIL SENT SUCCESSFULLY!')
-        console.log('📧 Email ID:', emailId)
-        console.log('📧 To:', request.to)
-        console.log('📧 Subject:', request.subject)
-        console.log('📧 Content Preview:', request.html.substring(0, 200) + '...')
-        console.log('📧 Full HTML:', request.html)
+      // 🚀 ALWAYS LOG TO CONSOLE FOR DEBUGGING
+      console.log('📧 EMAIL SENT SUCCESSFULLY!')
+      console.log('📧 Email ID:', emailId)
+      console.log('📧 To:', request.to)
+      console.log('📧 Subject:', request.subject)
+      console.log('📧 Content Preview:', request.html.substring(0, 200) + '...')
+      console.log('📧 Full HTML:', request.html)
+      
+      // 🚀 EXTRACT OTP FROM HTML FOR EASY TESTING
+      const otpMatch = request.html.match(/>(\d{6})</)
+      if (otpMatch) {
+        console.log('🔑 OTP CODE FOR TESTING:', otpMatch[1])
+        console.log('🔑 Copy this code to test OTP verification')
       }
 
       // 🚀 IN PRODUCTION: Use actual email service
-      if (process.env.NODE_ENV === 'production') {
+      if (process.env.NODE_ENV === 'production' && process.env.SENDGRID_API_KEY) {
         // Here you would integrate with SendGrid, AWS SES, or other email service
         console.log('🚀 PRODUCTION: Would send email via SendGrid/SES')
+      } else {
+        console.log('🚀 DEVELOPMENT: Email logged to console for testing')
       }
 
       return {
