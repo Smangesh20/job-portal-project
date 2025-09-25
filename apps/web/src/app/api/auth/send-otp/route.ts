@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { sendEmail } from '@/lib/email-service'
+import { sendOTPEmail } from '@/lib/simple-email-service'
 
 // 🚀 ENTERPRISE OTP GENERATION AND SENDING
 export async function POST(request: NextRequest) {
@@ -32,40 +32,15 @@ export async function POST(request: NextRequest) {
 
     // 🚀 SEND EMAIL WITH OTP
     try {
-      await sendEmail({
-        to: email,
-        subject: 'Your Ask Ya Cham Login Code',
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-            <div style="text-align: center; margin-bottom: 30px;">
-              <h1 style="color: #2563eb; font-size: 28px; margin: 0;">Ask Ya Cham</h1>
-              <p style="color: #6b7280; font-size: 16px; margin: 10px 0 0 0;">Your secure login code</p>
-            </div>
-            
-            <div style="background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); border-radius: 12px; padding: 30px; text-align: center; margin-bottom: 30px;">
-              <h2 style="color: #1f2937; font-size: 24px; margin: 0 0 15px 0;">Your Login Code</h2>
-              <div style="background: white; border-radius: 8px; padding: 20px; margin: 20px 0; border: 2px dashed #d1d5db;">
-                <span style="font-size: 32px; font-weight: bold; color: #2563eb; letter-spacing: 8px; font-family: 'Courier New', monospace;">${otp}</span>
-              </div>
-              <p style="color: #6b7280; font-size: 14px; margin: 0;">This code expires in 5 minutes</p>
-            </div>
-            
-            <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
-              <h3 style="color: #92400e; font-size: 16px; margin: 0 0 10px 0;">🔒 Security Notice</h3>
-              <ul style="color: #92400e; font-size: 14px; margin: 0; padding-left: 20px;">
-                <li>Never share this code with anyone</li>
-                <li>Ask Ya Cham will never ask for your login code</li>
-                <li>If you didn't request this code, please ignore this email</li>
-              </ul>
-            </div>
-            
-            <div style="text-align: center; color: #6b7280; font-size: 12px;">
-              <p>This is an automated message from Ask Ya Cham. Please do not reply to this email.</p>
-              <p>© 2024 Ask Ya Cham. All rights reserved.</p>
-            </div>
-          </div>
-        `
-      })
+      const emailResult = await sendOTPEmail(email, otp)
+      
+      if (!emailResult.success) {
+        console.error('🚨 Failed to send OTP email:', emailResult.error)
+        return NextResponse.json({
+          success: false,
+          error: 'Failed to send verification email. Please try again.'
+        }, { status: 500 })
+      }
 
       console.log(`🚀 OTP sent successfully to ${email}`)
 

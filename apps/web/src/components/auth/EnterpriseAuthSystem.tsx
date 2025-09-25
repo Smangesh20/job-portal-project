@@ -380,8 +380,14 @@ export const EnterpriseAuthSystem: React.FC = () => {
         <p className="text-gray-600">
           Don't have an account?{' '}
           <button
-            onClick={() => setIsRegisterMode(true)}
-            className="text-blue-600 hover:text-blue-800 font-semibold"
+            onClick={() => {
+              console.log('🚀 Sign up here clicked - switching to register mode')
+              setIsRegisterMode(true)
+              setCurrentStep('method') // Reset to method selection
+              setAuthMethod(null) // Clear selected method
+              clearError() // Clear any errors
+            }}
+            className="text-blue-600 hover:text-blue-800 font-semibold underline"
           >
             Sign up here
           </button>
@@ -606,6 +612,27 @@ export const EnterpriseAuthSystem: React.FC = () => {
           isRegisterMode ? 'Create Account' : 'Continue'
         )}
       </Button>
+
+      {/* 🚀 SIGN IN LINK FOR REGISTER MODE */}
+      {isRegisterMode && (
+        <div className="text-center mt-4">
+          <p className="text-gray-600">
+            Already have an account?{' '}
+            <button
+              onClick={() => {
+                console.log('🚀 Sign in here clicked - switching to login mode')
+                setIsRegisterMode(false)
+                setCurrentStep('method') // Reset to method selection
+                setAuthMethod(null) // Clear selected method
+                clearError() // Clear any errors
+              }}
+              className="text-blue-600 hover:text-blue-800 font-semibold underline"
+            >
+              Sign in here
+            </button>
+          </p>
+        </div>
+      )}
     </motion.div>
   )
 
