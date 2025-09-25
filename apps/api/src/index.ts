@@ -10,6 +10,10 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { productionSecurityMiddleware, securityLogger } from './middleware/production-security';
 import { developmentProtection, hideDevelopmentInfo, disableDebugging, protectEnvironmentVariables, blockAttackPatterns } from './middleware/development-protection';
+import { applySecurityMiddleware } from './middleware/securityHardening';
+import { handleError } from './middleware/comprehensiveErrorHandler';
+import googleLikeAuthRoutes from './routes/googleLikeAuth';
+import { SocketService } from './services/socketService';
 
 // Load environment variables
 dotenv.config({ path: path.join(__dirname, '../../../../.env') });
@@ -553,9 +557,13 @@ class Application {
     this.initializeMiddleware();
     this.initializeRoutes();
     this.initializeErrorHandling();
+    this.initializeWebSocket();
   }
 
   private initializeMiddleware(): void {
+    // Apply comprehensive security middleware (Google-like)
+    applySecurityMiddleware(this.app);
+    
     // Apply production security middleware
     productionSecurityMiddleware(this.app);
     
@@ -574,7 +582,7 @@ class Application {
       origin: config.cors.origin,
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-CSRF-Token', 'X-Device-Fingerprint'],
     }));
 
     // Rate limiting
@@ -610,6 +618,7 @@ class Application {
 
     // API routes
     this.app.use('/api/auth', authRoutes);
+    this.app.use('/api/auth/google-like', googleLikeAuthRoutes);
     this.app.use('/api/test-email', testEmailRoutes);
 
     // 404 handler
@@ -625,7 +634,16 @@ class Application {
   }
 
   private initializeErrorHandling(): void {
+    // Use comprehensive error handler
+    this.app.use(handleError);
+    // Fallback to basic error handler
     this.app.use(errorHandler);
+  }
+
+  private initializeWebSocket(): void {
+    // Initialize Socket.IO service for real-time features
+    const socketService = new SocketService(this.io);
+    logger.info('WebSocket service initialized for real-time authentication');
   }
 
   public async start(): Promise<void> {

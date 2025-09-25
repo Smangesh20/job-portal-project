@@ -14,8 +14,10 @@ datasource db {
 model User {
   id                String   @id @default(cuid())
   email             String   @unique
-  password          String
+  password          String?
   name              String
+  firstName         String?
+  lastName          String?
   avatar            String?
   bio               String?
   role              UserRole @default(CANDIDATE)
@@ -24,6 +26,36 @@ model User {
   twoFactorEnabled  Boolean  @default(false)
   twoFactorSecret   String?
   lastLoginAt       DateTime?
+  
+  // Google-like Authentication Fields
+  authMethod        String   @default("PASSWORD") // PASSWORD, OTP, GOOGLE, APPLE, MICROSOFT, etc.
+  profilePicture    String?
+  mfaSecret         String?
+  mfaEnabled        Boolean  @default(false)
+  emailVerified     Boolean  @default(false)
+  
+  // OTP Authentication
+  otpSecret         String?
+  otpEnabled        Boolean  @default(false)
+  lastOtpAt         DateTime?
+  
+  // Social Login IDs
+  googleId          String?  @unique
+  microsoftId       String?  @unique
+  appleId           String?  @unique
+  githubId          String?  @unique
+  linkedinId        String?  @unique
+  
+  // Account Security
+  loginAttempts     Int      @default(0)
+  lockedUntil       DateTime?
+  passwordChangedAt DateTime?
+  lastPasswordReset DateTime?
+  
+  // Session Management
+  deviceFingerprint String?
+  trustedDevices    String[] // Array of trusted device fingerprints
+  
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
@@ -68,6 +100,11 @@ model User {
   // Saved items
   savedJobs         SavedJob[]
   savedCompanies    SavedCompany[]
+  
+  // Authentication
+  passwordResetTokens PasswordResetToken[]
+  socialAuths         SocialAuth[]
+  trustedDevices      TrustedDevice[]
   
   @@map("users")
 }
@@ -669,4 +706,92 @@ model AuditLog {
   createdAt DateTime @default(now())
   
   @@map("audit_logs")
+}
+
+// Password Reset Token model for Google-like authentication
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  
+  @@map("password_reset_tokens")
+}
+
+// OTP Token model for passwordless authentication
+model OtpToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String?
+  email     String
+  type      OtpType  @default(LOGIN)
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  attempts  Int      @default(0)
+  createdAt DateTime @default(now())
+  
+  @@map("otp_tokens")
+}
+
+// OTP Types
+enum OtpType {
+  LOGIN
+  REGISTER
+  PASSWORD_RESET
+  EMAIL_VERIFICATION
+  TWO_FACTOR
+}
+
+// Social Authentication model
+model SocialAuth {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider  String   // google, microsoft, apple, github, linkedin
+  providerId String
+  email     String
+  name      String?
+  avatar    String?
+  data      Json?    // Additional provider data
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([provider, providerId])
+  @@map("social_auths")
+}
+
+// Security Event model for comprehensive logging
+model SecurityEvent {
+  id          String   @id @default(cuid())
+  userId      String?
+  eventType   String
+  severity    String
+  description String
+  ipAddress   String?
+  userAgent   String?
+  deviceFingerprint String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  
+  @@map("security_events")
+}
+
+// Trusted Device model
+model TrustedDevice {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fingerprint     String
+  name            String?
+  type            String?  // desktop, mobile, tablet
+  browser         String?
+  os              String?
+  lastUsedAt      DateTime @default(now())
+  createdAt       DateTime @default(now())
+  
+  @@unique([userId, fingerprint])
+  @@map("trusted_devices")
 }
