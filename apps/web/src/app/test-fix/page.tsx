@@ -21,9 +21,9 @@ export default function TestFix() {
       console.log('📧 Direct email test result:', data)
 
       if (data.success) {
-        setStatus(`✅ DIRECT EMAIL: SUCCESS!\n\nEmail sent to: pullareddypullareddy20@gmail.com\nMessage ID: ${data.data.messageId}\nStatus Code: ${data.data.statusCode}\n\nCheck your email NOW!\n\nIf you don't see it, check your SPAM folder!`)
+        setStatus(`✅ DIRECT EMAIL: SUCCESS!\n\nEmail sent to: pullareddypullareddy20@gmail.com\nMessage ID: ${data.data?.messageId || 'N/A'}\nStatus Code: ${data.data?.statusCode || 'N/A'}\n\nCheck your email NOW!\n\nIf you don't see it, check your SPAM folder!`)
       } else {
-        setStatus(`❌ DIRECT EMAIL: FAILED\n\nError: ${data.error}\nDetails: ${data.details}\n\nSendGrid Error: ${JSON.stringify(data.sendGridError, null, 2)}`)
+        setStatus(`❌ DIRECT EMAIL: FAILED\n\nError: ${data.error || 'Unknown error'}\nDetails: ${data.details || 'No details'}\n\nSendGrid Error: ${JSON.stringify(data.sendGridError || {}, null, 2)}`)
       }
     } catch (error) {
       console.error('📧 Direct email test error:', error)
@@ -48,7 +48,7 @@ export default function TestFix() {
       const data = await response.json()
       console.log('🔐 Google button test result:', data)
 
-      if (data.success && data.data.authUrl) {
+      if (data.success && data.data?.authUrl) {
         setStatus(`✅ GOOGLE SIGN-IN: WORKING!\n\nOAuth URL: ${data.data.authUrl}\n\nClick below to test the OAuth flow:`)
         
         // Create redirect button
@@ -90,7 +90,7 @@ export default function TestFix() {
       console.log('🔑 OTP email test result:', data)
 
       if (data.success) {
-        setStatus(`✅ OTP EMAIL: SUCCESS!\n\nOTP sent to: pullareddypullareddy20@gmail.com\nOTP Code: ${data.data.otp}\n\nCheck your email for the OTP!\n\nIf you don't see it, check your SPAM folder!`)
+        setStatus(`✅ OTP EMAIL: SUCCESS!\n\nOTP sent to: pullareddypullareddy20@gmail.com\nOTP Code: ${data.data?.otp || 'Generated'}\n\nCheck your email for the OTP!\n\nIf you don't see it, check your SPAM folder!`)
       } else {
         setStatus(`❌ OTP EMAIL: FAILED\n\nError: ${data.error || 'Unknown error'}`)
       }
@@ -136,7 +136,7 @@ export default function TestFix() {
       
       if (googleData.success) {
         setStatus(prev => prev + '✅ Google Sign-In: WORKING\n')
-        setStatus(prev => prev + `   - OAuth URL: ${googleData.data.authUrl.substring(0, 50)}...\n`)
+        setStatus(prev => prev + `   - OAuth URL: ${googleData.data?.authUrl?.substring(0, 50) || 'Generated'}...\n`)
         setStatus(prev => prev + `   - Demo Mode: ${googleData.data.demoMode ? 'ON' : 'OFF'}\n\n`)
       } else {
         setStatus(prev => prev + '❌ Google Sign-In: FAILED\n')
