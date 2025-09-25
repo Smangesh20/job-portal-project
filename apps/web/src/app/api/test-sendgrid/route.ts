@@ -1,108 +1,140 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server'
+import sgMail from '@sendgrid/mail'
 
+// 🚀 FORCE DYNAMIC RENDERING
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+
+// 🚀 TEST SENDGRID DIRECTLY
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { email } = body;
+    const { email } = await request.json()
 
     if (!email) {
       return NextResponse.json({
         success: false,
-        error: {
-          code: 'MISSING_EMAIL',
-          message: 'Email is required'
-        }
-      }, { status: 400 });
+        error: 'Email is required'
+      }, { status: 400 })
     }
 
-    const sendGridApiKey = process.env.SENDGRID_API_KEY;
-    const fromEmail = process.env.FROM_EMAIL || 'noreply@askyacham.com';
+    // 🚀 CHECK ENVIRONMENT VARIABLES
+    const sendGridApiKey = process.env.SENDGRID_API_KEY
+    const fromEmail = process.env.FROM_EMAIL || 'info@askyacham.com'
 
-    console.log(`🧪 Testing SendGrid with email: ${email}`);
-    console.log(`📧 From Email: ${fromEmail}`);
-    console.log(`🔑 API Key: ${sendGridApiKey ? 'Present' : 'Missing'}`);
+    console.log('🚀 SENDGRID TEST:')
+    console.log('📧 SendGrid API Key exists:', !!sendGridApiKey)
+    console.log('📧 SendGrid API Key length:', sendGridApiKey?.length || 0)
+    console.log('📧 From Email:', fromEmail)
+    console.log('📧 To Email:', email)
 
     if (!sendGridApiKey) {
       return NextResponse.json({
         success: false,
-        error: {
-          code: 'NO_API_KEY',
-          message: 'SendGrid API key not configured'
+        error: 'SENDGRID_API_KEY not found in environment variables',
+        envCheck: {
+          SENDGRID_API_KEY: 'MISSING',
+          FROM_EMAIL: fromEmail,
+          NODE_ENV: process.env.NODE_ENV
         }
-      }, { status: 500 });
+      }, { status: 500 })
     }
 
-    // Simple test email
-    const emailData = {
-      personalizations: [{
-        to: [{ email: email }],
-        subject: 'Test Email from Ask Ya Cham'
-      }],
-      from: { 
+    // 🚀 SETUP SENDGRID
+    sgMail.setApiKey(sendGridApiKey)
+
+    // 🚀 CREATE EMAIL MESSAGE
+    const msg = {
+      to: email,
+      from: {
         email: fromEmail,
         name: 'Ask Ya Cham'
       },
-      content: [
-        {
-          type: 'text/plain',
-          value: 'This is a test email to verify SendGrid is working correctly.'
-        }
-      ]
-    };
-
-    console.log('📤 Sending email via SendGrid...');
-    
-    const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${sendGridApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(emailData)
-    });
-
-    console.log(`📡 SendGrid Response Status: ${response.status}`);
-
-    if (!response.ok) {
-      const errorData = await response.text();
-      console.error(`❌ SendGrid Error: ${errorData}`);
-      return NextResponse.json({
-        success: false,
-        error: {
-          code: 'SENDGRID_ERROR',
-          message: `SendGrid API error: ${response.status}`,
-          details: errorData
-        }
-      }, { status: response.status });
+      subject: '🚀 Test Email from Ask Ya Cham',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+            <h1 style="color: white; margin: 0; font-size: 28px;">🚀 Ask Ya Cham</h1>
+            <p style="color: white; margin: 10px 0 0 0; font-size: 16px;">World-Class Job Portal</p>
+          </div>
+          
+          <div style="background: white; padding: 40px; border-radius: 0 0 10px 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h2 style="color: #333; margin-top: 0;">Email Test Successful! 🎉</h2>
+            
+            <p style="color: #666; font-size: 16px; line-height: 1.6;">
+              Congratulations! Your SendGrid integration is working perfectly. 
+              This is a test email to verify that email delivery is functioning correctly.
+            </p>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <h3 style="color: #333; margin-top: 0;">Test Details:</h3>
+              <ul style="color: #666; margin: 0; padding-left: 20px;">
+                <li><strong>Recipient:</strong> ${email}</li>
+                <li><strong>Sender:</strong> ${fromEmail}</li>
+                <li><strong>Timestamp:</strong> ${new Date().toLocaleString()}</li>
+                <li><strong>Status:</strong> ✅ Delivered Successfully</li>
+              </ul>
+            </div>
+            
+            <p style="color: #666; font-size: 16px; line-height: 1.6;">
+              Your authentication system is now ready to send real OTP emails to users. 
+              The email service is working at enterprise level!
+            </p>
+            
+            <div style="text-align: center; margin-top: 30px;">
+              <a href="https://askyacham.com" style="background: #667eea; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">
+                Visit Ask Ya Cham
+              </a>
+            </div>
+          </div>
+        </div>
+      `,
+      text: `🚀 Ask Ya Cham - Test Email Successful!\n\nCongratulations! Your SendGrid integration is working perfectly.\n\nRecipient: ${email}\nSender: ${fromEmail}\nTimestamp: ${new Date().toLocaleString()}\nStatus: ✅ Delivered Successfully\n\nVisit: https://askyacham.com`
     }
 
-    const messageId = response.headers.get('x-message-id');
-    console.log(`✅ Email sent successfully! Message ID: ${messageId}`);
+    console.log('🚀 Sending email via SendGrid...')
+    
+    // 🚀 SEND EMAIL
+    const response = await sgMail.send(msg)
+    
+    console.log('📧 Email sent successfully!')
+    console.log('📧 SendGrid response:', response)
 
     return NextResponse.json({
       success: true,
-      message: 'Test email sent successfully!',
+      message: 'Test email sent successfully via SendGrid',
       data: {
         email,
-        messageId,
+        fromEmail,
+        messageId: response[0]?.headers?.['x-message-id'] || 'unknown',
         timestamp: new Date().toISOString()
       }
-    });
+    })
 
   } catch (error) {
-    console.error('❌ Test SendGrid Error:', error);
+    console.error('🚨 SendGrid test error:', error)
+    
     return NextResponse.json({
       success: false,
-      error: {
-        code: 'TEST_ERROR',
-        message: 'Error testing SendGrid',
-        details: error instanceof Error ? error.message : 'Unknown error'
+      error: 'Failed to send email via SendGrid',
+      details: error instanceof Error ? error.message : 'Unknown error',
+      envCheck: {
+        SENDGRID_API_KEY: process.env.SENDGRID_API_KEY ? 'SET' : 'MISSING',
+        FROM_EMAIL: process.env.FROM_EMAIL || 'info@askyacham.com',
+        NODE_ENV: process.env.NODE_ENV
       }
-    }, { status: 500 });
+    }, { status: 500 })
   }
 }
 
-
-
-
-
+// 🚀 GET ENVIRONMENT STATUS
+export async function GET() {
+  return NextResponse.json({
+    success: true,
+    data: {
+      SENDGRID_API_KEY: process.env.SENDGRID_API_KEY ? '✅ Set' : '❌ Missing',
+      FROM_EMAIL: process.env.FROM_EMAIL || 'info@askyacham.com',
+      NODE_ENV: process.env.NODE_ENV || 'development',
+      timestamp: new Date().toISOString()
+    }
+  })
+}

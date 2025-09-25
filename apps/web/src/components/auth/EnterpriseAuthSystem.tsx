@@ -184,7 +184,7 @@ export const EnterpriseAuthSystem: React.FC = () => {
         setCurrentStep('email')
         break
     }
-  }, [clearError])
+  }, [clearError, handleSocialLogin])
 
   // 🚀 SOCIAL LOGIN
   const handleSocialLogin = useCallback(async () => {
