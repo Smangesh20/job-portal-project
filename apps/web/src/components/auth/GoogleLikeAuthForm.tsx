@@ -17,13 +17,13 @@ import {
   AlertCircle,
   ArrowRight,
   Loader2,
-  Google,
-  Microsoft,
-  Apple,
-  Github,
-  Linkedin,
   Clock,
-  RefreshCw
+  RefreshCw,
+  Globe,
+  Monitor,
+  Smartphone as Mobile,
+  Github,
+  Linkedin
 } from 'lucide-react'
 
 interface AuthFormProps {
@@ -469,7 +469,7 @@ export function GoogleLikeAuthForm({ onSuccess, onError }: AuthFormProps) {
                       disabled={loading}
                       className="flex items-center space-x-2"
                     >
-                      <Google className="h-4 w-4" />
+                      <Globe className="h-4 w-4" />
                       <span>Google</span>
                     </Button>
                     <Button
@@ -478,7 +478,7 @@ export function GoogleLikeAuthForm({ onSuccess, onError }: AuthFormProps) {
                       disabled={loading}
                       className="flex items-center space-x-2"
                     >
-                      <Microsoft className="h-4 w-4" />
+                      <Monitor className="h-4 w-4" />
                       <span>Microsoft</span>
                     </Button>
                   </div>
@@ -489,7 +489,7 @@ export function GoogleLikeAuthForm({ onSuccess, onError }: AuthFormProps) {
                       onClick={() => handleSocialAuth('apple')}
                       disabled={loading}
                     >
-                      <Apple className="h-4 w-4" />
+                      <Mobile className="h-4 w-4" />
                     </Button>
                     <Button
                       variant="outline"
