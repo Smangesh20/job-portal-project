@@ -165,27 +165,6 @@ export const EnterpriseAuthSystem: React.FC = () => {
     if (error) clearError()
   }, [error, clearError])
 
-  // 🚀 METHOD SELECTION
-  const handleMethodSelect = useCallback((method: AuthMethod['id']) => {
-    setAuthMethod(method)
-    clearError()
-    
-    switch (method) {
-      case 'otp':
-        setCurrentStep('email')
-        break
-      case 'password':
-        setCurrentStep('email')
-        break
-      case 'social':
-        handleSocialLogin()
-        break
-      case 'mfa':
-        setCurrentStep('email')
-        break
-    }
-  }, [clearError, handleSocialLogin])
-
   // 🚀 SOCIAL LOGIN
   const handleSocialLogin = useCallback(async () => {
     try {
@@ -218,6 +197,27 @@ export const EnterpriseAuthSystem: React.FC = () => {
       toast.error('Social login failed. Please try again.')
     }
   }, [socialLogin])
+
+  // 🚀 METHOD SELECTION
+  const handleMethodSelect = useCallback((method: AuthMethod['id']) => {
+    setAuthMethod(method)
+    clearError()
+    
+    switch (method) {
+      case 'otp':
+        setCurrentStep('email')
+        break
+      case 'password':
+        setCurrentStep('email')
+        break
+      case 'social':
+        handleSocialLogin()
+        break
+      case 'mfa':
+        setCurrentStep('email')
+        break
+    }
+  }, [clearError, handleSocialLogin])
 
   // 🚀 SEND OTP
   const handleSendOtp = useCallback(async () => {
