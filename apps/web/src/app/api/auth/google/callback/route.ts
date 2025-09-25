@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { useAuthStore } from '@/stores/enhanced-auth-store'
+
+// 🚀 FORCE DYNAMIC RENDERING - This route must be dynamic
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
 
 // 🚀 GOOGLE OAUTH CALLBACK HANDLER
 export async function GET(request: NextRequest) {
@@ -12,32 +15,36 @@ export async function GET(request: NextRequest) {
     // 🚀 HANDLE OAUTH ERRORS
     if (error) {
       console.error(`🚨 Google OAuth error: ${error}`)
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.askyacham.com'
       return NextResponse.redirect(
-        `${process.env.NEXT_PUBLIC_APP_URL}/auth/login?error=${encodeURIComponent(error)}`
+        `${baseUrl}/auth/login?error=${encodeURIComponent(error)}`
       )
     }
 
     // 🚀 VALIDATE REQUIRED PARAMETERS
     if (!code || !state) {
       console.error('🚨 Missing code or state parameter')
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.askyacham.com'
       return NextResponse.redirect(
-        `${process.env.NEXT_PUBLIC_APP_URL}/auth/login?error=missing_parameters`
+        `${baseUrl}/auth/login?error=missing_parameters`
       )
     }
 
     // 🚀 VERIFY STATE PARAMETER
     if (!global.oauthStates || !global.oauthStates.has(state)) {
       console.error('🚨 Invalid or expired state parameter')
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.askyacham.com'
       return NextResponse.redirect(
-        `${process.env.NEXT_PUBLIC_APP_URL}/auth/login?error=invalid_state`
+        `${baseUrl}/auth/login?error=invalid_state`
       )
     }
 
     const stateData = global.oauthStates.get(state)
     if (!stateData || Date.now() > stateData.expiresAt) {
       console.error('🚨 Expired state parameter')
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.askyacham.com'
       return NextResponse.redirect(
-        `${process.env.NEXT_PUBLIC_APP_URL}/auth/login?error=expired_state`
+        `${baseUrl}/auth/login?error=expired_state`
       )
     }
 
@@ -52,14 +59,15 @@ export async function GET(request: NextRequest) {
         client_secret: process.env.GOOGLE_CLIENT_SECRET || '',
         code,
         grant_type: 'authorization_code',
-        redirect_uri: process.env.GOOGLE_REDIRECT_URI || `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/google/callback`,
+        redirect_uri: process.env.GOOGLE_REDIRECT_URI || `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.askyacham.com'}/api/auth/google/callback`,
       }),
     })
 
     if (!tokenResponse.ok) {
       console.error('🚨 Failed to exchange code for token')
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.askyacham.com'
       return NextResponse.redirect(
-        `${process.env.NEXT_PUBLIC_APP_URL}/auth/login?error=token_exchange_failed`
+        `${baseUrl}/auth/login?error=token_exchange_failed`
       )
     }
 
@@ -75,8 +83,9 @@ export async function GET(request: NextRequest) {
 
     if (!userResponse.ok) {
       console.error('🚨 Failed to get user info from Google')
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.askyacham.com'
       return NextResponse.redirect(
-        `${process.env.NEXT_PUBLIC_APP_URL}/auth/login?error=user_info_failed`
+        `${baseUrl}/auth/login?error=user_info_failed`
       )
     }
 
@@ -122,7 +131,8 @@ export async function GET(request: NextRequest) {
     global.oauthStates.delete(state)
 
     // 🚀 SET SESSION COOKIE AND REDIRECT
-    const response = NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/dashboard`)
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.askyacham.com'
+    const response = NextResponse.redirect(`${baseUrl}/dashboard`)
     response.cookies.set('session', sessionId, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -135,8 +145,9 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('🚨 Google OAuth callback error:', error)
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.askyacham.com'
     return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_APP_URL}/auth/login?error=callback_error`
+      `${baseUrl}/auth/login?error=callback_error`
     )
   }
 }

@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+// 🚀 FORCE DYNAMIC RENDERING - This route must be dynamic
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+
 // 🚀 GOOGLE OAUTH CONFIGURATION
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET
-const GOOGLE_REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI || `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/google/callback`
+const GOOGLE_REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI || `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.askyacham.com'}/api/auth/google/callback`
 
 // 🚀 GOOGLE OAUTH INITIATION
 export async function POST(request: NextRequest) {

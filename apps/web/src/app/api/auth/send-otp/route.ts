@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { sendOTPEmail } from '@/lib/simple-email-service'
 
+// 🚀 FORCE DYNAMIC RENDERING - This route must be dynamic
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+
 // 🚀 ENTERPRISE OTP GENERATION AND SENDING
 export async function POST(request: NextRequest) {
   try {
