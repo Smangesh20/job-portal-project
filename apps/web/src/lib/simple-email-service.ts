@@ -40,8 +40,12 @@ export class SimpleEmailService {
       const fromEmail = process.env.FROM_EMAIL || 'info@askyacham.com'
       
       console.log('🚀 EMAIL CONFIG: SendGrid API Key exists:', !!sendGridApiKey)
+      console.log('🚀 EMAIL CONFIG: SendGrid API Key length:', sendGridApiKey?.length || 0)
       console.log('🚀 EMAIL CONFIG: From Email:', fromEmail)
       console.log('🚀 EMAIL CONFIG: Sending to:', request.to)
+      console.log('🔧 Environment Variables:')
+      console.log('  - SENDGRID_API_KEY:', process.env.SENDGRID_API_KEY ? 'SET' : 'MISSING')
+      console.log('  - FROM_EMAIL:', process.env.FROM_EMAIL || 'DEFAULT: info@askyacham.com')
       
       if (!sendGridApiKey) {
         console.error('🚨 SENDGRID_API_KEY not found in environment variables')

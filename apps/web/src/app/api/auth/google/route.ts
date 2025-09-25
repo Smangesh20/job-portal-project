@@ -25,9 +25,13 @@ export async function POST(request: NextRequest) {
       }, { status: 400 })
     }
 
-    // 🚀 DEMO MODE - Redirect to Google OAuth like real Google
-    if (DEMO_MODE) {
-      console.log('🚀 DEMO MODE: Redirecting to Google OAuth (like real Google)')
+     // 🚀 DEMO MODE - Redirect to Google OAuth like real Google
+     if (DEMO_MODE) {
+       console.log('🚀 DEMO MODE: Redirecting to Google OAuth (like real Google)')
+       console.log('🔧 Environment Check:')
+       console.log('  - GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID ? 'SET' : 'MISSING')
+       console.log('  - GOOGLE_CLIENT_SECRET:', process.env.GOOGLE_CLIENT_SECRET ? 'SET' : 'MISSING')
+       console.log('  - GOOGLE_REDIRECT_URI:', GOOGLE_REDIRECT_URI)
       
       // 🚀 GENERATE STATE PARAMETER FOR SECURITY
       const state = generateSecureState()
@@ -42,10 +46,10 @@ export async function POST(request: NextRequest) {
         expiresAt: Date.now() + 10 * 60 * 1000 // 10 minutes
       })
 
-      // 🚀 GOOGLE OAUTH URL (Real Google OAuth flow)
-      const googleAuthUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth')
-      googleAuthUrl.searchParams.set('client_id', process.env.GOOGLE_CLIENT_ID || 'demo_client_id')
-      googleAuthUrl.searchParams.set('redirect_uri', GOOGLE_REDIRECT_URI)
+       // 🚀 GOOGLE OAUTH URL (Real Google OAuth flow)
+       const googleAuthUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth')
+       googleAuthUrl.searchParams.set('client_id', process.env.GOOGLE_CLIENT_ID || 'demo_client_id')
+       googleAuthUrl.searchParams.set('redirect_uri', GOOGLE_REDIRECT_URI)
       googleAuthUrl.searchParams.set('response_type', 'code')
       googleAuthUrl.searchParams.set('scope', 'openid email profile')
       googleAuthUrl.searchParams.set('state', state)
