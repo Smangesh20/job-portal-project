@@ -202,16 +202,13 @@ export const EnterpriseAuthSystem: React.FC = () => {
       console.log('🚀 Google Sign-In response:', data)
       
       if (data.success) {
-        if (data.data.demoMode) {
-          // 🚀 DEMO MODE - Direct success
-          toast.success('Google Sign-In successful! (Demo Mode)')
-          setCurrentStep('success')
-        } else if (data.data.authUrl) {
-          // 🚀 REAL OAUTH - Redirect to Google
+        if (data.data.authUrl) {
+          // 🚀 ALWAYS REDIRECT TO GOOGLE OAUTH (Like real Google)
+          console.log('🚀 Redirecting to Google OAuth:', data.data.authUrl)
+          toast.success('Redirecting to Google...')
           window.location.href = data.data.authUrl
         } else {
-          await socialLogin('google', data.data)
-          setCurrentStep('success')
+          toast.error('Google OAuth URL not received')
         }
       } else {
         toast.error(data.error || 'Google Sign-In failed')

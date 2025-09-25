@@ -25,55 +25,43 @@ export async function POST(request: NextRequest) {
       }, { status: 400 })
     }
 
-    // 🚀 DEMO MODE - Works immediately
+    // 🚀 DEMO MODE - Redirect to Google OAuth like real Google
     if (DEMO_MODE) {
-      console.log('🚀 DEMO MODE: Google OAuth working immediately without setup')
+      console.log('🚀 DEMO MODE: Redirecting to Google OAuth (like real Google)')
       
-      const demoResult = await demoGoogleAuth.signInWithGoogle()
+      // 🚀 GENERATE STATE PARAMETER FOR SECURITY
+      const state = generateSecureState()
       
-      if (demoResult.success && demoResult.user) {
-        // 🚀 CREATE USER SESSION
-        const sessionId = generateSecureState()
-        if (!global.sessions) {
-          global.sessions = new Map()
-        }
-        global.sessions.set(sessionId, {
-          userId: demoResult.user.id,
-          email: demoResult.user.email,
-          createdAt: Date.now(),
-          expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000, // 7 days
-        })
-
-        // 🚀 STORE USER
-        if (!global.users) {
-          global.users = new Map()
-        }
-        global.users.set(demoResult.user.email, {
-          id: demoResult.user.id,
-          email: demoResult.user.email,
-          firstName: demoResult.user.given_name,
-          lastName: demoResult.user.family_name,
-          name: demoResult.user.name,
-          profileImage: demoResult.user.picture,
-          isVerified: true,
-          isActive: true,
-          authMethod: 'google',
-          role: 'CANDIDATE' as const,
-          permissions: ['read', 'write'],
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        })
-
-        return NextResponse.json({
-          success: true,
-          data: {
-            user: demoResult.user,
-            sessionId,
-            demoMode: true,
-            message: 'Demo Google Sign-In successful!'
-          }
-        })
+      // 🚀 STORE STATE IN SESSION
+      if (!global.oauthStates) {
+        global.oauthStates = new Map()
       }
+      global.oauthStates.set(state, {
+        provider,
+        timestamp: Date.now(),
+        expiresAt: Date.now() + 10 * 60 * 1000 // 10 minutes
+      })
+
+      // 🚀 GOOGLE OAUTH URL (Real Google OAuth flow)
+      const googleAuthUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth')
+      googleAuthUrl.searchParams.set('client_id', 'demo_client_id')
+      googleAuthUrl.searchParams.set('redirect_uri', GOOGLE_REDIRECT_URI)
+      googleAuthUrl.searchParams.set('response_type', 'code')
+      googleAuthUrl.searchParams.set('scope', 'openid email profile')
+      googleAuthUrl.searchParams.set('state', state)
+      googleAuthUrl.searchParams.set('access_type', 'offline')
+      googleAuthUrl.searchParams.set('prompt', 'consent')
+
+      console.log(`🚀 Google OAuth URL: ${googleAuthUrl.toString()}`)
+
+      return NextResponse.json({
+        success: true,
+        data: {
+          authUrl: googleAuthUrl.toString(),
+          state,
+          demoMode: true
+        }
+      })
     }
 
     // 🚀 REAL GOOGLE OAUTH (if credentials are available)
