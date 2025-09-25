@@ -164,7 +164,7 @@ export const useAuthStore = create<AuthStore>()(
             state.error = null
           })
 
-          const response = await fetch('/api/auth/google-like/enhanced-login', {
+          const response = await fetch('/api/auth/login', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -218,7 +218,7 @@ export const useAuthStore = create<AuthStore>()(
             state.error = null
           })
 
-          const response = await fetch('/api/auth/google-like/verify-otp', {
+          const response = await fetch('/api/auth/verify-otp', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -269,7 +269,7 @@ export const useAuthStore = create<AuthStore>()(
             state.error = null
           })
 
-          const response = await fetch('/api/auth/google-like/social', {
+          const response = await fetch('/api/auth/google', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

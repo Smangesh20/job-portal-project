@@ -209,22 +209,29 @@ export const EnterpriseAuthSystem: React.FC = () => {
   // 🚀 SEND OTP
   const handleSendOtp = useCallback(async () => {
     try {
+      console.log('🚀 Sending OTP to:', formData.email)
       const response = await fetch('/api/auth/send-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.email })
       })
       
+      console.log('🚀 OTP Response status:', response.status)
       const data = await response.json()
+      console.log('🚀 OTP Response data:', data)
+      
       if (data.success) {
         setCurrentStep('otp')
         setOtpTimer(300) // 5 minutes
         toast.success('Verification code sent to your email')
+        console.log('🚀 OTP sent successfully, moving to OTP step')
       } else {
         toast.error(data.error || 'Failed to send verification code')
+        console.error('🚨 OTP sending failed:', data.error)
       }
     } catch (error: any) {
       toast.error('Failed to send verification code')
+      console.error('🚨 OTP sending error:', error)
     }
   }, [formData.email])
 
@@ -380,14 +387,19 @@ export const EnterpriseAuthSystem: React.FC = () => {
         <p className="text-gray-600">
           Don't have an account?{' '}
           <button
-            onClick={() => {
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
               console.log('🚀 Sign up here clicked - switching to register mode')
+              console.log('🚀 Current isRegisterMode:', isRegisterMode)
               setIsRegisterMode(true)
               setCurrentStep('method') // Reset to method selection
               setAuthMethod(null) // Clear selected method
               clearError() // Clear any errors
+              console.log('🚀 After setting isRegisterMode to true')
             }}
             className="text-blue-600 hover:text-blue-800 font-semibold underline"
+            type="button"
           >
             Sign up here
           </button>
@@ -619,14 +631,19 @@ export const EnterpriseAuthSystem: React.FC = () => {
           <p className="text-gray-600">
             Already have an account?{' '}
             <button
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
                 console.log('🚀 Sign in here clicked - switching to login mode')
+                console.log('🚀 Current isRegisterMode:', isRegisterMode)
                 setIsRegisterMode(false)
                 setCurrentStep('method') // Reset to method selection
                 setAuthMethod(null) // Clear selected method
                 clearError() // Clear any errors
+                console.log('🚀 After setting isRegisterMode to false')
               }}
               className="text-blue-600 hover:text-blue-800 font-semibold underline"
+              type="button"
             >
               Sign in here
             </button>
