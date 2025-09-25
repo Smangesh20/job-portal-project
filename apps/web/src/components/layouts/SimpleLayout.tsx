@@ -30,3 +30,9 @@ export function SimpleLayout({ children }: SimpleLayoutProps) {
     </div>
   )
 }
+
+
+
+
+
+

@@ -1,274 +1,279 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { 
-  Brain, 
-  TrendingUp, 
-  Star, 
-  Target, 
-  Users, 
-  Award,
-  ExternalLink,
-  Heart,
-  Eye,
-  Zap,
-  Lightbulb,
-  BarChart3
-} from 'lucide-react'
+  ChartBarIcon,
+  ArrowTrendingUpIcon,
+  LightBulbIcon,
+  CpuChipIcon,
+  FlagIcon,
+  RocketLaunchIcon
+} from '@heroicons/react/24/outline'
 
 export default function AIInsightsPage() {
-  const [insights, setInsights] = useState([
+  const [selectedInsight, setSelectedInsight] = useState('market')
+
+  const insights = [
     {
-      id: 1,
-      title: 'AI-Powered Job Matching',
-      description: 'Our advanced AI analyzes your skills, experience, and preferences to find the perfect job matches.',
-      category: 'Job Matching',
-      accuracy: 98,
-      jobs: 1250,
-      icon: Brain,
-      color: 'blue',
-      features: ['Skill Analysis', 'Preference Learning', 'Market Trends', 'Real-time Updates']
+      id: 'market',
+      name: 'Market Trends',
+      description: 'Real-time job market analysis and predictions',
+      icon: ChartBarIcon,
+      color: 'blue'
     },
     {
-      id: 2,
-      title: 'Quantum Resume Optimization',
-      description: 'Revolutionary quantum computing technology optimizes your resume for maximum impact.',
-      category: 'Resume Enhancement',
-      accuracy: 95,
-      jobs: 890,
-      icon: Zap,
-      color: 'purple',
-      features: ['ATS Optimization', 'Keyword Analysis', 'Format Enhancement', 'Impact Scoring']
+      id: 'skills',
+      name: 'Skills Demand',
+      description: 'Most in-demand skills and emerging technologies',
+      icon: ArrowTrendingUpIcon,
+      color: 'green'
     },
     {
-      id: 3,
-      title: 'Predictive Career Analytics',
-      description: 'AI predicts your career trajectory and suggests optimal career moves based on market data.',
-      category: 'Career Planning',
-      accuracy: 92,
-      jobs: 650,
-      icon: TrendingUp,
-      color: 'green',
-      features: ['Career Path Analysis', 'Salary Predictions', 'Skill Gap Analysis', 'Market Insights']
+      id: 'career',
+      name: 'Career Paths',
+      description: 'AI-powered career progression recommendations',
+      icon: FlagIcon,
+      color: 'purple'
     },
     {
-      id: 4,
-      title: 'Smart Interview Preparation',
-      description: 'AI-powered interview prep with personalized questions and real-time feedback.',
-      category: 'Interview Prep',
-      accuracy: 96,
-      jobs: 420,
-      icon: Target,
-      color: 'orange',
-      features: ['Question Generation', 'Answer Analysis', 'Confidence Scoring', 'Improvement Tips']
-    },
-    {
-      id: 5,
-      title: 'Intelligent Networking',
-      description: 'AI identifies the best networking opportunities and connections for your career growth.',
-      category: 'Networking',
-      accuracy: 89,
-      jobs: 320,
-      icon: Users,
-      color: 'pink',
-      features: ['Connection Suggestions', 'Event Recommendations', 'Message Templates', 'Follow-up Reminders']
-    },
-    {
-      id: 6,
-      title: 'Market Intelligence',
-      description: 'Real-time market analysis and industry insights to guide your career decisions.',
-      category: 'Market Analysis',
-      accuracy: 94,
-      jobs: 780,
-      icon: BarChart3,
-      color: 'indigo',
-      features: ['Industry Trends', 'Salary Benchmarks', 'Company Analysis', 'Growth Projections']
+      id: 'salary',
+      name: 'Salary Insights',
+      description: 'Market-based salary predictions and negotiations',
+      icon: CpuChipIcon,
+      color: 'orange'
     }
-  ])
+  ]
 
-  const [isLoading, setIsLoading] = useState(true)
+  const marketData = [
+    { skill: 'AI/ML', demand: 95, growth: '+23%', jobs: 12500 },
+    { skill: 'React', demand: 88, growth: '+15%', jobs: 8900 },
+    { skill: 'Python', demand: 92, growth: '+18%', jobs: 11200 },
+    { skill: 'Cloud Computing', demand: 85, growth: '+20%', jobs: 7600 },
+    { skill: 'Data Science', demand: 90, growth: '+25%', jobs: 9800 }
+  ]
 
-  useEffect(() => {
-    // Simulate loading
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 1000)
-
-    return () => clearTimeout(timer)
-  }, [])
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="bg-white rounded-lg p-6">
-                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
-                  <div className="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
-                  <div className="h-3 bg-gray-200 rounded w-2/3"></div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  const getColorClasses = (color: string) => {
-    const colors = {
-      blue: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-      purple: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
-      green: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-      orange: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
-      pink: 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200',
-      indigo: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200'
+  const careerPaths = [
+    {
+      title: 'Software Engineer → Senior Engineer',
+      duration: '2-3 years',
+      salaryIncrease: '+40%',
+      skills: ['Leadership', 'System Design', 'Mentoring'],
+      difficulty: 'Medium'
+    },
+    {
+      title: 'Data Analyst → Data Scientist',
+      duration: '1-2 years',
+      salaryIncrease: '+60%',
+      skills: ['Machine Learning', 'Statistics', 'Python'],
+      difficulty: 'Hard'
+    },
+    {
+      title: 'Frontend Dev → Full Stack Engineer',
+      duration: '1-2 years',
+      salaryIncrease: '+35%',
+      skills: ['Backend Development', 'Database Design', 'DevOps'],
+      difficulty: 'Medium'
     }
-    return colors[color as keyof typeof colors] || colors.blue
-  }
+  ]
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <Brain className="h-8 w-8 text-blue-600" />
-            <h1 className="text-3xl font-bold text-gray-900">AI Insights</h1>
-            <Badge variant="default" className="bg-green-100 text-green-800">
-              NEW
-            </Badge>
-          </div>
-          <p className="text-gray-600 text-lg">
-            Harness the power of artificial intelligence to accelerate your career growth
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">AI Insights</h1>
+          <p className="text-lg text-gray-600">
+            Make data-driven career decisions with our quantum-powered AI analysis
           </p>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <Brain className="h-8 w-8 text-blue-600" />
-                <div className="ml-4">
-                  <p className="text-2xl font-bold text-gray-900">{insights.length}</p>
-                  <p className="text-gray-600">AI Features</p>
+        {/* Insights Navigation */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          {insights.map((insight) => (
+            <Card 
+              key={insight.id}
+              className={`cursor-pointer transition-all hover:shadow-lg ${
+                selectedInsight === insight.id ? 'ring-2 ring-blue-500' : ''
+              }`}
+              onClick={() => setSelectedInsight(insight.id)}
+            >
+              <CardHeader className="text-center p-4">
+                <div className={`w-12 h-12 mx-auto mb-3 rounded-full bg-${insight.color}-100 flex items-center justify-center`}>
+                  <insight.icon className={`w-6 h-6 text-${insight.color}-600`} />
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <TrendingUp className="h-8 w-8 text-green-600" />
-                <div className="ml-4">
-                  <p className="text-2xl font-bold text-gray-900">96%</p>
-                  <p className="text-gray-600">Avg Accuracy</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <Target className="h-8 w-8 text-purple-600" />
-                <div className="ml-4">
-                  <p className="text-2xl font-bold text-gray-900">4,310</p>
-                  <p className="text-gray-600">AI-Matched Jobs</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <Award className="h-8 w-8 text-yellow-600" />
-                <div className="ml-4">
-                  <p className="text-2xl font-bold text-gray-900">98%</p>
-                  <p className="text-gray-600">Success Rate</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+                <CardTitle className="text-sm">{insight.name}</CardTitle>
+                <CardDescription className="text-xs">
+                  {insight.description}
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          ))}
         </div>
 
-        {/* AI Insights Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {insights.map((insight) => {
-            const IconComponent = insight.icon
-            return (
-              <Card key={insight.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader className="pb-4">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${getColorClasses(insight.color)}`}>
-                        <IconComponent className="h-6 w-6" />
+        {/* Market Trends */}
+        {selectedInsight === 'market' && (
+          <div className="space-y-8">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <ChartBarIcon className="w-6 h-6 mr-2 text-blue-600" />
+                  Top In-Demand Skills
+                </CardTitle>
+                <CardDescription>
+                  Based on 50,000+ job postings analyzed by our AI
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {marketData.map((skill, index) => (
+                    <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-sm">
+                          {index + 1}
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">{skill.skill}</h3>
+                          <p className="text-sm text-gray-600">{skill.jobs.toLocaleString()} jobs</p>
+                        </div>
                       </div>
-                      <div>
-                        <CardTitle className="text-lg">{insight.title}</CardTitle>
-                        <CardDescription className="text-sm">{insight.category}</CardDescription>
+                      <div className="text-right">
+                        <div className="text-lg font-bold text-green-600">{skill.growth}</div>
+                        <div className="text-sm text-gray-600">growth</div>
+                      </div>
+                      <div className="w-32">
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="bg-blue-600 h-2 rounded-full" 
+                            style={{ width: `${skill.demand}%` }}
+                          ></div>
+                        </div>
+                        <div className="text-xs text-gray-500 mt-1">{skill.demand}% demand</div>
                       </div>
                     </div>
-                    <div className="flex gap-2">
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                        <Heart className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Market Predictions</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    <p className="text-sm text-gray-700 line-clamp-2">
-                      {insight.description}
-                    </p>
-                    
-                    <div className="flex items-center gap-4 text-sm">
-                      <div className="flex items-center gap-1">
-                        <Star className="h-4 w-4 text-yellow-500" />
-                        <span className="font-medium">{insight.accuracy}% accuracy</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Target className="h-4 w-4 text-blue-500" />
-                        <span className="font-medium">{insight.jobs} jobs</span>
-                      </div>
-                    </div>
-                    
-                    <div className="flex flex-wrap gap-1">
-                      {insight.features.slice(0, 3).map((feature, index) => (
-                        <Badge key={index} variant="secondary" className="text-xs">
-                          {feature}
-                        </Badge>
-                      ))}
-                      {insight.features.length > 3 && (
-                        <Badge variant="secondary" className="text-xs">
-                          +{insight.features.length - 3} more
-                        </Badge>
-                      )}
-                    </div>
-                    
-                    <div className="flex items-center justify-between pt-2">
-                      <Badge variant="default" className={getColorClasses(insight.color)}>
-                        AI Powered
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">AI/ML Jobs</span>
+                      <Badge variant="secondary" className="bg-green-100 text-green-800">
+                        +30% by 2025
                       </Badge>
-                      <Button size="sm" className="flex items-center gap-1">
-                        Try Now
-                        <ExternalLink className="h-3 w-3" />
-                      </Button>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Remote Work</span>
+                      <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                        +25% by 2025
+                      </Badge>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Green Tech</span>
+                      <Badge variant="secondary" className="bg-green-100 text-green-800">
+                        +40% by 2025
+                      </Badge>
                     </div>
                   </div>
                 </CardContent>
               </Card>
-            )
-          })}
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Salary Trends</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Tech Salaries</span>
+                      <span className="font-semibold text-green-600">+8.5% avg</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">AI/ML Engineers</span>
+                      <span className="font-semibold text-green-600">$140k-$220k</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Data Scientists</span>
+                      <span className="font-semibold text-green-600">$120k-$180k</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )}
+
+        {/* Career Paths */}
+        {selectedInsight === 'career' && (
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <FlagIcon className="w-6 h-6 mr-2 text-purple-600" />
+                  Recommended Career Progressions
+                </CardTitle>
+                <CardDescription>
+                  AI-powered career path recommendations based on your profile
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  {careerPaths.map((path, index) => (
+                    <div key={index} className="border border-gray-200 rounded-lg p-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div>
+                          <h3 className="text-lg font-semibold">{path.title}</h3>
+                          <div className="flex items-center space-x-4 mt-2 text-sm text-gray-600">
+                            <span>Duration: {path.duration}</span>
+                            <span>Salary Increase: {path.salaryIncrease}</span>
+                          </div>
+                        </div>
+                        <Badge variant={path.difficulty === 'Hard' ? 'destructive' : 'secondary'}>
+                          {path.difficulty}
+                        </Badge>
+                      </div>
+                      <div className="mb-4">
+                        <h4 className="text-sm font-medium mb-2">Skills to Develop:</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {path.skills.map((skill, skillIndex) => (
+                            <Badge key={skillIndex} variant="outline" className="text-xs">
+                              {skill}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                      <Button variant="outline" size="sm">
+                        Get Learning Path
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* AI Recommendations */}
+        <div className="mt-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg p-8 text-white">
+          <div className="text-center">
+            <RocketLaunchIcon className="w-16 h-16 mx-auto mb-4 text-yellow-300" />
+            <h2 className="text-2xl font-bold mb-4">Get Your Personal AI Insights</h2>
+            <p className="text-lg mb-6 opacity-90">
+              Upload your profile and get personalized career recommendations powered by quantum AI
+            </p>
+            <Button variant="secondary" size="lg" className="bg-white text-purple-600 hover:bg-gray-100">
+              Get My Insights
+            </Button>
+          </div>
         </div>
       </div>
     </div>
