@@ -169,6 +169,7 @@ export const EnterpriseAuthSystem: React.FC = () => {
   const handleSocialLogin = useCallback(async () => {
     try {
       console.log('🚀 Initiating Google Sign-In...')
+      toast.success('Initiating Google Sign-In...')
       
       // Google OAuth implementation
       const response = await fetch('/api/auth/google', {
@@ -185,7 +186,10 @@ export const EnterpriseAuthSystem: React.FC = () => {
           // 🚀 ALWAYS REDIRECT TO GOOGLE OAUTH (Like real Google)
           console.log('🚀 Redirecting to Google OAuth:', data.data.authUrl)
           toast.success('Redirecting to Google...')
-          window.location.href = data.data.authUrl
+          // Use setTimeout to ensure toast shows before redirect
+          setTimeout(() => {
+            window.location.href = data.data.authUrl
+          }, 1000)
         } else {
           toast.error('Google OAuth URL not received')
         }
@@ -196,7 +200,7 @@ export const EnterpriseAuthSystem: React.FC = () => {
       console.error('🚨 Social login error:', error)
       toast.error('Social login failed. Please try again.')
     }
-  }, [socialLogin])
+  }, [])
 
   // 🚀 METHOD SELECTION
   const handleMethodSelect = useCallback((method: AuthMethod['id']) => {
