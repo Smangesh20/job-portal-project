@@ -78,7 +78,7 @@ export default function TestWorking() {
         setStatus(prev => prev + '3. ✅ Redirect functionality ready\n\n')
         
         setStatus(prev => prev + '🔐 GOOGLE SIGN-IN IS WORKING!\n')
-        setStatus(prev => prev + 'Click the button below to test OAuth redirect:\n\n`)
+        setStatus(prev => prev + 'Click the button below to test OAuth redirect:\n\n')
         
         // Create working redirect button
         setTimeout(() => {
