@@ -4,40 +4,43 @@ import { NextRequest, NextResponse } from 'next/server'
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
-// 🚀 ENVIRONMENT DEBUG ENDPOINT
+// 🚀 ENVIRONMENT DEBUG
 export async function GET(request: NextRequest) {
   try {
-    const envCheck = {
-      // 🚀 GOOGLE OAUTH
-      GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID ? '✅ Set' : '❌ Missing',
-      GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET ? '✅ Set' : '❌ Missing',
-      GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI || '❌ Missing',
-      
-      // 🚀 EMAIL SERVICE
+    const envStatus = {
+      // 🚀 SENDGRID CONFIGURATION
       SENDGRID_API_KEY: process.env.SENDGRID_API_KEY ? '✅ Set' : '❌ Missing',
-      FROM_EMAIL: process.env.FROM_EMAIL || '❌ Missing',
+      SENDGRID_API_KEY_LENGTH: process.env.SENDGRID_API_KEY?.length || 0,
+      FROM_EMAIL: process.env.FROM_EMAIL || 'info@askyacham.com',
       
-      // 🚀 APP CONFIG
-      NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL || '❌ Missing',
-      NODE_ENV: process.env.NODE_ENV || '❌ Missing',
+      // 🚀 GOOGLE OAUTH CONFIGURATION
+      GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID ? '✅ Set' : '❌ Missing',
+      GOOGLE_CLIENT_ID_LENGTH: process.env.GOOGLE_CLIENT_ID?.length || 0,
+      GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET ? '✅ Set' : '❌ Missing',
+      GOOGLE_CLIENT_SECRET_LENGTH: process.env.GOOGLE_CLIENT_SECRET?.length || 0,
+      GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI || 'Not set',
       
-      // 🚀 COMPUTED VALUES
-      computed: {
-        googleRedirectUri: process.env.GOOGLE_REDIRECT_URI || `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.askyacham.com'}/api/auth/google/callback`,
-        appUrl: process.env.NEXT_PUBLIC_APP_URL || 'https://www.askyacham.com'
-      }
+      // 🚀 APP CONFIGURATION
+      NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL || 'Not set',
+      NODE_ENV: process.env.NODE_ENV || 'development',
+      
+      // 🚀 STATUS
+      EMAIL_READY: process.env.SENDGRID_API_KEY ? '✅ Ready' : '❌ Not Ready',
+      GOOGLE_READY: (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) ? '✅ Ready' : '❌ Not Ready',
+      
+      // 🚀 TIMESTAMP
+      timestamp: new Date().toISOString()
     }
 
-    console.log('🔧 Environment Check:', envCheck)
+    console.log('🔧 Environment Debug:', envStatus)
 
     return NextResponse.json({
       success: true,
-      data: envCheck,
-      message: 'Environment variables checked successfully'
+      data: envStatus
     })
-
   } catch (error) {
-    console.error('🚨 Environment check error:', error)
+    console.error('🚨 Environment debug error:', error)
+    
     return NextResponse.json({
       success: false,
       error: 'Failed to check environment variables',
