@@ -17,6 +17,8 @@ export interface AuthUser {
   authMethod?: string
   mfaEnabled?: boolean
   trustedDevices?: string[]
+  createdAt: string
+  updatedAt: string
 }
 
 export interface AuthState {
@@ -155,8 +157,8 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       // Enhanced login with Google-like features
-      login: async (email: string, password: string) => {
-        try {
+  login: async (email: string, password: string) => {
+    try {
           set((state) => {
             state.isLoading = true
             state.error = null
