@@ -567,5 +567,4 @@ export function resolveError(errorId: string, resolution: string): boolean {
   return errorEliminationSystem.resolveError(errorId, resolution)
 }
 
-// 🚀 EXPORT TYPES
-export type { ErrorInfo, ErrorPattern, ErrorStats }
+// 🚀 TYPES ALREADY EXPORTED INLINE ABOVE

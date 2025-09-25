@@ -512,5 +512,4 @@ export function createSecurityMiddleware() {
   }
 }
 
-// 🚀 EXPORT TYPES
-export type { SecurityConfig, SecurityEvent, RateLimitConfig }
+// 🚀 TYPES ALREADY EXPORTED INLINE ABOVE

@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
 
     // 🚀 LOG SECURITY EVENT
     securitySystem.logSecurityEvent({
-      type: 'password',
+      type: 'suspicious_activity',
       severity: 'low',
       ip,
       userAgent: request.headers.get('user-agent') || 'unknown',
