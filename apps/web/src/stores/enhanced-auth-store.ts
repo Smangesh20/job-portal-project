@@ -8,7 +8,7 @@ export interface AuthUser {
   firstName: string
   lastName: string
   name: string
-  role: string
+  role: 'CANDIDATE' | 'EMPLOYER' | 'ADMIN' | 'user' | 'employer' | 'admin'
   permissions: string[]
   profileImage?: string
   isVerified: boolean
@@ -64,7 +64,7 @@ export interface AuthActions {
   socialLogin: (provider: string, data: any) => Promise<void>
   register: (data: any) => Promise<void>
   logout: () => Promise<void>
-  refreshToken: () => Promise<void>
+  refreshAccessToken: () => Promise<void>
   
   // MFA actions
   setupMfa: () => Promise<any>
@@ -74,7 +74,7 @@ export interface AuthActions {
   // Security actions
   trustDevice: () => Promise<void>
   getSecurityStatus: () => Promise<any>
-  addSecurityAlert: (alert: Omit<SecurityAlert, 'id' | 'timestamp'>) => void
+  addSecurityAlert: (alert: Omit<SecurityAlert, 'id' | 'timestamp' | 'read'>) => void
   markAlertRead: (alertId: string) => void
   clearAlerts: () => void
   
@@ -157,7 +157,7 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       // Enhanced login with Google-like features
-  login: async (email: string, password: string) => {
+      login: async (email: string, password: string) => {
     try {
           set((state) => {
             state.isLoading = true
@@ -399,7 +399,7 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       // Token refresh
-      refreshToken: async () => {
+      refreshAccessToken: async () => {
         try {
           const { refreshToken } = get()
           
@@ -766,7 +766,7 @@ export const useAuthStore = create<AuthStore>()(
                 })
               } else {
                 // Token invalid, refresh it
-                await get().refreshToken()
+                await get().refreshAccessToken()
               }
             } catch (error) {
               // Token invalid, clear it
@@ -799,7 +799,7 @@ export const useAuthStore = create<AuthStore>()(
 setInterval(() => {
   const { isAuthenticated, refreshToken } = useAuthStore.getState()
   if (isAuthenticated && refreshToken) {
-    useAuthStore.getState().refreshToken()
+    useAuthStore.getState().refreshAccessToken()
   }
 }, 10 * 60 * 1000)
 
