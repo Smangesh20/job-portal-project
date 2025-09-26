@@ -8,9 +8,11 @@ export default function TestGoogleButton() {
 
   const testGoogleButton = async () => {
     setIsLoading(true)
-    setStatus('Testing Google Sign-In button...')
+    setStatus('🔍 Testing Google Sign-In button (Debug Mode)...')
 
     try {
+      console.log('🚀 Testing Google OAuth endpoint...')
+      
       // Test the Google OAuth endpoint directly
       const response = await fetch('/api/auth/google', {
         method: 'POST',
@@ -22,27 +24,26 @@ export default function TestGoogleButton() {
       console.log('🚀 Google OAuth test result:', data)
 
       if (data.success && data.data.authUrl) {
-        setStatus(`✅ Google Sign-In Button Works!\n\nOAuth URL: ${data.data.authUrl}\n\nClick below to test the OAuth flow:`)
+        setStatus(`✅ Google Sign-In Button Works!\n\nOAuth URL: ${data.data.authUrl}\n\n🎯 Google OAuth Details:\n• Provider: ${data.data.provider || 'google'}\n• Demo Mode: ${data.data.demoMode ? 'YES' : 'NO'}\n• State: ${data.data.state || 'N/A'}\n\n🚀 Click the button below to test OAuth flow:`)
         
-        // Create redirect button
-        setTimeout(() => {
-          const button = document.createElement('button')
-          button.textContent = '🚀 Test Google OAuth Redirect'
-          button.className = 'mt-4 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-semibold'
-          button.onclick = () => {
-            window.location.href = data.data.authUrl
-          }
-          const statusDiv = document.getElementById('status')
-          if (statusDiv) {
-            statusDiv.appendChild(button)
-          }
-        }, 1000)
+        // Create redirect button immediately
+        const button = document.createElement('button')
+        button.textContent = '🚀 Test Google OAuth Redirect'
+        button.className = 'mt-4 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-semibold cursor-pointer'
+        button.onclick = () => {
+          console.log('🚀 Redirecting to Google OAuth...')
+          window.location.href = data.data.authUrl
+        }
+        const statusDiv = document.getElementById('status')
+        if (statusDiv) {
+          statusDiv.appendChild(button)
+        }
       } else {
-        setStatus(`❌ Google Sign-In Button Failed:\n${data.error || 'Unknown error'}`)
+        setStatus(`❌ Google Sign-In Button Failed:\n${data.error || 'Unknown error'}\n\n🔍 Debug Info:\n${JSON.stringify(data, null, 2)}`)
       }
     } catch (error) {
       console.error('🚨 Google button test error:', error)
-      setStatus(`❌ Google Button Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      setStatus(`❌ Google Button Error: ${error instanceof Error ? error.message : 'Unknown error'}\n\n🔍 Full Error:\n${JSON.stringify(error, null, 2)}`)
     } finally {
       setIsLoading(false)
     }
@@ -50,29 +51,28 @@ export default function TestGoogleButton() {
 
   const testEmailDelivery = async () => {
     setIsLoading(true)
-    setStatus('🚀 Testing Google-Level Email Delivery...')
+    setStatus('🚀 Testing Simple Email Delivery (Debug Mode)...')
 
     try {
-      const response = await fetch('/api/email-google-level', {
+      const response = await fetch('/api/email-simple-test', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          email: 'pullareddypullareddy20@gmail.com',
-          type: 'test'
+          email: 'pullareddypullareddy20@gmail.com'
         })
       })
 
       const data = await response.json()
-      console.log('🚀 Google-level email test result:', data)
+      console.log('🚀 Simple email test result:', data)
 
       if (data.success) {
-        setStatus(`✅ GOOGLE-LEVEL EMAIL DELIVERED!\n\n📧 Email Details:\n• To: ${data.data.email}\n• From: ${data.data.fromEmail}\n• Message ID: ${data.data.messageId}\n• Type: ${data.data.type}\n• Google-Level: ${data.data.googleLevel ? 'YES' : 'NO'}\n• Delivery Status: ${data.data.deliveryStatus}\n\n🎯 Google-Level Features:\n${data.data.features.map((f: string) => `• ${f}`).join('\n')}\n\n✅ CHECK YOUR EMAIL NOW!`)
+        setStatus(`✅ SIMPLE EMAIL DELIVERED!\n\n📧 Email Details:\n• To: ${data.data.email}\n• From: ${data.data.fromEmail}\n• Message ID: ${data.data.messageId}\n• Timestamp: ${data.data.timestamp}\n\n🎯 SendGrid Response:\n${JSON.stringify(data.data.sendGridResponse, null, 2)}\n\n✅ CHECK YOUR EMAIL NOW!`)
       } else {
-        setStatus(`❌ Google-Level Email Failed:\n${data.error}\n\nDetails: ${data.details || 'No details available'}`)
+        setStatus(`❌ Simple Email Failed:\n${data.error}\n\nDetails: ${data.details || 'No details available'}\n\n🔍 Debug Info:\n${JSON.stringify(data.debug, null, 2)}`)
       }
     } catch (error) {
-      console.error('🚨 Google-level email test error:', error)
-      setStatus(`❌ Google-Level Email Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      console.error('🚨 Simple email test error:', error)
+      setStatus(`❌ Simple Email Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setIsLoading(false)
     }
@@ -110,11 +110,11 @@ export default function TestGoogleButton() {
 
   const checkStatus = async () => {
     try {
-      const response = await fetch('/api/email-google-level')
+      const response = await fetch('/api/email-simple-test')
       const data = await response.json()
       
       if (data.success) {
-        setStatus(`🔧 Google-Level Email Service Status:\n\nService: ${data.data.service}\nStatus: ${data.data.status}\nSendGrid Configured: ${data.data.sendGridConfigured ? 'YES' : 'NO'}\nFrom Email: ${data.data.fromEmail}\n\n🎯 Google-Level Features:\n${data.data.features.map((f: string) => `• ${f}`).join('\n')}\n\nLast Updated: ${data.data.lastUpdated}`)
+        setStatus(`🔧 Simple Email Service Status:\n\nService: ${data.data.service}\nStatus: ${data.data.status}\nSendGrid Configured: ${data.data.sendGridConfigured ? 'YES' : 'NO'}\nFrom Email: ${data.data.fromEmail}\nNode Environment: ${data.data.nodeEnv}\n\nLast Updated: ${data.data.lastUpdated}`)
       } else {
         setStatus(`❌ Status check failed: ${data.error}`)
       }
@@ -130,14 +130,20 @@ export default function TestGoogleButton() {
           🚀 Google Sign-In & Email - ENTERPRISE LEVEL
         </h1>
         
-        {/* 🚀 GOOGLE SIGN-IN BUTTON - LIKE REAL GOOGLE */}
-        <div className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-red-50 border border-blue-200 rounded-lg">
-          <h3 className="text-blue-800 font-semibold mb-4 text-center">🔐 Google Sign-In (Like Real Google)</h3>
+        {/* 🚀 GOOGLE SIGN-IN BUTTON - EXACTLY LIKE GOOGLE */}
+        <div className="mb-8 p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+          <h3 className="text-gray-800 font-semibold mb-4 text-center">🔐 Sign in with Google</h3>
           <div className="flex justify-center">
             <button
               onClick={testGoogleButton}
               disabled={isLoading}
-              className="flex items-center justify-center bg-white border-2 border-gray-300 hover:border-blue-500 hover:shadow-lg text-gray-700 font-semibold py-3 px-6 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed min-w-[200px]"
+              className="flex items-center justify-center bg-white border border-gray-300 hover:bg-gray-50 hover:shadow-md text-gray-700 font-medium py-2.5 px-4 rounded-md transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed min-w-[240px] text-sm"
+              style={{ 
+                fontFamily: 'Roboto, Arial, sans-serif',
+                fontSize: '14px',
+                fontWeight: '500',
+                letterSpacing: '0.25px'
+              }}
             >
               <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
