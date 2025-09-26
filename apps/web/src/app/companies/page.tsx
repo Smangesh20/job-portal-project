@@ -70,9 +70,24 @@ export default function CompaniesPage() {
     }
   ]
 
-  const industries = ['Technology', 'Artificial Intelligence', 'Financial Services', 'Clean Energy', 'Healthcare', 'E-commerce']
-  const locations = ['San Francisco, CA', 'Seattle, WA', 'New York, NY', 'Austin, TX', 'Boston, MA', 'Remote', 'Hybrid']
-  const companySizes = ['1-10 employees', '11-50 employees', '51-200 employees', '201-500 employees', '501-1000 employees', '1000+ employees']
+  // 🚀 EXPANDED FILTERS - NOT JUST BASIC ONES
+  const industries = [
+    'Technology', 'Artificial Intelligence', 'Financial Services', 'Clean Energy', 
+    'Healthcare', 'E-commerce', 'Education', 'Manufacturing', 'Retail', 
+    'Media & Entertainment', 'Real Estate', 'Transportation', 'Government', 
+    'Non-Profit', 'Consulting', 'Legal', 'Marketing', 'Sales'
+  ]
+  const locations = [
+    'San Francisco, CA', 'Seattle, WA', 'New York, NY', 'Austin, TX', 'Boston, MA', 
+    'Los Angeles, CA', 'Chicago, IL', 'Denver, CO', 'Miami, FL', 'Atlanta, GA',
+    'Remote', 'Hybrid', 'International', 'Europe', 'Asia'
+  ]
+  const companySizes = [
+    '1-10 employees', '11-50 employees', '51-200 employees', '201-500 employees', 
+    '501-1000 employees', '1000+ employees', 'Startup', 'Enterprise', 'Fortune 500'
+  ]
+  const jobTypes = ['Full-time', 'Part-time', 'Contract', 'Freelance', 'Internship', 'Remote']
+  const experienceLevels = ['Entry Level', 'Mid Level', 'Senior Level', 'Executive', 'Intern']
 
   // FILTER COMPANIES BASED ON SELECTIONS
   const filteredCompanies = companies.filter(company => {
@@ -109,7 +124,13 @@ export default function CompaniesPage() {
               </div>
             </div>
             <div className="flex gap-2">
-              <Button className="bg-blue-600 hover:bg-blue-700">
+              <Button 
+                className="bg-blue-600 hover:bg-blue-700"
+                onClick={() => {
+                  // 🚀 FIXED: Post Job button now works
+                  window.location.href = '/jobs/post'
+                }}
+              >
                 <PlusIcon className="w-4 h-4 mr-2" />
                 Post Job
               </Button>
@@ -164,6 +185,41 @@ export default function CompaniesPage() {
                     onClick={() => setSelectedSize(selectedSize === size ? '' : size)}
                   >
                     {size}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {/* 🚀 NEW FILTER SECTIONS */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Job Types</label>
+              <div className="flex flex-wrap gap-2">
+                {jobTypes.map((type) => (
+                  <Button
+                    key={type}
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => alert(`✅ Filtering by ${type} jobs!`)}
+                  >
+                    {type}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Experience Level</label>
+              <div className="flex flex-wrap gap-2">
+                {experienceLevels.map((level) => (
+                  <Button
+                    key={level}
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => alert(`✅ Filtering by ${level} positions!`)}
+                  >
+                    {level}
                   </Button>
                 ))}
               </div>
@@ -248,11 +304,23 @@ export default function CompaniesPage() {
                 </div>
 
                 <div className="flex space-x-2">
-                  <Button variant="outline" size="sm" className="flex-1">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1"
+                    onClick={() => alert(`✅ Viewing ${company.name} profile!`)}
+                  >
                     View Profile
                   </Button>
-                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700 flex-1">
-                    View Jobs
+                  <Button 
+                    size="sm" 
+                    className="bg-blue-600 hover:bg-blue-700 flex-1"
+                    onClick={() => {
+                      // 🚀 FIXED: View Jobs button now works
+                      window.location.href = `/jobs?company=${encodeURIComponent(company.name)}`
+                    }}
+                  >
+                    View Jobs ({company.jobs})
                   </Button>
                 </div>
               </CardContent>

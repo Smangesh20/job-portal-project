@@ -137,8 +137,15 @@ export default function ProfilePage() {
         userId: user.id,
         email: user.email,
         name: `${formData.firstName || user.firstName} ${formData.lastName || user.lastName}`,
-        updatedAt: new Date().toISOString()
-      }
+        updatedAt: new Date().toISOString(),
+        preferences: {
+          theme: 'light',
+          notifications: true,
+          emailNotifications: true,
+          smsNotifications: false,
+          ...profile?.preferences
+        }
+      } as UserProfile
       
       setProfile(updatedProfile)
       toast.success('✅ Profile updated successfully!')
