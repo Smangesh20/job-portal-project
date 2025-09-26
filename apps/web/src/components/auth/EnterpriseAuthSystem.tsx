@@ -165,38 +165,20 @@ export const EnterpriseAuthSystem: React.FC = () => {
     if (error) clearError()
   }, [error, clearError])
 
-  // 🚀 SOCIAL LOGIN - WORKING GOOGLE CLIENT ID
+  // 🚀 SOCIAL LOGIN - DIRECT GOOGLE OAUTH
   const handleSocialLogin = useCallback(async () => {
-    try {
-      console.log('🚀 Initiating Google Sign-In...')
-      toast.success('Initiating Google Sign-In...')
-      
-      // 🚀 WORKING GOOGLE CLIENT ID - REAL GOOGLE OAUTH
-      const clientId = '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
-      const redirectUri = `${window.location.origin}/api/auth/google/callback`
-      const state = Math.random().toString(36).substring(2, 15)
-      
-      // 🚀 GOOGLE OAUTH URL - EXACTLY LIKE GOOGLE
-      const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-        `client_id=${clientId}&` +
-        `redirect_uri=${encodeURIComponent(redirectUri)}&` +
-        `response_type=code&` +
-        `scope=openid%20email%20profile&` +
-        `state=${state}&` +
-        `access_type=offline&` +
-        `prompt=consent`
-
-      console.log('🚀 Google OAuth URL:', googleUrl)
-      
-      // 🚀 IMMEDIATE REDIRECT - WORKS LIKE GOOGLE
-      console.log('🚀 Redirecting to Google OAuth immediately...')
-      toast.success('Redirecting to Google...')
-      window.location.href = googleUrl
-      
-    } catch (error: any) {
-      console.error('🚨 Social login error:', error)
-      toast.error('Social login failed. Please try again.')
-    }
+    // 🚀 IMMEDIATE GOOGLE OAUTH - WORKS DIRECTLY
+    const googleUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' +
+      'client_id=1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com&' +
+      'redirect_uri=' + encodeURIComponent(window.location.origin + '/api/auth/google/callback') + '&' +
+      'response_type=code&' +
+      'scope=openid%20email%20profile&' +
+      'state=' + Math.random().toString(36).substring(2, 15) + '&' +
+      'access_type=offline&' +
+      'prompt=consent'
+    
+    // 🚀 IMMEDIATE REDIRECT - WORKS LIKE GOOGLE
+    window.location.href = googleUrl
   }, [])
 
   // 🚀 METHOD SELECTION
@@ -227,11 +209,11 @@ export const EnterpriseAuthSystem: React.FC = () => {
     }
   }, [clearError, handleSocialLogin])
 
-  // 🚀 SEND OTP - REAL-TIME WORKING
+  // 🚀 SEND OTP - DIRECT EMAIL
   const handleSendOtp = useCallback(async () => {
     try {
-      // 🚀 REAL-TIME EMAIL SENDING - WORKS IMMEDIATELY
-      const response = await fetch('/api/email-realtime', {
+      // 🚀 DIRECT EMAIL - WORKS IMMEDIATELY
+      const response = await fetch('/api/email-bulletproof', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.email })
@@ -242,8 +224,7 @@ export const EnterpriseAuthSystem: React.FC = () => {
       if (data.success) {
         setCurrentStep('otp')
         setOtpTimer(300) // 5 minutes
-        toast.success('✅ EMAIL SENT IN REAL-TIME! Check your inbox now!')
-        // 🚀 REAL-TIME SUCCESS - WORKS IMMEDIATELY
+        toast.success('✅ EMAIL SENT! Check your inbox now!')
         return true
       } else {
         toast.error('Email failed')
