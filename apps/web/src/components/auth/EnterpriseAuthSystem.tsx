@@ -165,11 +165,19 @@ export const EnterpriseAuthSystem: React.FC = () => {
     if (error) clearError()
   }, [error, clearError])
 
-  // 🚀 SOCIAL LOGIN - DIRECT GOOGLE OAUTH
+  // 🚀 SOCIAL LOGIN - USES YOUR GOOGLE CLIENT ID
   const handleSocialLogin = useCallback(async () => {
-    // 🚀 IMMEDIATE GOOGLE OAUTH - WORKS DIRECTLY
+    // 🚀 USE YOUR GOOGLE CLIENT ID FROM ENV VARIABLES
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID_HERE'
+    
+    if (clientId === 'YOUR_GOOGLE_CLIENT_ID_HERE') {
+      toast.error('Please set NEXT_PUBLIC_GOOGLE_CLIENT_ID environment variable')
+      return
+    }
+    
+    // 🚀 REAL GOOGLE OAUTH - USES YOUR CLIENT ID
     const googleUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' +
-      'client_id=1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com&' +
+      'client_id=' + clientId + '&' +
       'redirect_uri=' + encodeURIComponent(window.location.origin + '/api/auth/google/callback') + '&' +
       'response_type=code&' +
       'scope=openid%20email%20profile&' +
@@ -209,11 +217,11 @@ export const EnterpriseAuthSystem: React.FC = () => {
     }
   }, [clearError, handleSocialLogin])
 
-  // 🚀 SEND OTP - DIRECT EMAIL
+  // 🚀 SEND OTP - USES YOUR SENDGRID API KEY
   const handleSendOtp = useCallback(async () => {
     try {
-      // 🚀 DIRECT EMAIL - WORKS IMMEDIATELY
-      const response = await fetch('/api/email-bulletproof', {
+      // 🚀 USE YOUR SENDGRID API KEY - REAL EMAIL DELIVERY
+      const response = await fetch('/api/email-send-now', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.email })
@@ -227,7 +235,11 @@ export const EnterpriseAuthSystem: React.FC = () => {
         toast.success('✅ EMAIL SENT! Check your inbox now!')
         return true
       } else {
-        toast.error('Email failed')
+        if (data.error.includes('SendGrid')) {
+          toast.error('Please set SENDGRID_API_KEY environment variable')
+        } else {
+          toast.error('Email failed: ' + data.error)
+        }
         return false
       }
     } catch (error: any) {
