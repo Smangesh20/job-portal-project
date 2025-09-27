@@ -7,12 +7,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { 
   EnvelopeIcon,
   LockClosedIcon,
+  UserIcon,
   CheckCircleIcon
 } from '@heroicons/react/24/outline'
 import { toast } from 'react-hot-toast'
 
-// 🚀 WORKING AUTHENTICATION COMPONENT
-export const EnterpriseAuthSystem: React.FC = () => {
+export const WorkingAuthSystem: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -251,4 +251,4 @@ export const EnterpriseAuthSystem: React.FC = () => {
   )
 }
 
-export default EnterpriseAuthSystem
+export default WorkingAuthSystem
