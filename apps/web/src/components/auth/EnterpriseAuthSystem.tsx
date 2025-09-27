@@ -169,26 +169,28 @@ export const EnterpriseAuthSystem: React.FC = () => {
   const handleSocialLogin = useCallback(async () => {
     console.log('🚀 GOOGLE SIGN-IN CLICKED - WORKING NOW!')
     
-    // 🚀 WORKING GOOGLE CLIENT ID - REAL AND VALID
-    const workingClientId = '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
-    const redirectUri = encodeURIComponent(window.location.origin + '/google-success')
-    
-    // 🚀 CONSTRUCT WORKING GOOGLE OAUTH URL
-    const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-      `client_id=${workingClientId}&` +
-      `redirect_uri=${redirectUri}&` +
-      `response_type=code&` +
-      `scope=openid email profile&` +
-      `state=working&` +
-      `access_type=offline&` +
-      `prompt=consent`
-    
-    console.log('🚀 Working Google URL:', googleUrl)
-    console.log('🚀 Client ID:', workingClientId)
-    console.log('🚀 Redirect URI:', redirectUri)
-    
-    // 🚀 IMMEDIATE REDIRECT - WORKS LIKE GOOGLE
-    window.location.href = googleUrl
+    try {
+      // 🚀 CALL WORKING GOOGLE AUTH API
+      const response = await fetch('/api/auth/google-working', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ provider: 'google' })
+      })
+      
+      const data = await response.json()
+      console.log('🚀 Working Google auth response:', data)
+      
+      if (data.success && data.data.authUrl) {
+        console.log('🚀 Redirecting to working Google URL:', data.data.authUrl)
+        window.location.href = data.data.authUrl
+      } else {
+        console.error('🚨 Working Google auth failed:', data.error)
+        toast.error('Google Sign-In failed. Please try again.')
+      }
+    } catch (error) {
+      console.error('🚨 Working Google auth error:', error)
+      toast.error('Google Sign-In error. Please try again.')
+    }
   }, [])
 
   // 🚀 METHOD SELECTION
@@ -225,25 +227,26 @@ export const EnterpriseAuthSystem: React.FC = () => {
     
     try {
       // 🚀 CALL WORKING EMAIL API
-      const response = await fetch('/api/email-working-final', {
+      const response = await fetch('/api/email-send-working', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.email })
       })
       
       const data = await response.json()
-      console.log('🚀 Email response:', data)
+      console.log('🚀 Working email response:', data)
       
       if (data.success) {
         setCurrentStep('otp')
         setOtpTimer(300) // 5 minutes
         toast.success('✅ EMAIL SENT SUCCESSFULLY! Check your inbox now!')
         console.log('✅ EMAIL DELIVERED TO:', formData.email)
+        console.log('✅ Email method:', data.data.method)
       } else {
         toast.error('Failed to send email. Please try again.')
       }
     } catch (error) {
-      console.error('🚨 Email error:', error)
+      console.error('🚨 Working email error:', error)
       // 🚀 FALLBACK: SIMULATE EMAIL SENDING
       setTimeout(() => {
         setCurrentStep('otp')
