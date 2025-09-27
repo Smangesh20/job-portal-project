@@ -15,8 +15,8 @@ export default function SignupPage() {
 
   // 🚀 GOOGLE SIGN-UP - WORKS EXACTLY LIKE GOOGLE
   const handleGoogleSignUp = () => {
-    // 🚀 GOOGLE SIGN-IN PAGE - WORKS LIKE GOOGLE
-    const googleUrl = `https://accounts.google.com/signin/v2/identifier?flowName=GlifWebSignIn&flowEntry=ServiceLogin&continue=${encodeURIComponent(window.location.origin + '/dashboard?google_signup=success')}`
+    // 🚀 SIMPLE GOOGLE REDIRECT - WORKS LIKE GOOGLE
+    const googleUrl = `https://www.google.com/accounts/ServiceLogin?continue=${encodeURIComponent(window.location.origin + '/dashboard?google_signup=success')}`
     
     // 🚀 REDIRECT TO GOOGLE LIKE GOOGLE DOES
     window.location.href = googleUrl
