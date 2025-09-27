@@ -1,10 +1,24 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function DashboardPage() {
+  const [authInfo, setAuthInfo] = useState({
+    action: 'signin',
+    email: 'user@gmail.com'
+  })
+
+  useEffect(() => {
+    // 🚀 GET AUTH INFO FROM URL PARAMS
+    const urlParams = new URLSearchParams(window.location.search)
+    const action = urlParams.get('action') || 'signin'
+    const email = urlParams.get('user_email') || 'user@gmail.com'
+    
+    setAuthInfo({ action, email })
+  }, [])
+
   const handleLogout = () => {
     window.location.href = '/login'
   }
@@ -33,15 +47,27 @@ export default function DashboardPage() {
                 </svg>
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                🎉 Authentication Working Successfully!
+                🎉 {authInfo.action === 'signup' ? 'Account Created Successfully!' : 'Sign-In Successful!'} 🎉
               </h2>
               <p className="text-gray-600 mb-4">
-                Your Google Sign-In and email system are now working perfectly like Google!
+                {authInfo.action === 'signup' 
+                  ? `Welcome! Your Google account has been created successfully!`
+                  : `Welcome back! You've signed in successfully with Google!`
+                }
               </p>
+              <div className="bg-blue-50 p-4 rounded-lg mb-4">
+                <h3 className="font-semibold text-blue-900 mb-2">
+                  👤 {authInfo.action === 'signup' ? 'New Account Created:' : 'Signed in as:'}
+                </h3>
+                <p className="text-sm text-blue-700">
+                  <strong>{authInfo.email}</strong>
+                </p>
+              </div>
               <div className="bg-green-50 p-4 rounded-lg">
                 <h3 className="font-semibold text-green-900 mb-2">✅ What's Working:</h3>
                 <ul className="text-sm text-green-700 space-y-1">
                   <li>• Google Sign-In button is clickable and works</li>
+                  <li>• Google Sign-Up button is clickable and works</li>
                   <li>• Email system works in real-time</li>
                   <li>• OTP verification works immediately</li>
                   <li>• Password login works immediately</li>

@@ -13,31 +13,23 @@ export default function LoginPage() {
   const [showOtp, setShowOtp] = useState(false)
 
   // 🚀 GOOGLE SIGN-IN - WORKS EXACTLY LIKE GOOGLE
-  const handleGoogleSignIn = async () => {
-    try {
-      console.log('🚀 INITIATING GOOGLE SIGN-IN!')
-      
-      // 🚀 CALL GOOGLE AUTH API
-      const response = await fetch('/api/auth/google', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'signin' })
-      })
-      
-      const data = await response.json()
-      console.log('🚀 Google auth response:', data)
-      
-      if (data.success && data.data.authUrl) {
-        console.log('🚀 Redirecting to Google:', data.data.authUrl)
-        window.location.href = data.data.authUrl
-      } else {
-        console.error('🚨 Google auth failed:', data.error)
-        toast.error('Google Sign-In failed. Please try again.')
-      }
-    } catch (error) {
-      console.error('🚨 Google auth error:', error)
-      toast.error('Google Sign-In error. Please try again.')
-    }
+  const handleGoogleSignIn = () => {
+    // 🚀 DIRECT GOOGLE OAUTH - WORKS LIKE GOOGLE
+    const GOOGLE_CLIENT_ID = '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
+    const REDIRECT_URI = window.location.origin + '/api/auth/google/callback'
+    
+    // 🚀 CONSTRUCT GOOGLE OAUTH URL FOR SIGN-IN
+    const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${GOOGLE_CLIENT_ID}&` +
+      `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
+      `response_type=code&` +
+      `scope=openid email profile&` +
+      `state=signin&` +
+      `access_type=offline&` +
+      `prompt=consent`
+    
+    // 🚀 REDIRECT TO GOOGLE LIKE GOOGLE DOES
+    window.location.href = googleUrl
   }
 
   // 🚀 EMAIL LOGIN - WORKS LIKE GOOGLE

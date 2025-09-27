@@ -34,10 +34,12 @@ export async function GET(request: NextRequest) {
     }
     
     console.log('✅ Google authentication successful:', userData)
+    console.log('🚀 Action type:', state)
     
     // 🚀 REDIRECT TO DASHBOARD WITH SUCCESS
     const redirectUrl = new URL('/dashboard', request.url)
-    redirectUrl.searchParams.set('google_signin', 'success')
+    redirectUrl.searchParams.set('google_auth', 'success')
+    redirectUrl.searchParams.set('action', state || 'signin')
     redirectUrl.searchParams.set('user_email', userData.email)
     
     return NextResponse.redirect(redirectUrl)
