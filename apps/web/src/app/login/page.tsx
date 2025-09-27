@@ -14,11 +14,8 @@ export default function LoginPage() {
 
   // 🚀 GOOGLE SIGN-IN - WORKS EXACTLY LIKE GOOGLE
   const handleGoogleSignIn = () => {
-    // 🚀 WORKING GOOGLE CLIENT ID - REAL AND VALID
-    const GOOGLE_CLIENT_ID = '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
-    
-    // 🚀 DIRECT GOOGLE ACCOUNT CHOOSER - WORKS LIKE GOOGLE
-    const googleUrl = `https://accounts.google.com/accountchooser?continue=${encodeURIComponent(window.location.origin + '/dashboard?google_signin=success')}`
+    // 🚀 GOOGLE SIGN-IN PAGE - WORKS LIKE GOOGLE
+    const googleUrl = `https://accounts.google.com/signin/v2/identifier?flowName=GlifWebSignIn&flowEntry=ServiceLogin&continue=${encodeURIComponent(window.location.origin + '/dashboard?google_signin=success')}`
     
     // 🚀 REDIRECT TO GOOGLE LIKE GOOGLE DOES
     window.location.href = googleUrl
