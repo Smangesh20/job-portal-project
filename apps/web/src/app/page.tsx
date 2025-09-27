@@ -39,9 +39,9 @@ export default function HomePage() {
 
   const handleGetStarted = () => {
     if (email) {
-      router.push(`/auth/register?email=${encodeURIComponent(email)}`)
+      router.push(`/signup?email=${encodeURIComponent(email)}`)
     } else {
-      router.push('/auth/register')
+      router.push('/signup')
     }
   }
 
