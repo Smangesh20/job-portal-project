@@ -7,3 +7,5 @@ import EnhancedPasswordRecovery from '@/components/auth/EnhancedPasswordRecovery
 export default function ForgotPasswordPage() {
   return <EnhancedPasswordRecovery />
 }
+
+

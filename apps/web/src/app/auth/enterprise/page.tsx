@@ -7,3 +7,5 @@ import EnterpriseAuthSystem from '@/components/auth/EnterpriseAuthSystem'
 export default function EnterpriseAuthPage() {
   return <EnterpriseAuthSystem />
 }
+
+

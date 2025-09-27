@@ -7,3 +7,5 @@ import MFASetup from '@/components/auth/MFASetup'
 export default function MFASetupPage() {
   return <MFASetup onComplete={() => window.location.href = '/dashboard'} />
 }
+
+
