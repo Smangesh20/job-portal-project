@@ -5,8 +5,11 @@ export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
 export async function POST(request: NextRequest) {
+  let email = 'unknown'
+  
   try {
-    const { email } = await request.json()
+    const requestData = await request.json()
+    email = requestData.email
 
     if (!email) {
       return NextResponse.json({ success: false, error: 'Email is required' }, { status: 400 })
@@ -89,7 +92,7 @@ export async function POST(request: NextRequest) {
       success: true,
       message: '🚀 EMAIL SENT SUCCESSFULLY (Fallback)!',
       data: {
-        email: email || 'unknown',
+        email: email,
         fromEmail: 'info@askyacham.com',
         messageId: fallbackMessageId,
         status: 'Fallback Delivered',
