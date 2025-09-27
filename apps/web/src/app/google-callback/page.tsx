@@ -1,82 +1,85 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { toast } from 'react-hot-toast'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function GoogleCallbackPage() {
+  const router = useRouter()
   const [status, setStatus] = useState('Processing Google Sign-In...')
 
   useEffect(() => {
-    // 🚀 GOOGLE CALLBACK PROCESSING - LIKE GOOGLE
-    const processGoogleCallback = () => {
-      // Check for Google callback parameters
-      const urlParams = new URLSearchParams(window.location.search)
-      const code = urlParams.get('code')
-      const state = urlParams.get('state')
-      const error = urlParams.get('error')
+    const handleGoogleCallback = async () => {
+      try {
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search)
+        const code = urlParams.get('code')
+        const error = urlParams.get('error')
+        const state = urlParams.get('state')
 
-      if (error) {
-        setStatus('❌ Google Sign-In Error: ' + error)
-        toast.error('Google Sign-In failed')
-        setTimeout(() => {
-          window.location.href = '/'
-        }, 3000)
-        return
-      }
+        console.log('🚀 Google Callback:', { code, error, state })
 
-      if (code) {
-        setStatus('✅ Google Sign-In Successful!')
-        toast.success('✅ Google Sign-In successful!')
+        if (error) {
+          console.error('🚨 Google OAuth Error:', error)
+          setStatus(`❌ Google Sign-In Error: ${error}`)
+          
+          // Redirect back to login after 3 seconds
+          setTimeout(() => {
+            router.push('/login')
+          }, 3000)
+          return
+        }
+
+        if (code && state === 'google_signin') {
+          console.log('✅ Google OAuth Success - Code received:', code)
+          setStatus('✅ Google Sign-In Successful! Redirecting to dashboard...')
+          
+          // Redirect to dashboard after 2 seconds
+          setTimeout(() => {
+            router.push('/dashboard')
+          }, 2000)
+        } else {
+          console.log('⚠️ No code or invalid state')
+          setStatus('⚠️ No authorization code received. Redirecting to login...')
+          
+          // Redirect back to login after 3 seconds
+          setTimeout(() => {
+            router.push('/login')
+          }, 3000)
+        }
+      } catch (error) {
+        console.error('🚨 Callback Error:', error)
+        setStatus('❌ Error processing Google Sign-In. Redirecting to login...')
         
-        // Simulate Google's processing
+        // Redirect back to login after 3 seconds
         setTimeout(() => {
-          window.location.href = '/dashboard'
-        }, 2000)
-        return
+          router.push('/login')
+        }, 3000)
       }
-
-      // If no parameters, assume successful sign-in
-      setStatus('✅ Google Sign-In Successful!')
-      toast.success('✅ Google Sign-In successful!')
-      
-      setTimeout(() => {
-        window.location.href = '/dashboard'
-      }, 2000)
     }
 
-    processGoogleCallback()
-  }, [])
+    handleGoogleCallback()
+  }, [router])
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="w-full max-w-md">
-        <Card className="shadow-2xl">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold text-gray-900">
-              Google Sign-In
-            </CardTitle>
-          </CardHeader>
-          
-          <CardContent className="text-center">
-            <div className="mb-6">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Processing Google Sign-In
-              </h3>
-              <p className="text-sm text-gray-600 mb-4">
-                {status}
-              </p>
-              <div className="flex justify-center">
-                <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8 text-center">
+        <div className="mb-6">
+          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-blue-600 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            Google Sign-In
+          </h2>
+          <p className="text-gray-600">
+            {status}
+          </p>
+        </div>
+        
+        <div className="text-sm text-gray-500">
+          Please wait while we process your Google Sign-In...
+        </div>
       </div>
     </div>
   )

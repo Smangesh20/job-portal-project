@@ -35,10 +35,7 @@ export default function HomePage() {
   const { user, isAuthenticated } = useAuth()
   const [email, setEmail] = useState('')
 
-  // Always redirect to login - working system
-  useEffect(() => {
-    router.push('/login')
-  }, [router])
+  // Show landing page - no automatic redirect
 
   const handleGetStarted = () => {
     if (email) {

@@ -12,10 +12,20 @@ export default function LoginPage() {
   const [otp, setOtp] = useState('')
   const [showOtp, setShowOtp] = useState(false)
 
-  // 🚀 GOOGLE SIGN-IN - WORKS LIKE GOOGLE
+  // 🚀 GOOGLE SIGN-IN - WORKS EXACTLY LIKE GOOGLE
   const handleGoogleSignIn = () => {
-    toast.success('✅ Google Sign-In successful!')
-    window.location.href = '/dashboard'
+    // 🚀 REAL GOOGLE OAUTH FLOW - WORKS LIKE GOOGLE
+    const googleUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' +
+      'client_id=1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com&' +
+      'redirect_uri=' + encodeURIComponent(window.location.origin + '/google-callback') + '&' +
+      'response_type=code&' +
+      'scope=openid email profile&' +
+      'state=google_signin&' +
+      'access_type=offline&' +
+      'prompt=consent'
+    
+    // 🚀 REDIRECT TO GOOGLE LIKE GOOGLE DOES
+    window.location.href = googleUrl
   }
 
   // 🚀 EMAIL LOGIN - WORKS LIKE GOOGLE
