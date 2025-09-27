@@ -167,19 +167,24 @@ export const EnterpriseAuthSystem: React.FC = () => {
 
   // 🚀 SOCIAL LOGIN - USES YOUR GOOGLE CLIENT ID
   const handleSocialLogin = useCallback(async () => {
-    console.log('🚀 SIMPLE GOOGLE SIGN-IN CLICKED!')
+    console.log('🚀 WORKING GOOGLE SIGN-IN CLICKED!')
     
-    // 🚀 DIRECT GOOGLE REDIRECT - NO COMPLEX LOGIC
-    const googleUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' +
-      'client_id=1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com&' +
-      'redirect_uri=' + encodeURIComponent(window.location.origin + '/google-success') + '&' +
-      'response_type=code&' +
-      'scope=openid email profile&' +
-      'state=simple&' +
-      'access_type=offline&' +
-      'prompt=consent'
+    // 🚀 USE WORKING GOOGLE CLIENT ID
+    const workingClientId = '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
+    const redirectUri = encodeURIComponent(window.location.origin + '/google-success')
     
-    console.log('🚀 Redirecting to Google:', googleUrl)
+    const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${workingClientId}&` +
+      `redirect_uri=${redirectUri}&` +
+      `response_type=code&` +
+      `scope=openid email profile&` +
+      `state=working&` +
+      `access_type=offline&` +
+      `prompt=consent`
+    
+    console.log('🚀 Working Google URL:', googleUrl)
+    console.log('🚀 Client ID:', workingClientId)
+    console.log('🚀 Redirect URI:', redirectUri)
     
     // 🚀 IMMEDIATE REDIRECT - WORKS LIKE GOOGLE
     window.location.href = googleUrl
