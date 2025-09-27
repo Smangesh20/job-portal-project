@@ -35,12 +35,10 @@ export default function HomePage() {
   const { user, isAuthenticated } = useAuth()
   const [email, setEmail] = useState('')
 
-  // Redirect authenticated users to dashboard
+  // Always redirect to login - working system
   useEffect(() => {
-    if (isAuthenticated && user) {
-      router.push('/dashboard')
-    }
-  }, [isAuthenticated, user, router])
+    router.push('/login')
+  }, [router])
 
   const handleGetStarted = () => {
     if (email) {
