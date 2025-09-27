@@ -14,8 +14,13 @@ export default function HomePage() {
 
   // 🚀 GOOGLE SIGN-IN - WORKS LIKE GOOGLE
   const handleGoogleSignIn = () => {
-    toast.success('✅ Google Sign-In successful!')
-    window.location.href = '/dashboard'
+    // 🚀 GOOGLE'S ACTUAL PROCESS - LIKE GOOGLE
+    toast.success('🚀 Redirecting to Google...')
+    
+    // Use Google's actual sign-in URL with callback
+    const callbackUrl = encodeURIComponent(window.location.origin + '/google-callback')
+    const googleUrl = `https://accounts.google.com/signin/v2/identifier?flowName=GlifWebSignIn&flowEntry=ServiceLogin&continue=${callbackUrl}`
+    window.location.href = googleUrl
   }
 
   // 🚀 EMAIL LOGIN - WORKS LIKE GOOGLE
