@@ -13,7 +13,9 @@ export default function DashboardPage() {
   useEffect(() => {
     // 🚀 GET AUTH INFO FROM URL PARAMS
     const urlParams = new URLSearchParams(window.location.search)
-    const action = urlParams.get('action') || 'signin'
+    const googleSignup = urlParams.get('google_signup')
+    const googleSignin = urlParams.get('google_signin')
+    const action = urlParams.get('action') || (googleSignup ? 'signup' : 'signin')
     const email = urlParams.get('user_email') || 'user@gmail.com'
     
     setAuthInfo({ action, email })

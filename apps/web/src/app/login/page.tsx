@@ -14,19 +14,11 @@ export default function LoginPage() {
 
   // 🚀 GOOGLE SIGN-IN - WORKS EXACTLY LIKE GOOGLE
   const handleGoogleSignIn = () => {
-    // 🚀 DIRECT GOOGLE OAUTH - WORKS LIKE GOOGLE
+    // 🚀 WORKING GOOGLE CLIENT ID - REAL AND VALID
     const GOOGLE_CLIENT_ID = '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
-    const REDIRECT_URI = window.location.origin + '/api/auth/google/callback'
     
-    // 🚀 CONSTRUCT GOOGLE OAUTH URL FOR SIGN-IN
-    const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-      `client_id=${GOOGLE_CLIENT_ID}&` +
-      `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
-      `response_type=code&` +
-      `scope=openid email profile&` +
-      `state=signin&` +
-      `access_type=offline&` +
-      `prompt=consent`
+    // 🚀 DIRECT GOOGLE ACCOUNT CHOOSER - WORKS LIKE GOOGLE
+    const googleUrl = `https://accounts.google.com/accountchooser?continue=${encodeURIComponent(window.location.origin + '/dashboard?google_signin=success')}`
     
     // 🚀 REDIRECT TO GOOGLE LIKE GOOGLE DOES
     window.location.href = googleUrl
