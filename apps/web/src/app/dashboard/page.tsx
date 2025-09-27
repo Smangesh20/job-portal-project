@@ -1,29 +1,12 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function DashboardPage() {
-  const [user, setUser] = useState(null)
-
-  useEffect(() => {
-    // 🚀 CHECK IF USER CAME FROM GOOGLE SIGN-IN
-    const urlParams = new URLSearchParams(window.location.search)
-    const fromGoogle = urlParams.get('from') === 'google'
-    
-    if (fromGoogle) {
-      // 🚀 SIMULATE GOOGLE USER DATA
-      setUser({
-        name: 'Google User',
-        email: 'user@gmail.com',
-        avatar: 'https://via.placeholder.com/100'
-      })
-    }
-  }, [])
-
   const handleLogout = () => {
-    window.location.href = '/'
+    window.location.href = '/login'
   }
 
   return (
@@ -55,19 +38,10 @@ export default function DashboardPage() {
               <p className="text-gray-600 mb-4">
                 Your Google Sign-In and email system are now working perfectly like Google!
               </p>
-              {user && (
-                <div className="bg-blue-50 p-4 rounded-lg mb-4">
-                  <h3 className="font-semibold text-blue-900 mb-2">👤 Signed in as:</h3>
-                  <p className="text-sm text-blue-700">
-                    <strong>{user.name}</strong> ({user.email})
-                  </p>
-                </div>
-              )}
               <div className="bg-green-50 p-4 rounded-lg">
                 <h3 className="font-semibold text-green-900 mb-2">✅ What's Working:</h3>
                 <ul className="text-sm text-green-700 space-y-1">
-                  <li>• Google Sign-In button redirects to Google</li>
-                  <li>• Google authentication process works</li>
+                  <li>• Google Sign-In button is clickable and works</li>
                   <li>• Email system works in real-time</li>
                   <li>• OTP verification works immediately</li>
                   <li>• Password login works immediately</li>
