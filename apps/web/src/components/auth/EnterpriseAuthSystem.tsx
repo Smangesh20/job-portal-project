@@ -21,13 +21,25 @@ export const EnterpriseAuthSystem: React.FC = () => {
 
   // 🚀 GOOGLE SIGN-IN - WORKS LIKE GOOGLE
   const handleGoogleSignIn = useCallback(() => {
-    // 🚀 BULLETPROOF GOOGLE SIGNIN - IMMEDIATE SUCCESS LIKE GOOGLE
-    toast.success('✅ Google Sign-In initiated! Signing you in...')
+    // 🚀 GOOGLE OAUTH 2.0 - EXACTLY LIKE GOOGLE
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
     
-    // 🚀 IMMEDIATE SUCCESS - WORKS LIKE GOOGLE
-    setTimeout(() => {
-      window.location.href = '/dashboard?google_success=true&action=signin&user_email=existinguser@gmail.com&state=signin-success&user_name=Existing User'
-    }, 1500)
+    // 🚀 USE YOUR DOMAIN FOR REDIRECT URI
+    const baseUrl = window.location.origin
+    const redirectUri = `${baseUrl}/api/auth/google/callback`
+    
+    // 🚀 GOOGLE OAUTH URL - EXACTLY LIKE GOOGLE
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${encodeURIComponent(clientId)}&` +
+      `redirect_uri=${encodeURIComponent(redirectUri)}&` +
+      `response_type=code&` +
+      `scope=openid%20email%20profile&` +
+      `access_type=offline&` +
+      `prompt=select_account&` +
+      `state=signin-${Date.now()}`
+    
+    // 🚀 REDIRECT TO GOOGLE OAUTH - WORKS LIKE GOOGLE
+    window.location.href = googleAuthUrl
   }, [])
 
   // 🚀 EMAIL & OTP - WORKS LIKE GOOGLE
