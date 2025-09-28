@@ -22,13 +22,34 @@ export default function LoginPage() {
   }
 
   // 🚀 EMAIL LOGIN - WORKS LIKE GOOGLE
-  const handleEmailLogin = () => {
+  const handleEmailLogin = async () => {
     if (!email) {
       toast.error('Please enter your email')
       return
     }
-    setShowOtp(true)
-    toast.success('✅ Email sent successfully! Check your inbox.')
+    
+    try {
+      // 🚀 SEND EMAIL WITH SENDGRID - YOUR CONFIGURED VARIABLES
+      const response = await fetch('/api/auth/send-otp-working', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      })
+      
+      const data = await response.json()
+      
+      if (data.success) {
+        setShowOtp(true)
+        toast.success('✅ Email sent successfully! Check your inbox.')
+      } else {
+        toast.error('❌ Failed to send email. Please try again.')
+      }
+    } catch (error) {
+      console.error('Email sending error:', error)
+      toast.error('❌ Email service temporarily unavailable. Please try again.')
+    }
   }
 
   // 🚀 OTP VERIFICATION - WORKS LIKE GOOGLE

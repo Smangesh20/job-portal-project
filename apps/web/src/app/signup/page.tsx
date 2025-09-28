@@ -23,7 +23,7 @@ export default function SignupPage() {
   }
 
   // 🚀 EMAIL SIGN-UP - WORKS LIKE GOOGLE
-  const handleEmailSignup = () => {
+  const handleEmailSignup = async () => {
     if (!email) {
       toast.error('Please enter your email')
       return
@@ -36,8 +36,29 @@ export default function SignupPage() {
       toast.error('Passwords do not match')
       return
     }
-    setShowOtp(true)
-    toast.success('✅ Account created! Please verify your email.')
+    
+    try {
+      // 🚀 SEND EMAIL WITH SENDGRID - YOUR CONFIGURED VARIABLES
+      const response = await fetch('/api/auth/send-otp-working', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      })
+      
+      const data = await response.json()
+      
+      if (data.success) {
+        setShowOtp(true)
+        toast.success('✅ Account created! Please verify your email.')
+      } else {
+        toast.error('❌ Failed to send verification email. Please try again.')
+      }
+    } catch (error) {
+      console.error('Email sending error:', error)
+      toast.error('❌ Email service temporarily unavailable. Please try again.')
+    }
   }
 
   // 🚀 OTP VERIFICATION - WORKS LIKE GOOGLE
