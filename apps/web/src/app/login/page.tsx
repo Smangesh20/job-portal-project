@@ -15,7 +15,8 @@ export default function LoginPage() {
   const handleGoogleSignIn = () => {
     // 🚀 GOOGLE OAUTH 2.0 - EXACTLY LIKE GOOGLE
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
-    const redirectUri = `${window.location.origin}/api/auth/google-working/callback`
+    // 🚀 USE EXACT REDIRECT URI FROM YOUR GOOGLE CONSOLE
+    const redirectUri = process.env.GOOGLE_REDIRECT_URL || `${window.location.origin}/api/auth/google-working/callback`
     
     // 🚀 GOOGLE OAUTH URL - EXACTLY LIKE GOOGLE
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +

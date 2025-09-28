@@ -8,8 +8,6 @@ import { toast } from 'react-hot-toast'
 
 export default function SignupPage() {
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
   const [otp, setOtp] = useState('')
   const [showOtp, setShowOtp] = useState(false)
 
@@ -17,7 +15,8 @@ export default function SignupPage() {
   const handleGoogleSignUp = () => {
     // 🚀 GOOGLE OAUTH 2.0 - EXACTLY LIKE GOOGLE
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
-    const redirectUri = `${window.location.origin}/api/auth/google-working/callback`
+    // 🚀 USE EXACT REDIRECT URI FROM YOUR GOOGLE CONSOLE
+    const redirectUri = process.env.GOOGLE_REDIRECT_URL || `${window.location.origin}/api/auth/google-working/callback`
     
     // 🚀 GOOGLE OAUTH URL - EXACTLY LIKE GOOGLE
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
@@ -33,18 +32,10 @@ export default function SignupPage() {
     window.location.href = googleAuthUrl
   }
 
-  // 🚀 EMAIL SIGN-UP - WORKS LIKE GOOGLE
+  // 🚀 EMAIL SIGN-UP - WORKS LIKE GOOGLE (OTP ONLY)
   const handleEmailSignup = async () => {
     if (!email) {
       toast.error('Please enter your email')
-      return
-    }
-    if (!password) {
-      toast.error('Please enter your password')
-      return
-    }
-    if (password !== confirmPassword) {
-      toast.error('Passwords do not match')
       return
     }
     
@@ -133,41 +124,13 @@ export default function SignupPage() {
                   />
                 </div>
 
-                {/* 🚀 PASSWORD INPUT */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Password
-                  </label>
-                  <Input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Create a password"
-                    className="h-12"
-                  />
-                </div>
-
-                {/* 🚀 CONFIRM PASSWORD INPUT */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Confirm Password
-                  </label>
-                  <Input
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Confirm your password"
-                    className="h-12"
-                  />
-                </div>
-
-                {/* 🚀 SIGN-UP BUTTON */}
+                {/* 🚀 SIGN-UP BUTTON - OTP ONLY */}
                 <Button
                   onClick={handleEmailSignup}
-                  disabled={!email || !password || password !== confirmPassword}
+                  disabled={!email}
                   className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
                 >
-                  Create Account
+                  Create Account with OTP
                 </Button>
               </>
             ) : (

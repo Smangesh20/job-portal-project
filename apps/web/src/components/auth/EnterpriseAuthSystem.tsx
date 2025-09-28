@@ -15,7 +15,6 @@ import { toast } from 'react-hot-toast'
 export const EnterpriseAuthSystem: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true)
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [otp, setOtp] = useState('')
   const [showOtp, setShowOtp] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -24,7 +23,8 @@ export const EnterpriseAuthSystem: React.FC = () => {
   const handleGoogleSignIn = useCallback(() => {
     // 🚀 GOOGLE OAUTH 2.0 - EXACTLY LIKE GOOGLE
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
-    const redirectUri = `${window.location.origin}/api/auth/google-working/callback`
+    // 🚀 USE EXACT REDIRECT URI FROM YOUR GOOGLE CONSOLE
+    const redirectUri = process.env.GOOGLE_REDIRECT_URL || `${window.location.origin}/api/auth/google-working/callback`
     
     // 🚀 GOOGLE OAUTH URL - EXACTLY LIKE GOOGLE
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
@@ -83,17 +83,8 @@ export const EnterpriseAuthSystem: React.FC = () => {
     window.location.href = '/dashboard'
   }, [otp])
 
-  // 🚀 PASSWORD LOGIN - WORKS LIKE GOOGLE
-  const handlePasswordLogin = useCallback(() => {
-    if (!email || !password) {
-      toast.error('Please enter email and password')
-      return
-    }
-    
-    // 🚀 PASSWORD LOGIN ALWAYS WORKS - LIKE GOOGLE
-    toast.success('✅ Login successful!')
-    window.location.href = '/dashboard'
-  }, [email, password])
+  // 🚀 PASSWORD LOGIN REMOVED - OTP ONLY LIKE GOOGLE
+  // Password login removed for enterprise security - OTP only
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
@@ -151,45 +142,15 @@ export const EnterpriseAuthSystem: React.FC = () => {
                   </div>
                 </div>
 
-                {isLogin && (
-                  /* 🚀 PASSWORD INPUT */
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Password
-                    </label>
-                    <div className="relative">
-                      <LockClosedIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                      <Input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Enter your password"
-                        className="pl-10 h-12"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {/* 🚀 ACTION BUTTONS */}
+                {/* 🚀 ACTION BUTTONS - OTP ONLY */}
                 <div className="space-y-3">
                   <Button
-                    onClick={isLogin ? handlePasswordLogin : handleEmailLogin}
-                    disabled={!email || (isLogin && !password)}
+                    onClick={handleEmailLogin}
+                    disabled={!email}
                     className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
                   >
-                    {isLogin ? 'Sign In' : 'Send Verification Code'}
+                    {isLogin ? 'Send OTP to Email' : 'Send Verification Code'}
                   </Button>
-
-                  {isLogin && (
-                    <Button
-                      onClick={handleEmailLogin}
-                      disabled={!email}
-                      variant="outline"
-                      className="w-full h-12"
-                    >
-                      Sign in with Email Code
-                    </Button>
-                  )}
                 </div>
               </>
             ) : (
