@@ -22,6 +22,7 @@ export default function DashboardPage() {
     const state = urlParams.get('state') || ''
     let determinedAction = 'signin' // Default to signin
     
+    // 🚀 FORCE ACTION DETECTION - PRIORITY ORDER
     if (state.includes('signup')) {
       determinedAction = 'signup'
     } else if (state.includes('signin')) {
@@ -31,6 +32,9 @@ export default function DashboardPage() {
     } else if (action === 'signin') {
       determinedAction = 'signin'
     }
+    
+    // 🚀 ADDITIONAL DEBUG LOGGING
+    console.log('🔍 Dashboard Debug:', { state, action, determinedAction, email })
     
     // 🚀 ALWAYS SET AUTH INFO FOR GOOGLE SUCCESS
     if (googleSuccess === 'true') {
@@ -93,6 +97,12 @@ export default function DashboardPage() {
               </h3>
               <p className="text-sm text-green-700">
                 Action: {authInfo.action} | Email: {authInfo.email}
+              </p>
+              <p className="text-sm text-green-700">
+                URL State: {typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('state') : 'N/A'}
+              </p>
+              <p className="text-sm text-green-700">
+                URL Action: {typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('action') : 'N/A'}
               </p>
             </div>
               <div className="bg-green-50 p-4 rounded-lg">

@@ -80,6 +80,13 @@ export async function GET(request: NextRequest) {
     redirectUrl.searchParams.set('user_email', userData.email)
     redirectUrl.searchParams.set('user_name', userData.name || '')
     
+    // 🚀 FORCE ACTION BASED ON STATE - ENSURE PROPER ACTION
+    if (state?.includes('signup')) {
+      redirectUrl.searchParams.set('action', 'signup')
+    } else if (state?.includes('signin')) {
+      redirectUrl.searchParams.set('action', 'signin')
+    }
+    
     // 🚀 SET SESSION COOKIE - ENTERPRISE SECURITY
     const response = NextResponse.redirect(redirectUrl.toString())
     response.cookies.set('user_session', JSON.stringify(userSession), {
