@@ -18,8 +18,18 @@ export default function DashboardPage() {
     const email = urlParams.get('user_email') || 'user@gmail.com'
     const name = urlParams.get('user_name') || ''
     
+    // 🚀 DETERMINE ACTION FROM STATE PARAMETER
+    const state = urlParams.get('state') || ''
+    let determinedAction = action
+    
+    if (state.includes('signup')) {
+      determinedAction = 'signup'
+    } else if (state.includes('signin')) {
+      determinedAction = 'signin'
+    }
+    
     if (googleSuccess === 'true') {
-      setAuthInfo({ action, email: email || 'user@gmail.com' })
+      setAuthInfo({ action: determinedAction, email: email || 'user@gmail.com' })
     }
   }, [])
 

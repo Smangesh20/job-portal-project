@@ -53,7 +53,12 @@ export async function GET(request: NextRequest) {
     const userData = await userResponse.json()
     
     // 🚀 DETERMINE ACTION FROM STATE
-    const action = state?.includes('signup') ? 'signup' : 'signin'
+    let action = 'signin'
+    if (state?.includes('signup')) {
+      action = 'signup'
+    } else if (state?.includes('signin')) {
+      action = 'signin'
+    }
     
     // 🚀 CREATE USER SESSION - ENTERPRISE LEVEL
     const userSession = {
@@ -71,6 +76,7 @@ export async function GET(request: NextRequest) {
     const redirectUrl = new URL(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/dashboard`)
     redirectUrl.searchParams.set('google_success', 'true')
     redirectUrl.searchParams.set('action', action)
+    redirectUrl.searchParams.set('state', state || '')
     redirectUrl.searchParams.set('user_email', userData.email)
     redirectUrl.searchParams.set('user_name', userData.name || '')
     
