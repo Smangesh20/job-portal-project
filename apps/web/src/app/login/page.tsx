@@ -8,19 +8,27 @@ import { toast } from 'react-hot-toast'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [otp, setOtp] = useState('')
   const [showOtp, setShowOtp] = useState(false)
 
   // 🚀 GOOGLE SIGN-IN - WORKS EXACTLY LIKE GOOGLE
   const handleGoogleSignIn = () => {
-    // 🚀 BULLETPROOF GOOGLE SIGNIN - IMMEDIATE SUCCESS
-    toast.success('✅ Google Sign-In initiated! Redirecting to Google...')
+    // 🚀 GOOGLE OAUTH 2.0 - EXACTLY LIKE GOOGLE
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
+    const redirectUri = `${window.location.origin}/api/auth/google/callback`
     
-    // 🚀 IMMEDIATE SUCCESS - WORKS LIKE GOOGLE
-    setTimeout(() => {
-      window.location.href = '/dashboard?google_success=true&action=signin&user_email=existinguser@gmail.com&state=signin-success'
-    }, 1000)
+    // 🚀 GOOGLE OAUTH URL - EXACTLY LIKE GOOGLE
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${encodeURIComponent(clientId)}&` +
+      `redirect_uri=${encodeURIComponent(redirectUri)}&` +
+      `response_type=code&` +
+      `scope=openid%20email%20profile&` +
+      `access_type=offline&` +
+      `prompt=select_account&` +
+      `state=signin-${Date.now()}`
+    
+    // 🚀 REDIRECT TO GOOGLE OAUTH - WORKS LIKE GOOGLE
+    window.location.href = googleAuthUrl
   }
 
   // 🚀 EMAIL LOGIN - WORKS LIKE GOOGLE
@@ -64,15 +72,8 @@ export default function LoginPage() {
     window.location.href = '/dashboard'
   }
 
-  // 🚀 PASSWORD LOGIN - WORKS LIKE GOOGLE
-  const handlePasswordLogin = () => {
-    if (!email || !password) {
-      toast.error('Please enter email and password')
-      return
-    }
-    toast.success('✅ Login successful!')
-    window.location.href = '/dashboard'
-  }
+  // 🚀 PASSWORD LOGIN REMOVED - OTP ONLY LIKE GOOGLE
+  // Password login removed for enterprise security - OTP only
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
@@ -125,37 +126,14 @@ export default function LoginPage() {
                   />
                 </div>
 
-                {/* 🚀 PASSWORD INPUT */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Password
-                  </label>
-                  <Input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter your password"
-                    className="h-12"
-                  />
-                </div>
-
-                {/* 🚀 ACTION BUTTONS */}
+                {/* 🚀 OTP ONLY - ENTERPRISE SECURITY */}
                 <div className="space-y-3">
-                  <Button
-                    onClick={handlePasswordLogin}
-                    disabled={!email || !password}
-                    className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
-                  >
-                    Sign In
-                  </Button>
-
                   <Button
                     onClick={handleEmailLogin}
                     disabled={!email}
-                    variant="outline"
-                    className="w-full h-12"
+                    className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
                   >
-                    Sign in with Email Code
+                    Send OTP to Email
                   </Button>
                 </div>
               </>
