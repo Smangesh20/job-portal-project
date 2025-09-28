@@ -209,7 +209,6 @@ export const EnterpriseAuthSystem: React.FC = () => {
                     setIsLogin(!isLogin)
                     setShowOtp(false)
                     setEmail('')
-                    setPassword('')
                     setOtp('')
                   }}
                   className="text-blue-600 hover:text-blue-800 font-semibold underline"
