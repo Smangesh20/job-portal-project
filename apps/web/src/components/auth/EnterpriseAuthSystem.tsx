@@ -22,19 +22,8 @@ export const EnterpriseAuthSystem: React.FC = () => {
 
   // 🚀 GOOGLE SIGN-IN - WORKS LIKE GOOGLE
   const handleGoogleSignIn = useCallback(() => {
-    // 🚀 GOOGLE OAUTH 2.0 - EXACTLY LIKE GOOGLE
-    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
-    const redirectUri = `${window.location.origin}/api/auth/google/callback`
-    
-    // 🚀 GOOGLE OAUTH URL - EXACTLY LIKE GOOGLE
-    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-      `client_id=${encodeURIComponent(clientId)}&` +
-      `redirect_uri=${encodeURIComponent(redirectUri)}&` +
-      `response_type=code&` +
-      `scope=openid%20email%20profile&` +
-      `access_type=offline&` +
-      `prompt=select_account&` +
-      `state=signin-${Date.now()}`
+    // 🚀 GOOGLE OAUTH 2.0 - WORKING ROUTE
+    const googleAuthUrl = `/api/auth/google-working?action=signin`
     
     // 🚀 REDIRECT TO GOOGLE OAUTH - WORKS LIKE GOOGLE
     window.location.href = googleAuthUrl

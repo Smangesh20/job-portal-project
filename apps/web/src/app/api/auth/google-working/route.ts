@@ -1,70 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-export const dynamic = 'force-dynamic'
-export const runtime = 'nodejs'
-
-// 🚀 WORKING GOOGLE CLIENT ID - REAL AND VALID
-const WORKING_GOOGLE_CLIENT_ID = '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
-
-export async function POST(request: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
-    console.log('🚀 WORKING GOOGLE AUTH INITIATED!')
+    // 🚀 GOOGLE OAUTH 2.0 - WORKS LIKE GOOGLE
+    const { searchParams } = new URL(request.url)
+    const action = searchParams.get('action') || 'signin'
     
-    const { provider } = await request.json()
+    // 🚀 GOOGLE CLIENT ID - YOUR CONFIGURED VARIABLES
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
+    const redirectUri = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/auth/google-working/callback`
     
-    if (provider !== 'google') {
-      return NextResponse.json({
-        success: false,
-        error: 'Invalid provider'
-      }, { status: 400 })
-    }
-
-    // 🚀 CONSTRUCT WORKING GOOGLE OAUTH URL
-    const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/google-success`
-    const state = Math.random().toString(36).substring(2, 15)
+    // 🚀 GOOGLE OAUTH URL - EXACTLY LIKE GOOGLE
+    const scope = 'openid email profile'
+    const responseType = 'code'
+    const accessType = 'offline'
+    const prompt = action === 'signup' ? 'consent' : 'select_account'
+    const state = `${action}-${Date.now()}`
     
-    const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-      `client_id=${WORKING_GOOGLE_CLIENT_ID}&` +
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${encodeURIComponent(clientId)}&` +
       `redirect_uri=${encodeURIComponent(redirectUri)}&` +
-      `response_type=code&` +
-      `scope=openid email profile&` +
-      `state=${state}&` +
-      `access_type=offline&` +
-      `prompt=consent`
+      `response_type=${responseType}&` +
+      `scope=${encodeURIComponent(scope)}&` +
+      `access_type=${accessType}&` +
+      `prompt=${prompt}&` +
+      `state=${encodeURIComponent(state)}`
     
-    console.log('🚀 Working Google URL:', googleUrl)
-    console.log('🚀 Client ID:', WORKING_GOOGLE_CLIENT_ID)
-    console.log('🚀 Redirect URI:', redirectUri)
+    // 🚀 REDIRECT TO GOOGLE OAUTH - WORKS LIKE GOOGLE
+    return NextResponse.redirect(googleAuthUrl)
     
-    return NextResponse.json({
-      success: true,
-      message: '🚀 WORKING GOOGLE AUTH INITIATED!',
-      data: {
-        authUrl: googleUrl,
-        clientId: WORKING_GOOGLE_CLIENT_ID,
-        redirectUri,
-        state
-      }
-    })
-
-  } catch (error: any) {
-    console.error('🚨 Working Google auth error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Failed to initiate working Google auth',
-      details: error.message || 'Unknown error'
-    }, { status: 500 })
+  } catch (error) {
+    console.error('Google OAuth Error:', error)
+    return NextResponse.json({ error: 'Google authentication failed' }, { status: 500 })
   }
-}
-
-export async function GET() {
-  return NextResponse.json({
-    success: true,
-    data: {
-      service: 'Working Google Auth',
-      status: 'Active',
-      clientId: WORKING_GOOGLE_CLIENT_ID,
-      lastUpdated: new Date().toISOString()
-    }
-  })
 }
