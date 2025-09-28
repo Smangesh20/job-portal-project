@@ -15,11 +15,11 @@ export default function SignupPage() {
 
   // 🚀 GOOGLE SIGN-UP - WORKS EXACTLY LIKE GOOGLE
   const handleGoogleSignUp = () => {
-    // 🚀 SIMPLE GOOGLE REDIRECT - WORKS LIKE GOOGLE
-    const googleUrl = `https://www.google.com/accounts/ServiceLogin?continue=${encodeURIComponent(window.location.origin + '/dashboard?google_signup=success')}`
+    // 🚀 GOOGLE OAUTH 2.0 - EXACTLY LIKE GOOGLE
+    const googleAuthUrl = `/api/auth/google?action=signup`
     
-    // 🚀 REDIRECT TO GOOGLE LIKE GOOGLE DOES
-    window.location.href = googleUrl
+    // 🚀 REDIRECT TO GOOGLE OAUTH - WORKS LIKE GOOGLE
+    window.location.href = googleAuthUrl
   }
 
   // 🚀 EMAIL SIGN-UP - WORKS LIKE GOOGLE

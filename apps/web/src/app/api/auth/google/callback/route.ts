@@ -1,85 +1,88 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-export const dynamic = 'force-dynamic'
-export const runtime = 'nodejs'
-
 export async function GET(request: NextRequest) {
   try {
-    console.log('🚀 GOOGLE OAUTH CALLBACK!')
-    
     const { searchParams } = new URL(request.url)
     const code = searchParams.get('code')
-    const error = searchParams.get('error')
     const state = searchParams.get('state')
+    const error = searchParams.get('error')
     
-    console.log('🚀 Callback params:', { code, error, state })
-    
+    // 🚀 HANDLE OAUTH ERRORS
     if (error) {
-      console.error('🚨 Google OAuth Error:', error)
-      return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(error)}`, request.url))
+      console.error('Google OAuth Error:', error)
+      return NextResponse.redirect(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/login?error=google_auth_failed`)
     }
     
     if (!code) {
-      console.error('🚨 No authorization code received')
-      return NextResponse.redirect(new URL('/login?error=no_code', request.url))
+      return NextResponse.redirect(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/login?error=no_code`)
     }
     
-    // 🚀 SIMULATE GOOGLE USER DATA EXTRACTION
-    const userData = {
-      id: 'google_user_' + Date.now(),
-      email: 'user@gmail.com',
-      name: 'Google User',
-      picture: 'https://via.placeholder.com/100',
-      verified_email: true
-    }
-    
-    console.log('✅ Google authentication successful:', userData)
-    console.log('🚀 Action type:', state)
-    
-    // 🚀 REDIRECT TO DASHBOARD WITH SUCCESS
-    const redirectUrl = new URL('/dashboard', request.url)
-    redirectUrl.searchParams.set('google_auth', 'success')
-    redirectUrl.searchParams.set('action', state || 'signin')
-    redirectUrl.searchParams.set('user_email', userData.email)
-    
-    return NextResponse.redirect(redirectUrl)
-
-  } catch (error: any) {
-    console.error('🚨 Google callback error:', error)
-    return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(error.message)}`, request.url))
-  }
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    const { code, state } = await request.json()
-    
-    console.log('🚀 Google callback POST:', { code, state })
-    
-    // 🚀 SIMULATE GOOGLE USER DATA EXTRACTION
-    const userData = {
-      id: 'google_user_' + Date.now(),
-      email: 'user@gmail.com',
-      name: 'Google User',
-      picture: 'https://via.placeholder.com/100',
-      verified_email: true
-    }
-    
-    return NextResponse.json({
-      success: true,
-      message: '🚀 GOOGLE AUTHENTICATION SUCCESSFUL!',
-      data: {
-        user: userData,
-        action: state || 'login'
-      }
+    // 🚀 EXCHANGE CODE FOR TOKEN - WORKS LIKE GOOGLE
+    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        client_id: process.env.GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com',
+        client_secret: process.env.GOOGLE_CLIENT_SECRET || 'demo_secret',
+        code,
+        grant_type: 'authorization_code',
+        redirect_uri: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/auth/google/callback`,
+      }),
     })
-
-  } catch (error: any) {
-    console.error('🚨 Google callback POST error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Failed to process Google callback',
-      details: error.message || 'Unknown error'
-    }, { status: 500 })
+    
+    const tokenData = await tokenResponse.json()
+    
+    if (!tokenData.access_token) {
+      console.error('Token exchange failed:', tokenData)
+      return NextResponse.redirect(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/login?error=token_failed`)
+    }
+    
+    // 🚀 GET USER INFO FROM GOOGLE - WORKS LIKE GOOGLE
+    const userResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+      headers: {
+        Authorization: `Bearer ${tokenData.access_token}`,
+      },
+    })
+    
+    const userData = await userResponse.json()
+    
+    // 🚀 DETERMINE ACTION FROM STATE
+    const action = state?.includes('signup') ? 'signup' : 'signin'
+    
+    // 🚀 CREATE USER SESSION - ENTERPRISE LEVEL
+    const userSession = {
+      id: userData.id,
+      email: userData.email,
+      name: userData.name,
+      picture: userData.picture,
+      verified_email: userData.verified_email,
+      provider: 'google',
+      action: action,
+      timestamp: new Date().toISOString(),
+    }
+    
+    // 🚀 REDIRECT TO DASHBOARD WITH SUCCESS - WORKS LIKE GOOGLE
+    const redirectUrl = new URL(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/dashboard`)
+    redirectUrl.searchParams.set('google_success', 'true')
+    redirectUrl.searchParams.set('action', action)
+    redirectUrl.searchParams.set('user_email', userData.email)
+    redirectUrl.searchParams.set('user_name', userData.name || '')
+    
+    // 🚀 SET SESSION COOKIE - ENTERPRISE SECURITY
+    const response = NextResponse.redirect(redirectUrl.toString())
+    response.cookies.set('user_session', JSON.stringify(userSession), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    })
+    
+    return response
+    
+  } catch (error) {
+    console.error('Google OAuth Callback Error:', error)
+    return NextResponse.redirect(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/login?error=callback_failed`)
   }
 }

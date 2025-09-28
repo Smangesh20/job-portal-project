@@ -11,14 +11,16 @@ export default function DashboardPage() {
   })
 
   useEffect(() => {
-    // 🚀 GET AUTH INFO FROM URL PARAMS
+    // 🚀 GET AUTH INFO FROM URL PARAMS - GOOGLE OAUTH
     const urlParams = new URLSearchParams(window.location.search)
-    const googleSignup = urlParams.get('google_signup')
-    const googleSignin = urlParams.get('google_signin')
-    const action = urlParams.get('action') || (googleSignup ? 'signup' : 'signin')
+    const googleSuccess = urlParams.get('google_success')
+    const action = urlParams.get('action') || 'signin'
     const email = urlParams.get('user_email') || 'user@gmail.com'
+    const name = urlParams.get('user_name') || ''
     
-    setAuthInfo({ action, email })
+    if (googleSuccess === 'true') {
+      setAuthInfo({ action, email: email || 'user@gmail.com' })
+    }
   }, [])
 
   const handleLogout = () => {

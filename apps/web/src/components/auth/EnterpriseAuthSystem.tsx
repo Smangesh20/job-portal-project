@@ -22,9 +22,11 @@ export const EnterpriseAuthSystem: React.FC = () => {
 
   // 🚀 GOOGLE SIGN-IN - WORKS LIKE GOOGLE
   const handleGoogleSignIn = useCallback(() => {
-    // 🚀 IMMEDIATE SUCCESS - WORKS LIKE GOOGLE
-    toast.success('✅ Google Sign-In successful!')
-    window.location.href = '/dashboard'
+    // 🚀 GOOGLE OAUTH 2.0 - EXACTLY LIKE GOOGLE
+    const googleAuthUrl = `/api/auth/google?action=signin`
+    
+    // 🚀 REDIRECT TO GOOGLE OAUTH - WORKS LIKE GOOGLE
+    window.location.href = googleAuthUrl
   }, [])
 
   // 🚀 EMAIL & OTP - WORKS LIKE GOOGLE
