@@ -25,13 +25,48 @@ export async function GET(request: NextRequest) {
       action = 'signin'
     }
     
+    // 🚀 EXCHANGE CODE FOR TOKEN - YOUR CONFIGURED VARIABLES
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || process.env.GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET || 'demo_secret'
+    const redirectUri = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/auth/google-working/callback`
+    
+    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        client_id: clientId,
+        client_secret: clientSecret,
+        code,
+        grant_type: 'authorization_code',
+        redirect_uri: redirectUri,
+      }),
+    })
+    
+    const tokenData = await tokenResponse.json()
+    
+    if (!tokenData.access_token) {
+      console.error('Token exchange failed:', tokenData)
+      return NextResponse.redirect(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/login?error=token_failed`)
+    }
+    
+    // 🚀 GET USER INFO FROM GOOGLE - WORKS LIKE GOOGLE
+    const userResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+      headers: {
+        Authorization: `Bearer ${tokenData.access_token}`,
+      },
+    })
+    
+    const userData = await userResponse.json()
+    
     // 🚀 CREATE USER SESSION - ENTERPRISE LEVEL
     const userSession = {
-      id: 'google_user_' + Date.now(),
-      email: 'user@gmail.com',
-      name: 'Google User',
-      picture: 'https://via.placeholder.com/150',
-      verified_email: true,
+      id: userData.id,
+      email: userData.email,
+      name: userData.name,
+      picture: userData.picture,
+      verified_email: userData.verified_email,
       provider: 'google',
       action: action,
       timestamp: new Date().toISOString(),
@@ -42,8 +77,8 @@ export async function GET(request: NextRequest) {
     redirectUrl.searchParams.set('google_success', 'true')
     redirectUrl.searchParams.set('action', action)
     redirectUrl.searchParams.set('state', state || '')
-    redirectUrl.searchParams.set('user_email', 'user@gmail.com')
-    redirectUrl.searchParams.set('user_name', 'Google User')
+    redirectUrl.searchParams.set('user_email', userData.email)
+    redirectUrl.searchParams.set('user_name', userData.name || '')
     
     // 🚀 SET SESSION COOKIE - ENTERPRISE SECURITY
     const response = NextResponse.redirect(redirectUrl.toString())
