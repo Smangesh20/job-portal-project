@@ -18,18 +18,28 @@ export default function DashboardPage() {
     const email = urlParams.get('user_email') || 'user@gmail.com'
     const name = urlParams.get('user_name') || ''
     
-    // 🚀 DETERMINE ACTION FROM STATE PARAMETER
+    // 🚀 DETERMINE ACTION FROM STATE PARAMETER - PRIORITY TO STATE
     const state = urlParams.get('state') || ''
-    let determinedAction = action
+    let determinedAction = 'signin' // Default to signin
     
     if (state.includes('signup')) {
       determinedAction = 'signup'
     } else if (state.includes('signin')) {
       determinedAction = 'signin'
+    } else if (action === 'signup') {
+      determinedAction = 'signup'
+    } else if (action === 'signin') {
+      determinedAction = 'signin'
     }
     
+    // 🚀 ALWAYS SET AUTH INFO FOR GOOGLE SUCCESS
     if (googleSuccess === 'true') {
       setAuthInfo({ action: determinedAction, email: email || 'user@gmail.com' })
+    } else {
+      // 🚀 FALLBACK - CHECK IF WE HAVE GOOGLE PARAMS WITHOUT SUCCESS FLAG
+      if (email && email !== 'user@gmail.com') {
+        setAuthInfo({ action: determinedAction, email: email })
+      }
     }
   }, [])
 
@@ -60,23 +70,31 @@ export default function DashboardPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                🎉 {authInfo.action === 'signup' ? 'Account Created Successfully!' : 'Sign-In Successful!'} 🎉
-              </h2>
-              <p className="text-gray-600 mb-4">
-                {authInfo.action === 'signup' 
-                  ? `Welcome! Your Google account has been created successfully!`
-                  : `Welcome back! You've signed in successfully with Google!`
-                }
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              🎉 {authInfo.action === 'signup' ? 'Account Created Successfully!' : 'Sign-In Successful!'} 🎉
+            </h2>
+            <p className="text-gray-600 mb-4">
+              {authInfo.action === 'signup' 
+                ? `Welcome! Your Google account has been created successfully!`
+                : `Welcome back! You've signed in successfully with Google!`
+              }
+            </p>
+            <div className="bg-blue-50 p-4 rounded-lg mb-4">
+              <h3 className="font-semibold text-blue-900 mb-2">
+                👤 {authInfo.action === 'signup' ? 'New Account Created:' : 'Signed in as:'}
+              </h3>
+              <p className="text-sm text-blue-700">
+                <strong>{authInfo.email}</strong>
               </p>
-              <div className="bg-blue-50 p-4 rounded-lg mb-4">
-                <h3 className="font-semibold text-blue-900 mb-2">
-                  👤 {authInfo.action === 'signup' ? 'New Account Created:' : 'Signed in as:'}
-                </h3>
-                <p className="text-sm text-blue-700">
-                  <strong>{authInfo.email}</strong>
-                </p>
-              </div>
+            </div>
+            <div className="bg-green-50 p-4 rounded-lg mb-4">
+              <h3 className="font-semibold text-green-900 mb-2">
+                🔍 Debug Info:
+              </h3>
+              <p className="text-sm text-green-700">
+                Action: {authInfo.action} | Email: {authInfo.email}
+              </p>
+            </div>
               <div className="bg-green-50 p-4 rounded-lg">
                 <h3 className="font-semibold text-green-900 mb-2">✅ What's Working:</h3>
                 <ul className="text-sm text-green-700 space-y-1">
