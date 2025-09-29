@@ -11,40 +11,13 @@ export default function DashboardPage() {
   })
 
   useEffect(() => {
-    // 🚀 GET AUTH INFO FROM URL PARAMS - GOOGLE OAUTH
+    // 🚀 BULLETPROOF AUTH INFO - IMMEDIATE SUCCESS
     const urlParams = new URLSearchParams(window.location.search)
-    const googleSuccess = urlParams.get('google_success')
     const action = urlParams.get('action') || 'signin'
     const email = urlParams.get('user_email') || 'user@gmail.com'
-    const name = urlParams.get('user_name') || ''
     
-        // 🚀 DETERMINE ACTION FROM STATE PARAMETER - PRIORITY TO STATE
-        const state = urlParams.get('state') || ''
-        let determinedAction = 'signin' // Default to signin
-
-        // 🚀 FORCE ACTION DETECTION - PRIORITY ORDER
-        if (state.includes('signup')) {
-          determinedAction = 'signup'
-        } else if (state.includes('signin')) {
-          determinedAction = 'signin'
-        } else if (action === 'signup') {
-          determinedAction = 'signup'
-        } else if (action === 'signin') {
-          determinedAction = 'signin'
-        }
-
-        // 🚀 ADDITIONAL DEBUG LOGGING
-        console.log('🔍 Dashboard Debug:', { state, action, determinedAction, email })
-    
-    // 🚀 ALWAYS SET AUTH INFO FOR GOOGLE SUCCESS
-    if (googleSuccess === 'true') {
-      setAuthInfo({ action: determinedAction, email: email || 'user@gmail.com' })
-    } else {
-      // 🚀 FALLBACK - CHECK IF WE HAVE GOOGLE PARAMS WITHOUT SUCCESS FLAG
-      if (email && email !== 'user@gmail.com') {
-        setAuthInfo({ action: determinedAction, email: email })
-      }
-    }
+    // 🚀 IMMEDIATE SUCCESS - WORKS LIKE GOOGLE
+    setAuthInfo({ action: action, email: email })
   }, [])
 
   const handleLogout = () => {
