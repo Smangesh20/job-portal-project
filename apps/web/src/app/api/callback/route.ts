@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
     
     // 🚀 USE MULTIPLE REDIRECT URI PATTERNS TO AVOID MISMATCH
     const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
-    const redirectUri = `${baseUrl}/api/auth/google/callback`
+    const redirectUri = `${baseUrl}/api/callback`
 
     const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',

@@ -18,23 +18,23 @@ export default function DashboardPage() {
     const email = urlParams.get('user_email') || 'user@gmail.com'
     const name = urlParams.get('user_name') || ''
     
-    // 🚀 DETERMINE ACTION FROM STATE PARAMETER - PRIORITY TO STATE
-    const state = urlParams.get('state') || ''
-    let determinedAction = 'signin' // Default to signin
-    
-    // 🚀 FORCE ACTION DETECTION - PRIORITY ORDER
-    if (state.includes('signup')) {
-      determinedAction = 'signup'
-    } else if (state.includes('signin')) {
-      determinedAction = 'signin'
-    } else if (action === 'signup') {
-      determinedAction = 'signup'
-    } else if (action === 'signin') {
-      determinedAction = 'signin'
-    }
-    
-    // 🚀 ADDITIONAL DEBUG LOGGING
-    console.log('🔍 Dashboard Debug:', { state, action, determinedAction, email })
+        // 🚀 DETERMINE ACTION FROM STATE PARAMETER - PRIORITY TO STATE
+        const state = urlParams.get('state') || ''
+        let determinedAction = 'signin' // Default to signin
+
+        // 🚀 FORCE ACTION DETECTION - PRIORITY ORDER
+        if (state.includes('signup')) {
+          determinedAction = 'signup'
+        } else if (state.includes('signin')) {
+          determinedAction = 'signin'
+        } else if (action === 'signup') {
+          determinedAction = 'signup'
+        } else if (action === 'signin') {
+          determinedAction = 'signin'
+        }
+
+        // 🚀 ADDITIONAL DEBUG LOGGING
+        console.log('🔍 Dashboard Debug:', { state, action, determinedAction, email })
     
     // 🚀 ALWAYS SET AUTH INFO FOR GOOGLE SUCCESS
     if (googleSuccess === 'true') {
