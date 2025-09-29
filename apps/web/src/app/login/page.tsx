@@ -13,14 +13,21 @@ export default function LoginPage() {
 
   // 🚀 GOOGLE SIGN-IN - WORKS EXACTLY LIKE GOOGLE
   const handleGoogleSignIn = () => {
-    // 🚀 BULLETPROOF GOOGLE SIGNIN - IMMEDIATE SUCCESS LIKE GOOGLE
-    toast.success('🚀 Signing you in with Google...')
+    // 🚀 REAL GOOGLE SIGNIN FLOW - EXACTLY LIKE GOOGLE
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
     
-    // 🚀 IMMEDIATE SUCCESS - WORKS LIKE GOOGLE
-    setTimeout(() => {
-      toast.success('✅ Google sign-in successful!')
-      window.location.href = '/dashboard?google_success=true&action=signin&user_email=existinguser@gmail.com&state=signin-success&user_name=Existing User'
-    }, 2000)
+    // 🚀 GOOGLE OAUTH URL FOR SIGNIN - EXACTLY LIKE GOOGLE
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${encodeURIComponent(clientId)}&` +
+      `redirect_uri=${encodeURIComponent(window.location.origin + '/api/auth/google/callback')}&` +
+      `response_type=code&` +
+      `scope=openid%20email%20profile&` +
+      `access_type=offline&` +
+      `prompt=select_account&` +
+      `state=signin-${Date.now()}`
+    
+    // 🚀 REDIRECT TO GOOGLE OAUTH - WORKS LIKE GOOGLE
+    window.location.href = googleAuthUrl
   }
 
   // 🚀 EMAIL LOGIN - WORKS LIKE GOOGLE
