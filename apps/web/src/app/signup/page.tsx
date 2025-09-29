@@ -11,16 +11,24 @@ export default function SignupPage() {
   const [otp, setOtp] = useState('')
   const [showOtp, setShowOtp] = useState(false)
 
-  // 🚀 GOOGLE SIGN-UP - WORKS EXACTLY LIKE GOOGLE
+  // 🚀 GOOGLE SIGN-UP - REAL GOOGLE OAUTH WITH CONSENT SCREEN
   const handleGoogleSignUp = () => {
-    // 🚀 BULLETPROOF GOOGLE SIGNUP - IMMEDIATE SUCCESS LIKE GOOGLE
-    toast.success('🚀 Creating your Google account...')
+    // 🚀 REAL GOOGLE OAUTH FOR SIGNUP - FORCE CONSENT SCREEN
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
     
-    // 🚀 IMMEDIATE SUCCESS - WORKS LIKE GOOGLE
-    setTimeout(() => {
-      toast.success('✅ Google account created successfully!')
-      window.location.href = '/dashboard?google_success=true&action=signup&user_email=newuser@gmail.com&state=signup-success&user_name=New User'
-    }, 2000)
+    // 🚀 GOOGLE OAUTH URL FOR SIGNUP - FORCE CONSENT FOR NEW ACCOUNT
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${encodeURIComponent(clientId)}&` +
+      `redirect_uri=${encodeURIComponent(window.location.origin + '/api/auth/google/callback')}&` +
+      `response_type=code&` +
+      `scope=openid%20email%20profile&` +
+      `access_type=offline&` +
+      `prompt=consent&` +
+      `include_granted_scopes=true&` +
+      `state=signup-${Date.now()}`
+    
+    // 🚀 REDIRECT TO GOOGLE CONSENT SCREEN - REAL OAUTH
+    window.location.href = googleAuthUrl
   }
 
   // 🚀 EMAIL SIGN-UP - WORKS LIKE GOOGLE (OTP ONLY)

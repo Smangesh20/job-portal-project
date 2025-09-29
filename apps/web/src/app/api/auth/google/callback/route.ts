@@ -25,14 +25,42 @@ export async function GET(request: NextRequest) {
       action = 'signin'
     }
 
-    // 🚀 SIMPLE SUCCESS RESPONSE - WORKS LIKE GOOGLE
-    const userData = {
-      id: 'google_user_' + Date.now(),
-      email: action === 'signup' ? 'newuser@gmail.com' : 'existinguser@gmail.com',
-      name: action === 'signup' ? 'New User' : 'Existing User',
-      picture: 'https://via.placeholder.com/150',
-      verified_email: true,
+    // 🚀 REAL GOOGLE OAUTH TOKEN EXCHANGE
+    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com',
+        client_secret: process.env.GOOGLE_CLIENT_SECRET || '',
+        code: code,
+        grant_type: 'authorization_code',
+        redirect_uri: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/auth/google/callback`,
+      }),
+    })
+
+    if (!tokenResponse.ok) {
+      console.error('Token exchange failed:', await tokenResponse.text())
+      return NextResponse.redirect(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/login?error=token_exchange_failed`)
     }
+
+    const tokenData = await tokenResponse.json()
+    const accessToken = tokenData.access_token
+
+    // 🚀 GET USER INFO FROM GOOGLE
+    const userResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+
+    if (!userResponse.ok) {
+      console.error('User info fetch failed:', await userResponse.text())
+      return NextResponse.redirect(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/login?error=user_info_failed`)
+    }
+
+    const userData = await userResponse.json()
 
     // 🚀 CREATE USER SESSION - ENTERPRISE LEVEL
     const userSession = {
