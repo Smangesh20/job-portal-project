@@ -16,7 +16,7 @@ export default function SignupPage() {
     // 🚀 REAL GOOGLE SIGNUP FLOW - EXACTLY LIKE GOOGLE
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
     
-    // 🚀 GOOGLE OAUTH URL FOR SIGNUP - EXACTLY LIKE GOOGLE
+    // 🚀 GOOGLE OAUTH URL FOR SIGNUP - EXACTLY LIKE GOOGLE (FORCE CONSENT FOR NEW ACCOUNT)
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
       `client_id=${encodeURIComponent(clientId)}&` +
       `redirect_uri=${encodeURIComponent(window.location.origin + '/api/auth/google/callback')}&` +
@@ -24,6 +24,7 @@ export default function SignupPage() {
       `scope=openid%20email%20profile&` +
       `access_type=offline&` +
       `prompt=consent&` +
+      `include_granted_scopes=true&` +
       `state=signup-${Date.now()}`
     
     // 🚀 REDIRECT TO GOOGLE OAUTH - WORKS LIKE GOOGLE

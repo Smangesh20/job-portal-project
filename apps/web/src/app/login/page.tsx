@@ -16,7 +16,7 @@ export default function LoginPage() {
     // 🚀 REAL GOOGLE SIGNIN FLOW - EXACTLY LIKE GOOGLE
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
     
-    // 🚀 GOOGLE OAUTH URL FOR SIGNIN - EXACTLY LIKE GOOGLE
+    // 🚀 GOOGLE OAUTH URL FOR SIGNIN - EXACTLY LIKE GOOGLE (SHOW ACCOUNT SELECTION)
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
       `client_id=${encodeURIComponent(clientId)}&` +
       `redirect_uri=${encodeURIComponent(window.location.origin + '/api/auth/google/callback')}&` +
