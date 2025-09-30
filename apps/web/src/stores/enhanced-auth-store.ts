@@ -8,7 +8,7 @@ export interface AuthUser {
   firstName: string
   lastName: string
   name: string
-  role: string
+  role: 'CANDIDATE' | 'EMPLOYER' | 'ADMIN' | 'user' | 'employer' | 'admin'
   permissions: string[]
   profileImage?: string
   isVerified: boolean
@@ -64,7 +64,7 @@ export interface AuthActions {
   socialLogin: (provider: string, data: any) => Promise<void>
   register: (data: any) => Promise<void>
   logout: () => Promise<void>
-  refreshToken: () => Promise<void>
+  refreshAuthToken: () => Promise<void>
   
   // MFA actions
   setupMfa: () => Promise<any>
@@ -193,6 +193,7 @@ export const useAuthStore = create<AuthStore>()(
                 type: 'login',
                 severity: 'low',
                 message: 'New login from untrusted device',
+                read: false,
                 metadata: { device: 'Unknown', location: 'Unknown' }
               })
             }
@@ -245,6 +246,7 @@ export const useAuthStore = create<AuthStore>()(
               type: 'login',
               severity: 'low',
               message: `Passwordless login via ${type.toLowerCase()}`,
+              read: false,
               metadata: { method: type }
             })
           } else {
@@ -303,6 +305,7 @@ export const useAuthStore = create<AuthStore>()(
               type: 'login',
               severity: 'low',
               message: `Social login with ${provider}`,
+              read: false,
               metadata: { provider }
             })
           } else {
@@ -358,6 +361,7 @@ export const useAuthStore = create<AuthStore>()(
               type: 'security',
               severity: 'low',
               message: 'New account created',
+              read: false,
               metadata: { method: 'OTP' }
             })
           } else {
@@ -399,7 +403,7 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       // Token refresh
-      refreshToken: async () => {
+      refreshAuthToken: async () => {
         try {
           const { refreshToken } = get()
           
@@ -483,6 +487,7 @@ export const useAuthStore = create<AuthStore>()(
               type: 'mfa',
               severity: 'medium',
               message: 'Two-factor authentication enabled',
+              read: false,
               action: 'MFA enabled'
             })
 
@@ -524,6 +529,7 @@ export const useAuthStore = create<AuthStore>()(
               type: 'mfa',
               severity: 'low',
               message: 'MFA verification successful',
+              read: false,
               action: 'MFA verified'
             })
 
@@ -536,6 +542,7 @@ export const useAuthStore = create<AuthStore>()(
             type: 'mfa',
             severity: 'medium',
             message: 'MFA verification failed',
+            read: false,
             action: 'Security risk'
           })
           return false
@@ -564,6 +571,7 @@ export const useAuthStore = create<AuthStore>()(
               type: 'device',
               severity: 'low',
               message: 'Device marked as trusted',
+              read: false,
               action: 'Device trusted'
             })
           }
@@ -648,6 +656,7 @@ export const useAuthStore = create<AuthStore>()(
             type: 'security',
             severity: 'medium',
             message: 'Session expired due to inactivity',
+            read: false,
             action: 'Auto logout'
           })
           get().logout()
@@ -677,6 +686,7 @@ export const useAuthStore = create<AuthStore>()(
               type: 'password',
               severity: 'low',
               message: 'Password recovery requested',
+              read: false,
               action: 'Recovery initiated'
             })
           } else {
@@ -718,6 +728,7 @@ export const useAuthStore = create<AuthStore>()(
               type: 'password',
               severity: 'medium',
               message: 'Password reset successfully',
+              read: false,
               action: 'Password changed'
             })
           } else {
@@ -766,7 +777,7 @@ export const useAuthStore = create<AuthStore>()(
                 })
               } else {
                 // Token invalid, refresh it
-                await get().refreshToken()
+                await get().refreshAuthToken()
               }
             } catch (error) {
               // Token invalid, clear it
@@ -799,7 +810,7 @@ export const useAuthStore = create<AuthStore>()(
 setInterval(() => {
   const { isAuthenticated, refreshToken } = useAuthStore.getState()
   if (isAuthenticated && refreshToken) {
-    useAuthStore.getState().refreshToken()
+    useAuthStore.getState().refreshAuthToken()
   }
 }, 10 * 60 * 1000)
 

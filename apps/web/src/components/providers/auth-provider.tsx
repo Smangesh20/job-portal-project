@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     login: loginStore,
     register: registerStore,
     logout: logoutStore,
-    refreshToken: refreshTokenStore,
+    refreshAuthToken: refreshTokenStore,
     clearError: clearErrorStore,
     initialize
   } = useAuthStore()

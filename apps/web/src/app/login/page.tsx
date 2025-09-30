@@ -11,12 +11,12 @@ export default function LoginPage() {
   const [otp, setOtp] = useState('')
   const [showOtp, setShowOtp] = useState(false)
 
-  // 🚀 GOOGLE SIGN-IN - REAL GOOGLE OAUTH WITH ACCOUNT SELECTION
+  // 🚀 GOOGLE SIGN-IN - REAL GOOGLE OAUTH WITH ACCOUNT SELECTION ONLY
   const handleGoogleSignIn = () => {
-    // 🚀 REAL GOOGLE OAUTH FOR SIGNIN - SHOW ACCOUNT SELECTION
+    // 🚀 REAL GOOGLE OAUTH FOR SIGNIN - SHOW ACCOUNT SELECTION ONLY (NO CONSENT)
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
     
-    // 🚀 GOOGLE OAUTH URL FOR SIGNIN - SHOW ACCOUNT SELECTION
+    // 🚀 GOOGLE OAUTH URL FOR SIGNIN - ONLY ACCOUNT SELECTION
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
       `client_id=${encodeURIComponent(clientId)}&` +
       `redirect_uri=${encodeURIComponent(window.location.origin + '/api/auth/google/callback')}&` +
@@ -25,6 +25,8 @@ export default function LoginPage() {
       `access_type=offline&` +
       `prompt=select_account&` +
       `state=signin-${Date.now()}`
+    
+    console.log('🚀 SIGNIN: Redirecting to Google account selection:', googleAuthUrl)
     
     // 🚀 REDIRECT TO GOOGLE ACCOUNT SELECTION - REAL OAUTH
     window.location.href = googleAuthUrl
