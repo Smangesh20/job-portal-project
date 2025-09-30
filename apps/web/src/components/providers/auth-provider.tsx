@@ -2,7 +2,8 @@
 
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuthStore, AuthUser } from '@/stores/enhanced-auth-store'
+import { AuthUser } from '@/types/auth'
+import { useAuthStore } from '@/stores/enhanced-auth-store'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 
 interface AuthContextType {
@@ -31,7 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     login: loginStore,
     register: registerStore,
     logout: logoutStore,
-    refreshAccessToken: refreshAccessTokenStore,
+    refreshToken: refreshTokenStore,
     clearError: clearErrorStore,
     initialize
   } = useAuthStore()
@@ -88,7 +89,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const refreshToken = async () => {
     try {
-      await refreshAccessTokenStore()
+      await refreshTokenStore()
     } catch (error) {
       // If refresh fails, logout user
       await logout()

@@ -71,3 +71,9 @@ async function setupSenderAuth() {
 
 // Run the setup
 setupSenderAuth().catch(console.error);
+
+
+
+
+
+

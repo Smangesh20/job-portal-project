@@ -108,3 +108,9 @@ Once you add the Google OAuth credentials:
 4. **Deploy and enjoy real-time Google authentication!**
 
 **The implementation is complete - just needs the credentials!** 🚀
+
+
+
+
+
+

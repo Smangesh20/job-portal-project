@@ -323,3 +323,9 @@ function generateHtmlReport(data) {
     </html>
   `;
 }
+
+
+
+
+
+

@@ -99,3 +99,5 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/login?error=google_callback_failed`)
   }
 }
+
+

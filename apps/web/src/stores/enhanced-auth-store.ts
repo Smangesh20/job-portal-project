@@ -8,7 +8,7 @@ export interface AuthUser {
   firstName: string
   lastName: string
   name: string
-  role: 'CANDIDATE' | 'EMPLOYER' | 'ADMIN' | 'user' | 'employer' | 'admin'
+  role: string
   permissions: string[]
   profileImage?: string
   isVerified: boolean
@@ -64,7 +64,7 @@ export interface AuthActions {
   socialLogin: (provider: string, data: any) => Promise<void>
   register: (data: any) => Promise<void>
   logout: () => Promise<void>
-  refreshAccessToken: () => Promise<void>
+  refreshToken: () => Promise<void>
   
   // MFA actions
   setupMfa: () => Promise<any>
@@ -74,7 +74,7 @@ export interface AuthActions {
   // Security actions
   trustDevice: () => Promise<void>
   getSecurityStatus: () => Promise<any>
-  addSecurityAlert: (alert: Omit<SecurityAlert, 'id' | 'timestamp' | 'read'>) => void
+  addSecurityAlert: (alert: Omit<SecurityAlert, 'id' | 'timestamp'>) => void
   markAlertRead: (alertId: string) => void
   clearAlerts: () => void
   
@@ -157,14 +157,14 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       // Enhanced login with Google-like features
-      login: async (email: string, password: string) => {
+  login: async (email: string, password: string) => {
     try {
           set((state) => {
             state.isLoading = true
             state.error = null
           })
 
-          const response = await fetch('/api/auth/login', {
+          const response = await fetch('/api/auth/google-like/enhanced-login', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -218,7 +218,7 @@ export const useAuthStore = create<AuthStore>()(
             state.error = null
           })
 
-          const response = await fetch('/api/auth/verify-otp', {
+          const response = await fetch('/api/auth/google-like/verify-otp', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -269,7 +269,7 @@ export const useAuthStore = create<AuthStore>()(
             state.error = null
           })
 
-          const response = await fetch('/api/auth/google', {
+          const response = await fetch('/api/auth/google-like/social', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -399,7 +399,7 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       // Token refresh
-      refreshAccessToken: async () => {
+      refreshToken: async () => {
         try {
           const { refreshToken } = get()
           
@@ -766,7 +766,7 @@ export const useAuthStore = create<AuthStore>()(
                 })
               } else {
                 // Token invalid, refresh it
-                await get().refreshAccessToken()
+                await get().refreshToken()
               }
             } catch (error) {
               // Token invalid, clear it
@@ -799,7 +799,7 @@ export const useAuthStore = create<AuthStore>()(
 setInterval(() => {
   const { isAuthenticated, refreshToken } = useAuthStore.getState()
   if (isAuthenticated && refreshToken) {
-    useAuthStore.getState().refreshAccessToken()
+    useAuthStore.getState().refreshToken()
   }
 }, 10 * 60 * 1000)
 

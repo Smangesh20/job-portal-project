@@ -169,3 +169,9 @@ async function diagnoseSendGrid() {
 
 // Run the diagnostic
 diagnoseSendGrid().catch(console.error);
+
+
+
+
+
+
