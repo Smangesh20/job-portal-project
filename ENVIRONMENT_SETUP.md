@@ -1,106 +1,89 @@
-# 🚀 ENVIRONMENT VARIABLES SETUP - EXTERNAL ACTIONS REQUIRED
+# 🔧 ENVIRONMENT SETUP GUIDE
 
-## ✅ **WHAT YOU NEED TO DO EXTERNALLY:**
+## ✅ **REQUIRED ENVIRONMENT VARIABLES**
 
-### 1. **Google Cloud Console Setup:**
+Create a `.env.local` file in your `apps/web` directory with these variables:
 
-1. **Go to Google Cloud Console**: https://console.cloud.google.com/
-2. **Create/Select Project**: Create a new project or select existing one
-3. **Enable Google+ API**: Go to "APIs & Services" → "Library" → Search "Google+ API" → Enable
-4. **Create OAuth 2.0 Credentials**:
-   - Go to "APIs & Services" → "Credentials"
-   - Click "Create Credentials" → "OAuth 2.0 Client IDs"
-   - Application type: "Web application"
-   - Name: "AskYaCham Authentication"
-   - **Authorized redirect URIs** (ADD ALL THESE):
-     ```
-     http://localhost:3000/api/auth/google/callback
-     https://yourdomain.com/api/auth/google/callback
-     https://yourdomain.vercel.app/api/auth/google/callback
-     ```
+```bash
+# 🌐 APP CONFIGURATION
+NEXT_PUBLIC_APP_URL=https://www.askyacham.com
+NEXTAUTH_URL=https://www.askyacham.com
 
-### 2. **Environment Variables Setup:**
-
-Create a `.env.local` file in your project root with these variables:
-
-```env
-# 🚀 GOOGLE OAUTH CREDENTIALS
+# 🔐 GOOGLE OAUTH CONFIGURATION
 NEXT_PUBLIC_GOOGLE_CLIENT_ID=your_google_client_id_here
 GOOGLE_CLIENT_SECRET=your_google_client_secret_here
-GOOGLE_REDIRECT_URL=http://localhost:3000/api/auth/google/callback
+GOOGLE_REDIRECT_URI=https://www.askyacham.com/api/auth/google/callback
 
-# 🚀 EMAIL SERVICE (SENDGRID)
+# 📧 EMAIL CONFIGURATION
 SENDGRID_API_KEY=your_sendgrid_api_key_here
-FROM_EMAIL=your_verified_sender_email@yourdomain.com
+FROM_EMAIL=info@askyacham.com
 
-# 🚀 APP CONFIGURATION
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=your_random_secret_key_here
+# 🔧 ENVIRONMENT
+NODE_ENV=production
 ```
 
-### 3. **SendGrid Email Setup:**
+---
 
-1. **Create SendGrid Account**: https://sendgrid.com/
-2. **Verify Sender Email**: Go to "Settings" → "Sender Authentication" → Verify your email
-3. **Create API Key**: Go to "Settings" → "API Keys" → Create API Key with "Full Access"
-4. **Add to Environment Variables**: Use the API key in `SENDGRID_API_KEY`
+## 🚀 **VERCEL DEPLOYMENT**
 
-## 🚀 **HOW IT WORKS NOW:**
+Add these environment variables in Vercel:
 
-### **Google Sign-Up Flow:**
-1. Click "Sign up with Google" → Redirects to Google Consent Screen
-2. User sees Google's consent screen for new account creation
-3. User grants permissions → Redirects back to your app
-4. Real Google OAuth token exchange happens
-5. User info fetched from Google API
-6. Dashboard shows "Account Created Successfully!" with real user data
+1. Go to: https://vercel.com/your-project/settings/environment-variables
+2. Add each variable above
+3. **IMPORTANT**: Use `https://www.askyacham.com` for all URLs
 
-### **Google Sign-In Flow:**
-1. Click "Continue with Google" → Redirects to Google Account Selection
-2. User sees Google's account selection screen
-3. User selects account → Redirects back to your app
-4. Real Google OAuth token exchange happens
-5. User info fetched from Google API
-6. Dashboard shows "Sign-In Successful!" with real user data
+---
 
-### **Email Authentication:**
-- **OTP-Only**: No passwords anywhere
-- **Real Email**: Uses SendGrid to send actual OTP emails
-- **Immediate Success**: Works instantly with progress messages
+## 🔐 **GOOGLE CLOUD CONSOLE**
 
-## ✅ **TESTING:**
+Go to: https://console.cloud.google.com/apis/credentials
 
-1. **Start your app**: `npm run dev`
-2. **Test Google Sign-Up**: Should show Google consent screen
-3. **Test Google Sign-In**: Should show Google account selection
-4. **Test Email**: Should send real OTP emails via SendGrid
+### **Authorized JavaScript Origins:**
+```
+https://www.askyacham.com
+http://localhost:3000
+```
 
-## 🚨 **COMMON ISSUES:**
+### **Authorized Redirect URIs:**
+```
+https://www.askyacham.com/api/auth/google/callback
+http://localhost:3000/api/auth/google/callback
+```
 
-### **redirect_uri_mismatch Error:**
-- Make sure ALL redirect URIs are added in Google Cloud Console
-- Check that `GOOGLE_REDIRECT_URL` matches exactly
-- Include both localhost and production URLs
+---
 
-### **Email Not Sending:**
-- Verify SendGrid sender email is verified
-- Check `SENDGRID_API_KEY` is correct
-- Ensure `FROM_EMAIL` is verified in SendGrid
+## ✅ **TESTING CHECKLIST**
 
-### **404 Errors:**
-- Make sure all API routes exist
-- Check that environment variables are loaded
-- Restart your development server after adding env vars
+1. ✅ Environment variables set in Vercel
+2. ✅ Google Console redirect URIs updated
+3. ✅ Domain configured as `www.askyacham.com`
+4. ✅ Deploy to Vercel
+5. ✅ Test signup flow
+6. ✅ Test signin flow
 
-## 🎯 **SUCCESS INDICATORS:**
+---
 
-✅ **Google Sign-Up**: Shows Google consent screen → Creates real account → Dashboard shows "Account Created Successfully!"
-✅ **Google Sign-In**: Shows Google account selection → Signs in real user → Dashboard shows "Sign-In Successful!"
-✅ **Email OTP**: Sends real email → User receives OTP → Verification works → Dashboard shows success
-✅ **No 404 Errors**: All routes work properly
-✅ **No redirect_uri_mismatch**: OAuth flow completes successfully
+## 🚨 **COMMON ISSUES**
 
-**Your authentication now works exactly like Google with real OAuth, real email, and real user data!** 🚀
+| Issue | Solution |
+|-------|----------|
+| `redirect_uri_mismatch` | Add `https://www.askyacham.com/api/auth/google/callback` to Google Console |
+| 404 errors | Update `NEXT_PUBLIC_APP_URL` to `https://www.askyacham.com` |
+| No consent screen | Use `prompt=consent` for signup, `prompt=select_account` for signin |
+| Direct redirect to dashboard | Check environment variables are set correctly |
 
+---
 
+## 🎯 **EXPECTED BEHAVIOR**
 
+### **Signup Flow:**
+1. Click "Sign up with Google" → Google consent screen
+2. User grants permissions → Account created
+3. Redirect to dashboard with success message
+
+### **Signin Flow:**
+1. Click "Continue with Google" → Google account selection
+2. User selects account → Authenticated
+3. Redirect to dashboard with success message
+
+**This now works exactly like Google's authentication system!** 🚀
