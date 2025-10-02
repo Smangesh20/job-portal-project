@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL || 'https://www.askyacham.com'}/login?error=no_code`)
     }
 
-            // 🚀 DETERMINE ACTION FROM STATE - EXACTLY LIKE GOOGLE
+            // 🚀 DETERMINE ACTION FROM STATE - BULLETPROOF
             let action = 'signin'
             if (state?.includes('signup')) {
               action = 'signup'
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
               action = 'signin'
             }
             
-            console.log('🚀 OAUTH CALLBACK - Action:', action, 'State:', state)
+            console.log('🚀 OAUTH CALLBACK - Action:', action, 'State:', state, 'Code:', code)
 
     // 🚀 REAL GOOGLE OAUTH TOKEN EXCHANGE
     const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {

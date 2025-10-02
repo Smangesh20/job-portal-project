@@ -11,26 +11,30 @@ export default function SignupPage() {
   const [otp, setOtp] = useState('')
   const [showOtp, setShowOtp] = useState(false)
 
-  // 🚀 REAL GOOGLE SIGN-UP - FORCES CONSENT SCREEN
+  // 🚀 GOOGLE SIGN-UP - BULLETPROOF CONSENT SCREEN
   const handleGoogleSignUp = () => {
-    // 🚀 FORCE CONSENT SCREEN - EXACTLY LIKE GOOGLE
+    // 🚀 BULLETPROOF GOOGLE OAUTH - FORCES CONSENT SCREEN
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
     const redirectUri = `${window.location.origin}/api/auth/google/callback`
     
-    // 🚀 FORCE CONSENT SCREEN - NO ACCOUNT SELECTION
-    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-      `client_id=${encodeURIComponent(clientId)}&` +
-      `redirect_uri=${encodeURIComponent(redirectUri)}&` +
-      `response_type=code&` +
-      `scope=openid%20email%20profile&` +
-      `prompt=consent&` +
-      `access_type=offline&` +
-      `include_granted_scopes=true&` +
-      `state=signup-${Date.now()}`
+    // 🚀 FORCE CONSENT SCREEN - BULLETPROOF PARAMETERS
+    const params = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: redirectUri,
+      response_type: 'code',
+      scope: 'openid email profile',
+      prompt: 'consent',
+      access_type: 'offline',
+      include_granted_scopes: 'true',
+      state: `signup-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`
+    })
     
-    console.log('🚀 FORCE CONSENT SCREEN URL:', googleAuthUrl)
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`
     
-    // 🚀 REDIRECT TO CONSENT SCREEN - NO ACCOUNT SELECTION
+    console.log('🚀 BULLETPROOF SIGNUP URL:', googleAuthUrl)
+    console.log('🚀 PARAMS:', params.toString())
+    
+    // 🚀 REDIRECT TO GOOGLE CONSENT SCREEN
     window.location.href = googleAuthUrl
   }
 
