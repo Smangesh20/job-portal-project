@@ -15,8 +15,25 @@ export default function LoginPage() {
   const handleGoogleSignIn = () => {
     console.log('🚀 SIGNIN: Starting Google OAuth for sign in...')
     
-    // 🚀 REDIRECT TO OUR API ENDPOINT - HANDLES GOOGLE OAUTH PROPERLY
-    window.location.href = '/api/auth/google?action=signin'
+    // 🚀 DIRECT GOOGLE OAUTH - BULLETPROOF SOLUTION
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
+    const redirectUri = `${window.location.origin}/api/auth/google/callback`
+    
+    // 🚀 ACCOUNT SELECTION FOR SIGNIN - WORKS LIKE GOOGLE
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${encodeURIComponent(clientId)}&` +
+      `redirect_uri=${encodeURIComponent(redirectUri)}&` +
+      `response_type=code&` +
+      `scope=openid%20email%20profile&` +
+      `access_type=offline&` +
+      `prompt=select_account&` +
+      `include_granted_scopes=true&` +
+      `state=signin-${Date.now()}`
+    
+    console.log('🚀 SIGNIN: Direct Google OAuth URL:', googleAuthUrl)
+    
+    // 🚀 REDIRECT TO GOOGLE ACCOUNT SELECTION
+    window.location.href = googleAuthUrl
   }
 
   // 🚀 EMAIL LOGIN - WORKS LIKE GOOGLE

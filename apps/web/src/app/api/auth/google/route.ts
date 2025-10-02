@@ -25,7 +25,8 @@ export async function GET(request: NextRequest) {
     
     // 🚀 FORCE CONSENT SCREEN FOR SIGNUP, ACCOUNT SELECTION FOR SIGNIN
     if (action === 'signup') {
-      params.set('prompt', 'consent select_account') // Force new consent for signup
+      params.set('prompt', 'consent') // Force consent screen for new account
+      params.set('approval_prompt', 'force') // Force approval
     } else {
       params.set('prompt', 'select_account') // Account selection for signin
     }
