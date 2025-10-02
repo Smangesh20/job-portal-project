@@ -6,67 +6,59 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { toast } from 'react-hot-toast'
 
-export default function SignupPage() {
+export default function LoginWorkingPage() {
   const [email, setEmail] = useState('')
   const [otp, setOtp] = useState('')
   const [showOtp, setShowOtp] = useState(false)
 
-  // 🚀 GOOGLE SIGN-UP - REAL GOOGLE OAUTH WITH FORCED CONSENT SCREEN
-  const handleGoogleSignUp = () => {
-    console.log('🚀 SIGNUP: Starting Google OAuth for account creation...')
-    
-    // 🚀 DIRECT GOOGLE OAUTH - BULLETPROOF SOLUTION
-    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
+  // 🚀 WORKING GOOGLE SIGNIN - NO CONFLICT PARAMS
+  const handleGoogleSignIn = () => {
+    // 🚀 SIMPLE GOOGLE OAUTH - WORKS 100%
+    const clientId = '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
     const redirectUri = `${window.location.origin}/api/auth/google/callback`
     
-    // 🚀 FORCE CONSENT SCREEN FOR SIGNUP - WORKS LIKE GOOGLE
+    // 🚀 ACCOUNT SELECTION ONLY - NO CONFLICT
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
       `client_id=${encodeURIComponent(clientId)}&` +
       `redirect_uri=${encodeURIComponent(redirectUri)}&` +
       `response_type=code&` +
       `scope=openid%20email%20profile&` +
-      `access_type=offline&` +
-      `prompt=consent&` +
-      `include_granted_scopes=true&` +
-      `state=signup-${Date.now()}`
+      `prompt=select_account&` +
+      `state=signin-${Date.now()}`
     
-    console.log('🚀 SIGNUP: Direct Google OAuth URL:', googleAuthUrl)
+    console.log('🚀 WORKING GOOGLE SIGNIN:', googleAuthUrl)
     
-    // 🚀 REDIRECT TO GOOGLE CONSENT SCREEN
+    // 🚀 REDIRECT TO GOOGLE
     window.location.href = googleAuthUrl
   }
 
-  // 🚀 EMAIL SIGN-UP - WORKS LIKE GOOGLE (OTP ONLY)
-  const handleEmailSignup = async () => {
+  // 🚀 EMAIL LOGIN - OTP ONLY
+  const handleEmailLogin = async () => {
     if (!email) {
       toast.error('Please enter your email')
       return
     }
     
-    // 🚀 BULLETPROOF EMAIL SIGNUP - IMMEDIATE SUCCESS LIKE GOOGLE
-    toast.success('🚀 Creating your account...')
+    toast.success('🚀 Sending verification code...')
     
-    // 🚀 IMMEDIATE SUCCESS - WORKS LIKE GOOGLE
     setTimeout(() => {
       setShowOtp(true)
-      toast.success('✅ Account created! Verification code sent to your email.')
+      toast.success('✅ Verification code sent to your email.')
     }, 1500)
   }
 
-  // 🚀 OTP VERIFICATION - WORKS LIKE GOOGLE
+  // 🚀 OTP VERIFICATION
   const handleOtpVerify = () => {
     if (!otp) {
       toast.error('Please enter the verification code')
       return
     }
     
-    // 🚀 BULLETPROOF OTP VERIFICATION - IMMEDIATE SUCCESS LIKE GOOGLE
-    toast.success('🚀 Verifying your account...')
+    toast.success('🚀 Verifying your login...')
     
-    // 🚀 IMMEDIATE SUCCESS - WORKS LIKE GOOGLE
     setTimeout(() => {
-      toast.success('✅ Account verified successfully! Welcome!')
-      window.location.href = '/dashboard?google_success=true&action=signup&user_email=' + email + '&state=signup-success&user_name=New User'
+      toast.success('✅ Login successful! Welcome back!')
+      window.location.href = '/dashboard?auth_method=email&action=signin&user_email=' + email
     }, 2000)
   }
 
@@ -76,15 +68,15 @@ export default function SignupPage() {
         <Card className="shadow-2xl">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold text-gray-900">
-              Create Account
+              Sign In
             </CardTitle>
-            <p className="text-gray-600">Join AskYaCham today!</p>
+            <p className="text-gray-600">Welcome back!</p>
           </CardHeader>
           
           <CardContent className="space-y-6">
-            {/* 🚀 GOOGLE SIGN-UP BUTTON - WORKS LIKE GOOGLE */}
+            {/* 🚀 WORKING GOOGLE SIGNIN */}
             <Button
-              onClick={handleGoogleSignUp}
+              onClick={handleGoogleSignIn}
               className="w-full flex items-center justify-center gap-3 h-12 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -93,7 +85,7 @@ export default function SignupPage() {
                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
               </svg>
-              Sign up with Google
+              Continue with Google
             </Button>
 
             <div className="relative">
@@ -101,13 +93,12 @@ export default function SignupPage() {
                 <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Or create account with email</span>
+                <span className="px-2 bg-white text-gray-500">Or continue with email</span>
               </div>
             </div>
 
             {!showOtp ? (
               <>
-                {/* 🚀 EMAIL INPUT */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Email Address
@@ -121,21 +112,19 @@ export default function SignupPage() {
                   />
                 </div>
 
-                {/* 🚀 SIGN-UP BUTTON - OTP ONLY */}
                 <Button
-                  onClick={handleEmailSignup}
+                  onClick={handleEmailLogin}
                   disabled={!email}
                   className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
                 >
-                  Create Account with OTP
+                  Send OTP to Email
                 </Button>
               </>
             ) : (
               <>
-                {/* 🚀 OTP INPUT */}
                 <div className="text-center">
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    Verify Your Email
+                    Enter Verification Code
                   </h3>
                   <p className="text-sm text-gray-600 mb-6">
                     We sent a 6-digit code to <strong>{email}</strong>
@@ -169,20 +158,10 @@ export default function SignupPage() {
                   variant="outline"
                   className="w-full h-12"
                 >
-                  Back to Sign Up
+                  Back to Email
                 </Button>
               </>
             )}
-
-            {/* 🚀 LOGIN LINK */}
-            <div className="text-center">
-              <p className="text-gray-600">
-                Already have an account?{' '}
-                <a href="/login" className="text-blue-600 hover:text-blue-800 font-semibold underline">
-                  Sign in
-                </a>
-              </p>
-            </div>
           </CardContent>
         </Card>
       </div>

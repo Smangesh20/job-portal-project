@@ -81,6 +81,8 @@ export async function GET(request: NextRequest) {
     redirectUrl.searchParams.set('state', state || '')
     redirectUrl.searchParams.set('user_email', userData.email)
     redirectUrl.searchParams.set('user_name', userData.name || '')
+    redirectUrl.searchParams.set('auth_method', 'google')
+    redirectUrl.searchParams.set('timestamp', new Date().toISOString())
 
     // 🚀 SET SESSION COOKIE - ENTERPRISE SECURITY
     const response = NextResponse.redirect(redirectUrl.toString())

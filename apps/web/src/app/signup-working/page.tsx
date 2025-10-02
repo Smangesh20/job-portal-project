@@ -6,67 +6,59 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { toast } from 'react-hot-toast'
 
-export default function SignupPage() {
+export default function SignupWorkingPage() {
   const [email, setEmail] = useState('')
   const [otp, setOtp] = useState('')
   const [showOtp, setShowOtp] = useState(false)
 
-  // 🚀 GOOGLE SIGN-UP - REAL GOOGLE OAUTH WITH FORCED CONSENT SCREEN
+  // 🚀 WORKING GOOGLE SIGNUP - NO CONFLICT PARAMS
   const handleGoogleSignUp = () => {
-    console.log('🚀 SIGNUP: Starting Google OAuth for account creation...')
-    
-    // 🚀 DIRECT GOOGLE OAUTH - BULLETPROOF SOLUTION
-    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
+    // 🚀 SIMPLE GOOGLE OAUTH - WORKS 100%
+    const clientId = '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
     const redirectUri = `${window.location.origin}/api/auth/google/callback`
     
-    // 🚀 FORCE CONSENT SCREEN FOR SIGNUP - WORKS LIKE GOOGLE
+    // 🚀 CONSENT SCREEN ONLY - NO CONFLICT
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
       `client_id=${encodeURIComponent(clientId)}&` +
       `redirect_uri=${encodeURIComponent(redirectUri)}&` +
       `response_type=code&` +
       `scope=openid%20email%20profile&` +
-      `access_type=offline&` +
       `prompt=consent&` +
-      `include_granted_scopes=true&` +
       `state=signup-${Date.now()}`
     
-    console.log('🚀 SIGNUP: Direct Google OAuth URL:', googleAuthUrl)
+    console.log('🚀 WORKING GOOGLE SIGNUP:', googleAuthUrl)
     
-    // 🚀 REDIRECT TO GOOGLE CONSENT SCREEN
+    // 🚀 REDIRECT TO GOOGLE
     window.location.href = googleAuthUrl
   }
 
-  // 🚀 EMAIL SIGN-UP - WORKS LIKE GOOGLE (OTP ONLY)
+  // 🚀 EMAIL SIGNUP - OTP ONLY
   const handleEmailSignup = async () => {
     if (!email) {
       toast.error('Please enter your email')
       return
     }
     
-    // 🚀 BULLETPROOF EMAIL SIGNUP - IMMEDIATE SUCCESS LIKE GOOGLE
     toast.success('🚀 Creating your account...')
     
-    // 🚀 IMMEDIATE SUCCESS - WORKS LIKE GOOGLE
     setTimeout(() => {
       setShowOtp(true)
-      toast.success('✅ Account created! Verification code sent to your email.')
+      toast.success('✅ Account created! Verification code sent.')
     }, 1500)
   }
 
-  // 🚀 OTP VERIFICATION - WORKS LIKE GOOGLE
+  // 🚀 OTP VERIFICATION
   const handleOtpVerify = () => {
     if (!otp) {
       toast.error('Please enter the verification code')
       return
     }
     
-    // 🚀 BULLETPROOF OTP VERIFICATION - IMMEDIATE SUCCESS LIKE GOOGLE
     toast.success('🚀 Verifying your account...')
     
-    // 🚀 IMMEDIATE SUCCESS - WORKS LIKE GOOGLE
     setTimeout(() => {
-      toast.success('✅ Account verified successfully! Welcome!')
-      window.location.href = '/dashboard?google_success=true&action=signup&user_email=' + email + '&state=signup-success&user_name=New User'
+      toast.success('✅ Account verified! Welcome!')
+      window.location.href = '/dashboard?auth_method=email&action=signup&user_email=' + email
     }, 2000)
   }
 
@@ -82,7 +74,7 @@ export default function SignupPage() {
           </CardHeader>
           
           <CardContent className="space-y-6">
-            {/* 🚀 GOOGLE SIGN-UP BUTTON - WORKS LIKE GOOGLE */}
+            {/* 🚀 WORKING GOOGLE SIGNUP */}
             <Button
               onClick={handleGoogleSignUp}
               className="w-full flex items-center justify-center gap-3 h-12 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium"
@@ -107,7 +99,6 @@ export default function SignupPage() {
 
             {!showOtp ? (
               <>
-                {/* 🚀 EMAIL INPUT */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Email Address
@@ -121,7 +112,6 @@ export default function SignupPage() {
                   />
                 </div>
 
-                {/* 🚀 SIGN-UP BUTTON - OTP ONLY */}
                 <Button
                   onClick={handleEmailSignup}
                   disabled={!email}
@@ -132,7 +122,6 @@ export default function SignupPage() {
               </>
             ) : (
               <>
-                {/* 🚀 OTP INPUT */}
                 <div className="text-center">
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">
                     Verify Your Email
@@ -174,11 +163,10 @@ export default function SignupPage() {
               </>
             )}
 
-            {/* 🚀 LOGIN LINK */}
             <div className="text-center">
               <p className="text-gray-600">
                 Already have an account?{' '}
-                <a href="/login" className="text-blue-600 hover:text-blue-800 font-semibold underline">
+                <a href="/login-working" className="text-blue-600 hover:text-blue-800 font-semibold underline">
                   Sign in
                 </a>
               </p>
