@@ -11,16 +11,26 @@ export default function SignupPage() {
   const [otp, setOtp] = useState('')
   const [showOtp, setShowOtp] = useState(false)
 
-  // 🚀 BULLETPROOF GOOGLE SIGN-UP - WORKS IMMEDIATELY
+  // 🚀 REAL GOOGLE SIGN-UP - ACTUAL GOOGLE OAUTH
   const handleGoogleSignUp = () => {
-    // 🚀 IMMEDIATE SUCCESS - WORKS LIKE GOOGLE
-    toast.success('🚀 Creating your account with Google...')
+    // 🚀 REAL GOOGLE OAUTH - FORCES CONSENT SCREEN
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
+    const redirectUri = `${window.location.origin}/api/auth/google/callback`
     
-    setTimeout(() => {
-      // 🚀 BULLETPROOF SUCCESS - WORKS LIKE GOOGLE
-      toast.success('✅ Account created successfully! Welcome to AskYaCham!')
-      window.location.href = '/dashboard?google_success=true&action=signup&auth_method=google&user_email=user@gmail.com&user_name=New User&timestamp=' + Date.now()
-    }, 2000)
+    // 🚀 FORCE CONSENT SCREEN - REAL GOOGLE OAUTH
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${encodeURIComponent(clientId)}&` +
+      `redirect_uri=${encodeURIComponent(redirectUri)}&` +
+      `response_type=code&` +
+      `scope=openid%20email%20profile&` +
+      `prompt=consent&` +
+      `access_type=offline&` +
+      `state=signup-${Date.now()}`
+    
+    console.log('🚀 REAL GOOGLE SIGNUP URL:', googleAuthUrl)
+    
+    // 🚀 REDIRECT TO REAL GOOGLE CONSENT SCREEN
+    window.location.href = googleAuthUrl
   }
 
   // 🚀 EMAIL SIGN-UP - WORKS LIKE GOOGLE (OTP ONLY)

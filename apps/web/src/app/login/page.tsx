@@ -11,16 +11,25 @@ export default function LoginPage() {
   const [otp, setOtp] = useState('')
   const [showOtp, setShowOtp] = useState(false)
 
-  // 🚀 BULLETPROOF GOOGLE SIGN-IN - WORKS IMMEDIATELY
+  // 🚀 REAL GOOGLE SIGN-IN - ACTUAL GOOGLE OAUTH
   const handleGoogleSignIn = () => {
-    // 🚀 IMMEDIATE SUCCESS - WORKS LIKE GOOGLE
-    toast.success('🚀 Signing you in with Google...')
+    // 🚀 REAL GOOGLE OAUTH - ACCOUNT SELECTION
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
+    const redirectUri = `${window.location.origin}/api/auth/google/callback`
     
-    setTimeout(() => {
-      // 🚀 BULLETPROOF SUCCESS - WORKS LIKE GOOGLE
-      toast.success('✅ Welcome back! You are now signed in.')
-      window.location.href = '/dashboard?google_success=true&action=signin&auth_method=google&user_email=user@gmail.com&user_name=Existing User&timestamp=' + Date.now()
-    }, 2000)
+    // 🚀 ACCOUNT SELECTION - REAL GOOGLE OAUTH
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${encodeURIComponent(clientId)}&` +
+      `redirect_uri=${encodeURIComponent(redirectUri)}&` +
+      `response_type=code&` +
+      `scope=openid%20email%20profile&` +
+      `prompt=select_account&` +
+      `state=signin-${Date.now()}`
+    
+    console.log('🚀 REAL GOOGLE SIGNIN URL:', googleAuthUrl)
+    
+    // 🚀 REDIRECT TO REAL GOOGLE ACCOUNT SELECTION
+    window.location.href = googleAuthUrl
   }
 
   // 🚀 EMAIL LOGIN - WORKS LIKE GOOGLE
