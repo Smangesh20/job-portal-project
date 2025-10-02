@@ -17,13 +17,15 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL || 'https://www.askyacham.com'}/login?error=no_code`)
     }
 
-    // 🚀 DETERMINE ACTION FROM STATE
-    let action = 'signin'
-    if (state?.includes('signup')) {
-      action = 'signup'
-    } else if (state?.includes('signin')) {
-      action = 'signin'
-    }
+            // 🚀 DETERMINE ACTION FROM STATE - EXACTLY LIKE GOOGLE
+            let action = 'signin'
+            if (state?.includes('signup')) {
+              action = 'signup'
+            } else if (state?.includes('signin')) {
+              action = 'signin'
+            }
+            
+            console.log('🚀 OAUTH CALLBACK - Action:', action, 'State:', state)
 
     // 🚀 REAL GOOGLE OAUTH TOKEN EXCHANGE
     const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {

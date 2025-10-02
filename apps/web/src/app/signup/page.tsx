@@ -11,13 +11,13 @@ export default function SignupPage() {
   const [otp, setOtp] = useState('')
   const [showOtp, setShowOtp] = useState(false)
 
-  // 🚀 REAL GOOGLE SIGN-UP - ACTUAL GOOGLE OAUTH
+  // 🚀 REAL GOOGLE SIGN-UP - FORCES CONSENT SCREEN
   const handleGoogleSignUp = () => {
-    // 🚀 REAL GOOGLE OAUTH - FORCES CONSENT SCREEN
+    // 🚀 FORCE CONSENT SCREEN - EXACTLY LIKE GOOGLE
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
     const redirectUri = `${window.location.origin}/api/auth/google/callback`
     
-    // 🚀 FORCE CONSENT SCREEN - REAL GOOGLE OAUTH
+    // 🚀 FORCE CONSENT SCREEN - NO ACCOUNT SELECTION
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
       `client_id=${encodeURIComponent(clientId)}&` +
       `redirect_uri=${encodeURIComponent(redirectUri)}&` +
@@ -25,11 +25,12 @@ export default function SignupPage() {
       `scope=openid%20email%20profile&` +
       `prompt=consent&` +
       `access_type=offline&` +
+      `include_granted_scopes=true&` +
       `state=signup-${Date.now()}`
     
-    console.log('🚀 REAL GOOGLE SIGNUP URL:', googleAuthUrl)
+    console.log('🚀 FORCE CONSENT SCREEN URL:', googleAuthUrl)
     
-    // 🚀 REDIRECT TO REAL GOOGLE CONSENT SCREEN
+    // 🚀 REDIRECT TO CONSENT SCREEN - NO ACCOUNT SELECTION
     window.location.href = googleAuthUrl
   }
 
