@@ -11,17 +11,11 @@ export async function GET(request: NextRequest) {
       `client_id=${encodeURIComponent(clientId)}&` +
       `redirect_uri=${encodeURIComponent(redirectUri)}&` +
       `response_type=code&` +
-      `scope=openid%20email%20profile%20https://www.googleapis.com/auth/userinfo.email%20https://www.googleapis.com/auth/userinfo.profile&` +
+      `scope=openid%20email%20profile&` +
       `prompt=consent&` +
-      `approval_prompt=force&` +
       `access_type=offline&` +
       `include_granted_scopes=true&` +
-      `state=signup-${Date.now()}-${Math.random().toString(36).substring(2, 15)}&` +
-      `nonce=${Math.random().toString(36).substring(2, 15)}&` +
-      `hd=&` +
-      `login_hint=&` +
-      `max_auth_age=0&` +
-      `authuser=-1`
+      `state=signup-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`
     
     console.log('🚀 FORCE CONSENT SCREEN URL:', googleAuthUrl)
     

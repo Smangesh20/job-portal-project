@@ -14,8 +14,7 @@ export async function GET(request: NextRequest) {
       scope: 'openid email profile',
       prompt: 'select_account',
       access_type: 'offline',
-      state: `signin-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`,
-      nonce: Math.random().toString(36).substring(2, 15)
+      state: `signin-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`
     })
     
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`
