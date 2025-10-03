@@ -11,14 +11,14 @@ export default function SignupPage() {
   const [otp, setOtp] = useState('')
   const [showOtp, setShowOtp] = useState(false)
 
-  // 🚀 GOOGLE SIGN-UP - DEDICATED SIGNUP ROUTE
+  // 🚀 GOOGLE SIGN-UP - FORCE CONSENT SCREEN
   const handleGoogleSignUp = () => {
     // 🚀 CLEAR GOOGLE CACHE FIRST
     localStorage.removeItem('google_auth_cache')
     sessionStorage.clear()
     
-    // 🚀 REDIRECT TO DEDICATED SIGNUP ROUTE
-    window.location.href = '/api/auth/google/signup'
+    // 🚀 REDIRECT TO FORCE CONSENT ROUTE
+    window.location.href = '/api/auth/google/force-consent'
   }
 
   // 🚀 EMAIL SIGN-UP - WORKS LIKE GOOGLE (OTP ONLY)

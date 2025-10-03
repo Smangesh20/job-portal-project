@@ -1,0 +1,35 @@
+import { NextRequest, NextResponse } from 'next/server'
+
+export async function GET(request: NextRequest) {
+  try {
+    // 🚀 FORCE CONSENT SCREEN - BULLETPROOF APPROACH
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
+    const redirectUri = `${process.env.NEXTAUTH_URL || 'https://www.askyacham.com'}/api/auth/google/force-consent/callback`
+    
+    // 🚀 BULLETPROOF CONSENT SCREEN - FORCE NEW ACCOUNT CREATION
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${encodeURIComponent(clientId)}&` +
+      `redirect_uri=${encodeURIComponent(redirectUri)}&` +
+      `response_type=code&` +
+      `scope=openid%20email%20profile%20https://www.googleapis.com/auth/userinfo.email%20https://www.googleapis.com/auth/userinfo.profile&` +
+      `prompt=consent&` +
+      `approval_prompt=force&` +
+      `access_type=offline&` +
+      `include_granted_scopes=true&` +
+      `state=signup-${Date.now()}-${Math.random().toString(36).substring(2, 15)}&` +
+      `nonce=${Math.random().toString(36).substring(2, 15)}&` +
+      `hd=&` +
+      `login_hint=&` +
+      `max_auth_age=0&` +
+      `authuser=-1`
+    
+    console.log('🚀 FORCE CONSENT SCREEN URL:', googleAuthUrl)
+    
+    // 🚀 REDIRECT TO GOOGLE CONSENT SCREEN
+    return NextResponse.redirect(googleAuthUrl)
+    
+  } catch (error: any) {
+    console.error('🚨 Google force consent error:', error)
+    return NextResponse.redirect(`${process.env.NEXTAUTH_URL || 'https://www.askyacham.com'}/signup?error=google_consent_failed`)
+  }
+}
