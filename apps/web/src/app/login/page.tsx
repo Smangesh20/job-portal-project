@@ -11,30 +11,10 @@ export default function LoginPage() {
   const [otp, setOtp] = useState('')
   const [showOtp, setShowOtp] = useState(false)
 
-  // 🚀 GOOGLE SIGN-IN - BULLETPROOF ACCOUNT SELECTION
+  // 🚀 GOOGLE SIGN-IN - DEDICATED SIGNIN ROUTE
   const handleGoogleSignIn = () => {
-    // 🚀 BULLETPROOF GOOGLE OAUTH - ACCOUNT SELECTION
-    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
-    const redirectUri = `${window.location.origin}/api/auth/google/callback`
-    
-    // 🚀 ACCOUNT SELECTION - BULLETPROOF PARAMETERS
-    const params = new URLSearchParams({
-      client_id: clientId,
-      redirect_uri: redirectUri,
-      response_type: 'code',
-      scope: 'openid email profile',
-      prompt: 'select_account',
-      access_type: 'offline',
-      state: `signin-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`
-    })
-    
-    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`
-    
-    console.log('🚀 BULLETPROOF SIGNIN URL:', googleAuthUrl)
-    console.log('🚀 PARAMS:', params.toString())
-    
-    // 🚀 REDIRECT TO GOOGLE ACCOUNT SELECTION
-    window.location.href = googleAuthUrl
+    // 🚀 REDIRECT TO DEDICATED SIGNIN ROUTE
+    window.location.href = '/api/auth/google/signin'
   }
 
   // 🚀 EMAIL LOGIN - WORKS LIKE GOOGLE
