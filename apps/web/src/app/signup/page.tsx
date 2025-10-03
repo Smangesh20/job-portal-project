@@ -17,8 +17,8 @@ export default function SignupPage() {
     localStorage.removeItem('google_auth_cache')
     sessionStorage.clear()
     
-    // 🚀 REDIRECT TO FORCE CONSENT ROUTE
-    window.location.href = '/api/auth/google/force-consent'
+    // 🚀 REDIRECT TO SIGNUP ROUTE
+    window.location.href = '/api/auth/google/signup'
   }
 
   // 🚀 EMAIL SIGN-UP - WORKS LIKE GOOGLE (OTP ONLY)
