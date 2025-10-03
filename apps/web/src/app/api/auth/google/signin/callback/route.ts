@@ -10,11 +10,11 @@ export async function GET(request: NextRequest) {
     // 🚀 HANDLE OAUTH ERRORS
     if (error) {
       console.error('Google OAuth Error:', error)
-      return NextResponse.redirect(`${process.env.NEXTAUTH_URL || 'https://www.askyacham.com'}/login?error=google_auth_failed`)
+      return NextResponse.redirect('https://www.askyacham.com/login?error=google_auth_failed')
     }
 
     if (!code) {
-      return NextResponse.redirect(`${process.env.NEXTAUTH_URL || 'https://www.askyacham.com'}/login?error=no_code`)
+      return NextResponse.redirect('https://www.askyacham.com/login?error=no_code')
     }
 
     // 🚀 DETERMINE ACTION FROM STATE - FORCE SIGNIN
@@ -32,13 +32,13 @@ export async function GET(request: NextRequest) {
         client_secret: process.env.GOOGLE_CLIENT_SECRET || '',
         code: code,
         grant_type: 'authorization_code',
-        redirect_uri: `${process.env.NEXTAUTH_URL || 'https://www.askyacham.com'}/api/auth/google/signin/callback`,
+        redirect_uri: 'https://www.askyacham.com/api/auth/google/signin/callback',
       }),
     })
 
     if (!tokenResponse.ok) {
       console.error('Token exchange failed:', await tokenResponse.text())
-      return NextResponse.redirect(`${process.env.NEXTAUTH_URL || 'https://www.askyacham.com'}/login?error=token_exchange_failed`)
+      return NextResponse.redirect('https://www.askyacham.com/login?error=token_exchange_failed')
     }
 
     const tokenData = await tokenResponse.json()
@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
 
     if (!userResponse.ok) {
       console.error('User info fetch failed:', await userResponse.text())
-      return NextResponse.redirect(`${process.env.NEXTAUTH_URL || 'https://www.askyacham.com'}/login?error=user_info_failed`)
+      return NextResponse.redirect('https://www.askyacham.com/login?error=user_info_failed')
     }
 
     const userData = await userResponse.json()
@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 🚀 REDIRECT TO DASHBOARD WITH SUCCESS - WORKS LIKE GOOGLE
-    const redirectUrl = new URL(`${process.env.NEXTAUTH_URL || 'https://www.askyacham.com'}/dashboard`)
+    const redirectUrl = new URL('https://www.askyacham.com/dashboard')
     redirectUrl.searchParams.set('google_success', 'true')
     redirectUrl.searchParams.set('action', action)
     redirectUrl.searchParams.set('state', state || '')
@@ -93,6 +93,6 @@ export async function GET(request: NextRequest) {
 
   } catch (error: any) {
     console.error('🚨 Google signin callback error:', error)
-    return NextResponse.redirect(`${process.env.NEXTAUTH_URL || 'https://www.askyacham.com'}/login?error=google_callback_failed`)
+    return NextResponse.redirect('https://www.askyacham.com/login?error=google_callback_failed')
   }
 }

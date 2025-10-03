@@ -4,22 +4,27 @@ import { NextRequest, NextResponse } from 'next/server'
 export function middleware(request: NextRequest) {
   const accessToken = request.cookies.get('accessToken')?.value;
   const refreshToken = request.cookies.get('refreshToken')?.value;
-  const isAuthenticated = !!accessToken; // Simplified check
+  const userSession = request.cookies.get('user_session')?.value;
+  const isAuthenticated = !!(accessToken || userSession); // Check both tokens
 
   // Public routes that don't require authentication
-  const publicRoutes = ['/auth/login', '/auth/register', '/auth/forgot-password', '/auth/reset-password'];
-  const isPublicRoute = publicRoutes.includes(request.nextUrl.pathname);
+  const publicRoutes = [
+    '/auth/login', '/auth/register', '/auth/forgot-password', '/auth/reset-password',
+    '/login', '/signup', '/signin', '/register',
+    '/api/auth/google/signup', '/api/auth/google/signin',
+    '/api/auth/google/signup/callback', '/api/auth/google/signin/callback'
+  ];
+  const isPublicRoute = publicRoutes.includes(request.nextUrl.pathname) || 
+                       request.nextUrl.pathname.startsWith('/api/auth/');
 
   // If user is trying to access auth pages while logged in, redirect to dashboard
-  if (isAuthenticated && isPublicRoute) {
+  if (isAuthenticated && (request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/signup')) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
-  // If user is not authenticated and trying to access any non-public route, redirect to login
-  if (!isAuthenticated && !isPublicRoute) {
-    const loginUrl = new URL('/auth/login', request.url);
-    loginUrl.searchParams.set('redirect', request.nextUrl.pathname);
-    return NextResponse.redirect(loginUrl);
+  // If user is not authenticated and trying to access dashboard, redirect to login
+  if (!isAuthenticated && request.nextUrl.pathname === '/dashboard') {
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
   // If authenticated user tries to access homepage, redirect to dashboard
