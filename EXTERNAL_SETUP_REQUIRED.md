@@ -1,117 +1,61 @@
-# 🔧 EXTERNAL SETUP REQUIRED
+# 🚀 EXTERNAL SETUP REQUIRED - GOOGLE CLOUD CONSOLE
 
-## 🚨 **CRITICAL: You Must Do This Externally**
+## ✅ CRITICAL: YOU MUST ADD THESE REDIRECT URIs
 
-The error "The OAuth client was not found" means you need to configure Google Console properly.
+The error is fixed in the code, but **YOU MUST ADD THESE REDIRECT URIs** to your Google Cloud Console:
 
----
+### 🚀 REDIRECT URIs TO ADD:
 
-## 🚀 **STEP 1: Google Cloud Console Setup**
+Go to: https://console.cloud.google.com/apis/credentials
 
-### **Go to Google Cloud Console:**
-https://console.cloud.google.com/apis/credentials
+1. **For Signup (Force Consent):**
+   ```
+   https://www.askyacham.com/api/auth/google/force-consent/callback
+   ```
 
-### **Create OAuth 2.0 Client ID:**
-1. Click "Create Credentials" → "OAuth 2.0 Client ID"
-2. Choose "Web application"
-3. Name: "AskYaCham Authentication"
+2. **For Signup (Alternative):**
+   ```
+   https://www.askyacham.com/api/auth/google/signup/callback
+   ```
 
-### **Configure Authorized JavaScript Origins:**
-Add these URLs:
+3. **For Signin:**
+   ```
+   https://www.askyacham.com/api/auth/google/signin/callback
+   ```
+
+4. **Original Callback:**
+   ```
+   https://www.askyacham.com/api/auth/google/callback
+   ```
+
+### 🚀 AUTHORIZED JAVASCRIPT ORIGINS:
+
 ```
 https://www.askyacham.com
-http://localhost:3000
 ```
 
-### **Configure Authorized Redirect URIs:**
-Add these URLs:
-```
-https://www.askyacham.com/google-success
-http://localhost:3000/google-success
-```
+### 🚀 STEP-BY-STEP:
 
-### **Copy Your Credentials:**
-- Copy the **Client ID** (starts with numbers)
-- Copy the **Client Secret**
-- You'll need these for Vercel
+1. Go to Google Cloud Console: https://console.cloud.google.com/apis/credentials
+2. Click on your OAuth 2.0 Client ID (for "Ask Ya Cham")
+3. Under "Authorized redirect URIs", add ALL 4 URLs above
+4. Click "SAVE"
+5. Wait 1-2 minutes for changes to propagate
+6. Clear browser cache and cookies
+7. Try signup again
 
----
+### 🚀 WHAT I FIXED IN CODE:
 
-## 🚀 **STEP 2: Update Your Code**
+✅ Removed `approval_prompt=force` (conflicts with `prompt=consent`)
+✅ Removed unnecessary parameters (nonce, hd, login_hint, max_auth_age, authuser)
+✅ Clean OAuth URLs with only essential parameters
+✅ Separate routes for signup and signin
+✅ Signup uses `prompt=consent` to force consent screen
+✅ Signin uses `prompt=select_account` to show account selection
 
-### **Replace the Client ID in your code:**
-In `apps/web/src/app/signup/page.tsx` and `apps/web/src/app/login/page.tsx`:
+### 🚀 CURRENT STATUS:
 
-Replace this line:
-```javascript
-const clientId = '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
-```
+**CODE: ✅ FIXED AND DEPLOYED**
+**GOOGLE CLOUD CONSOLE: ⏳ WAITING FOR YOU TO ADD REDIRECT URIs**
 
-With your actual Client ID from Google Console:
-```javascript
-const clientId = 'YOUR_ACTUAL_CLIENT_ID_HERE.apps.googleusercontent.com'
-```
-
----
-
-## 🚀 **STEP 3: Vercel Environment Variables**
-
-### **Go to Vercel:**
-https://vercel.com/your-project/settings/environment-variables
-
-### **Add these variables:**
-```bash
-NEXT_PUBLIC_GOOGLE_CLIENT_ID=YOUR_ACTUAL_CLIENT_ID_HERE
-GOOGLE_CLIENT_SECRET=YOUR_ACTUAL_CLIENT_SECRET_HERE
-NEXT_PUBLIC_APP_URL=https://www.askyacham.com
-NEXTAUTH_URL=https://www.askyacham.com
-```
-
----
-
-## 🚀 **STEP 4: Deploy and Test**
-
-1. **Push your code** with the correct Client ID
-2. **Deploy to Vercel**
-3. **Test the authentication flow**
-
----
-
-## ✅ **EXPECTED RESULT:**
-
-After completing these steps:
-- ✅ **Signup**: Google consent screen → Account creation → Dashboard
-- ✅ **Signin**: Google account selection → Authentication → Dashboard
-- ✅ **Email**: OTP only → Verification → Dashboard
-
----
-
-## 🚨 **IMPORTANT NOTES:**
-
-1. **The Client ID must match** what's in Google Console
-2. **The redirect URI must match** what's in Google Console
-3. **Environment variables must be set** in Vercel
-4. **Domain must be configured** properly
-
----
-
-## 🎯 **QUICK CHECKLIST:**
-
-- [ ] Google Console OAuth client created
-- [ ] Redirect URIs added to Google Console
-- [ ] Client ID updated in code
-- [ ] Environment variables set in Vercel
-- [ ] Code deployed to Vercel
-- [ ] Test authentication flow
-
----
-
-## 🚀 **AFTER COMPLETION:**
-
-Your authentication system will work exactly like Google's:
-- ✅ **Real consent screens**
-- ✅ **Real account selection**
-- ✅ **Real user data**
-- ✅ **Enterprise-grade security**
-
-**This is the ONLY way to fix the "OAuth client was not found" error!** 🚀
+Once you add the redirect URIs, the signup will show the Google consent screen and signin will show account selection, exactly like Google's authentication!
