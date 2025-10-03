@@ -20,8 +20,8 @@ export default function SignupPage() {
     // 🚀 CLEAR GOOGLE-SPECIFIC CACHE
     try {
       // Clear Google OAuth cache
-      if (window.gapi) {
-        window.gapi.auth2.getAuthInstance()?.signOut()
+      if ((window as any).gapi) {
+        (window as any).gapi.auth2.getAuthInstance()?.signOut()
       }
     } catch (e) {
       // Ignore errors
