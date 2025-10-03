@@ -11,14 +11,25 @@ export default function SignupPage() {
   const [otp, setOtp] = useState('')
   const [showOtp, setShowOtp] = useState(false)
 
-  // 🚀 GOOGLE SIGN-UP - FORCE CONSENT SCREEN
+  // 🚀 GOOGLE SIGN-UP - FORCE CONSENT SCREEN (AGGRESSIVE)
   const handleGoogleSignUp = () => {
-    // 🚀 CLEAR GOOGLE CACHE FIRST
-    localStorage.removeItem('google_auth_cache')
+    // 🚀 AGGRESSIVE CACHE CLEARING - FORCE NEW CONSENT
+    localStorage.clear()
     sessionStorage.clear()
     
-    // 🚀 REDIRECT TO SIGNUP ROUTE
-    window.location.href = '/api/auth/google/signup'
+    // 🚀 CLEAR GOOGLE-SPECIFIC CACHE
+    try {
+      // Clear Google OAuth cache
+      if (window.gapi) {
+        window.gapi.auth2.getAuthInstance()?.signOut()
+      }
+    } catch (e) {
+      // Ignore errors
+    }
+    
+    // 🚀 REDIRECT TO SIGNUP ROUTE WITH CACHE BUSTING
+    const timestamp = Date.now()
+    window.location.href = `/api/auth/google/signup?t=${timestamp}&force_consent=true`
   }
 
   // 🚀 EMAIL SIGN-UP - WORKS LIKE GOOGLE (OTP ONLY)
