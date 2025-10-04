@@ -1,17 +1,37 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { toast } from 'react-hot-toast'
+
+declare global {
+  interface Window {
+    google: any
+    gapi: any
+  }
+}
 
 export default function SignupPage() {
   const [email, setEmail] = useState('')
   const [otp, setOtp] = useState('')
   const [showOtp, setShowOtp] = useState(false)
 
-  // 🚀 GOOGLE SIGN-UP - NUCLEAR CONSENT SCREEN
+  // 🚀 LOAD GOOGLE IDENTITY SERVICES
+  useEffect(() => {
+    const script = document.createElement('script')
+    script.src = 'https://accounts.google.com/gsi/client'
+    script.async = true
+    script.defer = true
+    document.body.appendChild(script)
+
+    return () => {
+      document.body.removeChild(script)
+    }
+  }, [])
+
+  // 🚀 GOOGLE SIGN-UP - FORCE CONSENT SCREEN WITH IDENTITY SERVICES
   const handleGoogleSignUp = () => {
     // 🚀 NUCLEAR CACHE CLEARING - BREAK ALL GOOGLE CACHE
     try {
@@ -20,14 +40,14 @@ export default function SignupPage() {
       sessionStorage.clear()
       
       // Clear Google OAuth cache
-      if ((window as any).gapi) {
-        (window as any).gapi.auth2.getAuthInstance()?.signOut()
+      if (window.gapi) {
+        window.gapi.auth2?.getAuthInstance()?.signOut()
       }
       
       // Clear Google identity cache
-      if ((window as any).google?.accounts) {
-        (window as any).google.accounts.id.disableAutoSelect()
-        (window as any).google.accounts.id.cancel()
+      if (window.google?.accounts) {
+        window.google.accounts.id.disableAutoSelect()
+        window.google.accounts.id.cancel()
       }
       
       // Clear cookies for this domain
@@ -35,30 +55,50 @@ export default function SignupPage() {
         document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
       });
       
-      // Clear Google Identity Services cache
-      if ((window as any).google?.accounts?.id) {
-        (window as any).google.accounts.id.disableAutoSelect()
-        (window as any).google.accounts.id.cancel()
-        (window as any).google.accounts.id.prompt()
-      }
-      
-      // Clear Google API cache
-      if ((window as any).google?.accounts?.oauth2) {
-        (window as any).google.accounts.oauth2.revoke()
-      }
-      
     } catch (e) {
       // Ignore errors
     }
-    
-    // 🚀 NUCLEAR REDIRECT - FORCE CONSENT SCREEN WITH CACHE BREAKING
-    const timestamp = Date.now()
-    const randomId = Math.random().toString(36).substring(2, 15)
-    const randomId2 = Math.random().toString(36).substring(2, 15)
-    const randomId3 = Math.random().toString(36).substring(2, 15)
-    
-    // 🚀 FORCE CONSENT WITH MULTIPLE CACHE BREAKING PARAMETERS
-    window.location.href = `/api/auth/google/signup?nuclear=${timestamp}&force=${randomId}&consent=${randomId2}&mandatory=${randomId3}&break_cache=${Date.now()}&force_consent=true`
+
+    // 🚀 WAIT FOR GOOGLE IDENTITY SERVICES TO LOAD
+    setTimeout(() => {
+      if (window.google?.accounts?.id) {
+        // 🚀 FORCE CONSENT SCREEN WITH GOOGLE IDENTITY SERVICES
+        window.google.accounts.id.initialize({
+          client_id: '656381536461-b7alo137q7uk9q6qgar13c882pp4hqva.apps.googleusercontent.com',
+          callback: (response: any) => {
+            // 🚀 HANDLE CONSENT RESPONSE - FORCE SIGNUP
+            console.log('🚀 CONSENT RESPONSE:', response)
+            
+            // 🚀 REDIRECT TO SIGNUP CALLBACK WITH CONSENT DATA
+            const redirectUrl = new URL(`${window.location.origin}/api/auth/google/signup/callback`)
+            redirectUrl.searchParams.set('credential', response.credential)
+            redirectUrl.searchParams.set('g_csrf_token', response.g_csrf_token)
+            redirectUrl.searchParams.set('action', 'signup')
+            redirectUrl.searchParams.set('force_consent', 'true')
+            redirectUrl.searchParams.set('timestamp', Date.now().toString())
+            
+            window.location.href = redirectUrl.toString()
+          },
+          auto_select: false,
+          cancel_on_tap_outside: false,
+          context: 'signup',
+          ux_mode: 'popup',
+          // 🚀 FORCE CONSENT SCREEN PARAMETERS
+          prompt_parent_id: 'google-signup-button'
+        })
+
+        // 🚀 FORCE CONSENT SCREEN - NO ACCOUNT SELECTION
+        window.google.accounts.id.prompt((notification: any) => {
+          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+            // 🚀 FALLBACK TO OAUTH IF IDENTITY SERVICES FAILS
+            window.location.href = `/api/auth/google/signup?fallback=${Date.now()}&force_consent=true`
+          }
+        })
+      } else {
+        // 🚀 FALLBACK TO OAUTH IF IDENTITY SERVICES NOT LOADED
+        window.location.href = `/api/auth/google/signup?fallback=${Date.now()}&force_consent=true`
+      }
+    }, 1000)
   }
 
   // 🚀 EMAIL SIGN-UP - WORKS LIKE GOOGLE (OTP ONLY)
@@ -107,8 +147,9 @@ export default function SignupPage() {
           </CardHeader>
           
           <CardContent className="space-y-6">
-            {/* 🚀 GOOGLE SIGN-UP BUTTON - WORKS LIKE GOOGLE */}
+            {/* 🚀 GOOGLE SIGN-UP BUTTON - FORCE CONSENT SCREEN */}
             <Button
+              id="google-signup-button"
               onClick={handleGoogleSignUp}
               className="w-full flex items-center justify-center gap-3 h-12 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium"
             >

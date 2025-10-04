@@ -6,6 +6,56 @@ export async function GET(request: NextRequest) {
     const code = searchParams.get('code')
     const state = searchParams.get('state')
     const error = searchParams.get('error')
+    const credential = searchParams.get('credential')
+    const g_csrf_token = searchParams.get('g_csrf_token')
+    const action = searchParams.get('action')
+
+    // 🚀 HANDLE GOOGLE IDENTITY SERVICES RESPONSE
+    if (credential) {
+      console.log('🚀 GOOGLE IDENTITY SERVICES RESPONSE - SIGNUP:', { credential, g_csrf_token, action })
+      
+      try {
+        // 🚀 DECODE JWT TOKEN FROM GOOGLE IDENTITY SERVICES
+        const jwtPayload = JSON.parse(atob(credential.split('.')[1]))
+        console.log('🚀 JWT PAYLOAD:', jwtPayload)
+        
+        // 🚀 CREATE USER SESSION FROM IDENTITY SERVICES
+        const userSession = {
+          id: jwtPayload.sub,
+          email: jwtPayload.email,
+          name: jwtPayload.name,
+          picture: jwtPayload.picture,
+          verified_email: jwtPayload.email_verified,
+          provider: 'google',
+          action: 'signup',
+          timestamp: new Date().toISOString(),
+          auth_method: 'google_identity_services'
+        }
+
+        // 🚀 REDIRECT TO DASHBOARD WITH SUCCESS
+        const redirectUrl = new URL(`${process.env.NEXTAUTH_URL || 'https://www.askyacham.com'}/dashboard`)
+        redirectUrl.searchParams.set('google_success', 'true')
+        redirectUrl.searchParams.set('action', 'signup')
+        redirectUrl.searchParams.set('user_email', jwtPayload.email)
+        redirectUrl.searchParams.set('user_name', jwtPayload.name || '')
+        redirectUrl.searchParams.set('auth_method', 'google_identity_services')
+        redirectUrl.searchParams.set('timestamp', new Date().toISOString())
+
+        // 🚀 SET SESSION COOKIE
+        const response = NextResponse.redirect(redirectUrl.toString())
+        response.cookies.set('user_session', JSON.stringify(userSession), {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          maxAge: 60 * 60 * 24 * 7, // 1 week
+          path: '/',
+        })
+
+        return response
+      } catch (jwtError) {
+        console.error('🚨 JWT decode error:', jwtError)
+        return NextResponse.redirect(`${process.env.NEXTAUTH_URL || 'https://www.askyacham.com'}/signup?error=jwt_decode_failed`)
+      }
+    }
 
     // 🚀 HANDLE OAUTH ERRORS
     if (error) {
