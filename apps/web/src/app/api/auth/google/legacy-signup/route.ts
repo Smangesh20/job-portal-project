@@ -2,20 +2,19 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
   try {
-    // 🚀 ULTIMATE CONSENT SCREEN - FORCE NEW ACCOUNT CREATION
+    // 🚀 LEGACY OAUTH CONSENT SCREEN - FORCE NEW ACCOUNT CREATION
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
-    const redirectUri = `${process.env.NEXTAUTH_URL || 'https://www.askyacham.com'}/api/auth/google/signup/callback`
+    const redirectUri = `${process.env.NEXTAUTH_URL || 'https://www.askyacham.com'}/api/auth/google/legacy-signup/callback`
     
-    // 🚀 ULTIMATE APPROACH - USE DIFFERENT OAUTH ENDPOINT
+    // 🚀 LEGACY APPROACH - USE LEGACY OAUTH ENDPOINT
     const timestamp = Date.now()
     const randomId1 = Math.random().toString(36).substring(2, 15)
     const randomId2 = Math.random().toString(36).substring(2, 15)
     
-    // 🚀 USE COMPLETELY DIFFERENT OAUTH ENDPOINT
-    const state = `signup-${timestamp}-${randomId1}-${randomId2}`
-    const nonce = `signup-${timestamp}-${randomId1}`
+    // 🚀 USE LEGACY OAUTH ENDPOINT
+    const state = `legacy-signup-${timestamp}-${randomId1}-${randomId2}`
     
-    // 🚀 USE DIFFERENT OAUTH ENDPOINT - THIS WILL FORCE CONSENT SCREEN
+    // 🚀 USE LEGACY OAUTH ENDPOINT - THIS WILL FORCE CONSENT SCREEN
     const params = new URLSearchParams({
       client_id: clientId,
       redirect_uri: redirectUri,
@@ -28,20 +27,19 @@ export async function GET(request: NextRequest) {
       authuser: '-1',
       hd: '',
       login_hint: '',
-      nonce: nonce,
       state: state
     })
     
-    // 🚀 USE DIFFERENT OAUTH ENDPOINT TO BREAK CACHE
+    // 🚀 USE LEGACY OAUTH ENDPOINT TO BREAK CACHE
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/auth?${params.toString()}`
     
-    console.log('🚀 ULTIMATE CONSENT SCREEN URL:', googleAuthUrl)
+    console.log('🚀 LEGACY CONSENT SCREEN URL:', googleAuthUrl)
     
     // 🚀 REDIRECT TO GOOGLE CONSENT SCREEN
     return NextResponse.redirect(googleAuthUrl)
     
   } catch (error: any) {
-    console.error('🚨 Google signup error:', error)
-    return NextResponse.redirect(`${process.env.NEXTAUTH_URL || 'https://www.askyacham.com'}/signup?error=google_signup_failed`)
+    console.error('🚨 Legacy signup error:', error)
+    return NextResponse.redirect(`${process.env.NEXTAUTH_URL || 'https://www.askyacham.com'}/signup?error=legacy_signup_failed`)
   }
 }
