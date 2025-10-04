@@ -41,8 +41,7 @@ export async function GET(request: NextRequest) {
       bg: 'ffffff',
       kt: '0',
       ca: '1',
-      continue: '',
-      ddm: '0'
+      continue: ''
     })
     
     // 🚀 USE COMPLETELY DIFFERENT OAUTH FLOW TO BREAK CACHE
