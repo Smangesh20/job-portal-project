@@ -11,9 +11,9 @@ export default function SignupPage() {
   const [otp, setOtp] = useState('')
   const [showOtp, setShowOtp] = useState(false)
 
-  // 🚀 GOOGLE SIGN-UP - NUCLEAR CONSENT SCREEN
+  // 🚀 GOOGLE SIGN-UP - BREAK OAUTHCHOOSEACCOUNT
   const handleGoogleSignUp = () => {
-    // 🚀 NUCLEAR CACHE CLEARING - BREAK ALL GOOGLE CACHE
+    // 🚀 BREAK ALL GOOGLE CACHE - NUCLEAR APPROACH
     try {
       // Clear all storage
       localStorage.clear()
@@ -42,15 +42,34 @@ export default function SignupPage() {
         (window as any).google.accounts.id.prompt()
       }
       
+      // Clear IndexedDB
+      if ('indexedDB' in window) {
+        indexedDB.deleteDatabase('google-oauth-cache')
+        indexedDB.deleteDatabase('google-identity-cache')
+      }
+      
+      // Clear all Google-related cookies
+      const cookies = document.cookie.split(";")
+      cookies.forEach(cookie => {
+        if (cookie.includes('google') || cookie.includes('oauth') || cookie.includes('gsi')) {
+          const eqPos = cookie.indexOf("=")
+          const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie
+          document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.google.com"
+          document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.accounts.google.com"
+          document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.askyacham.com"
+        }
+      })
+      
     } catch (e) {
       // Ignore errors
     }
     
-    // 🚀 NUCLEAR REDIRECT - FORCE CONSENT SCREEN
+    // 🚀 BREAK OAUTHCHOOSEACCOUNT - FORCE CONSENT SCREEN
     const timestamp = Date.now()
     const randomId = Math.random().toString(36).substring(2, 15)
     const randomId2 = Math.random().toString(36).substring(2, 15)
-    window.location.href = `/api/auth/google/signup?nuclear=${timestamp}&force=${randomId}&consent=${randomId2}&mandatory=true`
+    const randomId3 = Math.random().toString(36).substring(2, 15)
+    window.location.href = `/api/auth/google/signup?break=${timestamp}&force=${randomId}&consent=${randomId2}&oauth=${randomId3}&mandatory=true`
   }
 
   // 🚀 EMAIL SIGN-UP - WORKS LIKE GOOGLE (OTP ONLY)
