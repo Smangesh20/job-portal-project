@@ -11,25 +11,38 @@ export default function SignupPage() {
   const [otp, setOtp] = useState('')
   const [showOtp, setShowOtp] = useState(false)
 
-  // 🚀 GOOGLE SIGN-UP - FORCE CONSENT SCREEN (AGGRESSIVE)
+  // 🚀 GOOGLE SIGN-UP - NUCLEAR CONSENT SCREEN
   const handleGoogleSignUp = () => {
-    // 🚀 AGGRESSIVE CACHE CLEARING - FORCE NEW CONSENT
-    localStorage.clear()
-    sessionStorage.clear()
-    
-    // 🚀 CLEAR GOOGLE-SPECIFIC CACHE
+    // 🚀 NUCLEAR CACHE CLEARING - BREAK ALL GOOGLE CACHE
     try {
+      // Clear all storage
+      localStorage.clear()
+      sessionStorage.clear()
+      
       // Clear Google OAuth cache
       if ((window as any).gapi) {
         (window as any).gapi.auth2.getAuthInstance()?.signOut()
       }
+      
+      // Clear Google identity cache
+      if ((window as any).google?.accounts) {
+        (window as any).google.accounts.id.disableAutoSelect()
+        (window as any).google.accounts.id.cancel()
+      }
+      
+      // Clear cookies for this domain
+      document.cookie.split(";").forEach(function(c) { 
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+      });
+      
     } catch (e) {
       // Ignore errors
     }
     
-    // 🚀 REDIRECT TO SIGNUP ROUTE WITH CACHE BUSTING
+    // 🚀 NUCLEAR REDIRECT - USE NUCLEAR SIGNUP ROUTE
     const timestamp = Date.now()
-    window.location.href = `/api/auth/google/signup?t=${timestamp}&force_consent=true`
+    const randomId = Math.random().toString(36).substring(2, 15)
+    window.location.href = `/api/auth/google/nuclear-signup?nuclear=${timestamp}&force=${randomId}&consent=mandatory`
   }
 
   // 🚀 EMAIL SIGN-UP - WORKS LIKE GOOGLE (OTP ONLY)
