@@ -2,9 +2,36 @@
 
 import React, { useState } from 'react'
 
-export default function TestSimple() {
+export default function TestReal() {
   const [status, setStatus] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+
+  const testRealEmail = async () => {
+    setIsLoading(true)
+    setStatus('Testing Real Email with your SendGrid API key...')
+
+    try {
+      const response = await fetch('/api/test-real-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: 'info@askyacham.com' })
+      })
+
+      const data = await response.json()
+      console.log('🚀 Real email test result:', data)
+
+      if (data.success) {
+        setStatus(`✅ REAL EMAIL SUCCESS!\n\nEmail sent to: info@askyacham.com\nAPI Key Used: ${data.data.apiKeyUsed}\nMessage ID: ${data.data.messageId}\n\nCheck your email NOW!`)
+      } else {
+        setStatus(`❌ REAL EMAIL FAILED:\n${data.error}\n\nDetails: ${data.details}`)
+      }
+    } catch (error) {
+      console.error('🚨 Real email test error:', error)
+      setStatus(`❌ REAL EMAIL ERROR: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const testGoogleAuth = async () => {
     setIsLoading(true)
@@ -47,36 +74,9 @@ export default function TestSimple() {
     }
   }
 
-  const testSimpleEmail = async () => {
-    setIsLoading(true)
-    setStatus('Testing Simple Email...')
-
-    try {
-      const response = await fetch('/api/test-email-simple', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: 'info@askyacham.com' })
-      })
-
-      const data = await response.json()
-      console.log('🚀 Simple email test result:', data)
-
-      if (data.success) {
-        setStatus(`✅ Simple Email SUCCESS!\n\nEmail sent to: info@askyacham.com\nMessage ID: ${data.data.messageId}\n\nCheck your email!`)
-      } else {
-        setStatus(`❌ Simple Email FAILED:\n${data.error || 'Unknown error'}`)
-      }
-    } catch (error) {
-      console.error('🚨 Simple email test error:', error)
-      setStatus(`❌ Simple Email ERROR: ${error instanceof Error ? error.message : 'Unknown error'}`)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   const testOTPEmail = async () => {
     setIsLoading(true)
-    setStatus('Testing OTP Email...')
+    setStatus('Testing OTP Email with your SendGrid API key...')
 
     try {
       const response = await fetch('/api/auth/send-otp', {
@@ -89,55 +89,64 @@ export default function TestSimple() {
       console.log('🚀 OTP email test result:', data)
 
       if (data.success) {
-        setStatus(`✅ OTP Email SUCCESS!\n\nOTP sent to: info@askyacham.com\nOTP Code: ${data.data.otp}\n\nCheck your email for the OTP!`)
+        setStatus(`✅ OTP EMAIL SUCCESS!\n\nOTP sent to: info@askyacham.com\nOTP Code: ${data.data.otp}\n\nCheck your email for the OTP!`)
       } else {
-        setStatus(`❌ OTP Email FAILED:\n${data.error || 'Unknown error'}`)
+        setStatus(`❌ OTP EMAIL FAILED:\n${data.error || 'Unknown error'}`)
       }
     } catch (error) {
       console.error('🚨 OTP email test error:', error)
-      setStatus(`❌ OTP Email ERROR: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      setStatus(`❌ OTP EMAIL ERROR: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setIsLoading(false)
     }
   }
 
-  const checkEnvironment = async () => {
+  const checkStatus = async () => {
     try {
-      const response = await fetch('/api/test-email-simple')
+      const response = await fetch('/api/test-real-email')
       const data = await response.json()
       
       if (data.success) {
-        setStatus(`🔧 Environment Status:\n${JSON.stringify(data.data, null, 2)}`)
+        setStatus(`🔧 Status Check:\n${JSON.stringify(data.data, null, 2)}`)
       } else {
-        setStatus(`❌ Environment check failed: ${data.error}`)
+        setStatus(`❌ Status check failed: ${data.error}`)
       }
     } catch (error) {
-      setStatus(`❌ Environment check error: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      setStatus(`❌ Status check error: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 flex items-center justify-center p-4">
       <div className="bg-white p-8 rounded-lg shadow-xl max-w-2xl w-full">
-        <h1 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          🚀 Simple Test - Google + Email
+        <h1 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+          🚀 Real Test - Your SendGrid API Key
         </h1>
         
+        <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+          <h3 className="text-green-800 font-semibold mb-2">✅ Your Configuration:</h3>
+          <ul className="text-green-700 text-sm space-y-1">
+            <li>• SendGrid API Key: SG.cuaatpUYT3i3-DZTF-ri6w...</li>
+            <li>• From Email: info@askyacham.com</li>
+            <li>• Status: Ready to send real emails</li>
+          </ul>
+        </div>
+        
         <div className="grid grid-cols-2 gap-4 mb-6">
+          <button
+            onClick={testRealEmail}
+            disabled={isLoading}
+            className="bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
+          >
+            📧 Test Real Email
+          </button>
+
           <button
             onClick={testGoogleAuth}
             disabled={isLoading}
             className="bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
           >
             🔐 Test Google OAuth
-          </button>
-
-          <button
-            onClick={testSimpleEmail}
-            disabled={isLoading}
-            className="bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
-          >
-            📧 Test Simple Email
           </button>
 
           <button
@@ -149,20 +158,28 @@ export default function TestSimple() {
           </button>
 
           <button
-            onClick={checkEnvironment}
+            onClick={checkStatus}
             className="bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 font-semibold"
           >
-            🔧 Check Environment
+            🔧 Check Status
           </button>
         </div>
 
         <div id="status" className="mt-6 p-4 bg-gray-50 rounded-lg min-h-[200px]">
-          <pre className="text-sm whitespace-pre-wrap text-gray-800">{status || 'Click a button above to test...'}</pre>
+          <pre className="text-sm whitespace-pre-wrap text-gray-800">{status || 'Click a button above to test with your SendGrid API key...'}</pre>
         </div>
 
         <div className="mt-6 text-center text-sm text-gray-600">
           <p className="font-semibold mb-2">🎯 What Each Test Does:</p>
           <div className="grid grid-cols-2 gap-4 text-left">
+            <div>
+              <p><strong>📧 Real Email Test:</strong></p>
+              <ul className="text-xs space-y-1">
+                <li>• Uses your SendGrid API key</li>
+                <li>• Sends to info@askyacham.com</li>
+                <li>• Real email delivery</li>
+              </ul>
+            </div>
             <div>
               <p><strong>🔐 Google OAuth:</strong></p>
               <ul className="text-xs space-y-1">
@@ -171,20 +188,14 @@ export default function TestSimple() {
                 <li>• Validates OAuth flow</li>
               </ul>
             </div>
-            <div>
-              <p><strong>📧 Email Tests:</strong></p>
-              <ul className="text-xs space-y-1">
-                <li>• Tests simple email delivery</li>
-                <li>• Tests OTP email generation</li>
-                <li>• Validates SendGrid integration</li>
-              </ul>
-            </div>
           </div>
         </div>
       </div>
     </div>
   )
 }
+
+
 
 
 

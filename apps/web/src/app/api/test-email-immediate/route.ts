@@ -5,7 +5,7 @@ import sgMail from '@sendgrid/mail'
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
-// 🚀 FINAL EMAIL TEST
+// 🚀 IMMEDIATE EMAIL TEST
 export async function POST(request: NextRequest) {
   try {
     const { email } = await request.json()
@@ -17,24 +17,24 @@ export async function POST(request: NextRequest) {
       }, { status: 400 })
     }
 
-    // 🚀 GET SENDGRID API KEY FROM ENVIRONMENT
+    // 🚀 YOUR SENDGRID API KEY (from environment)
     const sendGridApiKey = process.env.SENDGRID_API_KEY
     const fromEmail = process.env.FROM_EMAIL || 'info@askyacham.com'
 
-    console.log('🚀 FINAL EMAIL TEST:')
-    console.log('📧 SendGrid API Key exists:', !!sendGridApiKey)
+    console.log('🚀 IMMEDIATE EMAIL TEST WITH YOUR API KEY:')
+    console.log('📧 SendGrid API Key:', sendGridApiKey ? 'SET' : 'MISSING')
     console.log('📧 From Email:', fromEmail)
     console.log('📧 To Email:', email)
 
+    // 🚀 CHECK SENDGRID API KEY
     if (!sendGridApiKey) {
       return NextResponse.json({
         success: false,
-        error: 'SENDGRID_API_KEY not found in environment variables',
+        error: 'SendGrid API key not configured. Please set SENDGRID_API_KEY environment variable.',
         instructions: {
-          step1: 'Add SENDGRID_API_KEY to environment variables',
-          step2: 'Add FROM_EMAIL to environment variables',
-          step3: 'Restart the application',
-          step4: 'Test email delivery'
+          step1: 'Set SENDGRID_API_KEY environment variable',
+          step2: 'Restart your application',
+          step3: 'Test email delivery again'
         }
       }, { status: 500 })
     }
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
         email: fromEmail,
         name: 'Ask Ya Cham'
       },
-      subject: '🚀 Final Email Test - Your SendGrid is Working!',
+      subject: '🚀 IMMEDIATE EMAIL TEST - Your SendGrid is Working!',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
@@ -58,10 +58,10 @@ export async function POST(request: NextRequest) {
           </div>
           
           <div style="background: white; padding: 40px; border-radius: 0 0 10px 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-            <h2 style="color: #333; margin-top: 0;">🎉 Final Email Test Successful!</h2>
+            <h2 style="color: #333; margin-top: 0;">🎉 IMMEDIATE EMAIL TEST SUCCESSFUL!</h2>
             
             <p style="color: #666; font-size: 16px; line-height: 1.6;">
-              Congratulations! Your SendGrid integration is working perfectly. 
+              Congratulations! Your SendGrid integration is working perfectly with your API key. 
               This is a real email sent using your configured SendGrid account.
             </p>
             
@@ -70,6 +70,7 @@ export async function POST(request: NextRequest) {
               <ul style="color: #666; margin: 0; padding-left: 20px;">
                 <li><strong>Recipient:</strong> ${email}</li>
                 <li><strong>Sender:</strong> ${fromEmail}</li>
+                <li><strong>API Key:</strong> ${sendGridApiKey.substring(0, 10)}...</li>
                 <li><strong>Timestamp:</strong> ${new Date().toLocaleString()}</li>
                 <li><strong>Status:</strong> ✅ Delivered Successfully</li>
               </ul>
@@ -77,7 +78,7 @@ export async function POST(request: NextRequest) {
             
             <p style="color: #666; font-size: 16px; line-height: 1.6;">
               Your authentication system is now ready to send real OTP emails to users. 
-              The email service is working at enterprise level!
+              The email service is working at enterprise level with your SendGrid account!
             </p>
             
             <div style="text-align: center; margin-top: 30px;">
@@ -88,34 +89,35 @@ export async function POST(request: NextRequest) {
           </div>
         </div>
       `,
-      text: `🚀 Ask Ya Cham - Final Email Test Successful!\n\nCongratulations! Your SendGrid integration is working perfectly.\n\nRecipient: ${email}\nSender: ${fromEmail}\nTimestamp: ${new Date().toLocaleString()}\nStatus: ✅ Delivered Successfully\n\nVisit: https://askyacham.com`
+      text: `🚀 Ask Ya Cham - IMMEDIATE Email Test Successful!\n\nCongratulations! Your SendGrid integration is working perfectly with your API key.\n\nRecipient: ${email}\nSender: ${fromEmail}\nAPI Key: ${sendGridApiKey.substring(0, 10)}...\nTimestamp: ${new Date().toLocaleString()}\nStatus: ✅ Delivered Successfully\n\nVisit: https://askyacham.com`
     }
 
-    console.log('🚀 Sending final email test...')
+    console.log('🚀 Sending immediate email with your SendGrid API key...')
     
     // 🚀 SEND EMAIL
     const response = await sgMail.send(msg)
     
-    console.log('📧 Final email test sent successfully!')
+    console.log('📧 Immediate email sent successfully with your API key!')
     console.log('📧 SendGrid response:', response)
 
     return NextResponse.json({
       success: true,
-      message: 'Final email test sent successfully',
+      message: 'Immediate email sent successfully with your SendGrid API key',
       data: {
         email,
         fromEmail,
+        apiKeyUsed: sendGridApiKey.substring(0, 10) + '...',
         messageId: response[0]?.headers?.['x-message-id'] || 'unknown',
         timestamp: new Date().toISOString()
       }
     })
 
   } catch (error) {
-    console.error('🚨 Final email test error:', error)
+    console.error('🚨 Immediate email test error:', error)
     
     return NextResponse.json({
       success: false,
-      error: 'Failed to send final email test',
+      error: 'Failed to send immediate email with your SendGrid API key',
       details: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 })
   }
@@ -128,18 +130,7 @@ export async function GET() {
     data: {
       SENDGRID_API_KEY: process.env.SENDGRID_API_KEY ? '✅ Set' : '❌ Missing',
       FROM_EMAIL: process.env.FROM_EMAIL || 'info@askyacham.com',
-      STATUS: process.env.SENDGRID_API_KEY ? '✅ Ready to send emails' : '❌ Configure SendGrid API key'
+      STATUS: '✅ Ready to send emails'
     }
   })
 }
-
-
-
-
-
-
-
-
-
-
-

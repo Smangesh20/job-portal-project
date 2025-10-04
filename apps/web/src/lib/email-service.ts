@@ -301,9 +301,9 @@ export class EnterpriseEmailService {
       // Try fallback if enabled
       if (this.config.enableFallback) {
         return await this.sendWithFallback(request)
-      }
-      
-      return {
+    }
+
+    return {
         success: false,
         provider: this.config.provider,
         error: error.message || 'Email sending failed'
