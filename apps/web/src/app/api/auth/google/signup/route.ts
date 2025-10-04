@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
     })
     
     // 🚀 USE DIFFERENT CLIENT CONFIGURATION TO BREAK CACHE
-    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/auth?${params.toString()}`
     
     console.log('🚀 ABSOLUTE FINAL CONSENT SCREEN URL:', googleAuthUrl)
     

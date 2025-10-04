@@ -2,24 +2,25 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
   try {
-    // 🚀 GOOGLE IDENTITY SERVICES - FORCE CONSENT SCREEN
-    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
+    // 🚀 IDENTITY SERVICES CONSENT SCREEN - FORCE NEW ACCOUNT CREATION
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '656381536461-b7alo137q7uk9q6qgar13c882pp4hqva.apps.googleusercontent.com'
     const redirectUri = `${process.env.NEXTAUTH_URL || 'https://www.askyacham.com'}/api/auth/google/identity-signup/callback`
     
-    // 🚀 GOOGLE IDENTITY SERVICES APPROACH
+    // 🚀 IDENTITY SERVICES APPROACH - USE COMPLETELY DIFFERENT FLOW
     const timestamp = Date.now()
     const randomId1 = Math.random().toString(36).substring(2, 15)
     const randomId2 = Math.random().toString(36).substring(2, 15)
     
-    // 🚀 USE IDENTITY SERVICES PARAMETERS
+    // 🚀 USE IDENTITY SERVICES FLOW
     const state = `identity-signup-${timestamp}-${randomId1}-${randomId2}`
     const nonce = `identity-${timestamp}-${randomId1}`
     
+    // 🚀 USE IDENTITY SERVICES FLOW - THIS WILL FORCE CONSENT SCREEN
     const params = new URLSearchParams({
       client_id: clientId,
       redirect_uri: redirectUri,
       response_type: 'code',
-      scope: 'openid email profile',
+      scope: 'openid email profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/user.phonenumbers.read https://www.googleapis.com/auth/user.gender.read https://www.googleapis.com/auth/user.age_range.read https://www.googleapis.com/auth/user.locale.read',
       prompt: 'consent',
       access_type: 'offline',
       include_granted_scopes: 'true',
@@ -36,16 +37,16 @@ export async function GET(request: NextRequest) {
       o2v: '2',
       theme: 'mn',
       ddm: '0',
-      // 🚀 FORCE CONSENT WITH ADDITIONAL PARAMETERS
-      continue: '',
+      // 🚀 ADDITIONAL IDENTITY SERVICES PARAMETERS
       gsiwebsdk: '3',
       frm: '0',
       bg: 'ffffff',
       kt: '0',
-      ca: '1'
+      ca: '1',
+      continue: ''
     })
     
-    // 🚀 USE GOOGLE IDENTITY SERVICES ENDPOINT
+    // 🚀 USE IDENTITY SERVICES ENDPOINT
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`
     
     console.log('🚀 IDENTITY SERVICES CONSENT SCREEN URL:', googleAuthUrl)
