@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
       client_id: clientId,
       redirect_uri: redirectUri,
       response_type: 'code',
-      scope: 'openid email profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/user.phonenumbers.read https://www.googleapis.com/auth/user.gender.read https://www.googleapis.com/auth/user.age_range.read',
+      scope: 'openid email profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/user.phonenumbers.read https://www.googleapis.com/auth/user.gender.read https://www.googleapis.com/auth/user.age_range.read https://www.googleapis.com/auth/user.locale.read https://www.googleapis.com/auth/user.timezone.read',
       prompt: 'consent',
       access_type: 'offline',
       include_granted_scopes: 'true',
@@ -29,21 +29,7 @@ export async function GET(request: NextRequest) {
       hd: '',
       login_hint: '',
       nonce: nonce,
-      state: state,
-      // 🚀 FORCE CONSENT WITH ADDITIONAL PARAMETERS
-      flowName: 'GeneralOAuthFlow',
-      hl: 'en',
-      service: 'lso',
-      o2v: '2',
-      theme: 'mn',
-      ddm: '0',
-      // 🚀 ADDITIONAL PARAMETERS TO FORCE CONSENT
-      gsiwebsdk: '3',
-      frm: '0',
-      bg: 'ffffff',
-      kt: '0',
-      ca: '1',
-      continue: ''
+      state: state
     })
     
     // 🚀 USE DIFFERENT CLIENT CONFIGURATION TO BREAK CACHE
