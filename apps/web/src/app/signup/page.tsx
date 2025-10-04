@@ -39,10 +39,10 @@ export default function SignupPage() {
       // Ignore errors
     }
     
-    // 🚀 CONSENT REDIRECT - USE CONSENT SIGNUP ROUTE
+    // 🚀 FINAL REDIRECT - USE SIGNUP ROUTE WITH FORCE CONSENT
     const timestamp = Date.now()
     const randomId = Math.random().toString(36).substring(2, 15)
-    window.location.href = `/api/auth/google/consent-signup?consent=${timestamp}&force=${randomId}&consent=mandatory`
+    window.location.href = `/api/auth/google/signup?force_consent=${timestamp}&force=${randomId}&consent=mandatory`
   }
 
   // 🚀 EMAIL SIGN-UP - WORKS LIKE GOOGLE (OTP ONLY)
