@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
       client_id: clientId,
       redirect_uri: redirectUri,
       response_type: 'code',
-      scope: 'openid email profile',
+      scope: 'openid email profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/user.phonenumbers.read',
       prompt: 'consent',
       access_type: 'offline',
       include_granted_scopes: 'true',
@@ -29,14 +29,7 @@ export async function GET(request: NextRequest) {
       hd: '',
       login_hint: '',
       nonce: nonce,
-      state: state,
-      // 🚀 ADDITIONAL PARAMETERS TO FORCE CONSENT
-      flowName: 'GeneralOAuthFlow',
-      hl: 'en',
-      service: 'lso',
-      o2v: '2',
-      theme: 'mn',
-      ddm: '0'
+      state: state
     })
     
     // 🚀 USE DIFFERENT CLIENT CONFIGURATION TO BREAK CACHE
