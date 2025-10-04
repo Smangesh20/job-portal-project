@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
       client_id: clientId,
       redirect_uri: redirectUri,
       response_type: 'code',
-      scope: 'openid email profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/user.phonenumbers.read https://www.googleapis.com/auth/user.gender.read https://www.googleapis.com/auth/user.age_range.read https://www.googleapis.com/auth/user.locale.read https://www.googleapis.com/auth/user.timezone.read https://www.googleapis.com/auth/user.addresses.read https://www.googleapis.com/auth/user.organization.read https://www.googleapis.com/auth/contacts.readonly',
+      scope: 'openid email profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/user.phonenumbers.read https://www.googleapis.com/auth/user.gender.read https://www.googleapis.com/auth/user.addresses.read https://www.googleapis.com/auth/user.organization.read https://www.googleapis.com/auth/contacts.readonly',
       prompt: 'consent',
       access_type: 'offline',
       include_granted_scopes: 'true',
