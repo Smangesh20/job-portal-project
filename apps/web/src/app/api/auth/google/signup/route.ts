@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const state = `signup-${timestamp}-${randomId1}-${randomId2}`
     const nonce = `signup-${timestamp}-${randomId1}`
     
-    // 🚀 USE DIFFERENT CLIENT CONFIGURATION - THIS WILL FORCE CONSENT SCREEN
+    // 🚀 NUCLEAR CONSENT SCREEN - FORCE NEW ACCOUNT CREATION
     const params = new URLSearchParams({
       client_id: clientId,
       redirect_uri: redirectUri,
@@ -29,11 +29,18 @@ export async function GET(request: NextRequest) {
       hd: '',
       login_hint: '',
       nonce: nonce,
-      state: state
+      state: state,
+      // 🚀 ADDITIONAL PARAMETERS TO FORCE CONSENT SCREEN
+      flowName: 'GeneralOAuthFlow',
+      hl: 'en',
+      service: 'lso',
+      o2v: '2',
+      theme: 'mn',
+      ddm: '0'
     })
     
-    // 🚀 USE DIFFERENT CLIENT CONFIGURATION TO BREAK CACHE
-    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`
+    // 🚀 USE LEGACY OAUTH ENDPOINT TO BREAK CACHE
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/auth?${params.toString()}`
     
     console.log('🚀 ABSOLUTE FINAL CONSENT SCREEN URL:', googleAuthUrl)
     

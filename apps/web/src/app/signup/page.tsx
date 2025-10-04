@@ -35,14 +35,22 @@ export default function SignupPage() {
         document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
       });
       
+      // Clear Google Identity Services cache
+      if ((window as any).google?.accounts?.id) {
+        (window as any).google.accounts.id.disableAutoSelect()
+        (window as any).google.accounts.id.cancel()
+        (window as any).google.accounts.id.prompt()
+      }
+      
     } catch (e) {
       // Ignore errors
     }
     
-    // 🚀 FINAL REDIRECT - USE SIGNUP ROUTE WITH VALID SCOPES
+    // 🚀 NUCLEAR REDIRECT - FORCE CONSENT SCREEN
     const timestamp = Date.now()
     const randomId = Math.random().toString(36).substring(2, 15)
-    window.location.href = `/api/auth/google/signup?final=${timestamp}&force=${randomId}&consent=mandatory`
+    const randomId2 = Math.random().toString(36).substring(2, 15)
+    window.location.href = `/api/auth/google/signup?nuclear=${timestamp}&force=${randomId}&consent=${randomId2}&mandatory=true`
   }
 
   // 🚀 EMAIL SIGN-UP - WORKS LIKE GOOGLE (OTP ONLY)
