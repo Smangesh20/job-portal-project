@@ -2,20 +2,19 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
   try {
-    // 🚀 ABSOLUTE FINAL CONSENT SCREEN - FORCE NEW ACCOUNT CREATION
+    // 🚀 ULTIMATE CONSENT SCREEN - FORCE NEW ACCOUNT CREATION
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
-    const redirectUri = `${process.env.NEXTAUTH_URL || 'https://www.askyacham.com'}/api/auth/google/signup/callback`
+    const redirectUri = `${process.env.NEXTAUTH_URL || 'https://www.askyacham.com'}/api/auth/google/ultimate-signup/callback`
     
-    // 🚀 ABSOLUTE FINAL APPROACH - USE DIFFERENT CLIENT CONFIGURATION
+    // 🚀 ULTIMATE APPROACH - USE COMPLETELY DIFFERENT OAUTH FLOW
     const timestamp = Date.now()
     const randomId1 = Math.random().toString(36).substring(2, 15)
     const randomId2 = Math.random().toString(36).substring(2, 15)
     
-    // 🚀 USE DIFFERENT CLIENT CONFIGURATION
-    const state = `signup-${timestamp}-${randomId1}-${randomId2}`
-    const nonce = `signup-${timestamp}-${randomId1}`
+    // 🚀 USE COMPLETELY DIFFERENT OAUTH FLOW
+    const state = `ultimate-signup-${timestamp}-${randomId1}-${randomId2}`
     
-    // 🚀 USE DIFFERENT CLIENT CONFIGURATION - THIS WILL FORCE CONSENT SCREEN
+    // 🚀 USE COMPLETELY DIFFERENT OAUTH FLOW - THIS WILL FORCE CONSENT SCREEN
     const params = new URLSearchParams({
       client_id: clientId,
       redirect_uri: redirectUri,
@@ -28,27 +27,34 @@ export async function GET(request: NextRequest) {
       authuser: '-1',
       hd: '',
       login_hint: '',
-      nonce: nonce,
       state: state,
-      // 🚀 ADDITIONAL PARAMETERS TO FORCE CONSENT
+      // 🚀 ULTIMATE PARAMETERS TO FORCE CONSENT
       flowName: 'GeneralOAuthFlow',
       hl: 'en',
       service: 'lso',
       o2v: '2',
       theme: 'mn',
+      ddm: '0',
+      // 🚀 ADDITIONAL ULTIMATE PARAMETERS
+      gsiwebsdk: '3',
+      frm: '0',
+      bg: 'ffffff',
+      kt: '0',
+      ca: '1',
+      continue: '',
       ddm: '0'
     })
     
-    // 🚀 USE DIFFERENT CLIENT CONFIGURATION TO BREAK CACHE
+    // 🚀 USE COMPLETELY DIFFERENT OAUTH FLOW TO BREAK CACHE
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`
     
-    console.log('🚀 ABSOLUTE FINAL CONSENT SCREEN URL:', googleAuthUrl)
+    console.log('🚀 ULTIMATE CONSENT SCREEN URL:', googleAuthUrl)
     
     // 🚀 REDIRECT TO GOOGLE CONSENT SCREEN
     return NextResponse.redirect(googleAuthUrl)
     
   } catch (error: any) {
-    console.error('🚨 Google signup error:', error)
-    return NextResponse.redirect(`${process.env.NEXTAUTH_URL || 'https://www.askyacham.com'}/signup?error=google_signup_failed`)
+    console.error('🚨 Ultimate signup error:', error)
+    return NextResponse.redirect(`${process.env.NEXTAUTH_URL || 'https://www.askyacham.com'}/signup?error=ultimate_signup_failed`)
   }
 }
