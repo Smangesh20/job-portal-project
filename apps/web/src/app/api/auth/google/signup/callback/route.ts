@@ -68,8 +68,8 @@ export async function GET(request: NextRequest) {
     }
 
     // 🚀 DETERMINE ACTION FROM STATE - FORCE SIGNUP
-    const action = 'signup'
-    console.log('🚀 SIGNUP CALLBACK - Action:', action, 'State:', state, 'Code:', code)
+    const oauthAction = 'signup'
+    console.log('🚀 SIGNUP CALLBACK - Action:', oauthAction, 'State:', state, 'Code:', code)
 
     // 🚀 REAL GOOGLE OAUTH TOKEN EXCHANGE
     const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
@@ -116,14 +116,14 @@ export async function GET(request: NextRequest) {
       picture: userData.picture,
       verified_email: userData.verified_email,
       provider: 'google',
-      action: action,
+      action: oauthAction,
       timestamp: new Date().toISOString(),
     }
 
     // 🚀 REDIRECT TO DASHBOARD WITH SUCCESS - WORKS LIKE GOOGLE
     const redirectUrl = new URL(`${process.env.NEXTAUTH_URL || 'https://www.askyacham.com'}/dashboard`)
     redirectUrl.searchParams.set('google_success', 'true')
-    redirectUrl.searchParams.set('action', action)
+    redirectUrl.searchParams.set('action', oauthAction)
     redirectUrl.searchParams.set('state', state || '')
     redirectUrl.searchParams.set('user_email', userData.email)
     redirectUrl.searchParams.set('user_name', userData.name || '')
