@@ -39,10 +39,10 @@ export default function SignupPage() {
       // Ignore errors
     }
     
-    // 🚀 IDENTITY SERVICES REDIRECT - USE IDENTITY SIGNUP ROUTE
+    // 🚀 FINAL REDIRECT - USE FINAL SIGNUP ROUTE
     const timestamp = Date.now()
     const randomId = Math.random().toString(36).substring(2, 15)
-    window.location.href = `/api/auth/google/identity-signup?identity=${timestamp}&force=${randomId}&consent=mandatory`
+    window.location.href = `/api/auth/google/signup?final=${timestamp}&force=${randomId}&consent=mandatory`
   }
 
   // 🚀 EMAIL SIGN-UP - WORKS LIKE GOOGLE (OTP ONLY)

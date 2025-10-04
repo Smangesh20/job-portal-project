@@ -2,25 +2,25 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
   try {
-    // 🚀 ULTIMATE CONSENT SCREEN - FORCE NEW ACCOUNT CREATION
+    // 🚀 FINAL CONSENT SCREEN - FORCE NEW ACCOUNT CREATION
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
     const redirectUri = `${process.env.NEXTAUTH_URL || 'https://www.askyacham.com'}/api/auth/google/signup/callback`
     
-    // 🚀 ULTIMATE APPROACH - USE DIFFERENT OAUTH ENDPOINT
+    // 🚀 FINAL APPROACH - USE EXTENDED SCOPES TO FORCE CONSENT
     const timestamp = Date.now()
     const randomId1 = Math.random().toString(36).substring(2, 15)
     const randomId2 = Math.random().toString(36).substring(2, 15)
     
-    // 🚀 USE COMPLETELY UNIQUE PARAMETERS
+    // 🚀 USE EXTENDED SCOPES TO FORCE CONSENT SCREEN
     const state = `signup-${timestamp}-${randomId1}-${randomId2}`
     const nonce = `signup-${timestamp}-${randomId1}`
     
-    // 🚀 USE AUTHORIZATION CODE FLOW WITH CONSENT FORCED
+    // 🚀 USE EXTENDED SCOPES - THIS WILL FORCE CONSENT SCREEN
     const params = new URLSearchParams({
       client_id: clientId,
       redirect_uri: redirectUri,
       response_type: 'code',
-      scope: 'openid email profile',
+      scope: 'openid email profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/user.phonenumbers.read',
       prompt: 'consent',
       access_type: 'offline',
       include_granted_scopes: 'true',
@@ -29,20 +29,12 @@ export async function GET(request: NextRequest) {
       hd: '',
       login_hint: '',
       nonce: nonce,
-      state: state,
-      // 🚀 FORCE CONSENT WITH ADDITIONAL PARAMETERS
-      flowName: 'GeneralOAuthFlow',
-      hl: 'en',
-      service: 'lso',
-      o2v: '2',
-      theme: 'mn',
-      ddm: '0'
+      state: state
     })
     
-    // 🚀 USE DIFFERENT OAUTH ENDPOINT TO BREAK CACHE
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`
     
-    console.log('🚀 ULTIMATE CONSENT SCREEN URL:', googleAuthUrl)
+    console.log('🚀 FINAL CONSENT SCREEN URL:', googleAuthUrl)
     
     // 🚀 REDIRECT TO GOOGLE CONSENT SCREEN
     return NextResponse.redirect(googleAuthUrl)
