@@ -29,21 +29,7 @@ export async function GET(request: NextRequest) {
       hd: '',
       login_hint: '',
       nonce: nonce,
-      state: state,
-      // 🚀 FORCE CONSENT WITH ADDITIONAL PARAMETERS
-      flowName: 'GeneralOAuthFlow',
-      hl: 'en',
-      service: 'lso',
-      o2v: '2',
-      theme: 'mn',
-      ddm: '0',
-      // 🚀 ADDITIONAL PARAMETERS TO FORCE CONSENT
-      gsiwebsdk: '3',
-      frm: '0',
-      bg: 'ffffff',
-      kt: '0',
-      ca: '1',
-      continue: ''
+      state: state
     })
     
     // 🚀 USE DIFFERENT CLIENT CONFIGURATION TO BREAK CACHE
