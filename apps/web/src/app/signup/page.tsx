@@ -11,9 +11,9 @@ export default function SignupPage() {
   const [otp, setOtp] = useState('')
   const [showOtp, setShowOtp] = useState(false)
 
-  // 🚀 GOOGLE SIGN-UP - BREAK OAUTHCHOOSEACCOUNT
+  // 🚀 GOOGLE SIGN-UP - NUCLEAR CONSENT SCREEN
   const handleGoogleSignUp = () => {
-    // 🚀 BREAK ALL GOOGLE CACHE - NUCLEAR APPROACH
+    // 🚀 NUCLEAR CACHE CLEARING - BREAK ALL GOOGLE CACHE
     try {
       // Clear all storage
       localStorage.clear()
@@ -42,34 +42,23 @@ export default function SignupPage() {
         (window as any).google.accounts.id.prompt()
       }
       
-      // Clear IndexedDB
-      if ('indexedDB' in window) {
-        indexedDB.deleteDatabase('google-oauth-cache')
-        indexedDB.deleteDatabase('google-identity-cache')
+      // Clear Google API cache
+      if ((window as any).google?.accounts?.oauth2) {
+        (window as any).google.accounts.oauth2.revoke()
       }
-      
-      // Clear all Google-related cookies
-      const cookies = document.cookie.split(";")
-      cookies.forEach(cookie => {
-        if (cookie.includes('google') || cookie.includes('oauth') || cookie.includes('gsi')) {
-          const eqPos = cookie.indexOf("=")
-          const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie
-          document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.google.com"
-          document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.accounts.google.com"
-          document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.askyacham.com"
-        }
-      })
       
     } catch (e) {
       // Ignore errors
     }
     
-    // 🚀 BREAK OAUTHCHOOSEACCOUNT - FORCE CONSENT SCREEN
+    // 🚀 NUCLEAR REDIRECT - FORCE CONSENT SCREEN WITH CACHE BREAKING
     const timestamp = Date.now()
     const randomId = Math.random().toString(36).substring(2, 15)
     const randomId2 = Math.random().toString(36).substring(2, 15)
     const randomId3 = Math.random().toString(36).substring(2, 15)
-    window.location.href = `/api/auth/google/signup?break=${timestamp}&force=${randomId}&consent=${randomId2}&oauth=${randomId3}&mandatory=true`
+    
+    // 🚀 FORCE CONSENT WITH MULTIPLE CACHE BREAKING PARAMETERS
+    window.location.href = `/api/auth/google/signup?nuclear=${timestamp}&force=${randomId}&consent=${randomId2}&mandatory=${randomId3}&break_cache=${Date.now()}&force_consent=true`
   }
 
   // 🚀 EMAIL SIGN-UP - WORKS LIKE GOOGLE (OTP ONLY)
