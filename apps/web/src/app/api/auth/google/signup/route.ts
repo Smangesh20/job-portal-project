@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function GET(request: NextRequest) {
   try {
     // 🚀 ABSOLUTE FINAL CONSENT SCREEN - FORCE NEW ACCOUNT CREATION
-    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '1082042683309-meo1kq8oupj1jkg0bj2e06aecg6nn6gn.apps.googleusercontent.com'
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '656381536461-b7alo137q7uk9q6qgar13c882pp4hqva.apps.googleusercontent.com'
     const redirectUri = `${process.env.NEXTAUTH_URL || 'https://www.askyacham.com'}/api/auth/google/signup/callback`
     
     // 🚀 ABSOLUTE FINAL APPROACH - USE DIFFERENT CLIENT CONFIGURATION
@@ -29,7 +29,14 @@ export async function GET(request: NextRequest) {
       hd: '',
       login_hint: '',
       nonce: nonce,
-      state: state
+      state: state,
+      // 🚀 FORCE CONSENT WITH ADDITIONAL PARAMETERS
+      flowName: 'GeneralOAuthFlow',
+      hl: 'en',
+      service: 'lso',
+      o2v: '2',
+      theme: 'mn',
+      ddm: '0'
     })
     
     // 🚀 USE DIFFERENT CLIENT CONFIGURATION TO BREAK CACHE
