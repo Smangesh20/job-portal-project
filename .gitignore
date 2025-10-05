@@ -99,3 +99,6 @@ temp/
 
 # TypeScript
 *.tsbuildinfo
+
+# Angular cache
+.angular/
