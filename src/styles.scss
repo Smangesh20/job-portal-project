@@ -1,0 +1,205 @@
+/* Google's Official Design System - Material Design 3 */
+
+/* Google Fonts - Official Google Sans */
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap');
+
+/* Global Styles - Exactly like Google */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Google Sans', 'Roboto', 'Helvetica Neue', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #202124;
+  background-color: #ffffff;
+}
+
+/* Google's Official Color Palette */
+:root {
+  --google-blue: #1a73e8;
+  --google-blue-hover: #1557b0;
+  --google-blue-light: #e8f0fe;
+  --google-red: #ea4335;
+  --google-green: #34a853;
+  --google-yellow: #fbbc04;
+  --google-gray-50: #f8f9fa;
+  --google-gray-100: #f1f3f4;
+  --google-gray-200: #e8eaed;
+  --google-gray-300: #dadce0;
+  --google-gray-400: #bdc1c6;
+  --google-gray-500: #9aa0a6;
+  --google-gray-600: #80868b;
+  --google-gray-700: #5f6368;
+  --google-gray-800: #3c4043;
+  --google-gray-900: #202124;
+}
+
+/* Google's Button Styles */
+.google-button {
+  background-color: var(--google-blue);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 12px 24px;
+  font-family: 'Google Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: none;
+  letter-spacing: 0.25px;
+}
+
+.google-button:hover {
+  background-color: var(--google-blue-hover);
+  box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+}
+
+.google-button:disabled {
+  background-color: var(--google-gray-300);
+  color: var(--google-gray-600);
+  cursor: not-allowed;
+}
+
+/* Google's Input Styles */
+.google-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--google-gray-300);
+  border-radius: 4px;
+  font-family: 'Google Sans', sans-serif;
+  font-size: 16px;
+  color: var(--google-gray-900);
+  background-color: white;
+  transition: border-color 0.2s ease;
+}
+
+.google-input:focus {
+  outline: none;
+  border-color: var(--google-blue);
+  box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+}
+
+/* Google's Card Styles */
+.google-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+  padding: 24px;
+  margin: 16px 0;
+}
+
+/* Google's Typography */
+.google-heading {
+  font-family: 'Google Sans', sans-serif;
+  font-weight: 400;
+  color: var(--google-gray-900);
+  margin: 0 0 16px 0;
+}
+
+.google-subtitle {
+  font-family: 'Google Sans', sans-serif;
+  font-weight: 400;
+  color: var(--google-gray-700);
+  font-size: 16px;
+  margin: 0 0 24px 0;
+}
+
+.google-body {
+  font-family: 'Google Sans', sans-serif;
+  font-weight: 400;
+  color: var(--google-gray-700);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Google's Layout Styles */
+.google-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.google-section {
+  padding: 40px 0;
+}
+
+/* Google's Navigation Styles */
+.google-nav {
+  background: white;
+  border-bottom: 1px solid var(--google-gray-200);
+  padding: 8px 0;
+}
+
+/* Google's Footer Styles */
+.google-footer {
+  background: var(--google-gray-50);
+  border-top: 1px solid var(--google-gray-200);
+  padding: 24px 0;
+  margin-top: 40px;
+}
+
+/* Responsive Design - Mobile First */
+@media (max-width: 768px) {
+  .google-container {
+    padding: 0 12px;
+  }
+  
+  .google-card {
+    margin: 12px 0;
+    padding: 16px;
+  }
+  
+  .google-button {
+    width: 100%;
+    padding: 14px 24px;
+  }
+}
+
+/* Material Design Overrides */
+.mat-mdc-button-base {
+  font-family: 'Google Sans', sans-serif !important;
+  text-transform: none !important;
+  letter-spacing: 0.25px !important;
+}
+
+.mat-mdc-form-field {
+  font-family: 'Google Sans', sans-serif !important;
+}
+
+.mat-mdc-card {
+  font-family: 'Google Sans', sans-serif !important;
+}
+
+/* Google's Loading Animation */
+.google-loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--google-gray-300);
+  border-radius: 50%;
+  border-top-color: var(--google-blue);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Google's Success/Error States */
+.google-success {
+  color: var(--google-green);
+}
+
+.google-error {
+  color: var(--google-red);
+}
+
+.google-warning {
+  color: var(--google-yellow);
+}
