@@ -1,6 +1,5 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist/askyacham-google-portal",
-  "framework": "other",
   "installCommand": "npm install"
 }
