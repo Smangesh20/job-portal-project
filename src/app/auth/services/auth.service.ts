@@ -64,12 +64,54 @@ export class AuthService {
       // Clear any existing Google cache
       this.clearGoogleCache();
       
-      // Redirect to Google OAuth for signup with consent
-      window.location.href = `${this.API_BASE_URL}/google/signup`;
+      // Use Google Identity Services for signup with consent
+      this.initializeGoogleSignup();
     } catch (error) {
       console.error('Google signup error:', error);
       this.showError('Failed to sign up with Google');
     }
+  }
+
+  private initializeGoogleSignup(): void {
+    // Load Google Identity Services if not already loaded
+    if (!(window as any).google) {
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.onload = () => this.renderSignupButton();
+      document.head.appendChild(script);
+    } else {
+      this.renderSignupButton();
+    }
+  }
+
+  private renderSignupButton(): void {
+    (window as any).google.accounts.id.initialize({
+      client_id: '656381536461-b7alo137q7uk9q6qgar13c882pp4hqva.apps.googleusercontent.com',
+      callback: this.handleGoogleSignupResponse.bind(this),
+      auto_select: false,
+      cancel_on_tap_outside: true
+    });
+
+    // Force consent screen for signup
+    (window as any).google.accounts.id.prompt((notification: any) => {
+      if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+        // Fallback: redirect to Google OAuth
+        const params = new URLSearchParams({
+          client_id: '656381536461-b7alo137q7uk9q6qgar13c882pp4hqva.apps.googleusercontent.com',
+          redirect_uri: window.location.origin + '/auth/google/callback',
+          response_type: 'code',
+          scope: 'openid email profile',
+          prompt: 'consent',
+          access_type: 'offline'
+        });
+        window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+      }
+    });
+  }
+
+  private handleGoogleSignupResponse(response: any): void {
+    console.log('Google signup response:', response);
+    // Handle the response here
   }
 
   // Email Authentication with OTP
