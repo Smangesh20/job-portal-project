@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function GET(request: NextRequest) {
   try {
     // Google OAuth Configuration - Exactly like Google
-    const clientId = '656381536461-b7alo137q7uk9q6qgar13c882pp4hqva.apps.googleusercontent.com'
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '656381536461-b7alo137q7uk9q6qgar13c882pp4hqva.apps.googleusercontent.com'
     const redirectUri = 'https://www.askyacham.com/api/auth/google/signin/callback'
     
     // SIGNIN PARAMETERS - ACCOUNT SELECTION LIKE GOOGLE
