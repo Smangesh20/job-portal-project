@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
       login_hint: '',
       nonce: `signup-${timestamp}-${randomId1}-${randomId2}`,
       state: `signup-${timestamp}-${randomId1}-${randomId2}-${randomId3}`,
-      // ADDITIONAL PARAMETERS TO BREAK CACHE
+      // AGGRESSIVE CACHE BREAKING PARAMETERS
       flowName: 'GeneralOAuthFlow',
       hl: 'en',
       service: 'lso',
@@ -42,7 +42,14 @@ export async function GET(request: NextRequest) {
       approval_prompt: 'force',
       approval_prompt_override: 'force',
       consent_mode: 'explicit',
-      new_account: 'true'
+      new_account: 'true',
+      // EXTRA PARAMETERS TO FORCE CONSENT
+      force_prompt: 'consent',
+      consent_screen: 'force',
+      show_consent: 'true',
+      require_consent: 'true',
+      bypass_cache: 'true',
+      fresh_consent: 'true'
     })
     
     // GOOGLE OAUTH URL - EXACTLY LIKE GOOGLE

@@ -138,6 +138,7 @@ export class GoogleAuthService {
       if ((window as any).google?.accounts) {
         (window as any).google.accounts.id.disableAutoSelect();
         (window as any).google.accounts.id.cancel();
+        (window as any).google.accounts.id.prompt();
       }
 
       // Clear legacy GAPI
@@ -145,15 +146,39 @@ export class GoogleAuthService {
         (window as any).gapi.auth2.getAuthInstance()?.signOut();
       }
 
-      // Clear storage
-      localStorage.removeItem('gapi');
-      localStorage.removeItem('google_auth');
+      // Clear all storage aggressively
+      localStorage.clear();
       sessionStorage.clear();
+      
+      // Clear specific Google-related storage
+      const keysToRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && (key.includes('google') || key.includes('gapi') || key.includes('oauth'))) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach(key => localStorage.removeItem(key));
 
-      // Clear cookies
-      document.cookie.split(";").forEach(function(c) { 
-        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
-      });
+      // Clear cookies more aggressively
+      const cookies = document.cookie.split(";");
+      for (let cookie of cookies) {
+        const eqPos = cookie.indexOf("=");
+        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        if (name.includes('google') || name.includes('oauth') || name.includes('gapi')) {
+          document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+          document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.google.com";
+          document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.accounts.google.com";
+        }
+      }
+
+      // Clear IndexedDB
+      if ('indexedDB' in window) {
+        indexedDB.deleteDatabase('google-oauth-cache');
+        indexedDB.deleteDatabase('gapi-cache');
+      }
+
+      console.log('🔥 Aggressively cleared Google cache for signup');
 
     } catch (error) {
       console.warn('Error clearing Google cache:', error);
