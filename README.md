@@ -1,5 +1,8 @@
 # AskYaCham - Professional Job Portal
 
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/Smangesh20/job-portal-project)
+[![Last Updated](https://img.shields.io/badge/updated-October%202025-green.svg)](https://github.com/Smangesh20/job-portal-project)
+
 A modern, Google-style job portal built with Angular and Material Design, featuring Google OAuth authentication and OTP-only email authentication.
 
 ## 🚀 Features
