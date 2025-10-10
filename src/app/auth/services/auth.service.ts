@@ -52,8 +52,8 @@ export class AuthService {
   // Google Authentication
   async signInWithGoogle(): Promise<void> {
     try {
-      // Redirect to Google OAuth for signin
-      window.location.href = `${this.API_BASE_URL}/google/signin`;
+      // Use Google Identity Services for signin
+      this.initializeGoogleSignin();
     } catch (error) {
       console.error('Google signin error:', error);
       this.showError('Failed to sign in with Google');
@@ -70,6 +70,18 @@ export class AuthService {
     } catch (error) {
       console.error('Google signup error:', error);
       this.showError('Failed to sign up with Google');
+    }
+  }
+
+  private initializeGoogleSignin(): void {
+    // Load Google Identity Services if not already loaded
+    if (!(window as any).google) {
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.onload = () => this.renderSigninButton();
+      document.head.appendChild(script);
+    } else {
+      this.renderSigninButton();
     }
   }
 
@@ -99,7 +111,7 @@ export class AuthService {
         // Fallback: redirect to Google OAuth
         const params = new URLSearchParams({
           client_id: environment.googleClientId,
-          redirect_uri: window.location.origin + '/auth/google/callback',
+          redirect_uri: environment.appUrl + '/auth/google/callback',
           response_type: 'code',
           scope: 'openid email profile',
           prompt: 'consent',
@@ -110,9 +122,94 @@ export class AuthService {
     });
   }
 
+  private renderSigninButton(): void {
+    (window as any).google.accounts.id.initialize({
+      client_id: environment.googleClientId,
+      callback: this.handleGoogleSigninResponse.bind(this),
+      auto_select: false,
+      cancel_on_tap_outside: true
+    });
+
+    // Show account selection for signin
+    (window as any).google.accounts.id.prompt((notification: any) => {
+      if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+        // Fallback: redirect to Google OAuth
+        const params = new URLSearchParams({
+          client_id: environment.googleClientId,
+          redirect_uri: environment.appUrl + '/auth/google/callback',
+          response_type: 'code',
+          scope: 'openid email profile',
+          prompt: 'select_account',
+          access_type: 'offline'
+        });
+        window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+      }
+    });
+  }
+
+  private handleGoogleSigninResponse(response: any): void {
+    console.log('Google signin response:', response);
+    // Decode JWT token and handle signin
+    try {
+      const payload = this.decodeJwtPayload(response.credential);
+      const user: User = {
+        id: payload.sub,
+        email: payload.email,
+        name: payload.name,
+        picture: payload.picture,
+        verified_email: payload.email_verified,
+        provider: 'google',
+        created_at: new Date().toISOString(),
+        last_login: new Date().toISOString()
+      };
+
+      this.setUserSession(user);
+      this.currentUserSubject.next(user);
+      this.showSuccess('Welcome back!');
+      this.router.navigate(['/dashboard']);
+    } catch (error) {
+      console.error('Error handling Google signin response:', error);
+      this.showError('Failed to sign in with Google');
+    }
+  }
+
   private handleGoogleSignupResponse(response: any): void {
     console.log('Google signup response:', response);
-    // Handle the response here
+    // Decode JWT token and handle signup
+    try {
+      const payload = this.decodeJwtPayload(response.credential);
+      const user: User = {
+        id: payload.sub,
+        email: payload.email,
+        name: payload.name,
+        picture: payload.picture,
+        verified_email: payload.email_verified,
+        provider: 'google',
+        created_at: new Date().toISOString(),
+        last_login: new Date().toISOString()
+      };
+
+      this.setUserSession(user);
+      this.currentUserSubject.next(user);
+      this.showSuccess('Account created successfully!');
+      this.router.navigate(['/dashboard']);
+    } catch (error) {
+      console.error('Error handling Google signup response:', error);
+      this.showError('Failed to sign up with Google');
+    }
+  }
+
+  private decodeJwtPayload(token: string): any {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      throw new Error('Invalid JWT token');
+    }
   }
 
   // Email Authentication with OTP
