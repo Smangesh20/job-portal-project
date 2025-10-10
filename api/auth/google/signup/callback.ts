@@ -11,7 +11,7 @@ const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '656381536461-b7alo137q
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '';
 const REDIRECT_URI = process.env.NEXTAUTH_URL 
   ? `${process.env.NEXTAUTH_URL}/api/auth/google/signup/callback`
-  : 'http://localhost:4200/api/auth/google/signup/callback';
+  : 'https://www.askyacham.com/api/auth/google/signup/callback';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Handle CORS preflight

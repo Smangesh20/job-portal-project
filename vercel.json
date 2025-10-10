@@ -2,6 +2,12 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist/askyacham-portal",
   "installCommand": "npm install",
+  "framework": null,
+  "functions": {
+    "api/**/*.ts": {
+      "runtime": "@vercel/node"
+    }
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",
@@ -56,5 +62,8 @@
         }
       ]
     }
-  ]
+  ],
+  "env": {
+    "NEXTAUTH_URL": "https://www.askyacham.com"
+  }
 }
