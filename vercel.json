@@ -8,6 +8,11 @@
       "runtime": "@vercel/node"
     }
   },
+  "git": {
+    "deploymentEnabled": {
+      "main": true
+    }
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",
