@@ -2,18 +2,20 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface OtpResponse {
   success: boolean;
   message?: string;
   error?: string;
+  otp?: string; // Only in development
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class EmailAuthService {
-  private readonly API_BASE_URL = 'https://www.askyacham.com/api/auth';
+  private readonly API_BASE_URL = `${environment.apiUrl}/auth`;
   
   private otpSentSubject = new BehaviorSubject<boolean>(false);
   public otpSent$ = this.otpSentSubject.asObservable();
@@ -33,7 +35,14 @@ export class EmailAuthService {
 
       if (response?.success) {
         this.otpSentSubject.next(true);
-        this.showSuccess(`Verification code sent to ${email}`);
+        
+        // In development, show OTP in console and alert
+        if (!environment.production && response.otp) {
+          console.log('🔐 Development OTP:', response.otp);
+          this.showSuccess(`Verification code sent! (Dev: ${response.otp})`);
+        } else {
+          this.showSuccess(`Verification code sent to ${email}`);
+        }
       } else {
         this.showError(response?.error || 'Failed to send verification code');
       }

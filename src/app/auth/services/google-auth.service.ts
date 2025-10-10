@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService, User } from './auth.service';
+import { environment } from '../../../environments/environment';
 
 export interface GoogleAuthResponse {
   success: boolean;
@@ -14,8 +15,8 @@ export interface GoogleAuthResponse {
   providedIn: 'root'
 })
 export class GoogleAuthService {
-  private readonly GOOGLE_CLIENT_ID = '656381536461-b7alo137q7uk9q6qgar13c882pp4hqva.apps.googleusercontent.com';
-  private readonly API_BASE_URL = 'https://www.askyacham.com/api/auth';
+  private readonly GOOGLE_CLIENT_ID = environment.googleClientId;
+  private readonly API_BASE_URL = `${environment.apiUrl}/auth`;
 
   constructor(
     private http: HttpClient,

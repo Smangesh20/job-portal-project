@@ -1,5 +1,60 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist/askyacham-portal",
-  "installCommand": "npm install"
+  "installCommand": "npm install",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/auth/send-otp",
+      "dest": "/api/auth/send-otp.ts"
+    },
+    {
+      "src": "/api/auth/verify-otp",
+      "dest": "/api/auth/verify-otp.ts"
+    },
+    {
+      "src": "/api/auth/resend-otp",
+      "dest": "/api/auth/resend-otp.ts"
+    },
+    {
+      "src": "/api/auth/google/signup",
+      "dest": "/api/auth/google/signup.ts"
+    },
+    {
+      "src": "/api/auth/google/signup/callback",
+      "dest": "/api/auth/google/signup/callback.ts"
+    },
+    {
+      "src": "/api/auth/google/signin",
+      "dest": "/api/auth/google/signin.ts"
+    },
+    {
+      "src": "/api/auth/google/signin/callback",
+      "dest": "/api/auth/google/signin/callback.ts"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        }
+      ]
+    }
+  ]
 }

@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { environment } from '../../../environments/environment';
 
 export interface User {
   id: string;
@@ -30,7 +31,7 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
-  private readonly API_BASE_URL = 'https://www.askyacham.com/api/auth';
+  private readonly API_BASE_URL = `${environment.apiUrl}/auth`;
 
   constructor(
     private http: HttpClient,
@@ -86,7 +87,7 @@ export class AuthService {
 
   private renderSignupButton(): void {
     (window as any).google.accounts.id.initialize({
-      client_id: '656381536461-b7alo137q7uk9q6qgar13c882pp4hqva.apps.googleusercontent.com',
+      client_id: environment.googleClientId,
       callback: this.handleGoogleSignupResponse.bind(this),
       auto_select: false,
       cancel_on_tap_outside: true
@@ -97,7 +98,7 @@ export class AuthService {
       if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
         // Fallback: redirect to Google OAuth
         const params = new URLSearchParams({
-          client_id: '656381536461-b7alo137q7uk9q6qgar13c882pp4hqva.apps.googleusercontent.com',
+          client_id: environment.googleClientId,
           redirect_uri: window.location.origin + '/auth/google/callback',
           response_type: 'code',
           scope: 'openid email profile',
