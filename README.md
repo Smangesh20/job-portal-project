@@ -1,5 +1,9 @@
 # 🎯 AskYaCham Job Portal - Complete & Ready
 
+> **Built by:** Smangesh  
+> **Last Updated:** October 11, 2025 - 10:15 AM  
+> **Status:** Testing Auto-Deploy 🚀
+
 A modern, Google-like job portal built with Angular 17 and serverless backend API.
 
 ## ✨ Features
