@@ -1,11 +1,10 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "ng build --configuration production",
   "outputDirectory": "dist/askyacham-portal",
   "installCommand": "npm install",
-  "framework": null,
   "functions": {
     "api/**/*.ts": {
-      "runtime": "@vercel/node"
+      "runtime": "@vercel/node@3.2.29"
     }
   },
   "git": {
@@ -15,38 +14,36 @@
   },
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/auth/send-otp",
-      "dest": "/api/auth/send-otp.ts"
+      "source": "/api/auth/send-otp",
+      "destination": "/api/auth/send-otp.ts"
     },
     {
-      "src": "/api/auth/verify-otp",
-      "dest": "/api/auth/verify-otp.ts"
+      "source": "/api/auth/verify-otp",
+      "destination": "/api/auth/verify-otp.ts"
     },
     {
-      "src": "/api/auth/resend-otp",
-      "dest": "/api/auth/resend-otp.ts"
+      "source": "/api/auth/resend-otp",
+      "destination": "/api/auth/resend-otp.ts"
     },
     {
-      "src": "/api/auth/google/signup",
-      "dest": "/api/auth/google/signup.ts"
+      "source": "/api/auth/google/signup/callback",
+      "destination": "/api/auth/google/signup/callback.ts"
     },
     {
-      "src": "/api/auth/google/signup/callback",
-      "dest": "/api/auth/google/signup/callback.ts"
+      "source": "/api/auth/google/signup",
+      "destination": "/api/auth/google/signup.ts"
     },
     {
-      "src": "/api/auth/google/signin",
-      "dest": "/api/auth/google/signin.ts"
+      "source": "/api/auth/google/signin/callback",
+      "destination": "/api/auth/google/signin/callback.ts"
     },
     {
-      "src": "/api/auth/google/signin/callback",
-      "dest": "/api/auth/google/signin/callback.ts"
+      "source": "/api/auth/google/signin",
+      "destination": "/api/auth/google/signin.ts"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
   "headers": [
