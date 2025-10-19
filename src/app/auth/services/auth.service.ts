@@ -52,8 +52,8 @@ export class AuthService {
   // Google Authentication
   async signInWithGoogle(): Promise<void> {
     try {
-      // Use Google Identity Services for signin
-      this.initializeGoogleSignin();
+      // Direct redirect to server-side OAuth for signin
+      window.location.href = `${environment.apiUrl}/auth/google/signin`;
     } catch (error) {
       console.error('Google signin error:', error);
       this.showError('Failed to sign in with Google');
@@ -65,8 +65,8 @@ export class AuthService {
       // Clear any existing Google cache
       this.clearGoogleCache();
       
-      // Use Google Identity Services for signup with consent
-      this.initializeGoogleSignup();
+      // Direct redirect to server-side OAuth for signup
+      window.location.href = `${environment.apiUrl}/auth/google/signup`;
     } catch (error) {
       console.error('Google signup error:', error);
       this.showError('Failed to sign up with Google');
