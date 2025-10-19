@@ -156,8 +156,8 @@ function generateToken(userId: string): string {
 
 function redirectWithError(res: VercelResponse, error: string): void {
   const errorUrl = process.env.NEXTAUTH_URL 
-    ? `${process.env.NEXTAUTH_URL}/auth/signup?error=${encodeURIComponent(error)}`
-    : `http://localhost:4200/auth/signup?error=${encodeURIComponent(error)}`;
+    ? `${process.env.NEXTAUTH_URL}/signup?error=google_callback_failed`
+    : `http://localhost:4200/signup?error=google_callback_failed`;
   
   setCorsHeaders(res);
   res.redirect(errorUrl);

@@ -111,7 +111,7 @@ export class AuthService {
         // Fallback: redirect to Google OAuth
         const params = new URLSearchParams({
           client_id: environment.googleClientId,
-          redirect_uri: environment.appUrl + '/auth/google/callback',
+          redirect_uri: environment.appUrl + '/api/auth/google/signup/callback',
           response_type: 'code',
           scope: 'openid email profile',
           prompt: 'consent',
@@ -136,7 +136,7 @@ export class AuthService {
         // Fallback: redirect to Google OAuth
         const params = new URLSearchParams({
           client_id: environment.googleClientId,
-          redirect_uri: environment.appUrl + '/auth/google/callback',
+          redirect_uri: environment.appUrl + '/api/auth/google/signin/callback',
           response_type: 'code',
           scope: 'openid email profile',
           prompt: 'select_account',
