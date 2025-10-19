@@ -19,20 +19,30 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return handleOptions(req, res);
   }
 
+  console.log('Google signup callback received:', { 
+    method: req.method, 
+    query: req.query,
+    url: req.url,
+    headers: req.headers 
+  });
+
   try {
     const { code, state, error } = req.query;
 
     // Check for OAuth errors
     if (error) {
-      return redirectWithError(res, 'Google signup cancelled or failed');
+      console.log('OAuth error received:', error);
+      return redirectWithError(res, `Google signup failed: ${error}`);
     }
 
     if (!code || !state) {
+      console.log('Missing parameters:', { hasCode: !!code, hasState: !!state });
       return redirectWithError(res, 'Invalid callback parameters');
     }
 
     // Verify state (CSRF protection)
     if (!verifyState(state as string, 'signup')) {
+      console.log('State verification failed for state:', state);
       return redirectWithError(res, 'Invalid state parameter');
     }
 
@@ -128,10 +138,11 @@ async function fetchGoogleUserInfo(accessToken: string): Promise<any> {
 function verifyState(state: string, expectedAction: string): boolean {
   try {
     const decoded = Buffer.from(state, 'base64').toString('utf-8');
-    const [action, timestamp] = decoded.split(':');
+    const [action, timestamp, random] = decoded.split(':');
     
     // Check action matches
     if (action !== expectedAction) {
+      console.log('State verification failed: action mismatch', { action, expectedAction });
       return false;
     }
 
@@ -141,11 +152,14 @@ function verifyState(state: string, expectedAction: string): boolean {
     const fiveMinutes = 5 * 60 * 1000;
     
     if (now - stateTimestamp > fiveMinutes) {
+      console.log('State verification failed: timestamp expired', { stateTimestamp, now, diff: now - stateTimestamp });
       return false;
     }
 
+    console.log('State verification successful');
     return true;
   } catch (error) {
+    console.log('State verification failed: decode error', error);
     return false;
   }
 }
