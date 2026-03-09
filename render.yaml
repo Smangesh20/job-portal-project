@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: askyacham
+    env: docker
+    plan: free
+    autoDeploy: true
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ENHANCED_ERROR_HANDLING
+        value: "true"
+      - key: STRUCTURED_LOGGING
+        value: "true"
+      - key: INPUT_VALIDATION
+        value: "true"
+      - key: CORRELATION_TRACKING
+        value: "true"
+      - key: JWT_SECRET
+        sync: false
+      - key: MONGODB_URI
+        sync: false
+

@@ -1,0 +1,17 @@
+.git
+.gitignore
+.idea
+
+**/node_modules
+**/npm-debug.log
+**/yarn-error.log
+**/coverage
+**/.cache
+
+backend/logs
+frontend/build
+
+DEPLOYMENT_DOMAIN_CUTOVER.md
+learning
+dummyData
+

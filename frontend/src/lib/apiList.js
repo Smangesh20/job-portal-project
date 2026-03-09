@@ -1,4 +1,7 @@
-export const server = "http://localhost:4444";
+const defaultServer =
+  process.env.NODE_ENV === "development" ? "http://localhost:4444" : "";
+
+export const server = process.env.REACT_APP_API_BASE_URL || defaultServer;
 
 const apiList = {
   login: `${server}/auth/login`,

@@ -2,6 +2,39 @@
 
 Job Portal is a MERN Stack based web app which helps in streamlining the flow of job application process. It allows users to select there roles (applicant/recruiter), and create an account. In this web app, login session are persistent and REST APIs are securely protected by JWT token verification. After logging in, a recruiter can create/delete/update jobs, shortlist/accept/reject applications, view resume and edit profile. And, an applicant can view jobs, perform fuzzy search with various filters, apply for jobs with an SOP, view applications, upload profile picture, upload resume and edit profile. Hence, it is an all in one solution for a job application system.
 
+## One-Click Deployment
+
+### Cloud one-click (Render)
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/b30wulffz/job-portal)
+
+This repository now includes a root `render.yaml` blueprint and Docker-based production build.
+
+Required secrets on Render:
+- `MONGODB_URI` (MongoDB Atlas connection string)
+- `JWT_SECRET`
+
+### Local one-click (Docker)
+
+Windows PowerShell:
+
+```powershell
+./scripts/deploy-one-click.ps1
+```
+
+Linux/macOS:
+
+```bash
+./scripts/deploy-one-click.sh
+```
+
+After deployment:
+- App URL: `http://localhost:4444`
+- Health URL: `http://localhost:4444/health`
+
+Configuration file:
+- Copy `.env.deploy.example` to `.env.deploy` and set `JWT_SECRET`.
+
 Demo: [Click Here](https://www.youtube.com/watch?v=lIrN-LbbBnw&ab_channel=ShlokPandey)
 
 Directory structure of the web app is as follows:

@@ -1,0 +1,37 @@
+services:
+  mongo:
+    image: mongo:6
+    container_name: askyacham-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: jobPortal
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: askyacham-app
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    environment:
+      NODE_ENV: production
+      PORT: 4444
+      MONGODB_URI: mongodb://mongo:27017/jobPortal
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      ENHANCED_ERROR_HANDLING: "true"
+      STRUCTURED_LOGGING: "true"
+      INPUT_VALIDATION: "true"
+      CORRELATION_TRACKING: "true"
+    ports:
+      - "4444:4444"
+    volumes:
+      - ./backend/public:/app/backend/public
+
+volumes:
+  mongo_data:
+
