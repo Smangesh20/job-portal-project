@@ -1,0 +1,23 @@
+{
+  "process": "fixed_asset_accounting",
+  "erp": "TallyPrime",
+  "step_number": 4,
+  "step_text": "Asset Register Report",
+  "story_title": "Team Handoff Moment",
+  "detailed_explanation": "- Story setup: Your downstream team relies on this step to continue work without delay or rework.\n- Business purpose: In TallyPrime, this step keeps Fixed Asset Accounting accurate, timely, and ready for handoff.\n- What to verify: Check asset class, capitalization date, useful life, depreciation logic, and audit trail before posting or confirming the transaction.\n- Practical example: While performing 'Asset Register Report', validate asset master data, depreciation key, acquisition value, and posting references.\n- Control impact: Good discipline here prevents wrong depreciation, misstated asset values, compliance exposure, and reporting errors.\n- Responsible AI focus: Keep decisions fair, transparent, privacy-safe, and always reviewed by a human when exceptions appear.\n- Learning note: Pause at each control checkpoint, then move forward with confidence.",
+  "question": "In Step 4, explain how 'Asset Register Report' supports Fixed Asset Accounting in TallyPrime. Use at least two terms such as asset and register, and mention one risk if controls are skipped.",
+  "expected_keywords": [
+    "asset",
+    "register",
+    "report",
+    "depreciation",
+    "capitalization",
+    "retirement",
+    "valuation",
+    "validation",
+    "approval",
+    "traceability",
+    "compliance"
+  ],
+  "speech_text": "Let us do this together. Step 4 is Asset Register Report in TallyPrime. Take a short pause and picture the full business flow. Now lean into the key control: check asset class, capitalization date, useful life, depreciation logic, and audit trail. As you execute this step, validate asset master data, depreciation key, acquisition value, and posting references. If this point is rushed, you may see wrong depreciation, misstated asset values, compliance exposure, and reporting errors. Keep the pace steady, confirm each checkpoint, and move ahead with clarity."
+}

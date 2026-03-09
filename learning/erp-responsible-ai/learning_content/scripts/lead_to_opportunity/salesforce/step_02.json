@@ -1,0 +1,23 @@
+{
+  "process": "lead_to_opportunity",
+  "erp": "Salesforce",
+  "step_number": 2,
+  "step_text": "Lead Qualification",
+  "story_title": "Mentor Coaching Moment",
+  "detailed_explanation": "- Story setup: You are teaching a new colleague, so clarity and calm control matter at every click.\n- Business purpose: In Salesforce, this step keeps Lead to Opportunity accurate, timely, and ready for handoff.\n- What to verify: Check lead quality, qualification criteria, ownership, conversion data, and follow-up before posting or confirming the transaction.\n- Practical example: While performing 'Lead Qualification', verify lead source, contact quality, qualification score, next action, and conversion readiness.\n- Control impact: Good discipline here prevents lost pipeline, poor forecast quality, low conversion rates, and missed revenue.\n- Responsible AI focus: Keep decisions fair, transparent, privacy-safe, and always reviewed by a human when exceptions appear.\n- Learning note: Pause at each control checkpoint, then move forward with confidence.",
+  "question": "In Step 2, explain how 'Lead Qualification' supports Lead to Opportunity in Salesforce. Use at least two terms such as lead and qualification, and mention one risk if controls are skipped.",
+  "expected_keywords": [
+    "lead",
+    "qualification",
+    "opportunity",
+    "conversion",
+    "pipeline",
+    "follow up",
+    "validation",
+    "approval",
+    "traceability",
+    "compliance",
+    "risk"
+  ],
+  "speech_text": "Let us do this together. Step 2 is Lead Qualification in Salesforce. Take a short pause and picture the full business flow. Now lean into the key control: check lead quality, qualification criteria, ownership, conversion data, and follow-up. As you execute this step, verify lead source, contact quality, qualification score, next action, and conversion readiness. If this point is rushed, you may see lost pipeline, poor forecast quality, low conversion rates, and missed revenue. Keep the pace steady, confirm each checkpoint, and move ahead with clarity."
+}

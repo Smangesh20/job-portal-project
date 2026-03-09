@@ -1,0 +1,23 @@
+{
+  "process": "fixed_asset_accounting",
+  "erp": "SAP_S4HANA",
+  "step_number": 1,
+  "step_text": "AS01 - Create Asset Master",
+  "story_title": "Customer Trust Moment",
+  "detailed_explanation": "- Story setup: A customer is counting on a dependable outcome, and this step protects that promise.\n- Business purpose: In SAP S4HANA, this step keeps Fixed Asset Accounting accurate, timely, and ready for handoff.\n- What to verify: Check asset class, capitalization date, useful life, depreciation logic, and audit trail before posting or confirming the transaction.\n- Practical example: While performing 'AS01 - Create Asset Master', validate asset master data, depreciation key, acquisition value, and posting references.\n- Control impact: Good discipline here prevents wrong depreciation, misstated asset values, compliance exposure, and reporting errors.\n- Responsible AI focus: Keep decisions fair, transparent, privacy-safe, and always reviewed by a human when exceptions appear.\n- Learning note: Pause at each control checkpoint, then move forward with confidence.",
+  "question": "In Step 1, explain how 'AS01 - Create Asset Master' supports Fixed Asset Accounting in SAP S4HANA. Use at least two terms such as AS01 and asset, and mention one risk if controls are skipped.",
+  "expected_keywords": [
+    "AS01",
+    "asset",
+    "master",
+    "depreciation",
+    "capitalization",
+    "retirement",
+    "register",
+    "valuation",
+    "validation",
+    "approval",
+    "traceability"
+  ],
+  "speech_text": "Let us do this together. Step 1 is AS01 - Create Asset Master in SAP S4HANA. Take a short pause and picture the full business flow. Now lean into the key control: check asset class, capitalization date, useful life, depreciation logic, and audit trail. As you execute this step, validate asset master data, depreciation key, acquisition value, and posting references. If this point is rushed, you may see wrong depreciation, misstated asset values, compliance exposure, and reporting errors. Keep the pace steady, confirm each checkpoint, and move ahead with clarity."
+}

@@ -1,0 +1,23 @@
+{
+  "process": "procure_to_pay",
+  "erp": "SAP_S4HANA",
+  "step_number": 1,
+  "step_text": "ME51N - Purchase Requisition",
+  "story_title": "Customer Trust Moment",
+  "detailed_explanation": "- Story setup: A customer is counting on a dependable outcome, and this step protects that promise.\n- Business purpose: In SAP S4HANA, this step keeps Procure to Pay accurate, timely, and ready for handoff.\n- What to verify: Check request details, supplier terms, approvals, and budget alignment before posting or confirming the transaction.\n- Practical example: While performing 'ME51N - Purchase Requisition', confirm item or service details, quantity, rate, tax treatment, delivery date, and approval route.\n- Control impact: Good discipline here prevents unauthorized spend, duplicate payments, blocked invoices, and vendor disputes.\n- Responsible AI focus: Keep decisions fair, transparent, privacy-safe, and always reviewed by a human when exceptions appear.\n- Learning note: Pause at each control checkpoint, then move forward with confidence.",
+  "question": "In Step 1, explain how 'ME51N - Purchase Requisition' supports Procure to Pay in SAP S4HANA. Use at least two terms such as me51n and purchase, and mention one risk if controls are skipped.",
+  "expected_keywords": [
+    "me51n",
+    "purchase",
+    "requisition",
+    "invoice",
+    "vendor",
+    "payment",
+    "three way match",
+    "validation",
+    "approval",
+    "traceability",
+    "compliance"
+  ],
+  "speech_text": "Let us do this together. Step 1 is ME51N - Purchase Requisition in SAP S4HANA. Take a short pause and picture the full business flow. Now lean into the key control: check request details, supplier terms, approvals, and budget alignment. As you execute this step, confirm item or service details, quantity, rate, tax treatment, delivery date, and approval route. If this point is rushed, you may see unauthorized spend, duplicate payments, blocked invoices, and vendor disputes. Keep the pace steady, confirm each checkpoint, and move ahead with clarity."
+}

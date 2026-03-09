@@ -1,0 +1,16 @@
+{
+  "process": "lead_to_opportunity",
+  "erp": "Zoho_CRM",
+  "step_number": 4,
+  "step_text": "Deal Progression",
+  "question": "For Step 4 in Zoho CRM, what best confirms 'Deal Progression' is completed correctly for Lead to Opportunity?",
+  "options": [
+    "Validate deal and progression, confirm approvals, and keep a clear document trail before the next handoff.",
+    "Move ahead without full checks and assume corrections can be made later in the process.",
+    "Focus on layout and speed first, and leave control validation for month-end cleanup."
+  ],
+  "correct_option_index": 0,
+  "correct_option": "Validate deal and progression, confirm approvals, and keep a clear document trail before the next handoff.",
+  "spoken_prompt": "Knowledge check. Step 4: Deal Progression in Zoho CRM. Pause for a moment, then pick the best control-led response. Option one: Validate deal and progression, confirm approvals, and keep a clear document trail before the next handoff. Option two: Move ahead without full checks and assume corrections can be made later in the process. Option three: Focus on layout and speed first, and leave control validation for month-end cleanup.",
+  "explain_correct": "Correct. Strong execution means validating deal and progression with approvals, traceability, and accountable human review."
+}

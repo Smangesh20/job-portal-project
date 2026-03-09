@@ -1,0 +1,23 @@
+{
+  "process": "procure_to_pay",
+  "erp": "TallyPrime",
+  "step_number": 2,
+  "step_text": "Payment Voucher (F5)",
+  "story_title": "Mentor Coaching Moment",
+  "detailed_explanation": "- Story setup: You are teaching a new colleague, so clarity and calm control matter at every click.\n- Business purpose: In TallyPrime, this step keeps Procure to Pay accurate, timely, and ready for handoff.\n- What to verify: Check request details, supplier terms, approvals, and budget alignment before posting or confirming the transaction.\n- Practical example: While performing 'Payment Voucher (F5)', confirm item or service details, quantity, rate, tax treatment, delivery date, and approval route.\n- Control impact: Good discipline here prevents unauthorized spend, duplicate payments, blocked invoices, and vendor disputes.\n- Responsible AI focus: Keep decisions fair, transparent, privacy-safe, and always reviewed by a human when exceptions appear.\n- Learning note: Pause at each control checkpoint, then move forward with confidence.",
+  "question": "In Step 2, explain how 'Payment Voucher (F5)' supports Procure to Pay in TallyPrime. Use at least two terms such as payment and voucher, and mention one risk if controls are skipped.",
+  "expected_keywords": [
+    "payment",
+    "voucher",
+    "requisition",
+    "purchase",
+    "invoice",
+    "vendor",
+    "three way match",
+    "validation",
+    "approval",
+    "traceability",
+    "compliance"
+  ],
+  "speech_text": "Let us do this together. Step 2 is Payment Voucher (F5) in TallyPrime. Take a short pause and picture the full business flow. Now lean into the key control: check request details, supplier terms, approvals, and budget alignment. As you execute this step, confirm item or service details, quantity, rate, tax treatment, delivery date, and approval route. If this point is rushed, you may see unauthorized spend, duplicate payments, blocked invoices, and vendor disputes. Keep the pace steady, confirm each checkpoint, and move ahead with clarity."
+}

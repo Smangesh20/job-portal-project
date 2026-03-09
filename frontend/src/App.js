@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useCallback } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { Grid, makeStyles } from "@material-ui/core";
 
@@ -10,12 +10,15 @@ import Signup from "./component/Signup";
 import Home from "./component/Home";
 import Applications from "./component/Applications";
 import Profile from "./component/Profile";
+import Learning from "./component/Learning";
 import CreateJobs from "./component/recruiter/CreateJobs";
 import MyJobs from "./component/recruiter/MyJobs";
 import JobApplications from "./component/recruiter/JobApplications";
 import AcceptedApplicants from "./component/recruiter/AcceptedApplicants";
 import RecruiterProfile from "./component/recruiter/Profile";
 import MessagePopup from "./lib/MessagePopup";
+import VoiceAssistantWidget from "./lib/VoiceAssistantWidget";
+import { useNotification } from "./lib/NotificationContext";
 import isAuth, { userType } from "./lib/isAuth";
 
 const useStyles = makeStyles((theme) => ({
@@ -31,15 +34,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const SetPopupContext = createContext();
+export const SetPopupContext = createContext(() => {});
 
 function App() {
   const classes = useStyles();
-  const [popup, setPopup] = useState({
-    open: false,
-    severity: "",
-    message: "",
-  });
+  const { notification, showNotification, closeNotification } = useNotification();
+
+  // Backward-compatible adapter for existing components using SetPopupContext.
+  const setPopup = useCallback(
+    (popupConfig = {}) => {
+      if (popupConfig.open === false) {
+        closeNotification();
+        return;
+      }
+
+      if (popupConfig.open || popupConfig.message) {
+        showNotification(
+          popupConfig.message || "",
+          popupConfig.severity || "info",
+          popupConfig.details || null
+        );
+      }
+    },
+    [closeNotification, showNotification]
+  );
+
   return (
     <BrowserRouter>
       <SetPopupContext.Provider value={setPopup}>
@@ -67,6 +86,9 @@ function App() {
               <Route exact path="/applications">
                 <Applications />
               </Route>
+              <Route exact path="/learning">
+                <Learning />
+              </Route>
               <Route exact path="/profile">
                 {userType() === "recruiter" ? (
                   <RecruiterProfile />
@@ -93,16 +115,18 @@ function App() {
           </Grid>
         </Grid>
         <MessagePopup
-          open={popup.open}
-          setOpen={(status) =>
-            setPopup({
-              ...popup,
-              open: status,
-            })
-          }
-          severity={popup.severity}
-          message={popup.message}
+          open={notification.open}
+          setOpen={(status) => {
+            if (!status) {
+              closeNotification();
+            }
+          }}
+          severity={notification.severity}
+          message={notification.message}
+          details={notification.details}
+          correlationId={notification.correlationId}
         />
+        <VoiceAssistantWidget />
       </SetPopupContext.Provider>
     </BrowserRouter>
   );

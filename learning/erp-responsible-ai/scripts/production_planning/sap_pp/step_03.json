@@ -1,0 +1,23 @@
+{
+  "process": "production_planning",
+  "erp": "SAP_PP",
+  "step_number": 3,
+  "step_text": "CA01 - Routing",
+  "story_title": "Audit Readiness Moment",
+  "detailed_explanation": "- Story setup: If audit evidence is requested, this step should speak for itself with clean traceability.\n- Business purpose: In SAP PP, this step keeps Production Planning accurate, timely, and ready for handoff.\n- What to verify: Check bill of materials, routing, work center capacity, and order release readiness before posting or confirming the transaction.\n- Practical example: While performing 'CA01 - Routing', confirm component quantities, operation sequence, planned dates, and production order status.\n- Control impact: Good discipline here prevents production delays, material shortages, capacity conflicts, and schedule instability.\n- Responsible AI focus: Keep decisions fair, transparent, privacy-safe, and always reviewed by a human when exceptions appear.\n- Learning note: Pause at each control checkpoint, then move forward with confidence.",
+  "question": "In Step 3, explain how 'CA01 - Routing' supports Production Planning in SAP PP. Use at least two terms such as CA01 and routing, and mention one risk if controls are skipped.",
+  "expected_keywords": [
+    "CA01",
+    "routing",
+    "bom",
+    "work order",
+    "production",
+    "capacity",
+    "planning",
+    "validation",
+    "approval",
+    "traceability",
+    "compliance"
+  ],
+  "speech_text": "Let us do this together. Step 3 is CA01 - Routing in SAP PP. Take a short pause and picture the full business flow. Now lean into the key control: check bill of materials, routing, work center capacity, and order release readiness. As you execute this step, confirm component quantities, operation sequence, planned dates, and production order status. If this point is rushed, you may see production delays, material shortages, capacity conflicts, and schedule instability. Keep the pace steady, confirm each checkpoint, and move ahead with clarity."
+}

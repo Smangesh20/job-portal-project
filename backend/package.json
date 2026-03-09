@@ -4,8 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx nodemon server.js"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "start": "npx nodemon server.js",
+    "setup:logging": "node scripts/setup-logging.js"
   },
   "author": "",
   "license": "ISC",
@@ -14,10 +17,14 @@
     "body-parser": "^1.19.0",
     "connect-flash": "^0.1.1",
     "connect-mongo": "^3.2.0",
+    "correlation-id": "^5.2.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "express": "^4.17.1",
+    "express-rate-limit": "^6.8.0",
     "express-session": "^1.17.1",
+    "helmet": "^7.0.0",
+    "joi": "^17.9.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.11",
     "mongoose-type-email": "^1.1.2",
@@ -25,6 +32,12 @@
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "winston": "^3.10.0"
+  },
+  "devDependencies": {
+    "fast-check": "^4.5.3",
+    "jest": "^30.2.0",
+    "supertest": "^6.3.4"
   }
 }

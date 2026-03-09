@@ -1,0 +1,16 @@
+{
+  "process": "record_to_report",
+  "erp": "Oracle_EBS_R12",
+  "step_number": 4,
+  "step_text": "Subledger Close (AP and AR)",
+  "question": "For Step 4 in Oracle EBS R12, what best confirms 'Subledger Close (AP and AR)' is completed correctly for Record to Report?",
+  "options": [
+    "Validate subledger and close, confirm approvals, and keep a clear document trail before the next handoff.",
+    "Move ahead without full checks and assume corrections can be made later in the process.",
+    "Focus on layout and speed first, and leave control validation for month-end cleanup."
+  ],
+  "correct_option_index": 0,
+  "correct_option": "Validate subledger and close, confirm approvals, and keep a clear document trail before the next handoff.",
+  "spoken_prompt": "Knowledge check. Step 4: Subledger Close (AP and AR) in Oracle EBS R12. Pause for a moment, then pick the best control-led response. Option one: Validate subledger and close, confirm approvals, and keep a clear document trail before the next handoff. Option two: Move ahead without full checks and assume corrections can be made later in the process. Option three: Focus on layout and speed first, and leave control validation for month-end cleanup.",
+  "explain_correct": "Correct. Strong execution means validating subledger and close with approvals, traceability, and accountable human review."
+}

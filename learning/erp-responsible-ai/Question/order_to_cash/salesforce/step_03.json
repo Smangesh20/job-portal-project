@@ -1,0 +1,16 @@
+{
+  "process": "order_to_cash",
+  "erp": "Salesforce",
+  "step_number": 3,
+  "step_text": "Revenue Recognition",
+  "question": "For Step 3 in Salesforce, what best confirms 'Revenue Recognition' is completed correctly for Order to Cash?",
+  "options": [
+    "Validate revenue and recognition, confirm approvals, and keep a clear document trail before the next handoff.",
+    "Move ahead without full checks and assume corrections can be made later in the process.",
+    "Focus on layout and speed first, and leave control validation for month-end cleanup."
+  ],
+  "correct_option_index": 0,
+  "correct_option": "Validate revenue and recognition, confirm approvals, and keep a clear document trail before the next handoff.",
+  "spoken_prompt": "Knowledge check. Step 3: Revenue Recognition in Salesforce. Pause for a moment, then pick the best control-led response. Option one: Validate revenue and recognition, confirm approvals, and keep a clear document trail before the next handoff. Option two: Move ahead without full checks and assume corrections can be made later in the process. Option three: Focus on layout and speed first, and leave control validation for month-end cleanup.",
+  "explain_correct": "Correct. Strong execution means validating revenue and recognition with approvals, traceability, and accountable human review."
+}

@@ -1,0 +1,23 @@
+{
+  "process": "lead_to_opportunity",
+  "erp": "Zoho_CRM",
+  "step_number": 4,
+  "step_text": "Deal Progression",
+  "story_title": "Team Handoff Moment",
+  "detailed_explanation": "- Story setup: Your downstream team relies on this step to continue work without delay or rework.\n- Business purpose: In Zoho CRM, this step keeps Lead to Opportunity accurate, timely, and ready for handoff.\n- What to verify: Check lead quality, qualification criteria, ownership, conversion data, and follow-up before posting or confirming the transaction.\n- Practical example: While performing 'Deal Progression', verify lead source, contact quality, qualification score, next action, and conversion readiness.\n- Control impact: Good discipline here prevents lost pipeline, poor forecast quality, low conversion rates, and missed revenue.\n- Responsible AI focus: Keep decisions fair, transparent, privacy-safe, and always reviewed by a human when exceptions appear.\n- Learning note: Pause at each control checkpoint, then move forward with confidence.",
+  "question": "In Step 4, explain how 'Deal Progression' supports Lead to Opportunity in Zoho CRM. Use at least two terms such as deal and progression, and mention one risk if controls are skipped.",
+  "expected_keywords": [
+    "deal",
+    "progression",
+    "lead",
+    "qualification",
+    "opportunity",
+    "conversion",
+    "pipeline",
+    "follow up",
+    "validation",
+    "approval",
+    "traceability"
+  ],
+  "speech_text": "Let us do this together. Step 4 is Deal Progression in Zoho CRM. Take a short pause and picture the full business flow. Now lean into the key control: check lead quality, qualification criteria, ownership, conversion data, and follow-up. As you execute this step, verify lead source, contact quality, qualification score, next action, and conversion readiness. If this point is rushed, you may see lost pipeline, poor forecast quality, low conversion rates, and missed revenue. Keep the pace steady, confirm each checkpoint, and move ahead with clarity."
+}

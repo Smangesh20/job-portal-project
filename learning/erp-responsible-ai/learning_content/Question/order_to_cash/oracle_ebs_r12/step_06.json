@@ -1,0 +1,16 @@
+{
+  "process": "order_to_cash",
+  "erp": "Oracle_EBS_R12",
+  "step_number": 6,
+  "step_text": "Cash Application",
+  "question": "For Step 6 in Oracle EBS R12, what best confirms 'Cash Application' is completed correctly for Order to Cash?",
+  "options": [
+    "Validate cash and application, confirm approvals, and keep a clear document trail before the next handoff.",
+    "Move ahead without full checks and assume corrections can be made later in the process.",
+    "Focus on layout and speed first, and leave control validation for month-end cleanup."
+  ],
+  "correct_option_index": 0,
+  "correct_option": "Validate cash and application, confirm approvals, and keep a clear document trail before the next handoff.",
+  "spoken_prompt": "Knowledge check. Step 6: Cash Application in Oracle EBS R12. Pause for a moment, then pick the best control-led response. Option one: Validate cash and application, confirm approvals, and keep a clear document trail before the next handoff. Option two: Move ahead without full checks and assume corrections can be made later in the process. Option three: Focus on layout and speed first, and leave control validation for month-end cleanup.",
+  "explain_correct": "Correct. Strong execution means validating cash and application with approvals, traceability, and accountable human review."
+}

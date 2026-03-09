@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import {
   Button,
   Chip,
@@ -19,15 +19,14 @@ import {
 import { useHistory } from "react-router-dom";
 import Rating from "@material-ui/lab/Rating";
 import Pagination from "@material-ui/lab/Pagination";
-import axios from "axios";
 import SearchIcon from "@material-ui/icons/Search";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 
-import { SetPopupContext } from "../../App";
-
 import apiList from "../../lib/apiList";
+import api from "../../lib/apiClient";
+import { useNotification } from "../../lib/NotificationContext";
 
 const useStyles = makeStyles((theme) => ({
   body: {
@@ -63,7 +62,7 @@ const JobTile = (props) => {
   const classes = useStyles();
   let history = useHistory();
   const { job, getData } = props;
-  const setPopup = useContext(SetPopupContext);
+  const { showError, showSuccess } = useNotification();
 
   const [open, setOpen] = useState(false);
   const [openUpdate, setOpenUpdate] = useState(false);
@@ -92,55 +91,29 @@ const JobTile = (props) => {
 
   const handleDelete = () => {
     console.log(job._id);
-    axios
-      .delete(`${apiList.jobs}/${job._id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
+    api
+      .delete(`${apiList.jobs}/${job._id}`)
       .then((response) => {
-        setPopup({
-          open: true,
-          severity: "success",
-          message: response.data.message,
-        });
+        showSuccess(response.data.message || "Job deleted successfully");
         getData();
         handleClose();
       })
-      .catch((err) => {
-        console.log(err.response);
-        setPopup({
-          open: true,
-          severity: "error",
-          message: err.response.data.message,
-        });
+      .catch((error) => {
+        showError(error);
         handleClose();
       });
   };
 
   const handleJobUpdate = () => {
-    axios
-      .put(`${apiList.jobs}/${job._id}`, jobDetails, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
+    api
+      .put(`${apiList.jobs}/${job._id}`, jobDetails)
       .then((response) => {
-        setPopup({
-          open: true,
-          severity: "success",
-          message: response.data.message,
-        });
+        showSuccess(response.data.message || "Job updated successfully");
         getData();
         handleCloseUpdate();
       })
-      .catch((err) => {
-        console.log(err.response);
-        setPopup({
-          open: true,
-          severity: "error",
-          message: err.response.data.message,
-        });
+      .catch((error) => {
+        showError(error);
         handleCloseUpdate();
       });
   };
@@ -708,7 +681,7 @@ const MyJobs = (props) => {
     },
   });
 
-  const setPopup = useContext(SetPopupContext);
+  const { showError } = useNotification();
   useEffect(() => {
     getData();
   }, []);
@@ -765,23 +738,14 @@ const MyJobs = (props) => {
     }
 
     console.log(address);
-    axios
-      .get(address, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
+    api
+      .get(address)
       .then((response) => {
         console.log(response.data);
         setJobs(response.data);
       })
-      .catch((err) => {
-        console.log(err.response.data);
-        setPopup({
-          open: true,
-          severity: "error",
-          message: "Error",
-        });
+      .catch((error) => {
+        showError(error);
       });
   };
 

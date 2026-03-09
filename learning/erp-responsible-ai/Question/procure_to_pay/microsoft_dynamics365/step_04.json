@@ -1,0 +1,16 @@
+{
+  "process": "procure_to_pay",
+  "erp": "Microsoft_Dynamics365",
+  "step_number": 4,
+  "step_text": "Vendor Invoice",
+  "question": "For Step 4 in Microsoft Dynamics 365, what best confirms 'Vendor Invoice' is completed correctly for Procure to Pay?",
+  "options": [
+    "Validate vendor and iNvoice, confirm approvals, and keep a clear document trail before the next handoff.",
+    "Move ahead without full checks and assume corrections can be made later in the process.",
+    "Focus on layout and speed first, and leave control validation for month-end cleanup."
+  ],
+  "correct_option_index": 0,
+  "correct_option": "Validate vendor and iNvoice, confirm approvals, and keep a clear document trail before the next handoff.",
+  "spoken_prompt": "Knowledge check. Step 4: Vendor Invoice in Microsoft Dynamics 365. Pause for a moment, then pick the best control-led response. Option one: Validate vendor and iNvoice, confirm approvals, and keep a clear document trail before the next handoff. Option two: Move ahead without full checks and assume corrections can be made later in the process. Option three: Focus on layout and speed first, and leave control validation for month-end cleanup.",
+  "explain_correct": "Correct. Strong execution means validating vendor and iNvoice with approvals, traceability, and accountable human review."
+}

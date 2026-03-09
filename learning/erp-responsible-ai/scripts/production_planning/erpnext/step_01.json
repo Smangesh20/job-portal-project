@@ -1,0 +1,23 @@
+{
+  "process": "production_planning",
+  "erp": "ERPNext",
+  "step_number": 1,
+  "step_text": "BOM Creation",
+  "story_title": "Customer Trust Moment",
+  "detailed_explanation": "- Story setup: A customer is counting on a dependable outcome, and this step protects that promise.\n- Business purpose: In ERPNext, this step keeps Production Planning accurate, timely, and ready for handoff.\n- What to verify: Check bill of materials, routing, work center capacity, and order release readiness before posting or confirming the transaction.\n- Practical example: While performing 'BOM Creation', confirm component quantities, operation sequence, planned dates, and production order status.\n- Control impact: Good discipline here prevents production delays, material shortages, capacity conflicts, and schedule instability.\n- Responsible AI focus: Keep decisions fair, transparent, privacy-safe, and always reviewed by a human when exceptions appear.\n- Learning note: Pause at each control checkpoint, then move forward with confidence.",
+  "question": "In Step 1, explain how 'BOM Creation' supports Production Planning in ERPNext. Use at least two terms such as bom and creation, and mention one risk if controls are skipped.",
+  "expected_keywords": [
+    "bom",
+    "creation",
+    "routing",
+    "work order",
+    "production",
+    "capacity",
+    "planning",
+    "validation",
+    "approval",
+    "traceability",
+    "compliance"
+  ],
+  "speech_text": "Let us do this together. Step 1 is BOM Creation in ERPNext. Take a short pause and picture the full business flow. Now lean into the key control: check bill of materials, routing, work center capacity, and order release readiness. As you execute this step, confirm component quantities, operation sequence, planned dates, and production order status. If this point is rushed, you may see production delays, material shortages, capacity conflicts, and schedule instability. Keep the pace steady, confirm each checkpoint, and move ahead with clarity."
+}

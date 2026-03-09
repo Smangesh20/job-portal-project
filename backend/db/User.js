@@ -7,8 +7,22 @@ let schema = new mongoose.Schema(
     email: {
       type: mongoose.SchemaTypes.Email,
       unique: true,
+      sparse: true,
       lowercase: true,
-      required: true,
+      trim: true,
+      required: false,
+    },
+    phone: {
+      type: String,
+      unique: true,
+      sparse: true,
+      trim: true,
+      validate: {
+        validator: function (v) {
+          return v ? /^\+\d{7,15}$/.test(v) : true;
+        },
+        msg: "Phone number must be in international format",
+      },
     },
     password: {
       type: String,
@@ -22,6 +36,14 @@ let schema = new mongoose.Schema(
   },
   { collation: { locale: "en" } }
 );
+
+// Require at least one identifier for all auth records.
+schema.pre("validate", function (next) {
+  if (!this.email && !this.phone) {
+    this.invalidate("email", "Either email or phone is required");
+  }
+  next();
+});
 
 // Password hashing
 schema.pre("save", function (next) {

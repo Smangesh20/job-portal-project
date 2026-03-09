@@ -1,0 +1,23 @@
+{
+  "process": "record_to_report",
+  "erp": "SAP_S4HANA",
+  "step_number": 2,
+  "step_text": "FB60 Vendor Invoices",
+  "story_title": "Mentor Coaching Moment",
+  "detailed_explanation": "- Story setup: You are teaching a new colleague, so clarity and calm control matter at every click.\n- Business purpose: In SAP S4HANA, this step keeps Record to Report accurate, timely, and ready for handoff.\n- What to verify: Check account coding, posting period, supporting references, and reconciliation evidence before posting or confirming the transaction.\n- Practical example: While performing 'FB60 Vendor Invoices', check journal logic, cost center tags, period status, and tie-out with subledgers.\n- Control impact: Good discipline here prevents misstated financials, late close, unresolved reconciling items, and audit observations.\n- Responsible AI focus: Keep decisions fair, transparent, privacy-safe, and always reviewed by a human when exceptions appear.\n- Learning note: Pause at each control checkpoint, then move forward with confidence.",
+  "question": "In Step 2, explain how 'FB60 Vendor Invoices' supports Record to Report in SAP S4HANA. Use at least two terms such as FB60 and vendor, and mention one risk if controls are skipped.",
+  "expected_keywords": [
+    "FB60",
+    "vendor",
+    "iNvoices",
+    "journal",
+    "ledger",
+    "reconciliation",
+    "close",
+    "valuation",
+    "reporting",
+    "validation",
+    "approval"
+  ],
+  "speech_text": "Let us do this together. Step 2 is FB60 Vendor Invoices in SAP S4HANA. Take a short pause and picture the full business flow. Now lean into the key control: check account coding, posting period, supporting references, and reconciliation evidence. As you execute this step, check journal logic, cost center tags, period status, and tie-out with subledgers. If this point is rushed, you may see misstated financials, late close, unresolved reconciling items, and audit observations. Keep the pace steady, confirm each checkpoint, and move ahead with clarity."
+}

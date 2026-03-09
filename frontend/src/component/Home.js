@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import {
   Button,
   Chip,
@@ -18,15 +18,14 @@ import {
 } from "@material-ui/core";
 import Rating from "@material-ui/lab/Rating";
 import Pagination from "@material-ui/lab/Pagination";
-import axios from "axios";
 import SearchIcon from "@material-ui/icons/Search";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 
-import { SetPopupContext } from "../App";
-
 import apiList from "../lib/apiList";
+import api from "../lib/apiClient";
+import { useNotification } from "../lib/NotificationContext";
 import { userType } from "../lib/isAuth";
 
 const useStyles = makeStyles((theme) => ({
@@ -54,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
 const JobTile = (props) => {
   const classes = useStyles();
   const { job } = props;
-  const setPopup = useContext(SetPopupContext);
+  const { showError, showSuccess } = useNotification();
 
   const [open, setOpen] = useState(false);
   const [sop, setSop] = useState("");
@@ -67,33 +66,16 @@ const JobTile = (props) => {
   const handleApply = () => {
     console.log(job._id);
     console.log(sop);
-    axios
-      .post(
-        `${apiList.jobs}/${job._id}/applications`,
-        {
-          sop: sop,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      )
+    api
+      .post(`${apiList.jobs}/${job._id}/applications`, {
+        sop: sop,
+      })
       .then((response) => {
-        setPopup({
-          open: true,
-          severity: "success",
-          message: response.data.message,
-        });
+        showSuccess(response.data.message || "Application submitted successfully");
         handleClose();
       })
-      .catch((err) => {
-        console.log(err.response);
-        setPopup({
-          open: true,
-          severity: "error",
-          message: err.response.data.message,
-        });
+      .catch((error) => {
+        showError(error);
         handleClose();
       });
   };
@@ -541,7 +523,7 @@ const Home = (props) => {
     },
   });
 
-  const setPopup = useContext(SetPopupContext);
+  const { showError } = useNotification();
   useEffect(() => {
     getData();
   }, []);
@@ -597,12 +579,8 @@ const Home = (props) => {
       address = `${address}?${queryString}`;
     }
 
-    axios
-      .get(address, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
+    api
+      .get(address)
       .then((response) => {
         console.log(response.data);
         setJobs(
@@ -613,13 +591,8 @@ const Home = (props) => {
           })
         );
       })
-      .catch((err) => {
-        console.log(err.response.data);
-        setPopup({
-          open: true,
-          severity: "error",
-          message: "Error",
-        });
+      .catch((error) => {
+        showError(error);
       });
   };
 

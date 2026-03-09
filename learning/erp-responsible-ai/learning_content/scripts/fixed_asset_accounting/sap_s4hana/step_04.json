@@ -1,0 +1,23 @@
+{
+  "process": "fixed_asset_accounting",
+  "erp": "SAP_S4HANA",
+  "step_number": 4,
+  "step_text": "AW01N - Asset Explorer",
+  "story_title": "Team Handoff Moment",
+  "detailed_explanation": "- Story setup: Your downstream team relies on this step to continue work without delay or rework.\n- Business purpose: In SAP S4HANA, this step keeps Fixed Asset Accounting accurate, timely, and ready for handoff.\n- What to verify: Check asset class, capitalization date, useful life, depreciation logic, and audit trail before posting or confirming the transaction.\n- Practical example: While performing 'AW01N - Asset Explorer', validate asset master data, depreciation key, acquisition value, and posting references.\n- Control impact: Good discipline here prevents wrong depreciation, misstated asset values, compliance exposure, and reporting errors.\n- Responsible AI focus: Keep decisions fair, transparent, privacy-safe, and always reviewed by a human when exceptions appear.\n- Learning note: Pause at each control checkpoint, then move forward with confidence.",
+  "question": "In Step 4, explain how 'AW01N - Asset Explorer' supports Fixed Asset Accounting in SAP S4HANA. Use at least two terms such as aw01n and asset, and mention one risk if controls are skipped.",
+  "expected_keywords": [
+    "aw01n",
+    "asset",
+    "explorer",
+    "depreciation",
+    "capitalization",
+    "retirement",
+    "register",
+    "valuation",
+    "validation",
+    "approval",
+    "traceability"
+  ],
+  "speech_text": "Let us do this together. Step 4 is AW01N - Asset Explorer in SAP S4HANA. Take a short pause and picture the full business flow. Now lean into the key control: check asset class, capitalization date, useful life, depreciation logic, and audit trail. As you execute this step, validate asset master data, depreciation key, acquisition value, and posting references. If this point is rushed, you may see wrong depreciation, misstated asset values, compliance exposure, and reporting errors. Keep the pace steady, confirm each checkpoint, and move ahead with clarity."
+}

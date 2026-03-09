@@ -1,0 +1,23 @@
+{
+  "process": "procure_to_pay",
+  "erp": "ERPNext",
+  "step_number": 3,
+  "step_text": "Purchase Order (from Quotation)",
+  "story_title": "Audit Readiness Moment",
+  "detailed_explanation": "- Story setup: If audit evidence is requested, this step should speak for itself with clean traceability.\n- Business purpose: In ERPNext, this step keeps Procure to Pay accurate, timely, and ready for handoff.\n- What to verify: Check request details, supplier terms, approvals, and budget alignment before posting or confirming the transaction.\n- Practical example: While performing 'Purchase Order (from Quotation)', confirm item or service details, quantity, rate, tax treatment, delivery date, and approval route.\n- Control impact: Good discipline here prevents unauthorized spend, duplicate payments, blocked invoices, and vendor disputes.\n- Responsible AI focus: Keep decisions fair, transparent, privacy-safe, and always reviewed by a human when exceptions appear.\n- Learning note: Pause at each control checkpoint, then move forward with confidence.",
+  "question": "In Step 3, explain how 'Purchase Order (from Quotation)' supports Procure to Pay in ERPNext. Use at least two terms such as purchase and order, and mention one risk if controls are skipped.",
+  "expected_keywords": [
+    "purchase",
+    "order",
+    "quotation",
+    "requisition",
+    "invoice",
+    "vendor",
+    "payment",
+    "three way match",
+    "validation",
+    "approval",
+    "traceability"
+  ],
+  "speech_text": "Let us do this together. Step 3 is Purchase Order (from Quotation) in ERPNext. Take a short pause and picture the full business flow. Now lean into the key control: check request details, supplier terms, approvals, and budget alignment. As you execute this step, confirm item or service details, quantity, rate, tax treatment, delivery date, and approval route. If this point is rushed, you may see unauthorized spend, duplicate payments, blocked invoices, and vendor disputes. Keep the pace steady, confirm each checkpoint, and move ahead with clarity."
+}

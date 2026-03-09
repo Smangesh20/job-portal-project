@@ -1,0 +1,16 @@
+{
+  "process": "order_to_cash",
+  "erp": "Oracle_EBS_R12",
+  "step_number": 4,
+  "step_text": "AutoInvoice (AR Interface)",
+  "question": "For Step 4 in Oracle EBS R12, what best confirms 'AutoInvoice (AR Interface)' is completed correctly for Order to Cash?",
+  "options": [
+    "Validate autoinvoice and iNterface, confirm approvals, and keep a clear document trail before the next handoff.",
+    "Move ahead without full checks and assume corrections can be made later in the process.",
+    "Focus on layout and speed first, and leave control validation for month-end cleanup."
+  ],
+  "correct_option_index": 0,
+  "correct_option": "Validate autoinvoice and iNterface, confirm approvals, and keep a clear document trail before the next handoff.",
+  "spoken_prompt": "Knowledge check. Step 4: AutoInvoice (AR Interface) in Oracle EBS R12. Pause for a moment, then pick the best control-led response. Option one: Validate autoinvoice and iNterface, confirm approvals, and keep a clear document trail before the next handoff. Option two: Move ahead without full checks and assume corrections can be made later in the process. Option three: Focus on layout and speed first, and leave control validation for month-end cleanup.",
+  "explain_correct": "Correct. Strong execution means validating autoinvoice and iNterface with approvals, traceability, and accountable human review."
+}

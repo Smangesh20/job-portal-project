@@ -1,0 +1,23 @@
+{
+  "process": "record_to_report",
+  "erp": "SAP_S4HANA",
+  "step_number": 6,
+  "step_text": "FAGL CLOSE - Period End",
+  "story_title": "Customer Trust Moment",
+  "detailed_explanation": "- Story setup: A customer is counting on a dependable outcome, and this step protects that promise.\n- Business purpose: In SAP S4HANA, this step keeps Record to Report accurate, timely, and ready for handoff.\n- What to verify: Check account coding, posting period, supporting references, and reconciliation evidence before posting or confirming the transaction.\n- Practical example: While performing 'FAGL CLOSE - Period End', check journal logic, cost center tags, period status, and tie-out with subledgers.\n- Control impact: Good discipline here prevents misstated financials, late close, unresolved reconciling items, and audit observations.\n- Responsible AI focus: Keep decisions fair, transparent, privacy-safe, and always reviewed by a human when exceptions appear.\n- Learning note: Pause at each control checkpoint, then move forward with confidence.",
+  "question": "In Step 6, explain how 'FAGL CLOSE - Period End' supports Record to Report in SAP S4HANA. Use at least two terms such as fagl and close, and mention one risk if controls are skipped.",
+  "expected_keywords": [
+    "fagl",
+    "close",
+    "period",
+    "end",
+    "journal",
+    "ledger",
+    "reconciliation",
+    "valuation",
+    "reporting",
+    "validation",
+    "approval"
+  ],
+  "speech_text": "Let us do this together. Step 6 is FAGL CLOSE - Period End in SAP S4HANA. Take a short pause and picture the full business flow. Now lean into the key control: check account coding, posting period, supporting references, and reconciliation evidence. As you execute this step, check journal logic, cost center tags, period status, and tie-out with subledgers. If this point is rushed, you may see misstated financials, late close, unresolved reconciling items, and audit observations. Keep the pace steady, confirm each checkpoint, and move ahead with clarity."
+}

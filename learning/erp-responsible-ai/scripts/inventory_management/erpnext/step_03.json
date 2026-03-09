@@ -1,0 +1,23 @@
+{
+  "process": "inventory_management",
+  "erp": "ERPNext",
+  "step_number": 3,
+  "step_text": "Stock Ledger",
+  "story_title": "Audit Readiness Moment",
+  "detailed_explanation": "- Story setup: If audit evidence is requested, this step should speak for itself with clean traceability.\n- Business purpose: In ERPNext, this step keeps Inventory Management accurate, timely, and ready for handoff.\n- What to verify: Check item codes, movement type, warehouse location, counted quantity, and approvals before posting or confirming the transaction.\n- Practical example: While performing 'Stock Ledger', validate stock movement reason, batch or serial details, posting date, and quantity impact.\n- Control impact: Good discipline here prevents stock inaccuracies, planning errors, stockouts, and write-off surprises.\n- Responsible AI focus: Keep decisions fair, transparent, privacy-safe, and always reviewed by a human when exceptions appear.\n- Learning note: Pause at each control checkpoint, then move forward with confidence.",
+  "question": "In Step 3, explain how 'Stock Ledger' supports Inventory Management in ERPNext. Use at least two terms such as stock and ledger, and mention one risk if controls are skipped.",
+  "expected_keywords": [
+    "stock",
+    "ledger",
+    "warehouse",
+    "movement",
+    "count",
+    "reconciliation",
+    "inventory",
+    "validation",
+    "approval",
+    "traceability",
+    "compliance"
+  ],
+  "speech_text": "Let us do this together. Step 3 is Stock Ledger in ERPNext. Take a short pause and picture the full business flow. Now lean into the key control: check item codes, movement type, warehouse location, counted quantity, and approvals. As you execute this step, validate stock movement reason, batch or serial details, posting date, and quantity impact. If this point is rushed, you may see stock inaccuracies, planning errors, stockouts, and write-off surprises. Keep the pace steady, confirm each checkpoint, and move ahead with clarity."
+}

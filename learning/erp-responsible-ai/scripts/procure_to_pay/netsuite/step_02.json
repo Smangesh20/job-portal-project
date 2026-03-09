@@ -1,0 +1,23 @@
+{
+  "process": "procure_to_pay",
+  "erp": "NetSuite",
+  "step_number": 2,
+  "step_text": "Purchase Order",
+  "story_title": "Mentor Coaching Moment",
+  "detailed_explanation": "- Story setup: You are teaching a new colleague, so clarity and calm control matter at every click.\n- Business purpose: In NetSuite, this step keeps Procure to Pay accurate, timely, and ready for handoff.\n- What to verify: Check request details, supplier terms, approvals, and budget alignment before posting or confirming the transaction.\n- Practical example: While performing 'Purchase Order', confirm item or service details, quantity, rate, tax treatment, delivery date, and approval route.\n- Control impact: Good discipline here prevents unauthorized spend, duplicate payments, blocked invoices, and vendor disputes.\n- Responsible AI focus: Keep decisions fair, transparent, privacy-safe, and always reviewed by a human when exceptions appear.\n- Learning note: Pause at each control checkpoint, then move forward with confidence.",
+  "question": "In Step 2, explain how 'Purchase Order' supports Procure to Pay in NetSuite. Use at least two terms such as purchase and order, and mention one risk if controls are skipped.",
+  "expected_keywords": [
+    "purchase",
+    "order",
+    "requisition",
+    "invoice",
+    "vendor",
+    "payment",
+    "three way match",
+    "validation",
+    "approval",
+    "traceability",
+    "compliance"
+  ],
+  "speech_text": "Let us do this together. Step 2 is Purchase Order in NetSuite. Take a short pause and picture the full business flow. Now lean into the key control: check request details, supplier terms, approvals, and budget alignment. As you execute this step, confirm item or service details, quantity, rate, tax treatment, delivery date, and approval route. If this point is rushed, you may see unauthorized spend, duplicate payments, blocked invoices, and vendor disputes. Keep the pace steady, confirm each checkpoint, and move ahead with clarity."
+}

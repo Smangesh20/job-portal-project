@@ -1,0 +1,16 @@
+{
+  "process": "procure_to_pay",
+  "erp": "NetSuite",
+  "step_number": 4,
+  "step_text": "Vendor Bill",
+  "question": "For Step 4 in NetSuite, what best confirms 'Vendor Bill' is completed correctly for Procure to Pay?",
+  "options": [
+    "Validate vendor and bill, confirm approvals, and keep a clear document trail before the next handoff.",
+    "Move ahead without full checks and assume corrections can be made later in the process.",
+    "Focus on layout and speed first, and leave control validation for month-end cleanup."
+  ],
+  "correct_option_index": 0,
+  "correct_option": "Validate vendor and bill, confirm approvals, and keep a clear document trail before the next handoff.",
+  "spoken_prompt": "Knowledge check. Step 4: Vendor Bill in NetSuite. Pause for a moment, then pick the best control-led response. Option one: Validate vendor and bill, confirm approvals, and keep a clear document trail before the next handoff. Option two: Move ahead without full checks and assume corrections can be made later in the process. Option three: Focus on layout and speed first, and leave control validation for month-end cleanup.",
+  "explain_correct": "Correct. Strong execution means validating vendor and bill with approvals, traceability, and accountable human review."
+}

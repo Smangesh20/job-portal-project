@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: erp-responsible-ai
+    runtime: python
+    plan: free
+    region: oregon
+    branch: main
+    autoDeploy: true
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: streamlit run voice_erp_coach.py --server.port $PORT --server.address 0.0.0.0 --server.headless true
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.11
+      - key: DB_NAME
+        value: erp_mastery_enterprise_v3.db
+      - key: JWT_SIGNING_KEY
+        generateValue: true
+      - key: STREAMLIT_BROWSER_GATHER_USAGE_STATS
+        value: "false"

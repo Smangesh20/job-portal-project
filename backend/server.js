@@ -4,6 +4,10 @@ const mongoose = require("mongoose");
 const passportConfig = require("./lib/passportConfig");
 const cors = require("cors");
 const fs = require("fs");
+const {
+  applyEnhancedMiddleware,
+  applyErrorHandling,
+} = require("./middleware/integration");
 
 // MongoDB
 mongoose
@@ -37,12 +41,15 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.use(cors());
 app.use(express.json());
 app.use(passportConfig.initialize());
+applyEnhancedMiddleware(app);
 
 // Routing
 app.use("/auth", require("./routes/authRoutes"));
 app.use("/api", require("./routes/apiRoutes"));
+app.use("/api/learning", require("./routes/learningRoutes"));
 app.use("/upload", require("./routes/uploadRoutes"));
 app.use("/host", require("./routes/downloadRoutes"));
+applyErrorHandling(app);
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}!`);

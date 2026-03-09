@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import {
   Grid,
   TextField,
@@ -7,9 +7,8 @@ import {
   makeStyles,
   Paper,
   MenuItem,
-  Input,
+  Divider,
 } from "@material-ui/core";
-import axios from "axios";
 import { Redirect } from "react-router-dom";
 import ChipInput from "material-ui-chip-input";
 import DescriptionIcon from "@material-ui/icons/Description";
@@ -18,16 +17,24 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/material.css";
 
 import PasswordInput from "../lib/PasswordInput";
-import EmailInput from "../lib/EmailInput";
 import FileUploadInput from "../lib/FileUploadInput";
-import { SetPopupContext } from "../App";
-
+import FormErrorSummary from "../lib/FormErrorSummary";
+import AuthOtpPanel from "../lib/AuthOtpPanel";
+import api from "../lib/apiClient";
 import apiList from "../lib/apiList";
 import isAuth from "../lib/isAuth";
+import { useNotification } from "../lib/NotificationContext";
+import {
+  createFieldErrorState,
+  getFieldErrorProps,
+  hasFieldErrors,
+  mapApiFieldErrors,
+  mergeFieldErrors,
+} from "../lib/formErrorUtils";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   body: {
-    padding: "60px 60px",
+    padding: "40px 60px",
   },
   inputBox: {
     width: "400px",
@@ -35,11 +42,27 @@ const useStyles = makeStyles((theme) => ({
   submitButton: {
     width: "400px",
   },
+  modeButton: {
+    width: "195px",
+  },
 }));
 
-const MultifieldInput = (props) => {
+const EMAIL_REGEX =
+  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+const SIGNUP_FIELDS = [
+  "name",
+  "email",
+  "password",
+  "contactNumber",
+  "education",
+  "general",
+];
+const EMPTY_SIGNUP_ERRORS = createFieldErrorState(SIGNUP_FIELDS);
+
+const MultifieldInput = ({ education, setEducation }) => {
   const classes = useStyles();
-  const { education, setEducation } = props;
 
   return (
     <>
@@ -114,12 +137,71 @@ const MultifieldInput = (props) => {
   );
 };
 
-const Login = (props) => {
+const validateSignupField = (field, value, userType) => {
+  if (field === "name") {
+    if (!value.trim()) {
+      return "Name is required";
+    }
+    return "";
+  }
+
+  if (field === "email") {
+    if (!value.trim()) {
+      return "Email is required";
+    }
+    if (!EMAIL_REGEX.test(value.toLowerCase())) {
+      return "Please enter a valid email";
+    }
+    return "";
+  }
+
+  if (field === "password") {
+    if (!value) {
+      return "Password is required";
+    }
+    if (!PASSWORD_REGEX.test(value)) {
+      return "Password must include upper, lower, number and be at least 8 characters";
+    }
+    return "";
+  }
+
+  if (field === "contactNumber" && userType === "recruiter") {
+    if (!value) {
+      return "Contact number is required for recruiters";
+    }
+    if (!/^\+\d{7,15}$/.test(value)) {
+      return "Please provide a valid contact number";
+    }
+    return "";
+  }
+
+  return "";
+};
+
+const normalizeEducation = (education) => {
+  return education
+    .map((item) => ({
+      institutionName: item.institutionName ? item.institutionName.trim() : "",
+      startYear: item.startYear,
+      endYear: item.endYear,
+    }))
+    .filter((item) => item.institutionName !== "")
+    .map((item) => {
+      const normalized = { ...item };
+      if (normalized.endYear === "") {
+        delete normalized.endYear;
+      }
+      return normalized;
+    });
+};
+
+const Signup = () => {
   const classes = useStyles();
-  const setPopup = useContext(SetPopupContext);
+  const { showError, showSuccess, showWarning } = useNotification();
 
   const [loggedin, setLoggedin] = useState(isAuth());
-
+  const [signupMode, setSignupMode] = useState("quickOtp");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [signupDetails, setSignupDetails] = useState({
     type: "applicant",
     email: "",
@@ -132,9 +214,7 @@ const Login = (props) => {
     bio: "",
     contactNumber: "",
   });
-
   const [phone, setPhone] = useState("");
-
   const [education, setEducation] = useState([
     {
       institutionName: "",
@@ -142,181 +222,110 @@ const Login = (props) => {
       endYear: "",
     },
   ]);
-
-  const [inputErrorHandler, setInputErrorHandler] = useState({
-    email: {
-      untouched: true,
-      required: true,
-      error: false,
-      message: "",
-    },
-    password: {
-      untouched: true,
-      required: true,
-      error: false,
-      message: "",
-    },
-    name: {
-      untouched: true,
-      required: true,
-      error: false,
-      message: "",
-    },
-  });
+  const [fieldErrors, setFieldErrors] = useState(EMPTY_SIGNUP_ERRORS);
 
   const handleInput = (key, value) => {
-    setSignupDetails({
-      ...signupDetails,
+    setSignupDetails((prev) => ({
+      ...prev,
       [key]: value,
-    });
-  };
+    }));
 
-  const handleInputError = (key, status, message) => {
-    setInputErrorHandler({
-      ...inputErrorHandler,
-      [key]: {
-        required: true,
-        untouched: false,
-        error: status,
-        message: message,
-      },
-    });
-  };
-
-  const handleLogin = () => {
-    const tmpErrorHandler = {};
-    Object.keys(inputErrorHandler).forEach((obj) => {
-      if (inputErrorHandler[obj].required && inputErrorHandler[obj].untouched) {
-        tmpErrorHandler[obj] = {
-          required: true,
-          untouched: false,
-          error: true,
-          message: `${obj[0].toUpperCase() + obj.substr(1)} is required`,
-        };
-      } else {
-        tmpErrorHandler[obj] = inputErrorHandler[obj];
-      }
-    });
-
-    console.log(education);
-
-    let updatedDetails = {
-      ...signupDetails,
-      education: education
-        .filter((obj) => obj.institutionName.trim() !== "")
-        .map((obj) => {
-          if (obj["endYear"] === "") {
-            delete obj["endYear"];
-          }
-          return obj;
-        }),
-    };
-
-    setSignupDetails(updatedDetails);
-
-    const verified = !Object.keys(tmpErrorHandler).some((obj) => {
-      return tmpErrorHandler[obj].error;
-    });
-
-    if (verified) {
-      axios
-        .post(apiList.signup, updatedDetails)
-        .then((response) => {
-          localStorage.setItem("token", response.data.token);
-          localStorage.setItem("type", response.data.type);
-          setLoggedin(isAuth());
-          setPopup({
-            open: true,
-            severity: "success",
-            message: "Logged in successfully",
-          });
-          console.log(response);
-        })
-        .catch((err) => {
-          setPopup({
-            open: true,
-            severity: "error",
-            message: err.response.data.message,
-          });
-          console.log(err.response);
-        });
-    } else {
-      setInputErrorHandler(tmpErrorHandler);
-      setPopup({
-        open: true,
-        severity: "error",
-        message: "Incorrect Input",
-      });
+    if (["name", "email", "password"].includes(key)) {
+      setFieldErrors((prev) => ({
+        ...prev,
+        [key]: validateSignupField(key, value, signupDetails.type),
+      }));
     }
   };
 
-  const handleLoginRecruiter = () => {
-    const tmpErrorHandler = {};
-    Object.keys(inputErrorHandler).forEach((obj) => {
-      if (inputErrorHandler[obj].required && inputErrorHandler[obj].untouched) {
-        tmpErrorHandler[obj] = {
-          required: true,
-          untouched: false,
-          error: true,
-          message: `${obj[0].toUpperCase() + obj.substr(1)} is required`,
-        };
-      } else {
-        tmpErrorHandler[obj] = inputErrorHandler[obj];
-      }
-    });
+  const handleBlur = (field) => {
+    const value = signupDetails[field] || "";
+    setFieldErrors((prev) => ({
+      ...prev,
+      [field]: validateSignupField(field, value, signupDetails.type),
+    }));
+  };
 
-    let updatedDetails = {
-      ...signupDetails,
-    };
-    if (phone !== "") {
-      updatedDetails = {
+  const buildSubmissionPayload = () => {
+    const updatedEducation = normalizeEducation(education);
+
+    if (signupDetails.type === "recruiter") {
+      return {
         ...signupDetails,
-        contactNumber: `+${phone}`,
-      };
-    } else {
-      updatedDetails = {
-        ...signupDetails,
-        contactNumber: "",
+        contactNumber: phone ? `+${phone}` : "",
       };
     }
 
-    setSignupDetails(updatedDetails);
+    return {
+      ...signupDetails,
+      education: updatedEducation,
+      contactNumber: "",
+    };
+  };
 
-    const verified = !Object.keys(tmpErrorHandler).some((obj) => {
-      return tmpErrorHandler[obj].error;
-    });
+  const validateSubmission = (payload) => {
+    const nextErrors = { ...EMPTY_SIGNUP_ERRORS };
 
-    console.log(updatedDetails);
+    nextErrors.name = validateSignupField("name", payload.name, payload.type);
+    nextErrors.email = validateSignupField("email", payload.email, payload.type);
+    nextErrors.password = validateSignupField(
+      "password",
+      payload.password,
+      payload.type
+    );
+    nextErrors.contactNumber = validateSignupField(
+      "contactNumber",
+      payload.contactNumber,
+      payload.type
+    );
 
-    if (verified) {
-      axios
-        .post(apiList.signup, updatedDetails)
-        .then((response) => {
-          localStorage.setItem("token", response.data.token);
-          localStorage.setItem("type", response.data.type);
-          setLoggedin(isAuth());
-          setPopup({
-            open: true,
-            severity: "success",
-            message: "Logged in successfully",
-          });
-          console.log(response);
-        })
-        .catch((err) => {
-          setPopup({
-            open: true,
-            severity: "error",
-            message: err.response.data.message,
-          });
-          console.log(err.response);
+    if (payload.type === "applicant") {
+      const hasInvalidEducation = (payload.education || []).some(
+        (item) => !item.startYear
+      );
+      if (hasInvalidEducation) {
+        nextErrors.education = "Each education entry requires a start year";
+      }
+    }
+
+    return nextErrors;
+  };
+
+  const submitSignup = async () => {
+    const payload = buildSubmissionPayload();
+    const nextErrors = validateSubmission(payload);
+    setFieldErrors(nextErrors);
+
+    if (hasFieldErrors(nextErrors)) {
+      showWarning("Please fix the highlighted fields and try again.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const response = await api.post(apiList.signup, payload);
+      const authData = response.data?.data || response.data;
+      localStorage.setItem("token", authData.token);
+      localStorage.setItem("type", authData.type);
+      setLoggedin(isAuth());
+      showSuccess("Signed up successfully");
+    } catch (error) {
+      if (error.code === "VALIDATION_ERROR" && Array.isArray(error.details)) {
+        const apiErrors = mapApiFieldErrors(error.details, {
+          allowedFields: SIGNUP_FIELDS,
+          aliases: {
+            "education.institutionName": "education",
+            "education.startYear": "education",
+            "education.endYear": "education",
+          },
         });
-    } else {
-      setInputErrorHandler(tmpErrorHandler);
-      setPopup({
-        open: true,
-        severity: "error",
-        message: "Incorrect Input",
-      });
+        if (Object.keys(apiErrors).length > 0) {
+          setFieldErrors(mergeFieldErrors(EMPTY_SIGNUP_ERRORS, apiErrors));
+        }
+      }
+      showError(error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -324,194 +333,223 @@ const Login = (props) => {
     <Redirect to="/" />
   ) : (
     <Paper elevation={3} className={classes.body}>
-      <Grid container direction="column" spacing={4} alignItems="center">
+      <Grid container direction="column" spacing={2} alignItems="center">
         <Grid item>
           <Typography variant="h3" component="h2">
-            Signup
+            Sign Up
           </Typography>
         </Grid>
         <Grid item>
-          <TextField
-            select
-            label="Category"
-            variant="outlined"
-            className={classes.inputBox}
-            value={signupDetails.type}
-            onChange={(event) => {
-              handleInput("type", event.target.value);
-            }}
-          >
-            <MenuItem value="applicant">Applicant</MenuItem>
-            <MenuItem value="recruiter">Recruiter</MenuItem>
-          </TextField>
+          <Typography variant="body2" color="textSecondary">
+            Recommended: quick OTP onboarding. Advanced profile setup is also available.
+          </Typography>
         </Grid>
-        <Grid item>
-          <TextField
-            label="Name"
-            value={signupDetails.name}
-            onChange={(event) => handleInput("name", event.target.value)}
-            className={classes.inputBox}
-            error={inputErrorHandler.name.error}
-            helperText={inputErrorHandler.name.message}
-            onBlur={(event) => {
-              if (event.target.value === "") {
-                handleInputError("name", true, "Name is required");
-              } else {
-                handleInputError("name", false, "");
-              }
-            }}
-            variant="outlined"
-          />
+
+        <Grid item container spacing={1} justify="center">
+          <Grid item>
+            <Button
+              variant={signupMode === "quickOtp" ? "contained" : "outlined"}
+              color="primary"
+              className={classes.modeButton}
+              onClick={() => setSignupMode("quickOtp")}
+            >
+              Quick OTP Signup
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button
+              variant={signupMode === "fullProfile" ? "contained" : "outlined"}
+              color="primary"
+              className={classes.modeButton}
+              onClick={() => setSignupMode("fullProfile")}
+            >
+              Full Profile Signup
+            </Button>
+          </Grid>
         </Grid>
-        <Grid item>
-          <EmailInput
-            label="Email"
-            value={signupDetails.email}
-            onChange={(event) => handleInput("email", event.target.value)}
-            inputErrorHandler={inputErrorHandler}
-            handleInputError={handleInputError}
-            className={classes.inputBox}
-            required={true}
-          />
+
+        <Grid item style={{ width: "100%" }}>
+          <Divider />
         </Grid>
-        <Grid item>
-          <PasswordInput
-            label="Password"
-            value={signupDetails.password}
-            onChange={(event) => handleInput("password", event.target.value)}
-            className={classes.inputBox}
-            error={inputErrorHandler.password.error}
-            helperText={inputErrorHandler.password.message}
-            onBlur={(event) => {
-              if (event.target.value === "") {
-                handleInputError("password", true, "Password is required");
-              } else {
-                handleInputError("password", false, "");
-              }
-            }}
-          />
-        </Grid>
-        {signupDetails.type === "applicant" ? (
-          <>
-            <MultifieldInput
-              education={education}
-              setEducation={setEducation}
+
+        {signupMode === "quickOtp" ? (
+          <Grid item className={classes.inputBox}>
+            <AuthOtpPanel
+              mode="signup"
+              onAuthenticated={() => {
+                setLoggedin(isAuth());
+              }}
             />
-            <Grid item>
-              <ChipInput
-                className={classes.inputBox}
-                label="Skills"
-                variant="outlined"
-                helperText="Press enter to add skills"
-                onChange={(chips) =>
-                  setSignupDetails({ ...signupDetails, skills: chips })
-                }
-              />
-            </Grid>
-            <Grid item>
-              <FileUploadInput
-                className={classes.inputBox}
-                label="Resume (.pdf)"
-                icon={<DescriptionIcon />}
-                // value={files.resume}
-                // onChange={(event) =>
-                //   setFiles({
-                //     ...files,
-                //     resume: event.target.files[0],
-                //   })
-                // }
-                uploadTo={apiList.uploadResume}
-                handleInput={handleInput}
-                identifier={"resume"}
-              />
-            </Grid>
-            <Grid item>
-              <FileUploadInput
-                className={classes.inputBox}
-                label="Profile Photo (.jpg/.png)"
-                icon={<FaceIcon />}
-                // value={files.profileImage}
-                // onChange={(event) =>
-                //   setFiles({
-                //     ...files,
-                //     profileImage: event.target.files[0],
-                //   })
-                // }
-                uploadTo={apiList.uploadProfileImage}
-                handleInput={handleInput}
-                identifier={"profile"}
-              />
-            </Grid>
-          </>
+          </Grid>
         ) : (
           <>
-            <Grid item style={{ width: "100%" }}>
+            <Grid item className={classes.inputBox}>
+              <FormErrorSummary errors={fieldErrors} />
+            </Grid>
+            <Grid item>
               <TextField
-                label="Bio (upto 250 words)"
-                multiline
-                rows={8}
-                style={{ width: "100%" }}
+                select
+                label="Category"
                 variant="outlined"
-                value={signupDetails.bio}
+                className={classes.inputBox}
+                value={signupDetails.type}
                 onChange={(event) => {
-                  if (
-                    event.target.value.split(" ").filter(function (n) {
-                      return n != "";
-                    }).length <= 250
-                  ) {
-                    handleInput("bio", event.target.value);
-                  }
+                  const nextType = event.target.value;
+                  setSignupDetails((prev) => ({ ...prev, type: nextType }));
+                  setFieldErrors((prev) => ({
+                    ...prev,
+                    contactNumber: validateSignupField(
+                      "contactNumber",
+                      phone ? `+${phone}` : "",
+                      nextType
+                    ),
+                  }));
                 }}
+              >
+                <MenuItem value="applicant">Applicant</MenuItem>
+                <MenuItem value="recruiter">Recruiter</MenuItem>
+              </TextField>
+            </Grid>
+            <Grid item>
+              <TextField
+                label="Name"
+                value={signupDetails.name}
+                onChange={(event) => handleInput("name", event.target.value)}
+                className={classes.inputBox}
+                onBlur={() => handleBlur("name")}
+                variant="outlined"
+                {...getFieldErrorProps(fieldErrors, "name")}
               />
             </Grid>
             <Grid item>
-              <PhoneInput
-                country={"in"}
-                value={phone}
-                onChange={(phone) => setPhone(phone)}
+              <TextField
+                label="Email"
+                value={signupDetails.email}
+                onChange={(event) => handleInput("email", event.target.value)}
+                className={classes.inputBox}
+                onBlur={() => handleBlur("email")}
+                variant="outlined"
+                {...getFieldErrorProps(fieldErrors, "email")}
               />
+            </Grid>
+            <Grid item>
+              <PasswordInput
+                label="Password"
+                value={signupDetails.password}
+                onChange={(event) => handleInput("password", event.target.value)}
+                className={classes.inputBox}
+                onBlur={() => handleBlur("password")}
+                {...getFieldErrorProps(fieldErrors, "password")}
+              />
+            </Grid>
+            {signupDetails.type === "applicant" ? (
+              <>
+                <MultifieldInput education={education} setEducation={setEducation} />
+                {fieldErrors.education ? (
+                  <Grid item className={classes.inputBox}>
+                    <FormErrorSummary
+                      errors={{ education: fieldErrors.education }}
+                    />
+                  </Grid>
+                ) : null}
+                <Grid item>
+                  <ChipInput
+                    className={classes.inputBox}
+                    label="Skills"
+                    variant="outlined"
+                    helperText="Press enter to add skills"
+                    value={signupDetails.skills}
+                    onChange={(chips) =>
+                      setSignupDetails((prev) => ({ ...prev, skills: chips }))
+                    }
+                  />
+                </Grid>
+                <Grid item>
+                  <FileUploadInput
+                    className={classes.inputBox}
+                    label="Resume (.pdf)"
+                    icon={<DescriptionIcon />}
+                    uploadTo={apiList.uploadResume}
+                    handleInput={handleInput}
+                    identifier="resume"
+                  />
+                </Grid>
+                <Grid item>
+                  <FileUploadInput
+                    className={classes.inputBox}
+                    label="Profile Photo (.jpg/.png)"
+                    icon={<FaceIcon />}
+                    uploadTo={apiList.uploadProfileImage}
+                    handleInput={handleInput}
+                    identifier="profile"
+                  />
+                </Grid>
+              </>
+            ) : (
+              <>
+                <Grid item style={{ width: "100%" }}>
+                  <TextField
+                    label="Bio (upto 250 words)"
+                    multiline
+                    rows={8}
+                    style={{ width: "100%" }}
+                    variant="outlined"
+                    value={signupDetails.bio}
+                    onChange={(event) => {
+                      if (
+                        event.target.value
+                          .split(" ")
+                          .filter((word) => word !== "").length <= 250
+                      ) {
+                        handleInput("bio", event.target.value);
+                      }
+                    }}
+                  />
+                </Grid>
+                <Grid item>
+                  <PhoneInput
+                    country="in"
+                    value={phone}
+                    onChange={(nextPhone) => {
+                      setPhone(nextPhone);
+                      const normalized = nextPhone ? `+${nextPhone}` : "";
+                      setFieldErrors((prev) => ({
+                        ...prev,
+                        contactNumber: validateSignupField(
+                          "contactNumber",
+                          normalized,
+                          signupDetails.type
+                        ),
+                      }));
+                    }}
+                  />
+                </Grid>
+                {fieldErrors.contactNumber ? (
+                  <Grid item className={classes.inputBox}>
+                    <FormErrorSummary
+                      errors={{ contactNumber: fieldErrors.contactNumber }}
+                    />
+                  </Grid>
+                ) : null}
+              </>
+            )}
+
+            <Grid item>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={submitSignup}
+                className={classes.submitButton}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Signing Up..." : "Signup"}
+              </Button>
             </Grid>
           </>
         )}
-
-        <Grid item>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              signupDetails.type === "applicant"
-                ? handleLogin()
-                : handleLoginRecruiter();
-            }}
-            className={classes.submitButton}
-          >
-            Signup
-          </Button>
-        </Grid>
       </Grid>
     </Paper>
   );
 };
 
-export default Login;
-
-// {/* <Grid item>
-//           <PasswordInput
-//             label="Re-enter Password"
-//             value={signupDetails.tmpPassword}
-//             onChange={(event) => handleInput("tmpPassword", event.target.value)}
-//             className={classes.inputBox}
-//             labelWidth={140}
-//             helperText={inputErrorHandler.tmpPassword.message}
-//             error={inputErrorHandler.tmpPassword.error}
-//             onBlur={(event) => {
-//               if (event.target.value !== signupDetails.password) {
-//                 handleInputError(
-//                   "tmpPassword",
-//                   true,
-//                   "Passwords are not same."
-//                 );
-//               }
-//             }}
-//           />
-//         </Grid> */}
+export default Signup;

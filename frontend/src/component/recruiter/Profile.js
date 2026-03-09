@@ -1,117 +1,139 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   Grid,
   Typography,
-  Modal,
   Paper,
   makeStyles,
   TextField,
 } from "@material-ui/core";
-import axios from "axios";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/material.css";
 
-import { SetPopupContext } from "../../App";
-
+import api from "../../lib/apiClient";
 import apiList from "../../lib/apiList";
+import { useNotification } from "../../lib/NotificationContext";
+import FormErrorSummary from "../../lib/FormErrorSummary";
+import {
+  createFieldErrorState,
+  getFieldErrorProps,
+  hasFieldErrors,
+  mapApiFieldErrors,
+  mergeFieldErrors,
+} from "../../lib/formErrorUtils";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   body: {
     height: "inherit",
   },
-  popupDialog: {
-    height: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    // padding: "30px",
+  inputBox: {
+    width: "100%",
   },
 }));
 
-const Profile = (props) => {
+const PROFILE_FIELDS = ["name", "bio", "contactNumber", "general"];
+const EMPTY_PROFILE_ERRORS = createFieldErrorState(PROFILE_FIELDS);
+
+const validateRecruiterProfile = (payload) => {
+  const nextErrors = { ...EMPTY_PROFILE_ERRORS };
+
+  if (!payload.name || !payload.name.trim()) {
+    nextErrors.name = "Name is required";
+  }
+
+  if (payload.bio && payload.bio.split(" ").filter((word) => word !== "").length > 250) {
+    nextErrors.bio = "Bio cannot exceed 250 words";
+  }
+
+  if (!payload.contactNumber) {
+    nextErrors.contactNumber = "Contact number is required";
+  } else if (!/^\+\d{7,15}$/.test(payload.contactNumber)) {
+    nextErrors.contactNumber = "Please provide a valid contact number";
+  }
+
+  return nextErrors;
+};
+
+const Profile = () => {
   const classes = useStyles();
-  const setPopup = useContext(SetPopupContext);
+  const { showError, showSuccess, showWarning } = useNotification();
 
   const [profileDetails, setProfileDetails] = useState({
     name: "",
     bio: "",
     contactNumber: "",
   });
-
   const [phone, setPhone] = useState("");
+  const [fieldErrors, setFieldErrors] = useState(EMPTY_PROFILE_ERRORS);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInput = (key, value) => {
-    setProfileDetails({
-      ...profileDetails,
+    setProfileDetails((prev) => ({
+      ...prev,
       [key]: value,
-    });
+    }));
+
+    if (["name", "bio"].includes(key)) {
+      const nextPayload = {
+        ...profileDetails,
+        [key]: value,
+        contactNumber: phone ? `+${phone}` : "",
+      };
+      const nextErrors = validateRecruiterProfile(nextPayload);
+      setFieldErrors((prev) => ({
+        ...prev,
+        [key]: nextErrors[key],
+      }));
+    }
+  };
+
+  const getData = async () => {
+    try {
+      const response = await api.get(apiList.user);
+      setProfileDetails(response.data);
+      setPhone((response.data.contactNumber || "").replace(/^\+/, ""));
+    } catch (error) {
+      showError(error);
+    }
   };
 
   useEffect(() => {
     getData();
   }, []);
 
-  const getData = () => {
-    axios
-      .get(apiList.user, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-      .then((response) => {
-        console.log(response.data);
-        setProfileDetails(response.data);
-        setPhone(response.data.contactNumber);
-      })
-      .catch((err) => {
-        console.log(err.response.data);
-        setPopup({
-          open: true,
-          severity: "error",
-          message: "Error",
-        });
-      });
-  };
-
-  const handleUpdate = () => {
-    let updatedDetails = {
+  const handleUpdate = async () => {
+    const updatedDetails = {
       ...profileDetails,
+      contactNumber: phone ? `+${phone}` : "",
     };
-    if (phone !== "") {
-      updatedDetails = {
-        ...profileDetails,
-        contactNumber: `+${phone}`,
-      };
-    } else {
-      updatedDetails = {
-        ...profileDetails,
-        contactNumber: "",
-      };
+
+    const nextErrors = validateRecruiterProfile(updatedDetails);
+    setFieldErrors(nextErrors);
+
+    if (hasFieldErrors(nextErrors)) {
+      showWarning("Please fix the highlighted fields and try again.");
+      return;
     }
 
-    axios
-      .put(apiList.user, updatedDetails, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-      .then((response) => {
-        setPopup({
-          open: true,
-          severity: "success",
-          message: response.data.message,
+    setIsSubmitting(true);
+    try {
+      const response = await api.put(apiList.user, updatedDetails);
+      showSuccess(response.data.message || "Profile updated successfully");
+      setFieldErrors(EMPTY_PROFILE_ERRORS);
+      await getData();
+    } catch (error) {
+      if (error.code === "VALIDATION_ERROR" && Array.isArray(error.details)) {
+        const apiErrors = mapApiFieldErrors(error.details, {
+          allowedFields: PROFILE_FIELDS,
         });
-        getData();
-      })
-      .catch((err) => {
-        setPopup({
-          open: true,
-          severity: "error",
-          message: err.response.data.message,
-        });
-        console.log(err.response);
-      });
+        if (Object.keys(apiErrors).length > 0) {
+          setFieldErrors(mergeFieldErrors(EMPTY_PROFILE_ERRORS, apiErrors));
+        }
+      }
+      showError(error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -135,10 +157,12 @@ const Profile = (props) => {
               flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
-              //   width: "60%",
             }}
           >
             <Grid container direction="column" alignItems="stretch" spacing={3}>
+              <Grid item>
+                <FormErrorSummary errors={fieldErrors} />
+              </Grid>
               <Grid item>
                 <TextField
                   label="Name"
@@ -148,6 +172,7 @@ const Profile = (props) => {
                   variant="outlined"
                   fullWidth
                   style={{ width: "100%" }}
+                  {...getFieldErrorProps(fieldErrors, "name")}
                 />
               </Grid>
               <Grid item>
@@ -158,15 +183,8 @@ const Profile = (props) => {
                   style={{ width: "100%" }}
                   variant="outlined"
                   value={profileDetails.bio}
-                  onChange={(event) => {
-                    if (
-                      event.target.value.split(" ").filter(function (n) {
-                        return n != "";
-                      }).length <= 250
-                    ) {
-                      handleInput("bio", event.target.value);
-                    }
-                  }}
+                  onChange={(event) => handleInput("bio", event.target.value)}
+                  {...getFieldErrorProps(fieldErrors, "bio")}
                 />
               </Grid>
               <Grid
@@ -177,20 +195,39 @@ const Profile = (props) => {
                 }}
               >
                 <PhoneInput
-                  country={"in"}
+                  country="in"
                   value={phone}
-                  onChange={(phone) => setPhone(phone)}
+                  onChange={(nextPhone) => {
+                    setPhone(nextPhone);
+                    const nextPayload = {
+                      ...profileDetails,
+                      contactNumber: nextPhone ? `+${nextPhone}` : "",
+                    };
+                    const nextErrors = validateRecruiterProfile(nextPayload);
+                    setFieldErrors((prev) => ({
+                      ...prev,
+                      contactNumber: nextErrors.contactNumber,
+                    }));
+                  }}
                   style={{ width: "auto" }}
                 />
               </Grid>
+              {fieldErrors.contactNumber ? (
+                <Grid item>
+                  <FormErrorSummary
+                    errors={{ contactNumber: fieldErrors.contactNumber }}
+                  />
+                </Grid>
+              ) : null}
             </Grid>
             <Button
               variant="contained"
               color="primary"
               style={{ padding: "10px 50px", marginTop: "30px" }}
-              onClick={() => handleUpdate()}
+              onClick={handleUpdate}
+              disabled={isSubmitting}
             >
-              Update Details
+              {isSubmitting ? "Updating..." : "Update Details"}
             </Button>
           </Paper>
         </Grid>

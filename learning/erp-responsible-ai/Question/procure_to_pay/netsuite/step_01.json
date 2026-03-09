@@ -1,0 +1,16 @@
+{
+  "process": "procure_to_pay",
+  "erp": "NetSuite",
+  "step_number": 1,
+  "step_text": "Purchase Request",
+  "question": "For Step 1 in NetSuite, what best confirms 'Purchase Request' is completed correctly for Procure to Pay?",
+  "options": [
+    "Validate purchase and request, confirm approvals, and keep a clear document trail before the next handoff.",
+    "Move ahead without full checks and assume corrections can be made later in the process.",
+    "Focus on layout and speed first, and leave control validation for month-end cleanup."
+  ],
+  "correct_option_index": 0,
+  "correct_option": "Validate purchase and request, confirm approvals, and keep a clear document trail before the next handoff.",
+  "spoken_prompt": "Knowledge check. Step 1: Purchase Request in NetSuite. Pause for a moment, then pick the best control-led response. Option one: Validate purchase and request, confirm approvals, and keep a clear document trail before the next handoff. Option two: Move ahead without full checks and assume corrections can be made later in the process. Option three: Focus on layout and speed first, and leave control validation for month-end cleanup.",
+  "explain_correct": "Correct. Strong execution means validating purchase and request with approvals, traceability, and accountable human review."
+}

@@ -1,0 +1,23 @@
+{
+  "process": "order_to_cash",
+  "erp": "Oracle_EBS_R12",
+  "step_number": 4,
+  "step_text": "AutoInvoice (AR Interface)",
+  "story_title": "Team Handoff Moment",
+  "detailed_explanation": "- Story setup: Your downstream team relies on this step to continue work without delay or rework.\n- Business purpose: In Oracle EBS R12, this step keeps Order to Cash accurate, timely, and ready for handoff.\n- What to verify: Check customer terms, pricing, delivery status, billing links, and receipt posting before posting or confirming the transaction.\n- Practical example: While performing 'AutoInvoice (AR Interface)', verify customer data, item availability, tax setup, shipment reference, and invoice linkage.\n- Control impact: Good discipline here prevents revenue leakage, shipment disputes, delayed collections, and customer dissatisfaction.\n- Responsible AI focus: Keep decisions fair, transparent, privacy-safe, and always reviewed by a human when exceptions appear.\n- Learning note: Pause at each control checkpoint, then move forward with confidence.",
+  "question": "In Step 4, explain how 'AutoInvoice (AR Interface)' supports Order to Cash in Oracle EBS R12. Use at least two terms such as autoinvoice and iNterface, and mention one risk if controls are skipped.",
+  "expected_keywords": [
+    "autoinvoice",
+    "iNterface",
+    "sales order",
+    "delivery",
+    "billing",
+    "receipt",
+    "cash application",
+    "customer",
+    "validation",
+    "approval",
+    "traceability"
+  ],
+  "speech_text": "Let us do this together. Step 4 is AutoInvoice (AR Interface) in Oracle EBS R12. Take a short pause and picture the full business flow. Now lean into the key control: check customer terms, pricing, delivery status, billing links, and receipt posting. As you execute this step, verify customer data, item availability, tax setup, shipment reference, and invoice linkage. If this point is rushed, you may see revenue leakage, shipment disputes, delayed collections, and customer dissatisfaction. Keep the pace steady, confirm each checkpoint, and move ahead with clarity."
+}

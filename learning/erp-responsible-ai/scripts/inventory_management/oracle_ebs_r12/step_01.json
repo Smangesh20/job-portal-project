@@ -1,0 +1,23 @@
+{
+  "process": "inventory_management",
+  "erp": "Oracle_EBS_R12",
+  "step_number": 1,
+  "step_text": "Miscellaneous Transaction",
+  "story_title": "Customer Trust Moment",
+  "detailed_explanation": "- Story setup: A customer is counting on a dependable outcome, and this step protects that promise.\n- Business purpose: In Oracle EBS R12, this step keeps Inventory Management accurate, timely, and ready for handoff.\n- What to verify: Check item codes, movement type, warehouse location, counted quantity, and approvals before posting or confirming the transaction.\n- Practical example: While performing 'Miscellaneous Transaction', validate stock movement reason, batch or serial details, posting date, and quantity impact.\n- Control impact: Good discipline here prevents stock inaccuracies, planning errors, stockouts, and write-off surprises.\n- Responsible AI focus: Keep decisions fair, transparent, privacy-safe, and always reviewed by a human when exceptions appear.\n- Learning note: Pause at each control checkpoint, then move forward with confidence.",
+  "question": "In Step 1, explain how 'Miscellaneous Transaction' supports Inventory Management in Oracle EBS R12. Use at least two terms such as miscellaneous and stock, and mention one risk if controls are skipped.",
+  "expected_keywords": [
+    "miscellaneous",
+    "stock",
+    "warehouse",
+    "movement",
+    "count",
+    "reconciliation",
+    "inventory",
+    "validation",
+    "approval",
+    "traceability",
+    "compliance"
+  ],
+  "speech_text": "Let us do this together. Step 1 is Miscellaneous Transaction in Oracle EBS R12. Take a short pause and picture the full business flow. Now lean into the key control: check item codes, movement type, warehouse location, counted quantity, and approvals. As you execute this step, validate stock movement reason, batch or serial details, posting date, and quantity impact. If this point is rushed, you may see stock inaccuracies, planning errors, stockouts, and write-off surprises. Keep the pace steady, confirm each checkpoint, and move ahead with clarity."
+}

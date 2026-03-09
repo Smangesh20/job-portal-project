@@ -1,0 +1,16 @@
+{
+  "process": "inventory_management",
+  "erp": "SAP_S4HANA",
+  "step_number": 2,
+  "step_text": "MB5B - Stock on Posting Date",
+  "question": "For Step 2 in SAP S4HANA, what best confirms 'MB5B - Stock on Posting Date' is completed correctly for Inventory Management?",
+  "options": [
+    "Validate mb5b and stock, confirm approvals, and keep a clear document trail before the next handoff.",
+    "Move ahead without full checks and assume corrections can be made later in the process.",
+    "Focus on layout and speed first, and leave control validation for month-end cleanup."
+  ],
+  "correct_option_index": 0,
+  "correct_option": "Validate mb5b and stock, confirm approvals, and keep a clear document trail before the next handoff.",
+  "spoken_prompt": "Knowledge check. Step 2: MB5B - Stock on Posting Date in SAP S4HANA. Pause for a moment, then pick the best control-led response. Option one: Validate mb5b and stock, confirm approvals, and keep a clear document trail before the next handoff. Option two: Move ahead without full checks and assume corrections can be made later in the process. Option three: Focus on layout and speed first, and leave control validation for month-end cleanup.",
+  "explain_correct": "Correct. Strong execution means validating mb5b and stock with approvals, traceability, and accountable human review."
+}

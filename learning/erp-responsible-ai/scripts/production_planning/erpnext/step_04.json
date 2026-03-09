@@ -1,0 +1,23 @@
+{
+  "process": "production_planning",
+  "erp": "ERPNext",
+  "step_number": 4,
+  "step_text": "Stock Entry (WIP → FG)",
+  "story_title": "Team Handoff Moment",
+  "detailed_explanation": "- Story setup: Your downstream team relies on this step to continue work without delay or rework.\n- Business purpose: In ERPNext, this step keeps Production Planning accurate, timely, and ready for handoff.\n- What to verify: Check bill of materials, routing, work center capacity, and order release readiness before posting or confirming the transaction.\n- Practical example: While performing 'Stock Entry (WIP → FG)', confirm component quantities, operation sequence, planned dates, and production order status.\n- Control impact: Good discipline here prevents production delays, material shortages, capacity conflicts, and schedule instability.\n- Responsible AI focus: Keep decisions fair, transparent, privacy-safe, and always reviewed by a human when exceptions appear.\n- Learning note: Pause at each control checkpoint, then move forward with confidence.",
+  "question": "In Step 4, explain how 'Stock Entry (WIP → FG)' supports Production Planning in ERPNext. Use at least two terms such as stock and wip, and mention one risk if controls are skipped.",
+  "expected_keywords": [
+    "stock",
+    "wip",
+    "bom",
+    "routing",
+    "work order",
+    "production",
+    "capacity",
+    "planning",
+    "validation",
+    "approval",
+    "traceability"
+  ],
+  "speech_text": "Let us do this together. Step 4 is Stock Entry (WIP → FG) in ERPNext. Take a short pause and picture the full business flow. Now lean into the key control: check bill of materials, routing, work center capacity, and order release readiness. As you execute this step, confirm component quantities, operation sequence, planned dates, and production order status. If this point is rushed, you may see production delays, material shortages, capacity conflicts, and schedule instability. Keep the pace steady, confirm each checkpoint, and move ahead with clarity."
+}
