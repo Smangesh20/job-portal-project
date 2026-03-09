@@ -2,38 +2,41 @@
 
 Job Portal is a MERN Stack based web app which helps in streamlining the flow of job application process. It allows users to select there roles (applicant/recruiter), and create an account. In this web app, login session are persistent and REST APIs are securely protected by JWT token verification. After logging in, a recruiter can create/delete/update jobs, shortlist/accept/reject applications, view resume and edit profile. And, an applicant can view jobs, perform fuzzy search with various filters, apply for jobs with an SOP, view applications, upload profile picture, upload resume and edit profile. Hence, it is an all in one solution for a job application system.
 
-## One-Click Deployment
+## One-Click Deployment (Streamlit Community Cloud)
 
-### Cloud one-click (Render)
+Use Streamlit one-click deploy links for the integrated ERP learning apps.
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/b30wulffz/job-portal)
+### Option 1: Voice ERP Coach
 
-This repository now includes a root `render.yaml` blueprint and Docker-based production build.
+[![Deploy to Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/deploy?owner=b30wulffz&repo=job-portal&branch=main&mainModule=streamlit_voice_app.py)
 
-Required secrets on Render:
-- `MONGODB_URI` (MongoDB Atlas connection string)
-- `JWT_SECRET`
+### Option 2: Responsible ERP App
 
-### Local one-click (Docker)
+[![Deploy to Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/deploy?owner=b30wulffz&repo=job-portal&branch=main&mainModule=streamlit_responsible_app.py)
+
+### Auto-generate one-click URL from your current branch
 
 Windows PowerShell:
 
 ```powershell
-./scripts/deploy-one-click.ps1
+./scripts/deploy-streamlit.ps1 -App voice
+./scripts/deploy-streamlit.ps1 -App responsible
 ```
 
 Linux/macOS:
 
 ```bash
-./scripts/deploy-one-click.sh
+./scripts/deploy-streamlit.sh voice
+./scripts/deploy-streamlit.sh responsible
 ```
 
-After deployment:
-- App URL: `http://localhost:4444`
-- Health URL: `http://localhost:4444/health`
+### Streamlit deploy notes
 
-Configuration file:
-- Copy `.env.deploy.example` to `.env.deploy` and set `JWT_SECRET`.
+- These launchers run apps from:
+  - `learning/erp-responsible-ai/voice_erp_coach.py`
+  - `learning/erp-responsible-ai/responsible_erp_app.py`
+- Root `requirements.txt` points to `learning/erp-responsible-ai/requirements.txt`.
+- Repository must be accessible from Streamlit Community Cloud (public or permitted access).
 
 Demo: [Click Here](https://www.youtube.com/watch?v=lIrN-LbbBnw&ab_channel=ShlokPandey)
 
