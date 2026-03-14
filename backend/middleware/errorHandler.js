@@ -224,10 +224,10 @@ function handleEnhancedError(err, req, res, correlationId) {
   // Add request context in development mode
   if (process.env.NODE_ENV === 'development') {
     errorResponse.error.context = {
-      method: req.method,
-      url: req.url,
-      userAgent: req.get ? req.get('User-Agent') : req.headers['user-agent'],
-      ip: req.ip || req.connection?.remoteAddress
+      method: req?.method,
+      url: req?.url,
+      userAgent: req && (req.get ? req.get('User-Agent') : (req.headers && req.headers['user-agent'])),
+      ip: req?.ip || req?.connection?.remoteAddress
     };
     
     if (err.stack) {
@@ -414,6 +414,7 @@ function getConflictErrorCode(err) {
       case 'email':
         return ERROR_CODES.EMAIL_ALREADY_EXISTS;
       case 'duplicate':
+      case 'duplicate_key':
         return ERROR_CODES.DUPLICATE_ENTRY;
       default:
         return ERROR_CODES.RESOURCE_CONFLICT;
