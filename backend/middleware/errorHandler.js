@@ -226,7 +226,8 @@ function handleEnhancedError(err, req, res, correlationId) {
     errorResponse.error.context = {
       method: req?.method,
       url: req?.url,
-      userAgent: req && (req.get ? req.get('User-Agent') : (req.headers && req.headers['user-agent'])),
+      // Prefer req.get when available, otherwise fall back to raw header; undefined if req is missing
+      userAgent: req?.get ? req.get('User-Agent') : req?.headers?.['user-agent'],
       ip: req?.ip || req?.connection?.remoteAddress
     };
     
