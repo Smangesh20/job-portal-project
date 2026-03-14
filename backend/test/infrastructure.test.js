@@ -97,3 +97,12 @@ try {
 console.log('\n=== Infrastructure Test Complete ===');
 console.log('All core components are working correctly.');
 console.log('The infrastructure is ready for gradual rollout using feature flags.');
+
+// Jest-compatible test so the suite is valid
+describe('Infrastructure', () => {
+  it('has error classes and feature flags', () => {
+    expect(ValidationError).toBeDefined();
+    expect(featureFlags.getAll).toBeDefined();
+    expect(ERROR_CODES.VALIDATION_ERROR).toBe('VALIDATION_ERROR');
+  });
+});
