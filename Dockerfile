@@ -1,5 +1,5 @@
 # ---------- Frontend build ----------
-FROM node:20-alpine AS frontend-build
+FROM node:16-alpine AS frontend-build
 
 WORKDIR /app/frontend
 
