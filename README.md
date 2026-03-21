@@ -2,6 +2,14 @@
 
 Job Portal is a MERN Stack based web app which helps in streamlining the flow of job application process. It allows users to select there roles (applicant/recruiter), and create an account. In this web app, login session are persistent and REST APIs are securely protected by JWT token verification. After logging in, a recruiter can create/delete/update jobs, shortlist/accept/reject applications, view resume and edit profile. And, an applicant can view jobs, perform fuzzy search with various filters, apply for jobs with an SOP, view applications, upload profile picture, upload resume and edit profile. Hence, it is an all in one solution for a job application system.
 
+## One-Click Deployment (Vercel + Namecheap)
+
+Deploy the **frontend** to Vercel with a single click, then connect `www.askyacham.com` in Namecheap.
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsawantmangesh89-arch%2Fjob-portal&root-directory=frontend&project-name=askyacham)
+
+After deployment, follow the domain setup steps in `DEPLOY_VERCEL_NAMECHEAP.md`.
+
 ## One-Click Deployment (Streamlit Community Cloud)
 
 Use Streamlit one-click deploy links for the integrated ERP learning apps.
